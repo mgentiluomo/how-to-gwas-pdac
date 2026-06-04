@@ -32,3 +32,8 @@ Thumbs.db
 
 # ---- logs ----
 *.log
+
+# --- PRIVATE materials (must NEVER be published) ---
+PRIVATE_*
+*_token*
+*.token

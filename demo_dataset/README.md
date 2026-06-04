@@ -1,145 +1,112 @@
-# PDAC GWAS Tutorial — Demo Dataset Preparation
+# PDAC GWAS Tutorial — Demonstration Dataset
 
-Pipeline to build a small, fully reproducible, **didactic** GWAS dataset for the
-manuscript:
+The running example for the manuscript
 
 > *"How to carry out a Genome-Wide Association Study: a step-by-step annotated
 > guide using pancreatic cancer as a case study"*
 > (TRANSPAN COST Action CA21116, Working Group 1).
 
-The dataset is derived from **HAPNEST**, a publicly available, fully synthetic
-collection of genotypes generated within the INTERVENE H2020 project. Because
-HAPNEST contains **no real participants**, it can be redistributed, cited, and
-will remain available for the long term — solving the three problems that make
-real cohorts unsuitable for a teaching paper (data hosting, long-term
-persistence, and patient anonymity), while still preserving realistic patterns
-of **linkage disequilibrium (LD)** and **allele frequency**.
+## ⚠️ Important: this is a teaching dataset
 
-> Source: HAPNEST pre-generated data, EBI BioStudies accession **S-BSST936**.
-> Citing reference for the manuscript: [PMID/DOI placeholder — HAPNEST,
-> Wharrie et al., *Bioinformatics* 2023] <!-- highlight yellow -->
-
----
-
-## Design choices
-
-| Parameter        | Value                                          | Rationale                                                                 |
-|------------------|------------------------------------------------|---------------------------------------------------------------------------|
-| Source dataset   | HAPNEST pre-generated (EBI S-BSST936)          | Synthetic, public, citable; preserves real LD / MAF                       |
-| Final sample     | **1,000 cases + 5,000 controls** (n = 6,000)   | Realistic scale of an early PDAC GWAS (e.g. PanScan I)                     |
-| Ancestry mix     | EUR 80% / AFR 10% / EAS 5% / SAS 5%            | Mimics a European-led cohort; enables teaching of population stratification |
-| Chromosomes used | 1, 5, 9, 13, 16, 17                            | Each carries one simulated causal locus (keeps the toy dataset small)     |
-| Causal loci      | 6 **real, well-replicated** PDAC GWAS regions  | Students "rediscover" loci they can look up in the literature             |
-| Effect sizes     | per-allele OR 1.15–1.25                         | Honest, realistic expectations about GWAS effect sizes                     |
-| Heritability     | h² ≈ 0.15 (liability scale)                     | Consistent with PDAC family/twin estimates                                |
-| Build            | GRCh38                                          | Matches HAPNEST                                                           |
-
-### The six simulated causal loci
-
-These are **genuine** pancreatic ductal adenocarcinoma (PDAC) susceptibility
-regions reported by the PanScan / PanC4 consortia. The pipeline does **not**
-hard-code real rsIDs (HAPNEST uses its own synthetic variant IDs); instead it
-picks, within each region, the common variant nearest the target position and
-designates it as causal.
-
-| Chr | Region   | Nearest gene  | Approx. GRCh38 position | Reference (placeholder)        |
-|-----|----------|---------------|-------------------------|--------------------------------|
-| 1   | 1q32.1   | NR5A2         | chr1:200,000,000        | [PMID placeholder] <!-- y -->  |
-| 5   | 5p15.33  | TERT / CLPTM1L| chr5:1,320,000          | [PMID placeholder] <!-- y -->  |
-| 9   | 9q34.2   | ABO           | chr9:136,149,000        | [PMID placeholder] <!-- y -->  |
-| 13  | 13q22.1  | KLF5          | chr13:73,330,000        | [PMID placeholder] <!-- y -->  |
-| 16  | 16q23.1  | BCAR1         | chr16:75,180,000        | [PMID placeholder] <!-- y -->  |
-| 17  | 17q25.1  | LINC00673     | chr17:73,261,000        | [PMID placeholder] <!-- y -->  |
-
-> Verify the exact coordinates/genes against the current literature before
-> final submission, and replace the placeholders with Vancouver-formatted
-> references.
+- **Genotypes are REAL** (public HGDP + 1000 Genomes reference data) but
+  **sample identifiers are anonymised** (`MG0001`–`MG1461`) and bear no
+  relation to any real individual's identity.
+- **The phenotype is ENTIRELY SIMULATED.** No real pancreatic cancer cases are
+  included. Case/control status, age, sex effects and survival outcomes were
+  generated *in silico*.
+- **The X chromosome is SIMULATED** for the sole purpose of demonstrating the
+  sex-check QC step. It does not represent real chrX genotype data.
+- This dataset must **not** be used for any biological or clinical inference
+  about pancreatic cancer. Its only purpose is to teach GWAS methodology.
 
 ---
 
-## A note on statistical power (read this before you panic)
+## Getting the data
 
-With **n = 6,000** and **realistic** per-allele odds ratios (1.15–1.25), most
-of the six causal loci will **not** reach the conventional genome-wide
-significance threshold of *p* < 5 × 10⁻⁸. **This is intentional.** It is one of
-the most important lessons of the tutorial: real GWAS need tens of thousands of
-samples precisely because individual common-variant effects are small. The
-strongest one or two loci (e.g. ABO) will usually pop out; the rest illustrate
-why consortia and meta-analysis (Section 5) exist.
-
-If, for a particular teaching session, you want a cleaner Manhattan plot with
-all six loci visible, you can inflate the effect sizes via the `--or-scale`
-option in `03_simulate_phenotype.R` — but please keep the realistic default for
-the published example.
-
----
-
-## Pipeline overview
-
-```
-01_download_hapnest.sh     Download the HAPNEST subset (selected chromosomes)
-02_subset_individuals.R    Choose 6,000 individuals with the target ancestry mix
-02b_apply_subset.sh        Extract those individuals with PLINK2 and merge chromosomes
-03_simulate_phenotype.R    Simulate a PDAC-like phenotype from the 6 causal loci
-04_run_gwas.sh             Reference run: PCA + logistic-regression GWAS (PLINK2)
-05_plots.R                 Manhattan plot, QQ plot and genomic inflation (λ_GC)
-```
-
-Run them in order. Each script prints, at the end, the exact command for the
-next step.
+The genotype/phenotype files are **not** stored in git (they are large
+binaries). Download them from the GitHub Release with:
 
 ```bash
-bash    scripts/01_download_hapnest.sh
-Rscript scripts/02_subset_individuals.R
-bash    scripts/02b_apply_subset.sh
-Rscript scripts/03_simulate_phenotype.R
-bash    scripts/04_run_gwas.sh
-Rscript scripts/05_plots.R
+bash demo_dataset/download_data.sh
 ```
+
+This fetches the files into `demo_dataset/data/` (git-ignored). The same files
+are mirrored on Zenodo (DOI to be added on publication).
 
 ---
 
-## Software requirements
+## Files
 
-| Tool     | Version (tested) | Notes                                             |
-|----------|------------------|---------------------------------------------------|
-| PLINK    | **2.0** (a6+)    | `plink2` must be on your `PATH`                   |
-| R        | ≥ 4.2            | packages: `data.table`, `optparse`, `ggplot2`     |
-| bash     | ≥ 4              | GNU coreutils, `wget` or `curl`                   |
+| File | Description |
+|------|-------------|
+| `pdac_demo.bed/.bim/.fam` | PLINK binary genotypes (430,000 variants, 1,461 individuals) |
+| `phenotype.txt`     | `FID IID PHENO` (1 = control, 2 = case) |
+| `covariates.txt`    | `FID IID SEX AGE` |
+| `survival.txt`      | `FID IID TIME` (months) `EVENT` (1 = event, 0 = censored) |
+| `sample_ancestry.tsv` | `IID`, genetic-ancestry group (`eur`/`afr`/`eas`) |
 
-Install the R packages once:
+## Dataset composition
 
-```r
-install.packages(c("data.table", "optparse", "ggplot2"))
-```
+- **1,461 individuals**: 762 EUR, 349 AFR, 350 EAS — a deliberately balanced
+  multi-ancestry design so that population stratification and PCA (Section 2)
+  can be taught on a clearly structured dataset.
+- **430,000 variants**: 424,000 autosomal + 6,000 simulated chrX. Variants are
+  restricted to Illumina GSA-24v3 positions (GRCh38).
+- Realistic genotype missingness was intentionally introduced (8,480
+  low-call-rate variants; 25 low-call-rate samples) so that QC filters
+  (`--geno`, `--mind`) have a visible effect.
+- Variant IDs in `chr:pos:ref:alt` format (GRCh38).
+
+## Simulated phenotype design
+
+- Liability-threshold model with a **single causal locus in the ABO region**
+  (9q34.2) — the most robust and most-replicated PDAC risk locus
+  (Amundadottir et al. 2009; Rizzato et al. 2013).
+- The effect size is reinforced for detectability in this small demonstration
+  sample; its direction matches the literature (risk allele). This is declared
+  openly: the dataset is built so that **one strong, well-known signal emerges
+  cleanly**, which is the realistic picture for a rare, complex disease where a
+  single robust locus rises above the noise.
+- Covariates: sex (slightly higher male risk) and age (cases older).
+- The intended workflow analyses the **EUR subset only** (non-EUR individuals
+  are removed during QC/PCA, Section 2). Among EUR, case:control ≈ 1:2
+  (254 cases / 508 controls). On that analysis set, λ_GC ≈ 1.01 with a
+  genome-wide-significant ABO signal (P ≈ 2 × 10⁻¹⁰).
+
+## How the dataset was built (reproducibility)
+
+The dataset was generated on real reference genotypes by the scripts in
+[`scripts/`](scripts/), in this order:
+
+| Script | Purpose |
+|--------|---------|
+| `01_build_dataset.sh`      | Filter HGDP+1KG VCFs to GSA positions, subset ancestries, make PLINK binaries |
+| `02_degrade_and_anonymize.R` | Inject realistic missingness; anonymise IDs to MG#### |
+| `03_make_chrX.R`           | Add a simulated chrX consistent with karyotypic sex (for the sex-check) |
+| `04_simulate_phenotype.R`  | Simulate the ABO-driven PDAC phenotype + covariates + survival |
+
+These scripts document provenance; you do **not** need to run them to follow
+the tutorial — just download the released data. The private keys used during
+construction (ID mapping, injected sex discordances, causal-locus truth table)
+are **not** distributed.
+
+## Provenance of genotypes
+
+Real genotypes derived from the **HGDP + 1000 Genomes** joint callset
+(gnomAD v3.1), phased reference panel:
+
+- gnomAD v3.1 HGDP+1KG (Koenig et al., *Genome Research* 2024)
+- HGDP (Bergström et al., *Science* 2020)
+- 1000 Genomes Project (*Nature* 2015)
+- Source phased panel: Zenodo record `10.5281/zenodo.18156285`
+
+Only autosomal biallelic SNPs at GSA positions were retained; the chrX was
+simulated separately (see above).
+
+## License
+
+CC-BY 4.0. Please cite the tutorial paper and the sources above.
 
 ---
 
-## Directory layout
-
-```
-gwas_tutorial/
-├── README.md
-├── scripts/      # the six pipeline scripts
-├── data/         # downloaded + intermediate genotype data (git-ignored)
-├── results/      # GWAS summary statistics
-└── docs/         # figures for the manuscript
-```
-
-> The `data/` folder can become large. Add it to `.gitignore`; only the
-> scripts, the final summary statistics, and the figures need to live in the
-> University of Pisa institutional repository.
-
----
-
-## Reproducibility
-
-Every random step uses a fixed seed (`--seed 2026`, configurable). Re-running
-the pipeline on the same HAPNEST download reproduces an identical dataset,
-phenotype, and set of results — a FAIR-data requirement discussed in Section 7.
-
----
-
-*Maintained centrally by M. Gentiluomo & R. Farinella (University of Pisa).
-Code style and final harmonisation are coordinated by the editors; please do
-not change file names or the numbering scheme without prior agreement.*
+*Maintained centrally by M. Gentiluomo & R. Farinella (University of Pisa).*

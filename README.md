@@ -24,7 +24,7 @@ how-to-gwas-pdac/
 ├── CONTRIBUTING.md          ← how to work in this repo (READ FIRST)
 ├── LICENSE                  ← MIT (code); see note below for text/figures
 ├── .gitignore
-├── demo_dataset/            ← reproducible HAPNEST-based example dataset
+├── demo_dataset/            ← demo dataset (real HGDP+1KG genotypes, simulated phenotype)
 │   ├── README.md
 │   └── scripts/             ← 01 … 05 pipeline (download → simulate → GWAS → plots)
 ├── sections/                ← one folder per manuscript section
@@ -77,15 +77,15 @@ see `CONTRIBUTING.md`.
 ## The demo dataset
 
 Everything you need to build the running example is in `demo_dataset/`. It
-turns the public, fully synthetic **HAPNEST** dataset into a 1,000-case /
-5,000-control PDAC-like study with six known causal loci, then runs a reference
-GWAS. See `demo_dataset/README.md` for the design and the run order.
+uses **real HGDP + 1000 Genomes genotypes** (anonymised) with a fully simulated
+PDAC phenotype driven by a single well-replicated causal locus (**ABO**, 9q34.2).
+The data are downloaded from the GitHub Release via `bash demo_dataset/download_data.sh`. See `demo_dataset/README.md` for the full design, teaching-dataset caveats, and provenance.
 
 ---
 
 ## Conventions
 
-- **Code:** PLINK 2 and R; one self-contained, heavily commented script per step.
+- **Code:** PLINK 1.9 (`plink`) and PLINK 2.0 (`plink2`), plus R; one self-contained, heavily commented script per step.
 - **Documentation:** Markdown.
 - **References:** provisional placeholders as `[DOI/PMID]` in square brackets,
   highlighted yellow; final formatting in **Vancouver** style.
