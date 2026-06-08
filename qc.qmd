@@ -87,7 +87,7 @@ is below a threshold — here 1% (`--maf 0.01`).
 **Run this:**
 
 ```bash
-plink2 --bfile qc_step2 --maf 0.01 --make-bed --out qc_step3
+plink2 --bfile qc_step2 --maf 0.015 --make-bed --out qc_step3
 ```
 
 ::: {.callout-tip title="✅ Check your work" icon="false"}
