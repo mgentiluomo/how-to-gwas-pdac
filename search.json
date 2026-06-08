@@ -1,0 +1,267 @@
+[
+  {
+    "objectID": "qc.html",
+    "href": "qc.html",
+    "title": "Cleaning your data: quality control",
+    "section": "",
+    "text": "Real genotype data is never perfect: some variants are poorly measured, some samples have too much missing data, and a few errors always slip in. Quality control (QC) removes these problems before any analysis, so that later results are trustworthy.\nIn this section you will apply a few standard filters, one at a time. After each one you will look at a number in the log file to confirm it worked — so you always know you are on track.\nEvery PLINK command writes a .log file (named after whatever you put in --out). That log is where you check your work — it is plain text, and you can open it with head, cat, or any text editor.",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "qc.html#sec-geno",
+    "href": "qc.html#sec-geno",
+    "title": "Cleaning your data: quality control",
+    "section": "Step 1 — Remove poorly genotyped variants",
+    "text": "Step 1 — Remove poorly genotyped variants\nWhy. Some variants failed to be measured in many individuals (a low “call rate”). A variant missing in too many people is unreliable, so we drop it. The --geno filter removes variants missing in more than a chosen fraction of samples (here, 2%).\nRun this:\nplink2 --bfile pdac_gwas_demo_full --geno 0.02 --make-bed --out qc_step1\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step1.log and look for this line:\n--geno: 8480 variants removed due to missing genotype data.\nIf you see 8480 variants removed, you did it right — those are exactly the poorly genotyped variants built into the demo data.",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "qc.html#sec-mind",
+    "href": "qc.html#sec-mind",
+    "title": "Cleaning your data: quality control",
+    "section": "Step 2 — Remove poorly genotyped samples",
+    "text": "Step 2 — Remove poorly genotyped samples\nWhy. The same problem can affect individuals: some samples have too much missing data across all their variants, which usually signals a low-quality sample. The --mind filter removes individuals missing more than a chosen fraction of their genotypes.\nRun this (note we now start from the cleaned file qc_step1):\nplink2 --bfile qc_step1 --mind 0.02 --make-bed --out qc_step2\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step2.log and look for:\n--mind: 25 samples removed due to missing genotype data.\n25 samples removed means success — those are the low-quality samples deliberately added to the demo data.",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "qc.html#sec-maf",
+    "href": "qc.html#sec-maf",
+    "title": "Cleaning your data: quality control",
+    "section": "Step 3 — Remove rare variants by minor allele frequency (MAF)",
+    "text": "Step 3 — Remove rare variants by minor allele frequency (MAF)\nWhy. Very rare variants (carried by only a handful of people) give unstable, unreliable association results in a study of this size. We remove variants whose minor allele frequency is below a threshold — here 1% (--maf 0.01).\nRun this:\nplink2 --bfile qc_step2 --maf 0.01 --make-bed --out qc_step3\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step3.log and look for a line like:\n&lt;NNN&gt; variants removed due to allele frequency threshold(s)\n  (--maf/--max-maf/--mac/--max-mac).\nYou should see roughly [NNN] variants removed. (Exact number to be locked in from one real run — see note at the bottom.)",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "qc.html#sec-hwe",
+    "href": "qc.html#sec-hwe",
+    "title": "Cleaning your data: quality control",
+    "section": "Step 4 — Remove variants failing Hardy–Weinberg equilibrium",
+    "text": "Step 4 — Remove variants failing Hardy–Weinberg equilibrium\nWhy. A strong departure from Hardy–Weinberg equilibrium (the expected balance of genotypes in a population) often points to a genotyping error rather than real biology. We remove variants whose departure is extreme (--hwe with a strict p-value cutoff).\nRun this:\nplink2 --bfile qc_step3 --hwe 1e-6 --make-bed --out qc_step4\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step4.log and look for:\n--hwe: &lt;NNN&gt; variants removed due to Hardy-Weinberg exact test p-value threshold.\nYou should see about [NNN] variants removed. (Exact number to be locked in from one real run.)",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "qc.html#sec-sexcheck",
+    "href": "qc.html#sec-sexcheck",
+    "title": "Cleaning your data: quality control",
+    "section": "Step 5 — Check that recorded sex matches the genetic data",
+    "text": "Step 5 — Check that recorded sex matches the genetic data\nWhy. A useful sanity check is whether each person’s recorded sex matches the sex inferred from their X chromosome. A mismatch usually means a sample mix-up. This check reports problems rather than removing data automatically.\nRun this:\nplink --bfile qc_step4 --check-sex --out qc_sexcheck\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nCount the flagged samples in the result:\ngrep PROBLEM qc_sexcheck.sexcheck\nYou should find 4 samples flagged as PROBLEM — exactly the four sex discordances built into the demo data. In a real study you would investigate and usually remove these.",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "qc.html#putting-it-together",
+    "href": "qc.html#putting-it-together",
+    "title": "Cleaning your data: quality control",
+    "section": "Putting it together",
+    "text": "Putting it together\nOnce you understand each filter, you can apply them in a single command:\nplink2 --bfile pdac_gwas_demo_full \\\n       --geno 0.02 --mind 0.02 --maf 0.01 --hwe 1e-6 \\\n       --make-bed --out pdac_gwas_demo_qc\nThe result, pdac_gwas_demo_qc, is your cleaned dataset — the starting point for the next sections.\n\n\n\n\n\n\nNoteWhy we filter one step at a time first\n\n\n\nRunning the filters separately lets you see how many variants or samples each one removes — which is how you catch a problem early. The order can slightly change the final counts, so for reproducible results always report the exact commands and thresholds you used.\n\n\n\n\n\n\n\n\n\nImportantA note on the exact numbers\n\n\n\nThe counts above for call rate (8,480 variants), sample missingness (25 samples), and sex check (4 samples) are the artefacts deliberately built into the demo dataset, so they are the targets to confirm. The MAF and HWE removal counts depend on the exact thresholds and on filter order, so they are shown as placeholders. Run the pipeline once on the demo data and the precise numbers will appear in the logs — drop them in here (or share the .log) and the check boxes can state the exact figures.",
+    "crumbs": [
+      "Cleaning the data",
+      "Cleaning your data: quality control"
+    ]
+  },
+  {
+    "objectID": "getting_started.html",
+    "href": "getting_started.html",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "",
+    "text": "This page gets your computer ready and walks you through your very first command. By the end you will have downloaded the demo dataset, installed PLINK, and run a quick test that confirms everything works — computing allele frequencies with --freq.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-terminal",
+    "href": "getting_started.html#sec-terminal",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "A note on the command line",
+    "text": "A note on the command line\nMost steps in this guide are typed into a terminal (also called a “command line” or “console”) — a window where you type a command, press Enter, and the program runs.\n\nWindows: open the Command Prompt (search for cmd) or PowerShell.\nmacOS: open the Terminal app (in Applications → Utilities).\nLinux: open your Terminal.\nInside RStudio: there is a Terminal tab next to the Console tab — you can use that too.\n\nThroughout the guide, lines you type into the terminal look like this:\nplink2 --version\nYou copy the command, paste it into your terminal, and press Enter. That’s it.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-download",
+    "href": "getting_started.html#sec-download",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "Step 1 — Download the demo dataset",
+    "text": "Step 1 — Download the demo dataset\nThe demo dataset is called pdac_gwas_demo_full. Like all PLINK datasets, it is made of three files that always travel together and must stay in the same folder:\n\n\n\n\n\n\n\nFile\nWhat it contains\n\n\n\n\npdac_gwas_demo_full.bed\nthe genotypes (the actual genetic data, in compact binary form)\n\n\npdac_gwas_demo_full.bim\nthe list of variants (one row per SNP: chromosome, position, alleles)\n\n\npdac_gwas_demo_full.fam\nthe list of individuals (one row per person: ID, sex, case/control status)\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nNever rename or move just one of the three files. PLINK always looks for all three together using the shared name (pdac_gwas_demo_full).\n\n\nYou can download them in either of two ways.\n\nPoint and click (easiest)Command line\n\n\n\nOpen the releases page: https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data\nUnder Assets, click the dataset archive (e.g. pdac_gwas_demo_full.zip) to download it.\nUnzip it (right-click → Extract all on Windows; double-click on macOS).\nYou should now have a folder containing the three files above.\n\n\n\n# download the dataset archive from the GitHub release\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_gwas_demo_full.zip\n\n# unzip it\nunzip pdac_gwas_demo_full.zip\n(On macOS without wget, use curl -L -O &lt;url&gt; instead.)\n\n\n\n\n\n\n\n\n\nTipPick one working folder and stay in it\n\n\n\nCreate a single folder for this tutorial — for example gwas_tutorial — and put the three data files there. Do all your work inside it. This avoids almost every “file not found” problem beginners run into.\n\n\n\nCheck the files arrived\nIn your terminal, move into the folder and list its contents:\ncd path/to/gwas_tutorial      # replace with the real path to your folder\nls pdac_gwas_demo_full.*      # on Windows Command Prompt use: dir pdac_gwas_demo_full.*\nYou should see exactly three files: .bed, .bim and .fam.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-plink",
+    "href": "getting_started.html#sec-plink",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "Step 2 — Install PLINK 2",
+    "text": "Step 2 — Install PLINK 2\nPLINK is the workhorse program for genotype data. We use PLINK 2 (the command is plink2). It is a single program file — there is no installer: you download it, unzip it, and you are done.\n\nGo to the official download page: https://www.cog-genomics.org/plink/2.0/\nDownload the build for your operating system (Linux / macOS / Windows).\nUnzip it. Inside you will find the program file: plink2 (macOS/Linux) or plink2.exe (Windows).\n\n\n\n\n\n\n\nTipThe simplest setup\n\n\n\nPut the plink2 (or plink2.exe) file in the same folder as your data (gwas_tutorial). Then you can run it as ./plink2 (macOS/Linux) or plink2 (Windows) without worrying about installation paths. More advanced users can instead add PLINK to their system PATH.\n\n\n\nmacOS / LinuxWindows\n\n\nIf you placed plink2 in your working folder, you call it with ./plink2. The first time on macOS you may need to allow it to run:\nchmod +x plink2          # make the file executable\n./plink2 --version\n\n\nOpen Command Prompt, move to your folder, and call it as plink2:\ncd path\\to\\gwas_tutorial\nplink2 --version\n\n\n\n\n\n\n\n\n\nNoteplink2 vs ./plink2\n\n\n\nFor the rest of this guide we write the command simply as plink2. On macOS/Linux, if PLINK is in your current folder rather than installed system-wide, type ./plink2 instead. Everything after the program name is identical.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-version",
+    "href": "getting_started.html#sec-version",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "Step 3 — Check that PLINK runs",
+    "text": "Step 3 — Check that PLINK runs\nBefore doing anything with the data, confirm PLINK starts at all:\nplink2 --version\nYou should see a single line with the version and build date, similar to:\nPLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)\nIf you see a version line, PLINK works. If instead you get an error like command not found or 'plink2' is not recognized, jump to Troubleshooting below.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-freq",
+    "href": "getting_started.html#sec-freq",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "Step 4 — Your first command: allele frequencies with --freq",
+    "text": "Step 4 — Your first command: allele frequencies with --freq\nNow the real test. We ask PLINK to read the demo dataset and compute the allele frequency of every variant — that is, how common each allele is across the sample. This is the simplest possible operation that touches the actual genotypes, so it is a perfect “does everything work?” check.\nplink2 --bfile pdac_gwas_demo_full --freq --out pdac_gwas_demo_full_freq\nLet’s read that command piece by piece:\n\n\n\n\n\n\n\nPart\nMeaning\n\n\n\n\nplink2\nrun the PLINK 2 program\n\n\n--bfile pdac_gwas_demo_full\nload the dataset whose three files share this name (.bed/.bim/.fam)\n\n\n--freq\ncompute the allele frequencies\n\n\n--out pdac_gwas_demo_full_freq\nname the output files with this prefix\n\n\n\nCODE 0-01: first PLINK run — allele frequencies — see /getting_started/\nWhen it finishes, PLINK prints a short log to the screen and creates a new file: pdac_gwas_demo_full_freq.afreq. The on-screen log ends with something like:\n... \n430000 variants loaded from pdac_gwas_demo_full.bim.\n1461 samples (712 females, 749 males; ...) loaded from pdac_gwas_demo_full.fam.\n--freq: Allele frequencies written to pdac_gwas_demo_full_freq.afreq .\nIf you see a line saying the allele frequencies were written, the test has passed: PLINK can read your data and compute on it. 🎉",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-check",
+    "href": "getting_started.html#sec-check",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "Step 5 — Did it work? Look at the result",
+    "text": "Step 5 — Did it work? Look at the result\nOpen the first few lines of the output file to see what PLINK produced:\nhead pdac_gwas_demo_full_freq.afreq    # on Windows use: more pdac_gwas_demo_full_freq.afreq\nYou should see a table with one row per variant, like this:\n#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT\n1       1:752566:G:A      G    A    0.831621    2922\n1       1:776546:A:C      A    C    0.142847    2922\n1       1:832918:T:C      T    C    0.067419    2922\n1       1:842013:T:G      T    G    0.219370    2922\n...\nWhat the columns mean:\n\n\n\n\n\n\n\nColumn\nMeaning\n\n\n\n\n#CHROM\nchromosome\n\n\nID\nthe variant’s identifier\n\n\nREF / ALT\nthe reference and alternate alleles\n\n\nALT_FREQS\nfrequency of the ALT allele (a number between 0 and 1)\n\n\nOBS_CT\nnumber of observed alleles (≈ 2 × number of genotyped individuals)\n\n\n\nThat ALT_FREQS column is the answer to our test: PLINK computed a frequency for every variant.\n\nOptional: read it in R\nIf you have R/RStudio set up, you can load the same file and take a quick look. This also introduces the pattern we use throughout the guide — PLINK produces a table, R reads and summarises it:\n\n# read the allele-frequency table PLINK just wrote\nfreq &lt;- read.table(\"pdac_gwas_demo_full_freq.afreq\",\n                   header = TRUE, comment.char = \"\", sep = \"\\t\",\n                   check.names = FALSE)\n\n# how many variants, and the first rows\nnrow(freq)\nhead(freq)\n\n# minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS\nfreq$MAF &lt;- pmin(freq$ALT_FREQS, 1 - freq$ALT_FREQS)\n\n# a quick picture of the frequency spectrum\nhist(freq$MAF, breaks = 50,\n     main = \"Minor allele frequency distribution\",\n     xlab = \"MAF\")\n\nA typical genotyping array shows many common variants and a tail of rarer ones, so the histogram leans toward the lower MAF values. If R prints a number of variants and draws a histogram, your R setup works too — and you are ready for the analysis sections.\n\n\n\n\n\n\nNoteWhy we don’t re-run PLINK every time the website is built\n\n\n\nReal GWAS commands (especially on full datasets) can be slow and run on a dedicated server. In this guide, PLINK commands are shown for you to run on your own machine; the website does not re-execute them. Lightweight R steps (a plot, a small table) are run once and cached, so the site stays fast and reproducible.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-troubleshooting",
+    "href": "getting_started.html#sec-troubleshooting",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "Troubleshooting",
+    "text": "Troubleshooting\n\n\n\n\n\n\nWarningcommand not found / 'plink2' is not recognized\n\n\n\n\n\nThe terminal cannot find the PLINK program. Either you are not in the folder where plink2 lives, or it is not on your PATH.\n\nMake sure you have cd-ed into your working folder.\nOn macOS/Linux, call it as ./plink2 (note the ./).\nCheck the file is really there: ls plink2 (macOS/Linux) or dir plink2.exe (Windows).\n\n\n\n\n\n\n\n\n\n\nWarningError: Failed to open pdac_gwas_demo_full.bed\n\n\n\n\n\nPLINK cannot find the data files.\n\nConfirm all three files (.bed, .bim, .fam) are in the current folder and share the exact name pdac_gwas_demo_full.\nConfirm you typed the name without an extension after --bfile (PLINK adds .bed/.bim/.fam itself).\nCheck you are in the right folder with pwd (macOS/Linux) or cd with no arguments (Windows).\n\n\n\n\n\n\n\n\n\n\nWarningmacOS: “plink2 cannot be opened because the developer cannot be verified”\n\n\n\n\n\nThis is macOS Gatekeeper. Either right-click the plink2 file → Open once to allow it, or run xattr -d com.apple.quarantine plink2 in the terminal, then try again.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#whats-next",
+    "href": "getting_started.html#whats-next",
+    "title": "Before you start: setup and your first PLINK command",
+    "section": "What’s next",
+    "text": "What’s next\nYou now have a working setup and have confirmed PLINK can read the demo data. The next sections of the guide build directly on this:\n\nQuality control (Section 1B) — cleaning the raw genotypes before any analysis.\nPopulation stratification (Section 2) — detecting and correcting for ancestry.\n\n(These sections will be linked here as they are added.)",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup and your first PLINK command"
+    ]
+  },
+  {
+    "objectID": "CONTRIBUTING.html",
+    "href": "CONTRIBUTING.html",
+    "title": "Contributing",
+    "section": "",
+    "text": "Thank you for contributing to the GWAS guide. This file explains how we work together so that everyone builds on the same, consistent base of files.\nThe golden rule: main is protected. It always reflects the agreed, harmonised version. You never commit directly to it — you propose changes through a Pull Request (PR), which a maintainer reviews and merges.\nMaintainers (the only people who merge to main): Manuel Gentiluomo and Riccardo Farinella.\n\n\n\n# clone the repository\ngit clone https://github.com/&lt;OWNER&gt;/how-to-gwas-pdac.git\ncd how-to-gwas-pdac\n\n# tell git who you are (so your contributions are attributed correctly)\ngit config user.name  \"Your Name\"\ngit config user.email \"your.email@institution.edu\"\nIf you do not yet have write access, ask Manuel to add you as a collaborator, or fork the repository and open PRs from your fork.\n\n\n\n\n\nSync with the latest main before starting:\ngit checkout main\ngit pull\nCreate a branch for your work. Use the convention section&lt;NN&gt;-&lt;short-topic&gt;:\ngit checkout -b section02-pca-draft\nWork inside your section folder (sections/&lt;your section&gt;/). Add your Markdown text and your annotated scripts there. Do not edit other people’s sections without coordinating first.\nCommit in small, clear steps:\ngit add sections/02_population_stratification/\ngit commit -m \"Section 2: first draft of PCA narrative + plink2 PCA script\"\nPush your branch and open a Pull Request to main:\ngit push -u origin section02-pca-draft\nThen open the PR on GitHub and request review from a maintainer.\nA maintainer reviews, may ask for small edits, and merges. After merge, delete your branch and start the next piece from a fresh main.\n\n\nWorking on the same files at the same time? Pull often and keep branches short-lived to avoid conflicts.\n\n\n\n\n\n\nLanguages/tools: PLINK 2 and R only, unless agreed otherwise.\nOne step = one script, numbered, self-contained, and heavily commented — remember the audience has no bioinformatics background. A reader should understand why each flag/option is used, not just what it does.\nEvery script prints the command for the next step at the end.\nUse the demo dataset (demo_dataset/) as the running example so all sections are consistent. Do not introduce a different example dataset without agreement.\nMake randomness reproducible: expose a --seed (default 2026).\nAssume genome build GRCh38.\n\n\n\n\n\n\nWrite narrative in Markdown.\nCite as provisional placeholders: [DOI/PMID] in square brackets, highlighted yellow. Final formatting will be harmonised to Vancouver style by the editors.\nKeep figures in docs/ (PNG/PDF, 300 dpi).\n\n\n\n\n\n\nRaw or intermediate genotype data (*.bed/bim/fam, *.pgen/pvar/psam, *.vcf*, downloaded HAPNEST files). These are large and are regenerated by the scripts. The .gitignore already excludes them.\nAny real, access-controlled individual-level data (e.g. dbGaP / PANSCAN). The demo example uses only the synthetic HAPNEST data.\nCredentials, tokens, absolute local paths.\n\nCommit only: scripts, Markdown text, final summary statistics, and figures.\n\n\n\n\nOpen a GitHub Issue for anything that needs group discussion (scope of a section, an overlap between sections, a data question). Use Issues rather than email threads so the decision is visible to everyone and stays with the code."
+  },
+  {
+    "objectID": "CONTRIBUTING.html#one-time-setup",
+    "href": "CONTRIBUTING.html#one-time-setup",
+    "title": "Contributing",
+    "section": "",
+    "text": "# clone the repository\ngit clone https://github.com/&lt;OWNER&gt;/how-to-gwas-pdac.git\ncd how-to-gwas-pdac\n\n# tell git who you are (so your contributions are attributed correctly)\ngit config user.name  \"Your Name\"\ngit config user.email \"your.email@institution.edu\"\nIf you do not yet have write access, ask Manuel to add you as a collaborator, or fork the repository and open PRs from your fork."
+  },
+  {
+    "objectID": "CONTRIBUTING.html#the-day-to-day-workflow",
+    "href": "CONTRIBUTING.html#the-day-to-day-workflow",
+    "title": "Contributing",
+    "section": "",
+    "text": "Sync with the latest main before starting:\ngit checkout main\ngit pull\nCreate a branch for your work. Use the convention section&lt;NN&gt;-&lt;short-topic&gt;:\ngit checkout -b section02-pca-draft\nWork inside your section folder (sections/&lt;your section&gt;/). Add your Markdown text and your annotated scripts there. Do not edit other people’s sections without coordinating first.\nCommit in small, clear steps:\ngit add sections/02_population_stratification/\ngit commit -m \"Section 2: first draft of PCA narrative + plink2 PCA script\"\nPush your branch and open a Pull Request to main:\ngit push -u origin section02-pca-draft\nThen open the PR on GitHub and request review from a maintainer.\nA maintainer reviews, may ask for small edits, and merges. After merge, delete your branch and start the next piece from a fresh main.\n\n\nWorking on the same files at the same time? Pull often and keep branches short-lived to avoid conflicts."
+  },
+  {
+    "objectID": "CONTRIBUTING.html#code-style-kept-uniform-on-purpose",
+    "href": "CONTRIBUTING.html#code-style-kept-uniform-on-purpose",
+    "title": "Contributing",
+    "section": "",
+    "text": "Languages/tools: PLINK 2 and R only, unless agreed otherwise.\nOne step = one script, numbered, self-contained, and heavily commented — remember the audience has no bioinformatics background. A reader should understand why each flag/option is used, not just what it does.\nEvery script prints the command for the next step at the end.\nUse the demo dataset (demo_dataset/) as the running example so all sections are consistent. Do not introduce a different example dataset without agreement.\nMake randomness reproducible: expose a --seed (default 2026).\nAssume genome build GRCh38."
+  },
+  {
+    "objectID": "CONTRIBUTING.html#documentation-references",
+    "href": "CONTRIBUTING.html#documentation-references",
+    "title": "Contributing",
+    "section": "",
+    "text": "Write narrative in Markdown.\nCite as provisional placeholders: [DOI/PMID] in square brackets, highlighted yellow. Final formatting will be harmonised to Vancouver style by the editors.\nKeep figures in docs/ (PNG/PDF, 300 dpi)."
+  },
+  {
+    "objectID": "CONTRIBUTING.html#what-must-not-go-into-git",
+    "href": "CONTRIBUTING.html#what-must-not-go-into-git",
+    "title": "Contributing",
+    "section": "",
+    "text": "Raw or intermediate genotype data (*.bed/bim/fam, *.pgen/pvar/psam, *.vcf*, downloaded HAPNEST files). These are large and are regenerated by the scripts. The .gitignore already excludes them.\nAny real, access-controlled individual-level data (e.g. dbGaP / PANSCAN). The demo example uses only the synthetic HAPNEST data.\nCredentials, tokens, absolute local paths.\n\nCommit only: scripts, Markdown text, final summary statistics, and figures."
+  },
+  {
+    "objectID": "CONTRIBUTING.html#questions",
+    "href": "CONTRIBUTING.html#questions",
+    "title": "Contributing",
+    "section": "",
+    "text": "Open a GitHub Issue for anything that needs group discussion (scope of a section, an overlap between sections, a data question). Use Issues rather than email threads so the decision is visible to everyone and stays with the code."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "",
+    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, targeted at Human Genomics (Springer Nature / BMC). It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for Master’s students and clinicians without a bioinformatics background.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#what-is-a-gwas",
+    "href": "index.html#what-is-a-gwas",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "What is a GWAS?",
+    "text": "What is a GWAS?\nA genome-wide association study (GWAS) tests the statistical association between genetic variants — typically single-nucleotide polymorphisms (SNPs) — and a trait across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#why-pancreatic-cancer",
+    "href": "index.html#why-pancreatic-cancer",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "Why pancreatic cancer?",
+    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a rare, multifactorial cancer with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-this-guide",
+    "href": "index.html#how-to-use-this-guide",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "How to use this guide",
+    "text": "How to use this guide\nEvery analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.\n👉 Start here: Before you start — setup and your first PLINK command\n\n\n\n\n\n\nTipNo coding experience?\n\n\n\nYou do not need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.",
+    "crumbs": [
+      "Home"
+    ]
+  }
+]
