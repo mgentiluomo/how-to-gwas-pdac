@@ -1,0 +1,185 @@
+---
+title: "Cleaning your data: quality control"
+---
+
+Real genotype data is never perfect: some variants are poorly measured, some samples have too
+much missing data, and a few errors always slip in. **Quality control (QC)** removes these
+problems *before* any analysis, so that later results are trustworthy.
+
+In this section you will apply a few standard filters, **one at a time**. After each one you
+will look at a number in the log file to confirm it worked — so you always know you are on track.
+
+::: {.callout-note title="How each step works"}
+Every step has the same three parts:
+
+1. **Why** — what the filter does, in plain words.
+2. **Run this** — the command to copy into your terminal.
+3. **✅ Check your work** — the exact line you should find in the log file.
+:::
+
+::: {.callout-tip title="Before you start"}
+Make sure you have already [downloaded the data and tested PLINK](getting_started.qmd), and that
+your terminal is inside your working folder (the one containing `pdac_gwas_demo_full.bed/.bim/.fam`).
+:::
+
+Every PLINK command writes a `.log` file (named after whatever you put in `--out`). That log is
+where you check your work — it is plain text, and you can open it with `head`, `cat`, or any text
+editor.
+
+---
+
+## Step 1 — Remove poorly genotyped variants {#sec-geno}
+
+**Why.** Some variants failed to be measured in many individuals (a low "call rate"). A variant
+missing in too many people is unreliable, so we drop it. The `--geno` filter removes variants
+missing in more than a chosen fraction of samples (here, 2%).
+
+**Run this:**
+
+```bash
+plink2 --bfile pdac_gwas_demo_full --geno 0.02 --make-bed --out qc_step1
+```
+
+::: {.callout-tip title="✅ Check your work" icon="false"}
+Open `qc_step1.log` and look for this line:
+
+```
+--geno: 8480 variants removed due to missing genotype data.
+```
+
+If you see **8480** variants removed, you did it right — those are exactly the poorly genotyped
+variants built into the demo data.
+:::
+
+---
+
+## Step 2 — Remove poorly genotyped samples {#sec-mind}
+
+**Why.** The same problem can affect *individuals*: some samples have too much missing data
+across all their variants, which usually signals a low-quality sample. The `--mind` filter
+removes individuals missing more than a chosen fraction of their genotypes.
+
+**Run this** (note we now start from the cleaned file `qc_step1`):
+
+```bash
+plink2 --bfile qc_step1 --mind 0.02 --make-bed --out qc_step2
+```
+
+::: {.callout-tip title="✅ Check your work" icon="false"}
+Open `qc_step2.log` and look for:
+
+```
+--mind: 25 samples removed due to missing genotype data.
+```
+
+**25** samples removed means success — those are the low-quality samples deliberately added to
+the demo data.
+:::
+
+---
+
+## Step 3 — Remove rare variants by minor allele frequency (MAF) {#sec-maf}
+
+**Why.** Very rare variants (carried by only a handful of people) give unstable, unreliable
+association results in a study of this size. We remove variants whose **minor allele frequency**
+is below a threshold — here 1% (`--maf 0.01`).
+
+**Run this:**
+
+```bash
+plink2 --bfile qc_step2 --maf 0.01 --make-bed --out qc_step3
+```
+
+::: {.callout-tip title="✅ Check your work" icon="false"}
+Open `qc_step3.log` and look for a line like:
+
+```
+<NNN> variants removed due to allele frequency threshold(s)
+  (--maf/--max-maf/--mac/--max-mac).
+```
+
+You should see roughly <span class="pmid">[NNN]</span> variants removed.
+*(Exact number to be locked in from one real run — see note at the bottom.)*
+:::
+
+---
+
+## Step 4 — Remove variants failing Hardy–Weinberg equilibrium {#sec-hwe}
+
+**Why.** A strong departure from **Hardy–Weinberg equilibrium** (the expected balance of
+genotypes in a population) often points to a genotyping error rather than real biology. We remove
+variants whose departure is extreme (`--hwe` with a strict p-value cutoff).
+
+**Run this:**
+
+```bash
+plink2 --bfile qc_step3 --hwe 1e-6 --make-bed --out qc_step4
+```
+
+::: {.callout-tip title="✅ Check your work" icon="false"}
+Open `qc_step4.log` and look for:
+
+```
+--hwe: <NNN> variants removed due to Hardy-Weinberg exact test p-value threshold.
+```
+
+You should see about <span class="pmid">[NNN]</span> variants removed.
+*(Exact number to be locked in from one real run.)*
+:::
+
+---
+
+## Step 5 — Check that recorded sex matches the genetic data {#sec-sexcheck}
+
+**Why.** A useful sanity check is whether each person's recorded sex matches the sex inferred
+from their X chromosome. A mismatch usually means a sample mix-up. This check **reports**
+problems rather than removing data automatically.
+
+**Run this:**
+
+```bash
+plink --bfile qc_step4 --check-sex --out qc_sexcheck
+```
+
+::: {.callout-tip title="✅ Check your work" icon="false"}
+Count the flagged samples in the result:
+
+```bash
+grep PROBLEM qc_sexcheck.sexcheck
+```
+
+You should find **4** samples flagged as `PROBLEM` — exactly the four sex discordances built into
+the demo data. In a real study you would investigate and usually remove these.
+:::
+
+---
+
+## Putting it together
+
+Once you understand each filter, you can apply them in a single command:
+
+```bash
+plink2 --bfile pdac_gwas_demo_full \
+       --geno 0.02 --mind 0.02 --maf 0.01 --hwe 1e-6 \
+       --make-bed --out pdac_gwas_demo_qc
+```
+
+The result, `pdac_gwas_demo_qc`, is your cleaned dataset — the starting point for the next
+sections.
+
+::: {.callout-note title="Why we filter one step at a time first"}
+Running the filters separately lets you *see* how many variants or samples each one removes —
+which is how you catch a problem early. The order can slightly change the final counts, so for
+reproducible results always report the exact commands and thresholds you used.
+:::
+
+---
+
+::: {.callout-important title="A note on the exact numbers"}
+The counts above for **call rate (8,480 variants), sample missingness (25 samples), and sex check
+(4 samples)** are the artefacts deliberately built into the demo dataset, so they are the targets
+to confirm. The **MAF** and **HWE** removal counts depend on the exact thresholds and on filter
+order, so they are shown as placeholders. Run the pipeline once on the demo data and the precise
+numbers will appear in the logs — drop them in here (or share the `.log`) and the check boxes can
+state the exact figures.
+:::

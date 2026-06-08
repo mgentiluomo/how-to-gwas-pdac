@@ -1,0 +1,312 @@
+---
+title: "Before you start: setup and your first PLINK command"
+---
+
+This page gets your computer ready and walks you through your **very first command**. By the
+end you will have downloaded the demo dataset, installed PLINK, and run a quick test that
+confirms everything works — computing allele frequencies with `--freq`.
+
+::: {.callout-note title="What you will need"}
+- A computer running **Windows, macOS or Linux**
+- The **demo dataset** (download in Step 1)
+- **PLINK 2** (download in Step 2)
+- *Recommended:* **R** and **RStudio**, to run the analysis and plotting steps later in the guide
+
+You do **not** need any programming experience. Every command is given in full.
+:::
+
+## A note on the command line {#sec-terminal}
+
+Most steps in this guide are typed into a **terminal** (also called a "command line" or
+"console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
+
+- **Windows:** open the *Command Prompt* (search for `cmd`) or *PowerShell*.
+- **macOS:** open the *Terminal* app (in *Applications → Utilities*).
+- **Linux:** open your *Terminal*.
+- **Inside RStudio:** there is a *Terminal* tab next to the *Console* tab — you can use that too.
+
+Throughout the guide, lines you type into the terminal look like this:
+
+```bash
+plink2 --version
+```
+
+You copy the command, paste it into your terminal, and press <kbd>Enter</kbd>. That's it.
+
+---
+
+## Step 1 — Download the demo dataset {#sec-download}
+
+The demo dataset is called **`pdac_gwas_demo_full`**. Like all PLINK datasets, it is made of
+**three files that always travel together** and must stay in the same folder:
+
+| File | What it contains |
+|------|------------------|
+| `pdac_gwas_demo_full.bed` | the genotypes (the actual genetic data, in compact binary form) |
+| `pdac_gwas_demo_full.bim` | the list of variants (one row per SNP: chromosome, position, alleles) |
+| `pdac_gwas_demo_full.fam` | the list of individuals (one row per person: ID, sex, case/control status) |
+
+::: {.callout-important}
+Never rename or move just one of the three files. PLINK always looks for all three together
+using the shared name (`pdac_gwas_demo_full`).
+:::
+
+You can download them in either of two ways.
+
+::: {.panel-tabset}
+
+### Point and click (easiest)
+
+1. Open the releases page:
+   <https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data>
+2. Under **Assets**, click the dataset archive (e.g. `pdac_gwas_demo_full.zip`) to download it.
+3. **Unzip** it (right-click → *Extract all* on Windows; double-click on macOS).
+4. You should now have a folder containing the three files above.
+
+### Command line
+
+```bash
+# download the dataset archive from the GitHub release
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_gwas_demo_full.zip
+
+# unzip it
+unzip pdac_gwas_demo_full.zip
+```
+
+(On macOS without `wget`, use `curl -L -O <url>` instead.)
+
+:::
+
+::: {.callout-tip title="Pick one working folder and stay in it"}
+Create a single folder for this tutorial — for example `gwas_tutorial` — and put the three data
+files there. Do all your work inside it. This avoids almost every "file not found" problem
+beginners run into.
+:::
+
+### Check the files arrived
+
+In your terminal, move into the folder and list its contents:
+
+```bash
+cd path/to/gwas_tutorial      # replace with the real path to your folder
+ls pdac_gwas_demo_full.*      # on Windows Command Prompt use: dir pdac_gwas_demo_full.*
+```
+
+You should see exactly three files: `.bed`, `.bim` and `.fam`.
+
+---
+
+## Step 2 — Install PLINK 2 {#sec-plink}
+
+**PLINK** is the workhorse program for genotype data. We use **PLINK 2** (the command is
+`plink2`). It is a single program file — there is **no installer**: you download it, unzip it,
+and you are done.
+
+1. Go to the official download page: <https://www.cog-genomics.org/plink/2.0/>
+2. Download the build for your operating system (Linux / macOS / Windows).
+3. **Unzip** it. Inside you will find the program file: `plink2` (macOS/Linux) or
+   `plink2.exe` (Windows).
+
+::: {.callout-tip title="The simplest setup"}
+Put the `plink2` (or `plink2.exe`) file **in the same folder as your data**
+(`gwas_tutorial`). Then you can run it as `./plink2` (macOS/Linux) or `plink2` (Windows) without
+worrying about installation paths. More advanced users can instead add PLINK to their system
+`PATH`.
+:::
+
+::: {.panel-tabset}
+
+#### macOS / Linux
+
+If you placed `plink2` in your working folder, you call it with `./plink2`. The first time on
+macOS you may need to allow it to run:
+
+```bash
+chmod +x plink2          # make the file executable
+./plink2 --version
+```
+
+#### Windows
+
+Open *Command Prompt*, move to your folder, and call it as `plink2`:
+
+```bash
+cd path\to\gwas_tutorial
+plink2 --version
+```
+
+:::
+
+::: {.callout-note title="`plink2` vs `./plink2`"}
+For the rest of this guide we write the command simply as `plink2`. On macOS/Linux, if PLINK is
+in your current folder rather than installed system-wide, type `./plink2` instead. Everything
+after the program name is identical.
+:::
+
+---
+
+## Step 3 — Check that PLINK runs {#sec-version}
+
+Before doing anything with the data, confirm PLINK starts at all:
+
+```bash
+plink2 --version
+```
+
+You should see a single line with the version and build date, similar to:
+
+```
+PLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)
+```
+
+If you see a version line, PLINK works. If instead you get an error like
+`command not found` or `'plink2' is not recognized`, jump to
+[Troubleshooting](#sec-troubleshooting) below.
+
+---
+
+## Step 4 — Your first command: allele frequencies with `--freq` {#sec-freq}
+
+Now the real test. We ask PLINK to read the demo dataset and compute the **allele frequency** of
+every variant — that is, how common each allele is across the sample. This is the simplest
+possible operation that touches the actual genotypes, so it is a perfect "does everything work?"
+check.
+
+```bash
+plink2 --bfile pdac_gwas_demo_full --freq --out pdac_gwas_demo_full_freq
+```
+
+Let's read that command piece by piece:
+
+| Part | Meaning |
+|------|---------|
+| `plink2` | run the PLINK 2 program |
+| `--bfile pdac_gwas_demo_full` | load the dataset whose three files share this name (`.bed`/`.bim`/`.fam`) |
+| `--freq` | compute the allele frequencies |
+| `--out pdac_gwas_demo_full_freq` | name the output files with this prefix |
+
+<span class="codetag">CODE 0-01: first PLINK run — allele frequencies — see /getting_started/</span>
+
+When it finishes, PLINK prints a short log to the screen and creates a new file:
+**`pdac_gwas_demo_full_freq.afreq`**. The on-screen log ends with something like:
+
+```
+... 
+430000 variants loaded from pdac_gwas_demo_full.bim.
+1461 samples (712 females, 749 males; ...) loaded from pdac_gwas_demo_full.fam.
+--freq: Allele frequencies written to pdac_gwas_demo_full_freq.afreq .
+```
+
+If you see a line saying the allele frequencies were **written**, the test has passed: PLINK can
+read your data and compute on it. 🎉
+
+---
+
+## Step 5 — Did it work? Look at the result {#sec-check}
+
+Open the first few lines of the output file to see what PLINK produced:
+
+```bash
+head pdac_gwas_demo_full_freq.afreq    # on Windows use: more pdac_gwas_demo_full_freq.afreq
+```
+
+You should see a table with one row per variant, like this:
+
+```
+#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
+1       1:752566:G:A      G    A    0.831621    2922
+1       1:776546:A:C      A    C    0.142847    2922
+1       1:832918:T:C      T    C    0.067419    2922
+1       1:842013:T:G      T    G    0.219370    2922
+...
+```
+
+What the columns mean:
+
+| Column | Meaning |
+|--------|---------|
+| `#CHROM` | chromosome |
+| `ID` | the variant's identifier |
+| `REF` / `ALT` | the reference and alternate alleles |
+| `ALT_FREQS` | frequency of the **ALT** allele (a number between 0 and 1) |
+| `OBS_CT` | number of observed alleles (≈ 2 × number of genotyped individuals) |
+
+That `ALT_FREQS` column is the answer to our test: **PLINK computed a frequency for every
+variant.**
+
+### Optional: read it in R
+
+If you have R/RStudio set up, you can load the same file and take a quick look. This also
+introduces the pattern we use throughout the guide — PLINK produces a table, R reads and
+summarises it:
+
+```{r}
+#| eval: false
+# read the allele-frequency table PLINK just wrote
+freq <- read.table("pdac_gwas_demo_full_freq.afreq",
+                   header = TRUE, comment.char = "", sep = "\t",
+                   check.names = FALSE)
+
+# how many variants, and the first rows
+nrow(freq)
+head(freq)
+
+# minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS
+freq$MAF <- pmin(freq$ALT_FREQS, 1 - freq$ALT_FREQS)
+
+# a quick picture of the frequency spectrum
+hist(freq$MAF, breaks = 50,
+     main = "Minor allele frequency distribution",
+     xlab = "MAF")
+```
+
+A typical genotyping array shows many common variants and a tail of rarer ones, so the histogram
+leans toward the lower MAF values. If R prints a number of variants and draws a histogram, your
+R setup works too — and you are ready for the analysis sections.
+
+::: {.callout-note title="Why we don't re-run PLINK every time the website is built"}
+Real GWAS commands (especially on full datasets) can be slow and run on a dedicated server.
+In this guide, PLINK commands are shown for **you** to run on your own machine; the website does
+not re-execute them. Lightweight R steps (a plot, a small table) are run once and cached, so the
+site stays fast and reproducible.
+:::
+
+---
+
+## Troubleshooting {#sec-troubleshooting}
+
+::: {.callout-warning collapse="true" title="`command not found` / `'plink2' is not recognized`"}
+The terminal cannot find the PLINK program. Either you are not in the folder where `plink2`
+lives, or it is not on your `PATH`.
+
+- Make sure you have `cd`-ed into your working folder.
+- On macOS/Linux, call it as `./plink2` (note the `./`).
+- Check the file is really there: `ls plink2` (macOS/Linux) or `dir plink2.exe` (Windows).
+:::
+
+::: {.callout-warning collapse="true" title="`Error: Failed to open pdac_gwas_demo_full.bed`"}
+PLINK cannot find the data files.
+
+- Confirm all **three** files (`.bed`, `.bim`, `.fam`) are in the current folder and share the
+  exact name `pdac_gwas_demo_full`.
+- Confirm you typed the name **without** an extension after `--bfile` (PLINK adds `.bed`/`.bim`/`.fam`
+  itself).
+- Check you are in the right folder with `pwd` (macOS/Linux) or `cd` with no arguments (Windows).
+:::
+
+::: {.callout-warning collapse="true" title="macOS: \"plink2 cannot be opened because the developer cannot be verified\""}
+This is macOS Gatekeeper. Either right-click the `plink2` file → *Open* once to allow it, or run
+`xattr -d com.apple.quarantine plink2` in the terminal, then try again.
+:::
+
+---
+
+## What's next
+
+You now have a working setup and have confirmed PLINK can read the demo data. The next sections
+of the guide build directly on this:
+
+- **Quality control (Section 1B)** — cleaning the raw genotypes before any analysis.
+- **Population stratification (Section 2)** — detecting and correcting for ancestry.
+
+*(These sections will be linked here as they are added.)*

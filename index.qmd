@@ -1,0 +1,40 @@
+---
+title: "How to carry out a Genome-Wide Association Study"
+subtitle: "A step-by-step annotated guide using pancreatic cancer as a case study"
+---
+
+::: {.callout-note title="About this guide"}
+This is the companion website to the methodology manuscript developed within the
+**TRANSPAN COST Action (CA21116), Working Group 1**, targeted at *Human Genomics*
+(Springer Nature / BMC). It pairs annotated **PLINK 2** and **R** code with a fully open,
+reproducible demo dataset, and is written for Master's students and clinicians **without** a
+bioinformatics background.
+:::
+
+## What is a GWAS?
+
+A genome-wide association study (GWAS) tests the statistical **association** between
+**genetic variants** — typically single-nucleotide polymorphisms (SNPs) — and a **trait**
+across the entire genome, in order to identify genetic factors that contribute to complex
+traits and diseases.
+
+## Why pancreatic cancer?
+
+Pancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide:
+a **rare, multifactorial cancer** with a poorly characterised genetic component. Single-centre
+studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule
+rather than the exception. Teaching GWAS under these realistically difficult conditions makes
+the methodological decisions more transparent than a large, well-powered textbook example would.
+
+## How to use this guide
+
+Every analysis step is shown as a real command you can run yourself on the open demo dataset, so
+you can reproduce the entire workflow from raw genotypes to final results.
+
+👉 **Start here:** [Before you start — setup and your first PLINK command](getting_started.qmd)
+
+::: {.callout-tip title="No coding experience?"}
+You do **not** need to know how to program. Every command is given in full, with an explanation
+of what it does and what the output should look like. If you can copy, paste and press Enter,
+you can follow this guide.
+:::

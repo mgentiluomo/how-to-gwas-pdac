@@ -1,0 +1,17 @@
+/* Provisional-reference highlight, mirroring the yellow highlight used in the manuscript */
+.pmid {
+  background: #fff3a3;
+  padding: 0 0.15em;
+  border-radius: 2px;
+}
+
+/* "CODE x-yy" repository tags rendered as inline pills */
+.codetag {
+  display: inline-block;
+  font-family: var(--bs-font-monospace);
+  font-size: 0.8em;
+  background: #f1f3f5;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 0.05em 0.45em;
+}
