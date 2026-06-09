@@ -37,7 +37,7 @@
     "href": "qc.html#sec-maf",
     "title": "Cleaning your data: quality control",
     "section": "Step 3 — Remove rare variants by minor allele frequency (MAF)",
-    "text": "Step 3 — Remove rare variants by minor allele frequency (MAF)\nWhy. Very rare variants (carried by only a handful of people) give unstable, unreliable association results in a study of this size. We remove variants whose minor allele frequency is below a threshold — here 1% (--maf 0.01).\nRun this:\nplink2 --bfile qc_step2 --maf 0.01 --make-bed --out qc_step3\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step3.log and look for a line like:\n&lt;NNN&gt; variants removed due to allele frequency threshold(s)\n  (--maf/--max-maf/--mac/--max-mac).\nYou should see roughly [NNN] variants removed. (Exact number to be locked in from one real run — see note at the bottom.)",
+    "text": "Step 3 — Remove rare variants by minor allele frequency (MAF)\nWhy. Very rare variants (carried by only a handful of people) give unstable, unreliable association results in a study of this size. We remove variants whose minor allele frequency is below a threshold — here 1% (--maf 0.01).\nRun this:\nplink2 --bfile qc_step2 --maf 0.015 --make-bed --out qc_step3\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step3.log and look for a line like:\n&lt;NNN&gt; variants removed due to allele frequency threshold(s)\n  (--maf/--max-maf/--mac/--max-mac).\nYou should see roughly [NNN] variants removed. (Exact number to be locked in from one real run — see note at the bottom.)",
     "crumbs": [
       "Cleaning the data",
       "Cleaning your data: quality control"
@@ -229,7 +229,7 @@
     "href": "index.html",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "",
-    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, targeted at Human Genomics (Springer Nature / BMC). It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for Master’s students and clinicians without a bioinformatics background.",
+    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, targeted at XXXX Journal. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for Master’s students and clinicians without a bioinformatics background.",
     "crumbs": [
       "Home"
     ]
@@ -249,7 +249,7 @@
     "href": "index.html#why-pancreatic-cancer",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "Why pancreatic cancer?",
-    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a rare, multifactorial cancer with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would.",
+    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a relativelly rare, multifactorial cancer/trait with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would.",
     "crumbs": [
       "Home"
     ]
