@@ -363,7 +363,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#sec-terminal" id="toc-sec-terminal" class="nav-link active" data-scroll-target="#sec-terminal">A note on the command line</a></li>
-  <li><a href="#sec-download" id="toc-sec-download" class="nav-link" data-scroll-target="#sec-download">Step 1 — Download the demo dataset</a></li>
+  <li><a href="#sec-download" id="toc-sec-download" class="nav-link" data-scroll-target="#sec-download">Step 1 — Download the demo dataset</a>
+  <ul class="collapse">
+  <li><a href="#check-the-files-arrived" id="toc-check-the-files-arrived" class="nav-link" data-scroll-target="#check-the-files-arrived">Check the files arrived</a></li>
+  </ul></li>
+  <li><a href="#sec-plink" id="toc-sec-plink" class="nav-link" data-scroll-target="#sec-plink">Step 2 — Install PLINK 2</a></li>
+  <li><a href="#sec-version" id="toc-sec-version" class="nav-link" data-scroll-target="#sec-version">Step 3 — Check that PLINK runs</a></li>
+  <li><a href="#sec-freq" id="toc-sec-freq" class="nav-link" data-scroll-target="#sec-freq">Step 4 — Your first command: allele frequencies with <code>--freq</code></a></li>
+  <li><a href="#sec-check" id="toc-sec-check" class="nav-link" data-scroll-target="#sec-check">Step 5 — Did it work? Look at the result</a>
+  <ul class="collapse">
+  <li><a href="#optional-read-it-in-r" id="toc-optional-read-it-in-r" class="nav-link" data-scroll-target="#optional-read-it-in-r">Optional: read it in R</a></li>
+  </ul></li>
+  <li><a href="#sec-troubleshooting" id="toc-sec-troubleshooting" class="nav-link" data-scroll-target="#sec-troubleshooting">Troubleshooting</a></li>
+  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s next</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/getting_started.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -468,14 +480,65 @@ Important
 </div>
 <p>You can download them in either of two ways.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="" aria-current="page">Check the files arrived</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Optional: read it in R</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Point and click (easiest)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">In R / RStudio</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Command line</a></li></ul>
 <div class="tab-content">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>Open the release page and download the three files, or click each link directly:</p>
+<ul>
+<li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed"><code>pdac_demo.bed</code></a> — the genotypes (≈150 MB)</li>
+<li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim"><code>pdac_demo.bim</code></a> — the list of variants</li>
+<li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam"><code>pdac_demo.fam</code></a> — the list of individuals</li>
+</ul>
+<p>Then move all three files into your working folder. (Full release page: <a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data" class="uri">https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data</a>)</p>
+<blockquote class="blockquote">
+<p><strong>Windows tip:</strong> make sure the browser did not add a hidden <code>.txt</code> at the end (e.g.&nbsp;<code>pdac_demo.fam.txt</code>). The names must be exactly <code>pdac_demo.bed</code>, <code>.bim</code>, <code>.fam</code>.</p>
+</blockquote>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Run this in the RStudio <em>Console</em> — it downloads the three files straight into your folder, the same way on Windows, macOS and Linux:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="st">"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"pdac_demo.bed"</span>, <span class="st">"pdac_demo.bim"</span>, <span class="st">"pdac_demo.fam"</span>)) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(<span class="fu">paste0</span>(base, f), <span class="at">destfile =</span> f, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"pdac_demo"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS / Linux</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> pdac_demo.bed pdac_demo.bim pdac_demo.fam<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">curl</span> <span class="at">-L</span> <span class="at">-O</span> <span class="st">"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/</span><span class="va">$f</span><span class="st">"</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows PowerShell</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">$base</span> <span class="op">=</span> <span class="st">"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> <span class="op">(</span><span class="va">$f</span> <span class="kw">in</span> <span class="st">"pdac_demo.bed"</span><span class="op">,</span><span class="st">"pdac_demo.bim"</span><span class="op">,</span><span class="st">"pdac_demo.fam"</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Invoke-WebRequest</span> <span class="op">-</span>Uri <span class="st">"</span><span class="va">$base$f</span><span class="st">"</span> <span class="op">-</span>OutFile <span class="va">$f</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Pick one working folder and stay in it">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Pick one working folder and stay in it
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Create a single folder for this tutorial — for example <code>gwas_tutorial</code> — and put the three data files there. Do all your work inside it. This avoids almost every “file not found” problem beginners run into.</p>
+</div>
+</div>
+<section id="check-the-files-arrived" class="level3">
+<h3 class="anchored" data-anchor-id="check-the-files-arrived">Check the files arrived</h3>
 <p>In your terminal, move into the folder and list its contents:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path/to/gwas_tutorial      <span class="co"># replace with the real path to your folder</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_demo.<span class="pp">*</span>      <span class="co"># on Windows Command Prompt use: dir pdac_demo.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path/to/gwas_tutorial      <span class="co"># replace with the real path to your folder</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_demo.<span class="pp">*</span>      <span class="co"># on Windows Command Prompt use: dir pdac_demo.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see exactly three files: <code>.bed</code>, <code>.bim</code> and <code>.fam</code>.</p>
 <hr>
+</section>
+</section>
 <section id="sec-plink" class="level2">
 <h2 class="anchored" data-anchor-id="sec-plink">Step 2 — Install PLINK 2</h2>
 <p><strong>PLINK</strong> is the workhorse program for genotype data. We use <strong>PLINK 2</strong> (the command is <code>plink2</code>). It is a single program file — there is <strong>no installer</strong>: you download it, unzip it, and you are done.</p>
@@ -498,17 +561,17 @@ Important
 </div>
 </div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">macOS / Linux</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Windows</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">macOS / Linux</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Windows</a></li></ul>
 <div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <p>If you placed <code>plink2</code> in your working folder, you call it with <code>./plink2</code>. The first time on macOS you may need to allow it to run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x plink2          <span class="co"># make the file executable</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x plink2          <span class="co"># make the file executable</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p>Open <em>Command Prompt</em>, move to your folder, and call it as <code>plink2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path<span class="dt">\t</span>o<span class="dt">\g</span>was_tutorial</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path<span class="dt">\t</span>o<span class="dt">\g</span>was_tutorial</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -530,7 +593,7 @@ Important
 <section id="sec-version" class="level2">
 <h2 class="anchored" data-anchor-id="sec-version">Step 3 — Check that PLINK runs</h2>
 <p>Before doing anything with the data, confirm PLINK starts at all:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see a single line with the version and build date, similar to:</p>
 <pre><code>PLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)</code></pre>
 <p>If you see a version line, PLINK works. If instead you get an error like <code>command not found</code> or <code>'plink2' is not recognized</code>, jump to <a href="#sec-troubleshooting">Troubleshooting</a> below.</p>
@@ -539,7 +602,7 @@ Important
 <section id="sec-freq" class="level2">
 <h2 class="anchored" data-anchor-id="sec-freq">Step 4 — Your first command: allele frequencies with <code>--freq</code></h2>
 <p>Now the real test. We ask PLINK to read the demo dataset and compute the <strong>allele frequency</strong> of every variant — that is, how common each allele is across the sample. This is the simplest possible operation that touches the actual genotypes, so it is a perfect “does everything work?” check.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pdac_demo <span class="at">--freq</span> <span class="at">--out</span> pdac_demo_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pdac_demo <span class="at">--freq</span> <span class="at">--out</span> pdac_demo_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Let’s read that command piece by piece:</p>
 <table class="caption-top table">
 <colgroup>
@@ -583,7 +646,7 @@ Important
 <section id="sec-check" class="level2">
 <h2 class="anchored" data-anchor-id="sec-check">Step 5 — Did it work? Look at the result</h2>
 <p>Open the first few lines of the output file to see what PLINK produced:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_demo_freq.afreq    <span class="co"># on Windows use: more pdac_demo_freq.afreq</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_demo_freq.afreq    <span class="co"># on Windows use: more pdac_demo_freq.afreq</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see a table with one row per variant, like this:</p>
 <pre><code>#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
 1       1:752566:G:A      G    A    0.831621    2922
@@ -627,27 +690,26 @@ Important
 </tbody>
 </table>
 <p>That <code>ALT_FREQS</code> column is the answer to our test: <strong>PLINK computed a frequency for every variant.</strong></p>
-</section>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<section id="optional-read-it-in-r" class="level3">
+<h3 class="anchored" data-anchor-id="optional-read-it-in-r">Optional: read it in R</h3>
 <p>If you have R/RStudio set up, you can load the same file and take a quick look. This also introduces the pattern we use throughout the guide — PLINK produces a table, R reads and summarises it:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read the allele-frequency table PLINK just wrote</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"pdac_demo_freq.afreq"</span>,</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">""</span>, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># how many variants, and the first rows</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(freq)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>freq<span class="sc">$</span>MAF <span class="ot">&lt;-</span> <span class="fu">pmin</span>(freq<span class="sc">$</span>ALT_FREQS, <span class="dv">1</span> <span class="sc">-</span> freq<span class="sc">$</span>ALT_FREQS)</span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># a quick picture of the frequency spectrum</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(freq<span class="sc">$</span>MAF, <span class="at">breaks =</span> <span class="dv">50</span>,</span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Minor allele frequency distribution"</span>,</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"MAF"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read the allele-frequency table PLINK just wrote</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"pdac_demo_freq.afreq"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">""</span>, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># how many variants, and the first rows</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(freq)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>freq<span class="sc">$</span>MAF <span class="ot">&lt;-</span> <span class="fu">pmin</span>(freq<span class="sc">$</span>ALT_FREQS, <span class="dv">1</span> <span class="sc">-</span> freq<span class="sc">$</span>ALT_FREQS)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># a quick picture of the frequency spectrum</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(freq<span class="sc">$</span>MAF, <span class="at">breaks =</span> <span class="dv">50</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Minor allele frequency distribution"</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"MAF"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>A typical genotyping array shows many common variants and a tail of rarer ones, so the histogram leans toward the lower MAF values. If R prints a number of variants and draws a histogram, your R setup works too — and you are ready for the analysis sections.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Why we don't re-run PLINK every time the website is built">
@@ -664,10 +726,12 @@ Important
 </div>
 </div>
 <hr>
+</section>
+</section>
 <section id="sec-troubleshooting" class="level2">
 <h2 class="anchored" data-anchor-id="sec-troubleshooting">Troubleshooting</h2>
 <div class="callout callout-style-default callout-warning callout-titled" title="`command not found` / `'plink2' is not recognized`">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -676,7 +740,7 @@ Important
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>The terminal cannot find the PLINK program. Either you are not in the folder where <code>plink2</code> lives, or it is not on your <code>PATH</code>.</p>
 <ul>
@@ -688,7 +752,7 @@ Important
 </div>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled" title="`Error: Failed to open pdac_demo.bed`">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -697,7 +761,7 @@ Important
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>PLINK cannot find the data files.</p>
 <ul>
@@ -709,7 +773,7 @@ Important
 </div>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled" title="macOS: &quot;plink2 cannot be opened because the developer cannot be verified&quot;">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -718,7 +782,7 @@ Important
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>This is macOS Gatekeeper. Either right-click the <code>plink2</code> file → <em>Open</em> once to allow it, or run <code>xattr -d com.apple.quarantine plink2</code> in the terminal, then try again.</p>
 </div>
@@ -736,10 +800,6 @@ Important
 <p><em>(These sections will be linked here as they are added.)</em></p>
 
 
-</section>
-</div>
-</div>
-</div>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
