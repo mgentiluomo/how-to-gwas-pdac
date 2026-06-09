@@ -5,8 +5,7 @@ subtitle: "A step-by-step annotated guide using pancreatic cancer as a case stud
 
 ::: {.callout-note title="About this guide"}
 This is the companion website to the methodology manuscript developed within the
-**TRANSPAN COST Action (CA21116), Working Group 1**, targeted at *Human Genomics*
-(Springer Nature / BMC). It pairs annotated **PLINK 2** and **R** code with a fully open,
+**TRANSPAN COST Action (CA21116), Working Group 1**, targeted at *XXXX Journal*. It pairs annotated **PLINK 2** and **R** code with a fully open,
 reproducible demo dataset, and is written for Master's students and clinicians **without** a
 bioinformatics background.
 :::
