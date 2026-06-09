@@ -20,7 +20,7 @@ traits and diseases.
 ## Why pancreatic cancer?
 
 Pancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide:
-a **rare, multifactorial cancer** with a poorly characterised genetic component. Single-centre
+a **relativelly rare, multifactorial cancer/trait** with a poorly characterised genetic component. Single-centre
 studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule
 rather than the exception. Teaching GWAS under these realistically difficult conditions makes
 the methodological decisions more transparent than a large, well-powered textbook example would.
