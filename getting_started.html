@@ -438,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="sec-download" class="level2">
 <h2 class="anchored" data-anchor-id="sec-download">Step 1 — Download the demo dataset</h2>
-<p>The demo dataset is called <strong><code>pdac_gwas_demo_full</code></strong>. Like all PLINK datasets, it is made of <strong>three files that always travel together</strong> and must stay in the same folder:</p>
+<p>The demo dataset is called <strong><code>pdac_demo</code></strong>. Like all PLINK datasets, it is made of <strong>three files that always travel together</strong> and must stay in the same folder:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -452,15 +452,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><code>pdac_gwas_demo_full.bed</code></td>
+<td><code>pdac_demo.bed</code></td>
 <td>the genotypes (the actual genetic data, in compact binary form)</td>
 </tr>
 <tr class="even">
-<td><code>pdac_gwas_demo_full.bim</code></td>
+<td><code>pdac_demo.bim</code></td>
 <td>the list of variants (one row per SNP: chromosome, position, alleles)</td>
 </tr>
 <tr class="odd">
-<td><code>pdac_gwas_demo_full.fam</code></td>
+<td><code>pdac_demo.fam</code></td>
 <td>the list of individuals (one row per person: ID, sex, case/control status)</td>
 </tr>
 </tbody>
@@ -475,7 +475,7 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Never rename or move just one of the three files. PLINK always looks for all three together using the shared name (<code>pdac_gwas_demo_full</code>).</p>
+<p>Never rename or move just one of the three files. PLINK always looks for all three together using the shared name (<code>pdac_demo</code>).</p>
 </div>
 </div>
 <p>You can download them in either of two ways.</p>
@@ -485,17 +485,17 @@ Important
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <ol type="1">
 <li>Open the releases page: <a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data" class="uri">https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data</a></li>
-<li>Under <strong>Assets</strong>, click the dataset archive (e.g.&nbsp;<code>pdac_gwas_demo_full.zip</code>) to download it.</li>
+<li>Under <strong>Assets</strong>, click the dataset archive (e.g.&nbsp;<code>pdac_demo.zip</code>) to download it.</li>
 <li><strong>Unzip</strong> it (right-click → <em>Extract all</em> on Windows; double-click on macOS).</li>
 <li>You should now have a folder containing the three files above.</li>
 </ol>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># download the dataset archive from the GitHub release</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_gwas_demo_full.zip</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.zip</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># unzip it</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> pdac_gwas_demo_full.zip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> pdac_demo.zip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>(On macOS without <code>wget</code>, use <code>curl -L -O &lt;url&gt;</code> instead.)</p>
 </div>
 </div>
@@ -517,7 +517,7 @@ Important
 <h3 class="anchored" data-anchor-id="check-the-files-arrived">Check the files arrived</h3>
 <p>In your terminal, move into the folder and list its contents:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path/to/gwas_tutorial      <span class="co"># replace with the real path to your folder</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_gwas_demo_full.<span class="pp">*</span>      <span class="co"># on Windows Command Prompt use: dir pdac_gwas_demo_full.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_demo.<span class="pp">*</span>      <span class="co"># on Windows Command Prompt use: dir pdac_demo.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see exactly three files: <code>.bed</code>, <code>.bim</code> and <code>.fam</code>.</p>
 <hr>
 </section>
@@ -585,7 +585,7 @@ Important
 <section id="sec-freq" class="level2">
 <h2 class="anchored" data-anchor-id="sec-freq">Step 4 — Your first command: allele frequencies with <code>--freq</code></h2>
 <p>Now the real test. We ask PLINK to read the demo dataset and compute the <strong>allele frequency</strong> of every variant — that is, how common each allele is across the sample. This is the simplest possible operation that touches the actual genotypes, so it is a perfect “does everything work?” check.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pdac_gwas_demo_full <span class="at">--freq</span> <span class="at">--out</span> pdac_gwas_demo_full_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pdac_demo <span class="at">--freq</span> <span class="at">--out</span> pdac_demo_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Let’s read that command piece by piece:</p>
 <table class="caption-top table">
 <colgroup>
@@ -604,7 +604,7 @@ Important
 <td>run the PLINK 2 program</td>
 </tr>
 <tr class="even">
-<td><code>--bfile pdac_gwas_demo_full</code></td>
+<td><code>--bfile pdac_demo</code></td>
 <td>load the dataset whose three files share this name (<code>.bed</code>/<code>.bim</code>/<code>.fam</code>)</td>
 </tr>
 <tr class="odd">
@@ -612,24 +612,24 @@ Important
 <td>compute the allele frequencies</td>
 </tr>
 <tr class="even">
-<td><code>--out pdac_gwas_demo_full_freq</code></td>
+<td><code>--out pdac_demo_freq</code></td>
 <td>name the output files with this prefix</td>
 </tr>
 </tbody>
 </table>
 <p><span class="codetag">CODE 0-01: first PLINK run — allele frequencies — see /getting_started/</span></p>
-<p>When it finishes, PLINK prints a short log to the screen and creates a new file: <strong><code>pdac_gwas_demo_full_freq.afreq</code></strong>. The on-screen log ends with something like:</p>
+<p>When it finishes, PLINK prints a short log to the screen and creates a new file: <strong><code>pdac_demo_freq.afreq</code></strong>. The on-screen log ends with something like:</p>
 <pre><code>... 
-430000 variants loaded from pdac_gwas_demo_full.bim.
-1461 samples (712 females, 749 males; ...) loaded from pdac_gwas_demo_full.fam.
---freq: Allele frequencies written to pdac_gwas_demo_full_freq.afreq .</code></pre>
+430000 variants loaded from pdac_demo.bim.
+1461 samples (712 females, 749 males; ...) loaded from pdac_demo.fam.
+--freq: Allele frequencies written to pdac_demo_freq.afreq .</code></pre>
 <p>If you see a line saying the allele frequencies were <strong>written</strong>, the test has passed: PLINK can read your data and compute on it. 🎉</p>
 <hr>
 </section>
 <section id="sec-check" class="level2">
 <h2 class="anchored" data-anchor-id="sec-check">Step 5 — Did it work? Look at the result</h2>
 <p>Open the first few lines of the output file to see what PLINK produced:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_gwas_demo_full_freq.afreq    <span class="co"># on Windows use: more pdac_gwas_demo_full_freq.afreq</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_demo_freq.afreq    <span class="co"># on Windows use: more pdac_demo_freq.afreq</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see a table with one row per variant, like this:</p>
 <pre><code>#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
 1       1:752566:G:A      G    A    0.831621    2922
@@ -678,7 +678,7 @@ Important
 <p>If you have R/RStudio set up, you can load the same file and take a quick look. This also introduces the pattern we use throughout the guide — PLINK produces a table, R reads and summarises it:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read the allele-frequency table PLINK just wrote</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"pdac_gwas_demo_full_freq.afreq"</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"pdac_demo_freq.afreq"</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">""</span>, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>,</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
@@ -734,13 +734,13 @@ Important
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled" title="`Error: Failed to open pdac_gwas_demo_full.bed`">
+<div class="callout callout-style-default callout-warning callout-titled" title="`Error: Failed to open pdac_demo.bed`">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span><code>Error: Failed to open pdac_gwas_demo_full.bed</code>
+<span class="screen-reader-only">Warning</span><code>Error: Failed to open pdac_demo.bed</code>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -748,7 +748,7 @@ Important
 <div class="callout-body-container callout-body">
 <p>PLINK cannot find the data files.</p>
 <ul>
-<li>Confirm all <strong>three</strong> files (<code>.bed</code>, <code>.bim</code>, <code>.fam</code>) are in the current folder and share the exact name <code>pdac_gwas_demo_full</code>.</li>
+<li>Confirm all <strong>three</strong> files (<code>.bed</code>, <code>.bim</code>, <code>.fam</code>) are in the current folder and share the exact name <code>pdac_demo</code>.</li>
 <li>Confirm you typed the name <strong>without</strong> an extension after <code>--bfile</code> (PLINK adds <code>.bed</code>/<code>.bim</code>/<code>.fam</code> itself).</li>
 <li>Check you are in the right folder with <code>pwd</code> (macOS/Linux) or <code>cd</code> with no arguments (Windows).</li>
 </ul>
