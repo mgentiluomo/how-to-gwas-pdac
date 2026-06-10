@@ -20,7 +20,7 @@ You do **not** need any programming experience. Every command is given in full.
 Most steps in this guide are typed into a **terminal** (also called a "command line" or
 "console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
 
-- **Windows:** open the *Command Prompt* (search for `cmd`) or *PowerShell*.
+- **Windows:** open *PowerShell* or the *Command Prompt* (search for `cmd`).
 - **macOS:** open the *Terminal* app (in *Applications → Utilities*).
 - **Linux:** open your *Terminal*.
 - **Inside RStudio:** there is a *Terminal* tab next to the *Console* tab — you can use that too.
@@ -37,18 +37,18 @@ You copy the command, paste it into your terminal, and press <kbd>Enter</kbd>. T
 
 ## Step 1 — Download the demo dataset {#sec-download}
 
-The demo dataset is called **`pdac_gwas_demo_full`**. Like all PLINK datasets, it is made of
+The demo dataset is called **`pdac_demo`**. Like all PLINK datasets, it is made of
 **three files that always travel together** and must stay in the same folder:
 
 | File | What it contains |
 |------|------------------|
-| `pdac_gwas_demo_full.bed` | the genotypes (the actual genetic data, in compact binary form) |
-| `pdac_gwas_demo_full.bim` | the list of variants (one row per SNP: chromosome, position, alleles) |
-| `pdac_gwas_demo_full.fam` | the list of individuals (one row per person: ID, sex, case/control status) |
+| `pdac_demo.bed` | the genotypes (the actual genetic data, in compact binary form) |
+| `pdac_demo.bim` | the list of variants (one row per SNP: chromosome, position, alleles) |
+| `pdac_demo.fam` | the list of individuals (one row per person: ID, sex, case/control status) |
 
 ::: {.callout-important}
 Never rename or move just one of the three files. PLINK always looks for all three together
-using the shared name (`pdac_gwas_demo_full`).
+using the shared name (`pdac_demo`).
 :::
 
 You can download them in either of two ways.
@@ -57,23 +57,48 @@ You can download them in either of two ways.
 
 ### Point and click (easiest)
 
-1. Open the releases page:
-   <https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data>
-2. Under **Assets**, click the dataset archive (e.g. `pdac_gwas_demo_full.zip`) to download it.
-3. **Unzip** it (right-click → *Extract all* on Windows; double-click on macOS).
-4. You should now have a folder containing the three files above.
+Open the release page and download the three files, or click each link directly:
+
+- [`pdac_demo.bed`](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed) — the genotypes (≈150 MB)
+- [`pdac_demo.bim`](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim) — the list of variants
+- [`pdac_demo.fam`](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam) — the list of individuals
+
+Then move all three files into your working folder.
+(Full release page: <https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data>)
+
+> **Windows tip:** make sure the browser did not add a hidden `.txt` at the end
+> (e.g. `pdac_demo.fam.txt`). The names must be exactly `pdac_demo.bed`, `.bim`, `.fam`.
+
+### In R / RStudio
+
+Run this in the RStudio *Console* — it downloads the three files straight into your folder,
+the same way on Windows, macOS and Linux:
+
+```{r}
+#| eval: false
+base <- "https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"
+for (f in c("pdac_demo.bed", "pdac_demo.bim", "pdac_demo.fam")) {
+  download.file(paste0(base, f), destfile = f, mode = "wb")
+}
+list.files(pattern = "pdac_demo")
+```
 
 ### Command line
 
 ```bash
-# download the dataset archive from the GitHub release
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_gwas_demo_full.zip
-
-# unzip it
-unzip pdac_gwas_demo_full.zip
+# macOS / Linux
+for f in pdac_demo.bed pdac_demo.bim pdac_demo.fam; do
+  curl -L -O "https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/$f"
+done
 ```
 
-(On macOS without `wget`, use `curl -L -O <url>` instead.)
+```powershell
+# Windows PowerShell
+$base = "https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"
+foreach ($f in "pdac_demo.bed","pdac_demo.bim","pdac_demo.fam") {
+  Invoke-WebRequest -Uri "$base$f" -OutFile $f
+}
+```
 
 :::
 
@@ -89,7 +114,7 @@ In your terminal, move into the folder and list its contents:
 
 ```bash
 cd path/to/gwas_tutorial      # replace with the real path to your folder
-ls pdac_gwas_demo_full.*      # on Windows Command Prompt use: dir pdac_gwas_demo_full.*
+ls pdac_demo.*                # on Windows Command Prompt use: dir pdac_demo.*
 ```
 
 You should see exactly three files: `.bed`, `.bim` and `.fam`.
@@ -105,42 +130,41 @@ and you are done.
 1. Go to the official download page: <https://www.cog-genomics.org/plink/2.0/>
 2. Download the build for your operating system (Linux / macOS / Windows).
 3. **Unzip** it. Inside you will find the program file: `plink2` (macOS/Linux) or
-   `plink2.exe` (Windows).
+   `plink2.exe` (Windows). Put it in your `gwas_tutorial` folder, next to the data.
 
-::: {.callout-tip title="The simplest setup"}
-Put the `plink2` (or `plink2.exe`) file **in the same folder as your data**
-(`gwas_tutorial`). Then you can run it as `./plink2` (macOS/Linux) or `plink2` (Windows) without
-worrying about installation paths. More advanced users can instead add PLINK to their system
-`PATH`.
+::: {.callout-important title="How to call plink2 on your system"}
+How you type the command depends on where PLINK lives and which system you use:
+
+- **Windows (PowerShell):** write **`.\plink2`** — the `.\` in front is **required**, otherwise
+  you get *"plink2 is not recognized…"*.
+- **macOS / Linux**, with PLINK in your working folder: write **`./plink2`**.
+- **Any system**, if PLINK is installed system-wide (on your `PATH`): just **`plink2`**.
+
+For brevity, the rest of the guide writes the command simply as `plink2`. **Add the right prefix
+for your system** (`.\` on Windows, `./` on macOS/Linux) whenever PLINK sits in your working
+folder. Everything *after* the program name is identical on every system.
 :::
 
 ::: {.panel-tabset}
 
+#### Windows
+
+Open *PowerShell*, move to your folder, and call PLINK with `.\` in front:
+
+```powershell
+cd path\to\gwas_tutorial
+.\plink2 --version
+```
+
 #### macOS / Linux
 
-If you placed `plink2` in your working folder, you call it with `./plink2`. The first time on
-macOS you may need to allow it to run:
+Call it with `./` in front. The first time on macOS you may also need to allow it to run:
 
 ```bash
-chmod +x plink2          # make the file executable
+chmod +x plink2          # make the file executable (macOS/Linux only)
 ./plink2 --version
 ```
 
-#### Windows
-
-Open *Command Prompt*, move to your folder, and call it as `plink2`:
-
-```bash
-cd path\to\gwas_tutorial
-plink2 --version
-```
-
-:::
-
-::: {.callout-note title="`plink2` vs `./plink2`"}
-For the rest of this guide we write the command simply as `plink2`. On macOS/Linux, if PLINK is
-in your current folder rather than installed system-wide, type `./plink2` instead. Everything
-after the program name is identical.
 :::
 
 ---
@@ -150,13 +174,13 @@ after the program name is identical.
 Before doing anything with the data, confirm PLINK starts at all:
 
 ```bash
-plink2 --version
+plink2 --version          # Windows: .\plink2 --version    macOS/Linux (local file): ./plink2 --version
 ```
 
 You should see a single line with the version and build date, similar to:
 
 ```
-PLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)
+PLINK v2.0.0-a.7.1 64-bit (4 May 2026)
 ```
 
 If you see a version line, PLINK works. If instead you get an error like
@@ -173,32 +197,39 @@ possible operation that touches the actual genotypes, so it is a perfect "does e
 check.
 
 ```bash
-plink2 --bfile pdac_gwas_demo_full --freq --out pdac_gwas_demo_full_freq
+plink2 --bfile pdac_demo --freq --out pdac_demo_freq
 ```
+
+*(Remember the prefix for your system: `.\plink2 …` on Windows, `./plink2 …` on macOS/Linux —
+see Step 2.)*
 
 Let's read that command piece by piece:
 
 | Part | Meaning |
 |------|---------|
 | `plink2` | run the PLINK 2 program |
-| `--bfile pdac_gwas_demo_full` | load the dataset whose three files share this name (`.bed`/`.bim`/`.fam`) |
+| `--bfile pdac_demo` | load the dataset whose three files share this name (`.bed`/`.bim`/`.fam`) |
 | `--freq` | compute the allele frequencies |
-| `--out pdac_gwas_demo_full_freq` | name the output files with this prefix |
+| `--out pdac_demo_freq` | name the output files with this prefix |
 
 <span class="codetag">CODE 0-01: first PLINK run — allele frequencies — see /getting_started/</span>
 
 When it finishes, PLINK prints a short log to the screen and creates a new file:
-**`pdac_gwas_demo_full_freq.afreq`**. The on-screen log ends with something like:
+**`pdac_demo_freq.afreq`**. The on-screen log ends with something like:
 
 ```
-... 
-430000 variants loaded from pdac_gwas_demo_full.bim.
-1461 samples (712 females, 749 males; ...) loaded from pdac_gwas_demo_full.fam.
---freq: Allele frequencies written to pdac_gwas_demo_full_freq.afreq .
+1461 samples (712 females, 749 males; 1461 founders) loaded from pdac_demo.fam.
+430000 variants loaded from pdac_demo.bim.
+Note: No phenotype data present.
+Calculating allele frequencies... done.
+--freq: Allele frequencies (founders only) written to pdac_demo_freq.afreq .
 ```
 
-If you see a line saying the allele frequencies were **written**, the test has passed: PLINK can
+If you see the line saying the allele frequencies were **written**, the test has passed: PLINK can
 read your data and compute on it. 🎉
+
+(The "founders only" note simply means PLINK used the unrelated individuals for the frequency
+calculation — exactly what we want.)
 
 ---
 
@@ -207,17 +238,17 @@ read your data and compute on it. 🎉
 Open the first few lines of the output file to see what PLINK produced:
 
 ```bash
-head pdac_gwas_demo_full_freq.afreq    # on Windows use: more pdac_gwas_demo_full_freq.afreq
+head pdac_demo_freq.afreq            # Windows PowerShell: Get-Content pdac_demo_freq.afreq -Head 10
 ```
 
 You should see a table with one row per variant, like this:
 
 ```
-#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
-1       1:752566:G:A      G    A    0.831621    2922
-1       1:776546:A:C      A    C    0.142847    2922
-1       1:832918:T:C      T    C    0.067419    2922
-1       1:842013:T:G      T    G    0.219370    2922
+#CHROM  ID              REF  ALT  PROVISIONAL_REF?  ALT_FREQS   OBS_CT
+1       1:817341:A:G    A    G    Y                 0.303854    2906
+1       1:858952:G:A    G    A    Y                 0.119573    2902
+1       1:899450:G:A    G    A    Y                 0.0107044   2896
+1       1:903175:C:A    C    A    Y                 0.298898    2904
 ...
 ```
 
@@ -228,6 +259,7 @@ What the columns mean:
 | `#CHROM` | chromosome |
 | `ID` | the variant's identifier |
 | `REF` / `ALT` | the reference and alternate alleles |
+| `PROVISIONAL_REF?` | `Y` means the REF allele was assigned by PLINK rather than from a reference genome — normal here, and it does not affect the frequencies |
 | `ALT_FREQS` | frequency of the **ALT** allele (a number between 0 and 1) |
 | `OBS_CT` | number of observed alleles (≈ 2 × number of genotyped individuals) |
 
@@ -243,7 +275,7 @@ summarises it:
 ```{r}
 #| eval: false
 # read the allele-frequency table PLINK just wrote
-freq <- read.table("pdac_gwas_demo_full_freq.afreq",
+freq <- read.table("pdac_demo_freq.afreq",
                    header = TRUE, comment.char = "", sep = "\t",
                    check.names = FALSE)
 
@@ -275,23 +307,24 @@ site stays fast and reproducible.
 
 ## Troubleshooting {#sec-troubleshooting}
 
-::: {.callout-warning collapse="true" title="`command not found` / `'plink2' is not recognized`"}
-The terminal cannot find the PLINK program. Either you are not in the folder where `plink2`
-lives, or it is not on your `PATH`.
+::: {.callout-warning collapse="true" title="`'plink2' is not recognized` / `command not found`"}
+The terminal cannot find the PLINK program — usually because you forgot the prefix, or you are
+not in the folder where PLINK lives.
 
+- **Windows PowerShell:** call it as **`.\plink2`** (note the `.\`). This is the most common cause.
+- **macOS / Linux:** call it as **`./plink2`** (note the `./`).
 - Make sure you have `cd`-ed into your working folder.
-- On macOS/Linux, call it as `./plink2` (note the `./`).
-- Check the file is really there: `ls plink2` (macOS/Linux) or `dir plink2.exe` (Windows).
+- Check the file is really there: `dir plink2.exe` (Windows) or `ls plink2` (macOS/Linux).
 :::
 
-::: {.callout-warning collapse="true" title="`Error: Failed to open pdac_gwas_demo_full.bed`"}
+::: {.callout-warning collapse="true" title="`Error: Failed to open pdac_demo.bed`"}
 PLINK cannot find the data files.
 
 - Confirm all **three** files (`.bed`, `.bim`, `.fam`) are in the current folder and share the
-  exact name `pdac_gwas_demo_full`.
+  exact name `pdac_demo`.
 - Confirm you typed the name **without** an extension after `--bfile` (PLINK adds `.bed`/`.bim`/`.fam`
   itself).
-- Check you are in the right folder with `pwd` (macOS/Linux) or `cd` with no arguments (Windows).
+- Check the browser did not add a hidden `.txt` to a file name (e.g. `pdac_demo.fam.txt`).
 :::
 
 ::: {.callout-warning collapse="true" title="macOS: \"plink2 cannot be opened because the developer cannot be verified\""}
@@ -306,7 +339,7 @@ This is macOS Gatekeeper. Either right-click the `plink2` file → *Open* once t
 You now have a working setup and have confirmed PLINK can read the demo data. The next sections
 of the guide build directly on this:
 
-- **Quality control (Section 1B)** — cleaning the raw genotypes before any analysis.
-- **Population stratification (Section 2)** — detecting and correcting for ancestry.
+- **Quality control** — cleaning the raw genotypes before any analysis.
+- **Population stratification** — detecting and correcting for ancestry.
 
 *(These sections will be linked here as they are added.)*
