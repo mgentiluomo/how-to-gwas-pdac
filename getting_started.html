@@ -426,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="sec-terminal">A note on the command line</h2>
 <p>Most steps in this guide are typed into a <strong>terminal</strong> (also called a “command line” or “console”) — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.</p>
 <ul>
-<li><strong>Windows:</strong> open <em>PowerShell</em> or the <em>Command Prompt</em> (search for <code>cmd</code>).</li>
+<li><strong>Windows:</strong> open the <em>Command Prompt</em> (search for <code>cmd</code>) or <em>PowerShell</em>.</li>
 <li><strong>macOS:</strong> open the <em>Terminal</em> app (in <em>Applications → Utilities</em>).</li>
 <li><strong>Linux:</strong> open your <em>Terminal</em>.</li>
 <li><strong>Inside RStudio:</strong> there is a <em>Terminal</em> tab next to the <em>Console</em> tab — you can use that too.</li>
@@ -534,7 +534,7 @@ Important
 <h3 class="anchored" data-anchor-id="check-the-files-arrived">Check the files arrived</h3>
 <p>In your terminal, move into the folder and list its contents:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path/to/gwas_tutorial      <span class="co"># replace with the real path to your folder</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_demo.<span class="pp">*</span>                <span class="co"># on Windows Command Prompt use: dir pdac_demo.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_demo.<span class="pp">*</span>      <span class="co"># on Windows Command Prompt use: dir pdac_demo.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see exactly three files: <code>.bed</code>, <code>.bim</code> and <code>.fam</code>.</p>
 <hr>
 </section>
@@ -545,40 +545,47 @@ Important
 <ol type="1">
 <li>Go to the official download page: <a href="https://www.cog-genomics.org/plink/2.0/" class="uri">https://www.cog-genomics.org/plink/2.0/</a></li>
 <li>Download the build for your operating system (Linux / macOS / Windows).</li>
-<li><strong>Unzip</strong> it. Inside you will find the program file: <code>plink2</code> (macOS/Linux) or <code>plink2.exe</code> (Windows). Put it in your <code>gwas_tutorial</code> folder, next to the data.</li>
+<li><strong>Unzip</strong> it. Inside you will find the program file: <code>plink2</code> (macOS/Linux) or <code>plink2.exe</code> (Windows).</li>
 </ol>
-<div class="callout callout-style-default callout-important callout-titled" title="How to call plink2 on your system">
+<div class="callout callout-style-default callout-tip callout-titled" title="The simplest setup">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>How to call plink2 on your system
+<span class="screen-reader-only">Tip</span>The simplest setup
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>How you type the command depends on where PLINK lives and which system you use:</p>
-<ul>
-<li><strong>Windows (PowerShell):</strong> write <strong><code>.\plink2</code></strong> — the <code>.\</code> in front is <strong>required</strong>, otherwise you get <em>“plink2 is not recognized…”</em>.</li>
-<li><strong>macOS / Linux</strong>, with PLINK in your working folder: write <strong><code>./plink2</code></strong>.</li>
-<li><strong>Any system</strong>, if PLINK is installed system-wide (on your <code>PATH</code>): just <strong><code>plink2</code></strong>.</li>
-</ul>
-<p>For brevity, the rest of the guide writes the command simply as <code>plink2</code>. <strong>Add the right prefix for your system</strong> (<code>.\</code> on Windows, <code>./</code> on macOS/Linux) whenever PLINK sits in your working folder. Everything <em>after</em> the program name is identical on every system.</p>
+<p>Put the <code>plink2</code> (or <code>plink2.exe</code>) file <strong>in the same folder as your data</strong> (<code>gwas_tutorial</code>). Then you can run it as <code>./plink2</code> (macOS/Linux) or <code>plink2</code> (Windows) without worrying about installation paths. More advanced users can instead add PLINK to their system <code>PATH</code>.</p>
 </div>
 </div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Windows</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">macOS / Linux</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">macOS / Linux</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Windows</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<p>Open <em>PowerShell</em>, move to your folder, and call PLINK with <code>.\</code> in front:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cd</span> path\to\gwas_tutorial</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">.</span>\plink2 <span class="op">--</span>version</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If you placed <code>plink2</code> in your working folder, you call it with <code>./plink2</code>. The first time on macOS you may need to allow it to run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x plink2          <span class="co"># make the file executable</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>Call it with <code>./</code> in front. The first time on macOS you may also need to allow it to run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x plink2          <span class="co"># make the file executable (macOS/Linux only)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Open <em>Command Prompt</em>, move to your folder, and call it as <code>plink2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path<span class="dt">\t</span>o<span class="dt">\g</span>was_tutorial</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span><span class="dt">\p</span>link2 <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="`plink2` vs `./plink2`">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span><code>plink2</code> vs <code>./plink2</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For the rest of this guide we write the command simply as <code>plink2</code>. On macOS/Linux, if PLINK is in your current folder rather than installed system-wide, type <code>./plink2</code> instead. Everything after the program name is identical.</p>
 </div>
 </div>
 <hr>
@@ -586,17 +593,16 @@ Important
 <section id="sec-version" class="level2">
 <h2 class="anchored" data-anchor-id="sec-version">Step 3 — Check that PLINK runs</h2>
 <p>Before doing anything with the data, confirm PLINK starts at all:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span>          <span class="co"># Windows: .\plink2 --version    macOS/Linux (local file): ./plink2 --version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span><span class="dt">\p</span>link2 <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see a single line with the version and build date, similar to:</p>
-<pre><code>PLINK v2.0.0-a.7.1 64-bit (4 May 2026)</code></pre>
+<pre><code>PLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)</code></pre>
 <p>If you see a version line, PLINK works. If instead you get an error like <code>command not found</code> or <code>'plink2' is not recognized</code>, jump to <a href="#sec-troubleshooting">Troubleshooting</a> below.</p>
 <hr>
 </section>
 <section id="sec-freq" class="level2">
 <h2 class="anchored" data-anchor-id="sec-freq">Step 4 — Your first command: allele frequencies with <code>--freq</code></h2>
 <p>Now the real test. We ask PLINK to read the demo dataset and compute the <strong>allele frequency</strong> of every variant — that is, how common each allele is across the sample. This is the simplest possible operation that touches the actual genotypes, so it is a perfect “does everything work?” check.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--bfile</span> pdac_demo <span class="at">--freq</span> <span class="at">--out</span> pdac_demo_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>(Remember the prefix for your system: <code>.\plink2 …</code> on Windows, <code>./plink2 …</code> on macOS/Linux — see Step 2.)</em></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span><span class="dt">\p</span>link2 <span class="at">--bfile</span> pdac_demo <span class="at">--freq</span> <span class="at">--out</span> pdac_demo_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Let’s read that command piece by piece:</p>
 <table class="caption-top table">
 <colgroup>
@@ -630,25 +636,23 @@ Important
 </table>
 <p><span class="codetag">CODE 0-01: first PLINK run — allele frequencies — see /getting_started/</span></p>
 <p>When it finishes, PLINK prints a short log to the screen and creates a new file: <strong><code>pdac_demo_freq.afreq</code></strong>. The on-screen log ends with something like:</p>
-<pre><code>1461 samples (712 females, 749 males; 1461 founders) loaded from pdac_demo.fam.
+<pre><code>... 
 430000 variants loaded from pdac_demo.bim.
-Note: No phenotype data present.
-Calculating allele frequencies... done.
---freq: Allele frequencies (founders only) written to pdac_demo_freq.afreq .</code></pre>
-<p>If you see the line saying the allele frequencies were <strong>written</strong>, the test has passed: PLINK can read your data and compute on it. 🎉</p>
-<p>(The “founders only” note simply means PLINK used the unrelated individuals for the frequency calculation — exactly what we want.)</p>
+1461 samples (712 females, 749 males; ...) loaded from pdac_demo.fam.
+--freq: Allele frequencies written to pdac_demo_freq.afreq .</code></pre>
+<p>If you see a line saying the allele frequencies were <strong>written</strong>, the test has passed: PLINK can read your data and compute on it. 🎉</p>
 <hr>
 </section>
 <section id="sec-check" class="level2">
 <h2 class="anchored" data-anchor-id="sec-check">Step 5 — Did it work? Look at the result</h2>
 <p>Open the first few lines of the output file to see what PLINK produced:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_demo_freq.afreq            <span class="co"># Windows PowerShell: Get-Content pdac_demo_freq.afreq -Head 10</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_demo_freq.afreq    <span class="co"># on Windows use: more pdac_demo_freq.afreq</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>You should see a table with one row per variant, like this:</p>
-<pre><code>#CHROM  ID              REF  ALT  PROVISIONAL_REF?  ALT_FREQS   OBS_CT
-1       1:817341:A:G    A    G    Y                 0.303854    2906
-1       1:858952:G:A    G    A    Y                 0.119573    2902
-1       1:899450:G:A    G    A    Y                 0.0107044   2896
-1       1:903175:C:A    C    A    Y                 0.298898    2904
+<pre><code>#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
+1       1:752566:G:A      G    A    0.831621    2922
+1       1:776546:A:C      A    C    0.142847    2922
+1       1:832918:T:C      T    C    0.067419    2922
+1       1:842013:T:G      T    G    0.219370    2922
 ...</code></pre>
 <p>What the columns mean:</p>
 <table class="caption-top table">
@@ -676,14 +680,10 @@ Calculating allele frequencies... done.
 <td>the reference and alternate alleles</td>
 </tr>
 <tr class="even">
-<td><code>PROVISIONAL_REF?</code></td>
-<td><code>Y</code> means the REF allele was assigned by PLINK rather than from a reference genome — normal here, and it does not affect the frequencies</td>
-</tr>
-<tr class="odd">
 <td><code>ALT_FREQS</code></td>
 <td>frequency of the <strong>ALT</strong> allele (a number between 0 and 1)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>OBS_CT</code></td>
 <td>number of observed alleles (≈ 2 × number of genotyped individuals)</td>
 </tr>
@@ -730,30 +730,29 @@ Calculating allele frequencies... done.
 </section>
 <section id="sec-troubleshooting" class="level2">
 <h2 class="anchored" data-anchor-id="sec-troubleshooting">Troubleshooting</h2>
-<div class="callout callout-style-default callout-warning callout-titled" title="`'plink2' is not recognized` / `command not found`">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout callout-style-default callout-warning callout-titled" title="`command not found` / `'plink2' is not recognized`">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span><code>'plink2' is not recognized</code> / <code>command not found</code>
+<span class="screen-reader-only">Warning</span><code>command not found</code> / <code>'plink2' is not recognized</code>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The terminal cannot find the PLINK program — usually because you forgot the prefix, or you are not in the folder where PLINK lives.</p>
+<p>The terminal cannot find the PLINK program. Either you are not in the folder where <code>plink2</code> lives, or it is not on your <code>PATH</code>.</p>
 <ul>
-<li><strong>Windows PowerShell:</strong> call it as <strong><code>.\plink2</code></strong> (note the <code>.\</code>). This is the most common cause.</li>
-<li><strong>macOS / Linux:</strong> call it as <strong><code>./plink2</code></strong> (note the <code>./</code>).</li>
 <li>Make sure you have <code>cd</code>-ed into your working folder.</li>
-<li>Check the file is really there: <code>dir plink2.exe</code> (Windows) or <code>ls plink2</code> (macOS/Linux).</li>
+<li>On macOS/Linux, call it as <code>./plink2</code> (note the <code>./</code>).</li>
+<li>Check the file is really there: <code>ls plink2</code> (macOS/Linux) or <code>dir plink2.exe</code> (Windows).</li>
 </ul>
 </div>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled" title="`Error: Failed to open pdac_demo.bed`">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -762,19 +761,19 @@ Calculating allele frequencies... done.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>PLINK cannot find the data files.</p>
 <ul>
 <li>Confirm all <strong>three</strong> files (<code>.bed</code>, <code>.bim</code>, <code>.fam</code>) are in the current folder and share the exact name <code>pdac_demo</code>.</li>
 <li>Confirm you typed the name <strong>without</strong> an extension after <code>--bfile</code> (PLINK adds <code>.bed</code>/<code>.bim</code>/<code>.fam</code> itself).</li>
-<li>Check the browser did not add a hidden <code>.txt</code> to a file name (e.g.&nbsp;<code>pdac_demo.fam.txt</code>).</li>
+<li>Check you are in the right folder with <code>pwd</code> (macOS/Linux) or <code>cd</code> with no arguments (Windows).</li>
 </ul>
 </div>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled" title="macOS: &quot;plink2 cannot be opened because the developer cannot be verified&quot;">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -783,7 +782,7 @@ Calculating allele frequencies... done.
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>This is macOS Gatekeeper. Either right-click the <code>plink2</code> file → <em>Open</em> once to allow it, or run <code>xattr -d com.apple.quarantine plink2</code> in the terminal, then try again.</p>
 </div>
@@ -795,8 +794,8 @@ Calculating allele frequencies... done.
 <h2 class="anchored" data-anchor-id="whats-next">What’s next</h2>
 <p>You now have a working setup and have confirmed PLINK can read the demo data. The next sections of the guide build directly on this:</p>
 <ul>
-<li><strong>Quality control</strong> — cleaning the raw genotypes before any analysis.</li>
-<li><strong>Population stratification</strong> — detecting and correcting for ancestry.</li>
+<li><strong>Quality control (Section 1B)</strong> — cleaning the raw genotypes before any analysis.</li>
+<li><strong>Population stratification (Section 2)</strong> — detecting and correcting for ancestry.</li>
 </ul>
 <p><em>(These sections will be linked here as they are added.)</em></p>
 
