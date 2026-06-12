@@ -1,337 +1,440 @@
 ---
-title: "Before you start: setup and your first PLINK command"
+title: "Before you start: setup and your first QC pipeline"
+description: "Get your computer ready to run the GWAS pipeline"
 ---
 
-This page gets your computer ready and walks you through your **very first command**. By the
-end you will have downloaded the demo dataset, installed PLINK, and run a quick test that
-confirms everything works — computing allele frequencies with `--freq`.
+
+This page gets your computer ready and walks you through your **first GWAS QC command**. By the end you will have:
+- Set up a portable project folder
+- Downloaded the demo dataset  
+- Installed PLINK2 and PLINK1.9
+- Run your first QC script that confirms everything works
 
 ::: {.callout-note title="What you will need"}
-- A computer running **Windows, macOS or Linux**
-- The **demo dataset** (download in Step 1)
-- **PLINK 2** (download in Step 2)
-- *Recommended:* **R** and **RStudio**, to run the analysis and plotting steps later in the guide
+- A computer running **Windows (with WSL2), macOS, or Linux**
+- **30-45 minutes** to complete all setting steps
+- **Internet access** to download tools and data
+- **optional** Admin rights to install software (or ask your IT team for help)
 
-You do **not** need any programming experience. Every command is given in full.
+You do **not** need any programming experience. Every command is provided in full with alternatives and troubleshooting information.
 :::
 
 ## A note on the command line {#sec-terminal}
 
-Most steps in this guide are typed into a **terminal** (also called a "command line" or
-"console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
+Most steps in this guide are typed into a **terminal** (also called a "command line" or "console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
 
-- **Windows:** open the *Command Prompt* (search for `cmd`) or *PowerShell*.
-- **macOS:** open the *Terminal* app (in *Applications → Utilities*).
-- **Linux:** open your *Terminal*.
+- **Windows:** You must use **WSL2 terminal** (see Step 0). WSL2 gives you Linux inside Windows.
+- **macOS:** Open the *Terminal* app (in *Applications → Utilities*).
+- **Linux:** Open your *Terminal*.
 - **Inside RStudio:** there is a *Terminal* tab next to the *Console* tab — you can use that too.
 
 Throughout the guide, lines you type into the terminal look like this:
 
 ```bash
-plink2 --version
+bash scripts/01_initial_qc_stats.sh
 ```
 
-You copy the command, paste it into your terminal, and press <kbd>Enter</kbd>. That's it.
+Copy the command, paste it into your terminal, and press <kbd>Enter</kbd>. That's it.
 
 ---
 
-## Step 1 — Download the demo dataset {#sec-download}
+## Step 0 — Prepare your operating system {#sec-os-setup}
 
-The demo dataset is called **`pdac_demo`**. Like all PLINK datasets, it is made of
-**three files that always travel together** and must stay in the same folder:
-
-| File | What it contains |
-|------|------------------|
-| `pdac_demo.bed` | the genotypes (the actual genetic data, in compact binary form) |
-| `pdac_demo.bim` | the list of variants (one row per SNP: chromosome, position, alleles) |
-| `pdac_demo.fam` | the list of individuals (one row per person: ID, sex, case/control status) |
-
-::: {.callout-important}
-Never rename or move just one of the three files. PLINK always looks for all three together
-using the shared name (`pdac_demo`).
-:::
-
-You can download them in either of two ways.
+Before you begin, set up your OS environment.
 
 ::: {.panel-tabset}
 
-### Point and click (easiest)
+### Windows: Install WSL2 (Required)
 
-Open the release page and download the three files, or click each link directly:
+**WSL2** (Windows Subsystem for Linux) gives you a Linux environment inside Windows. The GWAS pipeline uses bash scripts, so WSL2 is required.
 
-- [`pdac_demo.bed`](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed) — the genotypes (≈150 MB)
-- [`pdac_demo.bim`](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim) — the list of variants
-- [`pdac_demo.fam`](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam) — the list of individuals
+**Part A: Install WSL2**
 
-Then move all three files into your working folder.
-(Full release page: <https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data>)
+1. Open **PowerShell as Administrator** (right-click and select "Run as administrator")
+2. Run:
+   ```powershell
+   wsl --install
+   ```
+3. Restart your computer when prompted
 
-> **Windows tip:** make sure the browser did not add a hidden `.txt` at the end
-> (e.g. `pdac_demo.fam.txt`). The names must be exactly `pdac_demo.bed`, `.bim`, `.fam`.
+**Part B: Open WSL2 Terminal**
 
-### In R / RStudio
+1. After restart, open **Windows Terminal** (search for it in the Start menu)
+2. Click the dropdown arrow and select **Ubuntu**
+3. You should see a bash prompt like `user@computer:~$`
 
-Run this in the RStudio *Console* — it downloads the three files straight into your folder,
-the same way on Windows, macOS and Linux:
+**Part C: Install Basic Tools**
 
-```{r}
-#| eval: false
-base <- "https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"
-for (f in c("pdac_demo.bed", "pdac_demo.bim", "pdac_demo.fam")) {
-  download.file(paste0(base, f), destfile = f, mode = "wb")
-}
-list.files(pattern = "pdac_demo")
-```
-
-### Command line
-
+In the WSL2 bash terminal, run:
 ```bash
-# macOS / Linux
-for f in pdac_demo.bed pdac_demo.bim pdac_demo.fam; do
-  curl -L -O "https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/$f"
-done
+sudo apt-get update
+sudo apt-get install git curl wget
 ```
 
-```powershell
-# Windows PowerShell
-$base = "https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"
-foreach ($f in "pdac_demo.bed","pdac_demo.bim","pdac_demo.fam") {
-  Invoke-WebRequest -Uri "$base$f" -OutFile $f
-}
-```
+✅ **WSL2 is now ready. From here on, all commands use this bash terminal.**
+
+For help troubleshooting WSL2, see [WSL_SETUP.md](docs/helpers/WSL_SETUP.md).
+
+### macOS and Linux
+
+Your system already has bash. No setup needed for Step 0.
 
 :::
-
-::: {.callout-tip title="Pick one working folder and stay in it"}
-Create a single folder for this tutorial — for example `gwas_tutorial` — and put the three data
-files there. Do all your work inside it. This avoids almost every "file not found" problem
-beginners run into.
-:::
-
-### Check the files arrived
-
-In your terminal, move into the folder and list its contents:
-
-```bash
-cd path/to/gwas_tutorial      # replace with the real path to your folder
-ls pdac_demo.*      # on Windows Command Prompt use: dir pdac_demo.*
-```
-
-You should see exactly three files: `.bed`, `.bim` and `.fam`.
 
 ---
 
-## Step 2 — Install PLINK 2 {#sec-plink}
+## Step 1 — Create your project folder {#sec-project-folder}
 
-**PLINK** is the workhorse program for genotype data. We use **PLINK 2** (the command is
-`plink2`). It is a single program file — there is **no installer**: you download it, unzip it,
-and you are done.
+Choose any location on your computer and create a folder named `gwas_tutorial`. This will be your **working folder** for the entire pipeline.
+
+```bash
+mkdir -p ~/gwas_tutorial
+cd ~/gwas_tutorial
+```
+
+> **Tip:** You can place this folder anywhere: Desktop, Documents, custom path — it doesn't matter. Everything is portable because we use relative paths.
+
+---
+
+## Step 2 — Create the directory structure {#sec-directories}
+
+Create the folder structure that keeps scripts, data, and tools organized.
+
+::: {.panel-tabset}
+
+### Automated (Easiest)
+
+Download and run the setup script:
+
+```bash
+# Download the automated setup script
+wget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/init_project.sh
+
+# Run it
+bash init_project.sh
+```
+
+This creates all folders automatically.
+
+### Manual with mkdir
+
+Create folders manually:
+
+```bash
+# Create all needed folders
+mkdir -p \
+    scripts \
+    demo_data \
+    tools/bin \
+    data_processed \
+    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}
+```
+
+:::
+
+Your folder now looks like this:
+
+```
+gwas_tutorial/
+├── scripts/
+│   ├── dev/                         # Utility scripts
+│   │   ├── download_demo_data.sh
+│   │   ├── tools_setup.sh
+│   │   ├── test.sh
+│   │   └── init_project.sh
+│   ├── 01B_genotyping_qc/           # QC scripts
+│   │   ├── 01_initial_qc_stats.sh
+│   │   ├── 02_sample_callrate.sh
+│   │   └── ...09_qc_summary.sh
+│   ├── 02_population_stratification/
+│   ├── 03_imputation/
+│   └── ...other sections...
+├── demo_data/                       # Demo dataset (Step 4)
+├── tools/bin/                       # Tools (eg PLINK, Step 5)
+├── data_processed/                  # Processed output files
+└── results/                         # Results organized by workflow
+```
+
+---
+
+## Step 3 — Download the GWAS scripts {#sec-scripts}
+
+Clone the GitHub repo to get all the GWAS pipeline scripts organized by section:
+
+```bash
+# Clone the repo (temporary)
+git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git
+
+# Copy section scripts directly into section folders
+for section_dir in how-to-gwas-pdac/sections/*/; do
+  section=$(basename "$section_dir")
+  mkdir -p "scripts/$section"
+  cp "$section_dir/scripts"/* "scripts/$section/"
+done
+
+# Copy utility/dev scripts
+cp how-to-gwas-pdac/scripts/dev/* scripts/dev/
+
+# Clean up
+rm -rf how-to-gwas-pdac
+```
+
+Verify the scripts downloaded:
+
+```bash
+# Check QC scripts
+ls scripts/01B_genotyping_qc/
+```
+
+You should see: `01_initial_qc_stats.sh` through `09_qc_summary.sh`
+
+And utility scripts:
+
+```bash
+ls scripts/dev/
+```
+
+You should see: `download_demo_data.sh`, `tools_setup.sh`, `test.sh`, `init_project.sh`
+
+---
+
+## Step 4 — Download the demo dataset {#sec-data}
+
+Download the 7 demo dataset files (~164 MB total) to your `demo_data/` folder.
+
+::: {.panel-tabset}
+
+### Automated (Easiest)
+
+Run the download script from your project:
+
+```bash
+bash scripts/dev/download_demo_data.sh
+```
+
+This downloads all 7 files automatically and verifies them.
+
+### Manual with wget
+
+Download files individually:
+
+```bash
+cd ~/gwas_tutorial  # Make sure you're in your project folder
+
+# Download all 7 files
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed -O demo_data/pdac_demo.bed
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim -O demo_data/pdac_demo.bim
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam -O demo_data/pdac_demo.fam
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/phenotype.txt -O demo_data/phenotype.txt
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/covariates.txt -O demo_data/covariates.txt
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/survival.txt -O demo_data/survival.txt
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/sample_ancestry.tsv -O demo_data/sample_ancestry.tsv
+```
+
+:::
+
+Verify the files downloaded:
+
+```bash
+ls -lh demo_data/
+```
+
+You should see all 7 files.
+
+::: {.callout-tip title="File Integrity Check"}
+The download script automatically verifies the SHA256 hash of each file to ensure they were downloaded correctly. You should see messages like:
+```
+✓ OK: pdac_demo.bed
+✓ OK: pdac_demo.bim
+...
+✓ All files verified successfully! (7/7)
+```
+
+If any file fails verification, the script will tell you which one and suggest re-downloading it. This built-in verification ensures your data is safe and ready for analysis.
+:::
+
+---
+
+## Step 5 — Install dependencies {#sec-install}
+
+Install PLINK2, PLINK1.9, and other required tools.
+
+::: {.panel-tabset}
+
+### Automated (Easiest)
+
+Run the setup script from your project:
+
+```bash
+bash scripts/dev/tools_setup.sh
+```
+
+The script will:
+- Download PLINK2 to `tools/bin/`
+- Download PLINK1.9 to `tools/bin/`
+- Configure your PATH so both are accessible
+
+### Manual Installation
+
+Install tools manually if you prefer. **PLINK** is the workhorse program for genotype data. We use **PLINK 2** (the command is `plink2`). It is a single program file — there is **no installer**: you download it, unzip it, and you are done.
+
+#### PLINK 2
 
 1. Go to the official download page: <https://www.cog-genomics.org/plink/2.0/>
 2. Download the build for your operating system (Linux / macOS / Windows).
-3. **Unzip** it. Inside you will find the program file: `plink2` (macOS/Linux) or
-   `plink2.exe` (Windows).
+3. **Unzip** it. Inside you will find the program file: `plink2` (macOS/Linux) or `plink2.exe` (Windows).
 
 ::: {.callout-tip title="The simplest setup"}
-Put the `plink2` (or `plink2.exe`) file **in the same folder as your data**
-(`gwas_tutorial`). Then you can run it as `./plink2` (macOS/Linux) or `plink2` (Windows) without
-worrying about installation paths. More advanced users can instead add PLINK to their system
-`PATH`.
+Put the `plink2` (or `plink2.exe`) file **in the same folder as your tools**
+(`tools/bin/`). Then you can run it as `plink2` without worrying about installation paths. More advanced users can instead add PLINK to their system `PATH`.
 :::
 
-::: {.panel-tabset}
+#### Other tools
 
-#### macOS / Linux
+*(Coming soon — instructions for PLINK 1.9, R, and other dependencies)*
 
-If you placed `plink2` in your working folder, you call it with `./plink2`. The first time on
-macOS you may need to allow it to run:
-
-```bash
-chmod +x plink2          # make the file executable
-./plink2 --version
-```
-
-#### Windows
-
-Open *Command Prompt*, move to your folder, and call it as `plink2`:
-
-```bash
-cd path\to\gwas_tutorial
-.\plink2 --version
-```
-
-:::
-
-::: {.callout-note title="`plink2` vs `./plink2`"}
-For the rest of this guide we write the command simply as `plink2`. On macOS/Linux, if PLINK is
-in your current folder rather than installed system-wide, type `./plink2` instead. Everything
-after the program name is identical.
 :::
 
 ---
 
-## Step 3 — Check that PLINK runs {#sec-version}
+## Step 6 — Test tools and scripts {#sec-first-run}
 
-Before doing anything with the data, confirm PLINK starts at all:
-
-```bash
-.\plink2 --version
-```
-
-You should see a single line with the version and build date, similar to:
-
-```
-PLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)
-```
-
-If you see a version line, PLINK works. If instead you get an error like
-`command not found` or `'plink2' is not recognized`, jump to
-[Troubleshooting](#sec-troubleshooting) below.
-
----
-
-## Step 4 — Your first command: allele frequencies with `--freq` {#sec-freq}
-
-Now the real test. We ask PLINK to read the demo dataset and compute the **allele frequency** of
-every variant — that is, how common each allele is across the sample. This is the simplest
-possible operation that touches the actual genotypes, so it is a perfect "does everything work?"
-check.
+Run the test script to verify everything is installed and working:
 
 ```bash
-.\plink2 --bfile pdac_demo --freq --out pdac_demo_freq
+bash scripts/dev/test.sh
 ```
 
-Let's read that command piece by piece:
+This script will:
+1. Check installed tools (PLINK2, PLINK1.9)
+2. Load the demo dataset
+3. Print the next command to run
 
-| Part | Meaning |
-|------|---------|
-| `plink2` | run the PLINK 2 program |
-| `--bfile pdac_demo` | load the dataset whose three files share this name (`.bed`/`.bim`/`.fam`) |
-| `--freq` | compute the allele frequencies |
-| `--out pdac_demo_freq` | name the output files with this prefix |
-
-<span class="codetag">CODE 0-01: first PLINK run — allele frequencies — see /getting_started/</span>
-
-When it finishes, PLINK prints a short log to the screen and creates a new file:
-**`pdac_demo_freq.afreq`**. The on-screen log ends with something like:
+When it finishes, you should see output like:
 
 ```
-... 
-430000 variants loaded from pdac_demo.bim.
-1461 samples (712 females, 749 males; ...) loaded from pdac_demo.fam.
---freq: Allele frequencies written to pdac_demo_freq.afreq .
+✓ Initial test done! PLINK2 and PLINK1.9 are working, and the demo dataset is accessible.
+Next command: bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
 ```
 
-If you see a line saying the allele frequencies were **written**, the test has passed: PLINK can
-read your data and compute on it. 🎉
-
----
-
-## Step 5 — Did it work? Look at the result {#sec-check}
-
-Open the first few lines of the output file to see what PLINK produced:
-
-```bash
-head pdac_demo_freq.afreq    # on Windows use: more pdac_demo_freq.afreq
-```
-
-You should see a table with one row per variant, like this:
-
-```
-#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
-1       1:752566:G:A      G    A    0.831621    2922
-1       1:776546:A:C      A    C    0.142847    2922
-1       1:832918:T:C      T    C    0.067419    2922
-1       1:842013:T:G      T    G    0.219370    2922
-...
-```
-
-What the columns mean:
-
-| Column | Meaning |
-|--------|---------|
-| `#CHROM` | chromosome |
-| `ID` | the variant's identifier |
-| `REF` / `ALT` | the reference and alternate alleles |
-| `ALT_FREQS` | frequency of the **ALT** allele (a number between 0 and 1) |
-| `OBS_CT` | number of observed alleles (≈ 2 × number of genotyped individuals) |
-
-That `ALT_FREQS` column is the answer to our test: **PLINK computed a frequency for every
-variant.**
-
-### Optional: read it in R
-
-If you have R/RStudio set up, you can load the same file and take a quick look. This also
-introduces the pattern we use throughout the guide — PLINK produces a table, R reads and
-summarises it:
-
-```{r}
-#| eval: false
-# read the allele-frequency table PLINK just wrote
-freq <- read.table("pdac_demo_freq.afreq",
-                   header = TRUE, comment.char = "", sep = "\t",
-                   check.names = FALSE)
-
-# how many variants, and the first rows
-nrow(freq)
-head(freq)
-
-# minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS
-freq$MAF <- pmin(freq$ALT_FREQS, 1 - freq$ALT_FREQS)
-
-# a quick picture of the frequency spectrum
-hist(freq$MAF, breaks = 50,
-     main = "Minor allele frequency distribution",
-     xlab = "MAF")
-```
-
-A typical genotyping array shows many common variants and a tail of rarer ones, so the histogram
-leans toward the lower MAF values. If R prints a number of variants and draws a histogram, your
-R setup works too — and you are ready for the analysis sections.
-
-::: {.callout-note title="Why we don't re-run PLINK every time the website is built"}
-Real GWAS commands (especially on full datasets) can be slow and run on a dedicated server.
-In this guide, PLINK commands are shown for **you** to run on your own machine; the website does
-not re-execute them. Lightweight R steps (a plot, a small table) are run once and cached, so the
-site stays fast and reproducible.
-:::
+If you see this message, **everything is working!** 🎉 You can now proceed to the next QC step.
 
 ---
 
 ## Troubleshooting {#sec-troubleshooting}
 
-::: {.callout-warning collapse="true" title="`command not found` / `'plink2' is not recognized`"}
-The terminal cannot find the PLINK program. Either you are not in the folder where `plink2`
-lives, or it is not on your `PATH`.
+::: {.callout-warning collapse="true" title="`git: command not found`"}
+Git is not installed on your system.
 
-- Make sure you have `cd`-ed into your working folder.
-- On macOS/Linux, call it as `./plink2` (note the `./`).
-- Check the file is really there: `ls plink2` (macOS/Linux) or `dir plink2.exe` (Windows).
+**Solution (Windows WSL2):**
+```bash
+sudo apt-get update
+sudo apt-get install git
+```
+
+**Solution (macOS):**
+```bash
+brew install git
+```
+
+**Solution (Linux):**
+```bash
+sudo apt-get install git
+```
+:::
+
+::: {.callout-warning collapse="true" title="`wget: command not found`"}
+wget is not installed.
+
+**Solution (Windows WSL2 / Linux):**
+```bash
+sudo apt-get install wget
+```
+
+**Solution (macOS):**
+```bash
+brew install wget
+```
+:::
+
+::: {.callout-warning collapse="true" title="`plink: command not found` or `plink2: command not found`"}
+PLINK is not installed or not on your PATH.
+
+**Solution:** The `tools_setup.sh` script should have installed PLINK to `tools/bin/`. Check if it's there:
+
+```bash
+ls tools/bin/
+```
+
+If you don't see `plink` and `plink2`, re-run the setup:
+```bash
+bash scripts/dev/tools_setup.sh
+```
+
+If PLINK is there but still not found, your PATH may not be set. Add it manually:
+```bash
+export PATH="$(pwd)/tools/bin:$PATH"
+plink --version  # Test
+```
 :::
 
 ::: {.callout-warning collapse="true" title="`Error: Failed to open pdac_demo.bed`"}
-PLINK cannot find the data files.
+PLINK cannot find the demo dataset.
 
-- Confirm all **three** files (`.bed`, `.bim`, `.fam`) are in the current folder and share the
-  exact name `pdac_demo`.
-- Confirm you typed the name **without** an extension after `--bfile` (PLINK adds `.bed`/`.bim`/`.fam`
-  itself).
-- Check you are in the right folder with `pwd` (macOS/Linux) or `cd` with no arguments (Windows).
+**Solution:** Make sure all demo files were downloaded:
+```bash
+ls demo_data/pdac_demo.*
+```
+
+You should see `.bed`, `.bim`, and `.fam` files. If any are missing, re-run Step 4:
+```bash
+bash scripts/dev/download_demo_data.sh
+```
 :::
 
-::: {.callout-warning collapse="true" title="macOS: \"plink2 cannot be opened because the developer cannot be verified\""}
-This is macOS Gatekeeper. Either right-click the `plink2` file → *Open* once to allow it, or run
-`xattr -d com.apple.quarantine plink2` in the terminal, then try again.
+::: {.callout-warning collapse="true" title="`Permission denied` when running a script"}
+The script file doesn't have execute permissions.
+
+**Solution:**
+```bash
+chmod +x scripts/*/
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
+```
 :::
+
+::: {.callout-warning collapse="true" title="Script not found or can't find data files"}
+You're in the wrong directory or files are missing.
+
+**Solution:**
+```bash
+# Make sure you're in your project folder
+cd ~/gwas_tutorial
+
+# Check files exist
+ls scripts/01B_genotyping_qc/
+ls demo_data/
+
+# Then run the first QC script
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
+```
+:::
+
+
+## Additional Resources
+
+- **[Setup Project Structure](docs/helpers/SETUP_PROJECT_STRUCTURE.md)** — Detailed setup guide
+- **[WSL Setup](docs/helpers/WSL_SETUP.md)** — WSL2 troubleshooting  
 
 ---
 
-## What's next
+## What's next {#sec-next}
 
-You now have a working setup and have confirmed PLINK can read the demo data. The next sections
-of the guide build directly on this:
+You now have a working GWAS pipeline setup and have confirmed the tools runs successfully. Continue with the QC and other steps:
+
 
 - **Quality control (Section 1B)** — cleaning the raw genotypes before any analysis.
 - **Population stratification (Section 2)** — detecting and correcting for ancestry.
 
 *(These sections will be linked here as they are added.)*
+---
+
