@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 09: QC Summary & Decision Tree
@@ -23,11 +23,25 @@
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
 DATASET_NAME="pdac_demo"
+DATASET_INPUT="${2:-demo_data}"
+OUT_DIR="${3:-results/qc}"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Collect sample and variant counts
@@ -39,23 +53,29 @@ echo ""
 # Function to extract counts
 get_counts() {
   local bfile=$1
-  local nsamp=$(tail -n +2 ${bfile}.fam 2>/dev/null | wc -l || echo "NA")
-  local nvar=$(tail -n +2 ${bfile}.bim 2>/dev/null | wc -l || echo "NA")
+  local nsamp="NA"
+  local nvar="NA"
+  if [ -f "${bfile}.fam" ]; then
+    nsamp=$(wc -l < "${bfile}.fam")
+  fi
+  if [ -f "${bfile}.bim" ]; then
+    nvar=$(wc -l < "${bfile}.bim")
+  fi
   echo "${nsamp} ${nvar}"
 }
 
 # Raw data
-read NSAMP_RAW NVAR_RAW <<< $(get_counts ../../demo_dataset/data/${DATASET_NAME})
+read NSAMP_RAW NVAR_RAW <<< "$(get_counts "${DATASET_INPUT}/${DATASET_NAME}")"
 echo "Raw: ${NSAMP_RAW} samples, ${NVAR_RAW} variants"
 
 # After each step
-read NSAMP_02 NVAR_02 <<< $(get_counts ${DATASET_NAME}_02_filt)
-read NSAMP_03 NVAR_03 <<< $(get_counts ${DATASET_NAME}_03_filt)
-read NSAMP_04 NVAR_04 <<< $(get_counts ${DATASET_NAME}_04_filt)
-read NSAMP_05 NVAR_05 <<< $(get_counts ${DATASET_NAME}_05_filt)
-read NSAMP_06 NVAR_06 <<< $(get_counts ${DATASET_NAME}_06_filt)
-read NSAMP_07 NVAR_07 <<< $(get_counts ${DATASET_NAME}_07_filt)
-read NSAMP_08 NVAR_08 <<< $(get_counts ${DATASET_NAME}_08_filt)
+read NSAMP_02 NVAR_02 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_02_filt")"
+read NSAMP_03 NVAR_03 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_03_filt")"
+read NSAMP_04 NVAR_04 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_04_filt")"
+read NSAMP_05 NVAR_05 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_05_filt")"
+read NSAMP_06 NVAR_06 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_06_filt")"
+read NSAMP_07 NVAR_07 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_07_filt")"
+read NSAMP_08 NVAR_08 <<< "$(get_counts "${OUT_DIR}/${DATASET_NAME}_08_filt")"
 
 # ============================================================================
 # STEP 2: Create detailed summary report
@@ -64,7 +84,7 @@ echo ""
 echo "=== Creating summary report ==="
 echo ""
 
-cat > ${DATASET_NAME}_qc_summary.txt << EOF
+cat > "${OUT_DIR}/${DATASET_NAME}_qc_summary.txt" << EOF
 ================================================================================
 PDAC GWAS Genotyping Quality Control Summary
 ================================================================================
@@ -204,9 +224,9 @@ NEXT STEPS
 ================================================================================
 EOF
 
-cat ${DATASET_NAME}_qc_summary.txt
+cat "${OUT_DIR}/${DATASET_NAME}_qc_summary.txt"
 echo ""
-echo "✓ Summary saved to: ${DATASET_NAME}_qc_summary.txt"
+echo "✓ Summary saved to: ${OUT_DIR}/${DATASET_NAME}_qc_summary.txt"
 
 # ============================================================================
 # STEP 3: Create R-based visualizations
@@ -215,26 +235,37 @@ echo ""
 echo "=== Creating visualizations (R) ==="
 echo ""
 
-cat > ${DATASET_NAME}_qc_visualizations.R << 'EOF'
+COUNTS_FILE="${OUT_DIR}/${DATASET_NAME}_qc_counts.tsv"
+cat > "$COUNTS_FILE" << EOF
+step	samples	variants
+Raw	${NSAMP_RAW}	${NVAR_RAW}
+Sample Call Rate	${NSAMP_02}	${NVAR_02}
+Sex Check	${NSAMP_03}	${NVAR_03}
+Heterozygosity	${NSAMP_04}	${NVAR_04}
+Variant Call Rate	${NSAMP_05}	${NVAR_05}
+Hardy-Weinberg	${NSAMP_06}	${NVAR_06}
+Relatedness	${NSAMP_07}	${NVAR_07}
+MAF Filter	${NSAMP_08}	${NVAR_08}
+EOF
+
+cat > "${OUT_DIR}/${DATASET_NAME}_qc_visualizations.R" << 'EOF'
 #!/usr/bin/env Rscript
 
 args <- commandArgs(trailingOnly = TRUE)
 dataset_name <- args[1]
 seed <- as.numeric(args[2])
+counts_file <- args[3]
+out_dir <- args[4]
 
 set.seed(seed)
 
-# Data for visualization
-steps <- c("Raw", "Sample\nCall Rate", "Sex\nCheck", "Heterozygosity", 
-           "Variant\nCall Rate", "Hardy-Weinberg", "Relatedness", "MAF\nFilter")
-
-# These will be filled from the actual dataset counts
-# For now, using generic template; actual script would read from files
-samples <- c(1461, 1450, 1448, 1445, 1445, 1445, 1420, 1420)
-variants <- c(430000, 430000, 430000, 430000, 428500, 428200, 428200, 420000)
+counts <- read.table(counts_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+steps <- gsub(" ", "\n", counts$step)
+samples <- counts$samples
+variants <- counts$variants
 
 # Create combined visualization
-pdf(file = paste0(dataset_name, "_qc_retention_rates.pdf"), width = 12, height = 8)
+pdf(file = file.path(out_dir, paste0(dataset_name, "_qc_retention_rates.pdf")), width = 12, height = 8)
 
 # Panel 1: Sample retention
 par(mfrow = c(1, 2), mar = c(10, 5, 3, 2))
@@ -255,14 +286,14 @@ dev.off()
 cat(sprintf("Retention visualization saved to: %s_qc_retention_rates.pdf\n", dataset_name))
 
 # Create decision tree (text-based for simplicity)
-pdf(file = paste0(dataset_name, "_qc_decision_tree.pdf"), width = 11, height = 8.5)
+pdf(file = file.path(out_dir, paste0(dataset_name, "_qc_decision_tree.pdf")), width = 11, height = 8.5)
 
 plot(0, 0, type = "n", xlim = c(0, 10), ylim = c(0, 10), axes = FALSE, 
      main = "PDAC GWAS QC Decision Tree", xlab = "", ylab = "", cex.main = 1.5)
 
 # Add text describing the pipeline
 text_y <- 9.5
-text(5, text_y, "Raw Genotypes (1461 samples, 430K variants)", 
+text(5, text_y, sprintf("Raw Genotypes (%s samples, %s variants)", samples[1], variants[1]),
      cex = 1, font = 2, adj = 0.5)
 
 steps_text <- c(
@@ -280,7 +311,7 @@ for (i in seq_along(steps_text)) {
   text(1, text_y, steps_text[i], cex = 0.85, adj = 0)
 }
 
-text(5, 0.8, "✓ Clean Dataset Ready for Association Testing", 
+text(5, 0.8, sprintf("Clean Dataset Ready for Association Testing (%s samples, %s variants)", samples[length(samples)], variants[length(variants)]),
      cex = 1, font = 2, adj = 0.5, col = "darkgreen")
 
 dev.off()
@@ -288,7 +319,7 @@ dev.off()
 cat(sprintf("Decision tree saved to: %s_qc_decision_tree.pdf\n", dataset_name))
 EOF
 
-Rscript ${DATASET_NAME}_qc_visualizations.R ${DATASET_NAME} ${SEED}
+Rscript "${OUT_DIR}/${DATASET_NAME}_qc_visualizations.R" "${DATASET_NAME}" "${SEED}" "$COUNTS_FILE" "$OUT_DIR"
 
 # ============================================================================
 # FINAL SUMMARY
@@ -299,14 +330,14 @@ echo "║          GENOTYPING QC PIPELINE COMPLETE                      ║"
 echo "╚════════════════════════════════════════════════════════════════╝"
 echo ""
 echo "✓ Final clean dataset:"
-echo "  - ${DATASET_NAME}_08_filt.bed/bim/fam"
+echo "  - ${OUT_DIR}/${DATASET_NAME}_08_filt.bed/bim/fam"
 echo "  - ${NSAMP_08} samples"
 echo "  - ${NVAR_08} variants"
 echo ""
 echo "✓ Summary and decision tree:"
-echo "  - ${DATASET_NAME}_qc_summary.txt"
-echo "  - ${DATASET_NAME}_qc_retention_rates.pdf"
-echo "  - ${DATASET_NAME}_qc_decision_tree.pdf"
+echo "  - ${OUT_DIR}/${DATASET_NAME}_qc_summary.txt"
+echo "  - ${OUT_DIR}/${DATASET_NAME}_qc_retention_rates.pdf"
+echo "  - ${OUT_DIR}/${DATASET_NAME}_qc_decision_tree.pdf"
 echo ""
 echo "Ready for downstream analysis:"
 echo "  → Section 2: Population stratification (PCA)"

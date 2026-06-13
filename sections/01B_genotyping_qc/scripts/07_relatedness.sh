@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 07: Relatedness & Sample Pruning (IBD/PI_HAT)
@@ -33,12 +33,25 @@
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_INPUT="${2:-.}"
+DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
+OUT_DIR="${3:-results/qc}"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: LD-based SNP pruning
@@ -57,11 +70,11 @@ echo ""
 #   - r2 > 0.2 (remove if more correlated than this)
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_06_filt \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_06_filt" \
   --indep-pairwise 50 5 0.2 \
-  --out ${DATASET_NAME}_07_prune
+  --out "${OUT_DIR}/${DATASET_NAME}_07_prune"
 
-echo "✓ LD-pruning complete. Kept $(wc -l < ${DATASET_NAME}_07_prune.prune.in) independent variants"
+echo "✓ LD-pruning complete. Kept $(wc -l < "${OUT_DIR}/${DATASET_NAME}_07_prune.prune.in") independent variants"
 
 # ============================================================================
 # STEP 2: Compute kinship coefficients
@@ -81,10 +94,10 @@ echo ""
 # Binary KING output (.king.gz) is memory-efficient for large cohorts.
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_06_filt \
-  --extract ${DATASET_NAME}_07_prune.prune.in \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_06_filt" \
+  --extract "${OUT_DIR}/${DATASET_NAME}_07_prune.prune.in" \
   --king-cutoff 0.1875 \
-  --out ${DATASET_NAME}_07_kinship
+  --out "${OUT_DIR}/${DATASET_NAME}_07_kinship"
 
 echo "✓ Kinship analysis complete"
 
@@ -99,21 +112,21 @@ echo ""
 # We need to invert this to get a removal list
 
 # Get samples to KEEP
-if [ -f ${DATASET_NAME}_07_kinship.king.cutoff.in.id ]; then
-  awk '{print $1, $2}' ${DATASET_NAME}_07_kinship.king.cutoff.in.id > ${DATASET_NAME}_07_keep_samples.txt
+if [ -f "${OUT_DIR}/${DATASET_NAME}_07_kinship.king.cutoff.in.id" ]; then
+  awk '{print $1, $2}' "${OUT_DIR}/${DATASET_NAME}_07_kinship.king.cutoff.in.id" > "${OUT_DIR}/${DATASET_NAME}_07_keep_samples.txt"
 else
   echo "No king.cutoff file found; using all samples"
-  awk '{print $1, $2}' ${DATASET_INPUT}/${DATASET_NAME}_06_filt.fam > ${DATASET_NAME}_07_keep_samples.txt
+  awk '{print $1, $2}' "${DATASET_INPUT}/${DATASET_NAME}_06_filt.fam" > "${OUT_DIR}/${DATASET_NAME}_07_keep_samples.txt"
 fi
 
 # Get all samples and find those NOT in the keep list
-awk '{print $1, $2}' ${DATASET_INPUT}/${DATASET_NAME}_06_filt.fam > ${DATASET_NAME}_07_all_samples.txt
+awk '{print $1, $2}' "${DATASET_INPUT}/${DATASET_NAME}_06_filt.fam" > "${OUT_DIR}/${DATASET_NAME}_07_all_samples.txt"
 comm -23 \
-  <(sort ${DATASET_NAME}_07_all_samples.txt) \
-  <(sort ${DATASET_NAME}_07_keep_samples.txt) \
-  > ${DATASET_NAME}_07_removal_list.txt
+  <(sort "${OUT_DIR}/${DATASET_NAME}_07_all_samples.txt") \
+  <(sort "${OUT_DIR}/${DATASET_NAME}_07_keep_samples.txt") \
+  > "${OUT_DIR}/${DATASET_NAME}_07_removal_list.txt"
 
-NREMOVE=$(wc -l < ${DATASET_NAME}_07_removal_list.txt)
+NREMOVE=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_07_removal_list.txt")
 echo "Related samples to remove: ${NREMOVE}"
 
 # ============================================================================
@@ -123,13 +136,20 @@ echo ""
 echo "=== Creating pruned (unrelated) dataset ==="
 echo ""
 
-plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_06_filt \
-  --remove ${DATASET_NAME}_07_removal_list.txt \
-  --make-bed \
-  --out ${DATASET_NAME}_07_filt
+if [ -s "${OUT_DIR}/${DATASET_NAME}_07_removal_list.txt" ]; then
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_06_filt" \
+    --remove "${OUT_DIR}/${DATASET_NAME}_07_removal_list.txt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_07_filt"
+else
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_06_filt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_07_filt"
+fi
 
-echo "✓ Relatedness-pruned dataset: ${DATASET_NAME}_07_filt.bed/bim/fam"
+echo "✓ Relatedness-pruned dataset: ${OUT_DIR}/${DATASET_NAME}_07_filt.bed/bim/fam"
 
 # ============================================================================
 # SUMMARY & NEXT STEP
@@ -138,8 +158,8 @@ echo ""
 echo "=== Summary ==="
 echo ""
 
-NSAMP_BEFORE=$(tail -n +2 ${DATASET_INPUT}/${DATASET_NAME}_06_filt.fam | wc -l)
-NSAMP_AFTER=$(tail -n +2 ${DATASET_NAME}_07_filt.fam | wc -l)
+NSAMP_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_06_filt.fam")
+NSAMP_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_07_filt.fam")
 NSAMP_REMOVED=$((NSAMP_BEFORE - NSAMP_AFTER))
 
 echo "Samples before relatedness filter: ${NSAMP_BEFORE}"
@@ -154,7 +174,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the MAF (minor allele frequency) filter:"
 echo ""
-echo "  bash 08_maf_filter.sh"
+echo "  bash scripts/01B_genotyping_qc/08_maf_filter.sh"
 echo ""
 echo "This will:"
 echo "  - Apply MAF threshold (--maf, context-dependent)"

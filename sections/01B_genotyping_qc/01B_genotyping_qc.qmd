@@ -1,156 +1,27 @@
 ---
-title: "Genotyping Quality Control (QC)"
-description: "Comprehensive sample-level and variant-level QC pipeline for GWAS"
-author: "Murat Güler"
-date: 2026-06-12
+title: "Section 1B notes: Genotyping QC"
+description: "Maintainer note for the QC section source files"
 ---
 
-## Overview
+The canonical website page for this section is:
 
-Genotyping quality control is the essential foundation for any genome-wide association study. A rigorous QC pipeline removes:
-
-- **Low-quality samples**: high missingness, sex discordance, population outliers, related individuals
-- **Low-quality variants**: low call rate, deviation from Hardy-Weinberg equilibrium, low minor allele frequency
-
-This section walks through the **full QC workflow** in the context of pancreatic cancer (PDAC) GWAS, where sample size is limited and rare variants matter for complex disease heritability.
-
-## Pipeline Overview
-
-```
-Raw Genotypes (pdac_demo.bed/bim/fam)
-    ↓
-1. Initial QC Statistics
-    ├─ Allele frequencies, missingness, heterozygosity
-    ↓
-2. Sample-Level QC (iterative)
-    ├─ Call rate (--mind): remove high-missingness samples
-    ├─ Sex check: identify and remove discordant samples
-    ├─ Heterozygosity: remove contamination/inbreeding outliers
-    ├─ Relatedness (IBD/PI_HAT): identify and prune related samples
-    ↓
-3. Variant-Level QC
-    ├─ Call rate (--geno): remove low-genotype variants
-    ├─ Hardy-Weinberg equilibrium (--hwe): remove deviant variants
-    ├─ MAF filtering (--maf): context-dependent filtering
-    ↓
-4. QC Decision Summary & Power Impact
-    └─ Document filtering thresholds and expected sample/variant retention
-    
-Clean Genotypes (ready for association testing)
+```text
+../../qc.qmd
 ```
 
-## Key Concepts in PDAC Context
+Keep the learner-facing QC tutorial there so the website has one clear page to review and edit.
+This folder keeps the source scripts and section notes:
 
-### Why QC Matters for Rare Diseases
-
-Pancreatic cancer GWAS poses unique QC challenges:
-
-- **Small sample size** (~250 cases in EUR): low statistical power, so removing even one outlier matters
-- **Rare variants contribute** to disease heritability; aggressive MAF filtering may discard signal
-- **Population stratification** is a confounder; PCA (Section 2) depends on clean genotypes
-- **Related samples** are common in disease cohorts; must remove or account for
-
-[PMID: 16385451]
-
-### Threshold Rationale
-
-Standard QC thresholds often assume large, healthy populations. For PDAC:
-
-- **Call rate (--mind)** — typically 0.02 (allow 2% missing). With 430K SNPs, a sample can have ~8,600 missing genotypes.
-- **Call rate (--geno)** — typically 0.05 (variants with >5% missing removed). Variants with poor genotyping are unreliable.
-- **HWE p-value** — typically p > 1e-6 (cases & controls separately). Cases may deviate due to disease association.
-- **MAF filtering** — context-dependent. For PDAC, *retain low-MAF* variants (--maf 0.01 or even lower) because rare variants often carry larger effect sizes in rare diseases.
-- **Relatedness (PI_HAT)** — typically PI_HAT > 0.1875 (2nd degree relatives or closer). Remove the lower-quality sample in each related pair.
-
-[PMID: 17701901]
-
-## Full QC Workflow
-
-The following scripts implement a comprehensive, reproducible QC pipeline:
-
-### Step 1: Initial Assessment
-Compute baseline statistics to understand data quality before filtering.
-- Output: allele frequencies, per-sample missing rates, per-sample heterozygosity
-
-### Step 2: Sample Call Rate (--mind)
-Remove samples with excessive missing data (platform/lab-specific quality issues).
-
-### Step 3: Sex Check
-Identify and remove sex-discordant samples or miscoded sex.
-
-### Step 4: Heterozygosity & Inbreeding
-Remove outliers (contamination, inbreeding, population structure).
-
-### Step 5: Variant Call Rate (--geno)
-Remove variants with high missingness (poor assay performance).
-
-### Step 6: Hardy-Weinberg Equilibrium (--hwe)
-Remove variants that deviate from HWE (potential genotyping errors, in controls only at first pass).
-
-### Step 7: Relatedness (IBD/PI_HAT)
-Identify and prune related individuals (keep only one per related pair).
-
-### Step 8: Minor Allele Frequency (--maf)
-Apply MAF filter. *In PDAC context, keep low-MAF variants* unless computational/power constraints demand otherwise.
-
-### Step 9: Decision Summary
-Document final dataset size and QC filtering impact on power.
-
-## Demo Dataset
-
-We use the synthetic PDAC dataset:
-- **1,461 individuals** (762 EUR, 349 AFR, 350 EAS)
-- **430,000 variants** (424K autosomal + 6K simulated chrX)
-- **Realistic missingness** injected: 8,480 variants with poor call rate, 25 samples with high missingness
-- **Simulated phenotype**: ABO-driven PDAC signal (1 causal locus at 9q34.2)
-
-[Reference: demo_dataset/README.md]
-
-## Running the Full Pipeline
-
-### ⚠️ Windows Users: Use WSL
-
-This pipeline uses bash scripts, PLINK2, and R. **If you're on Windows, use WSL2** (see [`WSL_SETUP.md`](../../docs/helpers/WSL_SETUP.md)):
-
-```bash
-# In WSL terminal:
-cd /mnt/s/Github/how-to-gwas-pdac
-bash wsl_setup.sh    # Install dependencies (one-time)
-
-bash demo_dataset/download_data.sh
-
-cd sections/01B_genotyping_qc/scripts
-bash 01_initial_qc_stats.sh
-# ... follow prompts for remaining scripts
+```text
+sections/01B_genotyping_qc/
+├── README.md
+└── scripts/
 ```
 
-### Linux/Mac Users
+The scripts are copied into the learner project as:
 
-Ensure PLINK2 and R are installed, then run:
-
-```bash
-# Download demo dataset (one-time setup)
-bash demo_dataset/download_data.sh
-
-# Run full QC pipeline
-cd sections/01B_genotyping_qc/scripts
-bash 01_initial_qc_stats.sh
-bash 02_sample_callrate.sh
-bash 03_sex_check.sh
-bash 04_heterozygosity.sh
-bash 05_variant_callrate.sh
-bash 06_hardy_weinberg.sh
-bash 07_relatedness.sh
-bash 08_maf_filter.sh
-bash 09_qc_summary.sh
+```text
+scripts/01B_genotyping_qc/
 ```
 
-Each script is self-contained and heavily commented, explaining not just *what* the command does but *why* in the PDAC context.
-
----
-
-## References
-
-[PMID: 16385451] – Hardy-Weinberg equilibrium and QC thresholds
-[PMID: 17701901] – Relatedness and sample pruning
-[PMID: 10944012] – Heterozygosity and contamination detection
+Use this file only for maintainer notes if needed; do not duplicate the tutorial narrative here.

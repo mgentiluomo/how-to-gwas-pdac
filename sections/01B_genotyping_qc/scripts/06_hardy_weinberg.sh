@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 06: Hardy-Weinberg Equilibrium (HWE) Test
@@ -27,19 +27,32 @@
 #   4. Keep all variants passing in controls (even if cases deviate)
 #
 # NOTES:
-#   - PDAC phenotype is in ../../demo_dataset/data/phenotype.txt
+#   - PDAC phenotype is in demo_data/phenotype.txt
 #   - Disease-associated variants may show HWE deviation in cases (expected)
 #   - Standard threshold: 1e-6 is stringent; 1e-4 is more lenient
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_INPUT="${2:-.}"
+DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
-PHENOTYPE_FILE="../../demo_dataset/data/phenotype.txt"
+PHENOTYPE_FILE="${3:-demo_data/phenotype.txt}"
+OUT_DIR="${4:-results/qc}"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Extract control IDs
@@ -60,9 +73,9 @@ echo ""
 
 echo "Extracting control samples..."
 
-awk '$3 == 1 {print $1, $2}' ${PHENOTYPE_FILE} > ${DATASET_NAME}_controls.txt
+awk '($3 == 1 || $3 == "1") {print $1, $2}' "$PHENOTYPE_FILE" > "${OUT_DIR}/${DATASET_NAME}_06_controls.txt"
 
-NCTRL=$(wc -l < ${DATASET_NAME}_controls.txt)
+NCTRL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_06_controls.txt")
 echo "Control samples: ${NCTRL}"
 
 # ============================================================================
@@ -82,12 +95,12 @@ echo ""
 #   Use --hwe 1e-4 (or even 1e-3 for discovery)
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_05_filt \
-  --keep ${DATASET_NAME}_controls.txt \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_05_filt" \
+  --keep "${OUT_DIR}/${DATASET_NAME}_06_controls.txt" \
   --hardy \
-  --out ${DATASET_NAME}_06_hwe
+  --out "${OUT_DIR}/${DATASET_NAME}_06_hwe"
 
-echo "✓ HWE test results: ${DATASET_NAME}_06_hwe.hardy"
+echo "✓ HWE test results: ${OUT_DIR}/${DATASET_NAME}_06_hwe.hardy"
 
 # ============================================================================
 # STEP 3: Identify HWE-failing variants
@@ -100,9 +113,19 @@ echo ""
 # hardy file format: CHR SNP TEST NOBS OBS_CT EXP_CT P
 # We want: TEST == "ALL" (or "UNAFF" for unaffected/controls) and P < 1e-6
 
-awk 'NR > 1 && $7 < 1e-6 {print $2}' ${DATASET_NAME}_06_hwe.hardy > ${DATASET_NAME}_06_hwe_exclude.txt
+awk '
+  NR == 1 {
+    for (i = 1; i <= NF; i++) {
+      gsub(/^#/, "", $i)
+      if ($i == "ID") id = i
+      if ($i == "P") p = i
+    }
+    next
+  }
+  id && p && $p != "NA" && $p < 1e-6 { print $id }
+' "${OUT_DIR}/${DATASET_NAME}_06_hwe.hardy" > "${OUT_DIR}/${DATASET_NAME}_06_hwe_exclude.txt"
 
-NHWE_FAIL=$(wc -l < ${DATASET_NAME}_06_hwe_exclude.txt)
+NHWE_FAIL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_06_hwe_exclude.txt")
 echo "Variants failing HWE (p < 1e-6): ${NHWE_FAIL}"
 
 # ============================================================================
@@ -112,13 +135,20 @@ echo ""
 echo "=== Removing HWE-failing variants ==="
 echo ""
 
-plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_05_filt \
-  --exclude ${DATASET_NAME}_06_hwe_exclude.txt \
-  --make-bed \
-  --out ${DATASET_NAME}_06_filt
+if [ -s "${OUT_DIR}/${DATASET_NAME}_06_hwe_exclude.txt" ]; then
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_05_filt" \
+    --exclude "${OUT_DIR}/${DATASET_NAME}_06_hwe_exclude.txt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_06_filt"
+else
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_05_filt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_06_filt"
+fi
 
-echo "✓ HWE-filtered dataset: ${DATASET_NAME}_06_filt.bed/bim/fam"
+echo "✓ HWE-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_06_filt.bed/bim/fam"
 
 # ============================================================================
 # SUMMARY & NEXT STEP
@@ -127,8 +157,8 @@ echo ""
 echo "=== Summary ==="
 echo ""
 
-NVAR_BEFORE=$(tail -n +2 ${DATASET_INPUT}/${DATASET_NAME}_05_filt.bim | wc -l)
-NVAR_AFTER=$(tail -n +2 ${DATASET_NAME}_06_filt.bim | wc -l)
+NVAR_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_05_filt.bim")
+NVAR_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_06_filt.bim")
 NVAR_REMOVED=$((NVAR_BEFORE - NVAR_AFTER))
 
 echo "Variants before HWE filter: ${NVAR_BEFORE}"
@@ -143,7 +173,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the relatedness check:"
 echo ""
-echo "  bash 07_relatedness.sh"
+echo "  bash scripts/01B_genotyping_qc/07_relatedness.sh"
 echo ""
 echo "This will:"
 echo "  - Compute kinship coefficients (IBD, PI_HAT)"

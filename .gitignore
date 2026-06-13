@@ -6,3 +6,11 @@
 .DS_Store
 
 **/*.quarto_ipynb
+
+# Generated learner setup manifests
+scripts/dev/section_manifest.txt
+scripts/dev/script_manifest.txt
+scripts/dev/tool_manifest.tsv
+
+# Generated learner tool installs
+tools/

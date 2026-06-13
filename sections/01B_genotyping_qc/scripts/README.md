@@ -6,13 +6,13 @@ This folder contains annotated scripts for the **full sample and variant-level Q
 
 | # | Script | Purpose | Input | Output | Key Threshold |
 |---|--------|---------|-------|--------|---------------|
-| 1 | `01_initial_qc_stats.sh` | Baseline statistics | pdac_demo.bed/bim/fam | afreq, het, imiss, lmiss | — |
-| 2 | `02_sample_callrate.sh` | Remove high-missingness samples | Stats from 01 | imiss filtered | --mind 0.02 |
+| 1 | `01_initial_qc_stats.sh` | Baseline statistics | `demo_data/pdac_demo.bed/bim/fam` | afreq, het, smiss, vmiss | — |
+| 2 | `02_sample_callrate.sh` | Remove high-missingness samples | Raw demo data | sample-filtered dataset | --mind 0.02 |
 | 3 | `03_sex_check.sh` | Identify sex discordance | Dataset from 02 | sexcheck, discordant list | F stat anomaly |
-| 4 | `04_heterozygosity.sh` | Remove contamination/outliers | Dataset from 02 | het outliers list, plots | F ± 3 SD |
-| 5 | `05_variant_callrate.sh` | Remove low-genotype variants | Dataset from 02 | filtered variants | --geno 0.05 |
+| 4 | `04_heterozygosity.sh` | Remove contamination/outliers | Dataset from 03 | het outliers list, plots | F ± 3 SD |
+| 5 | `05_variant_callrate.sh` | Remove low-genotype variants | Dataset from 04 | filtered variants | --geno 0.05 |
 | 6 | `06_hardy_weinberg.sh` | Remove HWE-deviant variants | Dataset from 05 | HWE filtered (controls) | p > 1e-6 |
-| 7 | `07_relatedness.sh` | Prune related samples (IBD) | Dataset from 05 | pruned samples list | PI_HAT > 0.1875 |
+| 7 | `07_relatedness.sh` | Prune related samples (IBD) | Dataset from 06 | pruned samples list | PI_HAT > 0.1875 |
 | 8 | `08_maf_filter.sh` | Apply MAF threshold (context-dependent) | Dataset from 07 | final variants | --maf 0.01 (PDAC) |
 | 9 | `09_qc_summary.sh` | Summarize QC impact | All datasets | summary table, decision tree | — |
 
@@ -34,21 +34,21 @@ wsl --install
 
 # Then, in WSL terminal:
 cd /mnt/s/Github/how-to-gwas-pdac
-bash wsl_setup.sh    # Install dependencies (one-time)
+bash scripts/dev/tools_setup.sh    # Install PLINK tools (one-time)
 ```
 
 See [`../../WSL_SETUP.md`](../../WSL_SETUP.md) for detailed Windows/WSL instructions.
 
 ### Linux/Mac Users
 
-Ensure you have PLINK2 and R installed:
+Run `bash scripts/dev/tools_setup.sh` from the tutorial project root to install PLINK2 and PLINK1.9. R is needed later for the heterozygosity plots and final QC figures.
 
 ```bash
-# Ubuntu/Debian
-sudo apt-get install plink2 r-base
+# Ubuntu/Debian, for R plots used in later QC steps
+sudo apt-get install r-base
 
-# macOS (with Homebrew)
-brew install plink2
+# macOS, for R plots used in later QC steps
+brew install r
 ```
 
 ## Running the Full Pipeline
@@ -56,27 +56,27 @@ brew install plink2
 Each script is **self-contained**: it outputs the command for the next step at the end.
 
 ```bash
-bash 01_initial_qc_stats.sh     # ~1 min
-bash 02_sample_callrate.sh      # ~1 min
-bash 03_sex_check.sh            # ~1 min
-bash 04_heterozygosity.sh       # ~2 min (includes R visualization)
-bash 05_variant_callrate.sh     # ~1 min
-bash 06_hardy_weinberg.sh       # ~2 min (separate by case/control)
-bash 07_relatedness.sh          # ~5 min (kinship computation)
-bash 08_maf_filter.sh           # ~1 min
-bash 09_qc_summary.sh           # ~1 min (report final numbers)
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh     # ~1 min
+bash scripts/01B_genotyping_qc/02_sample_callrate.sh      # ~1 min
+bash scripts/01B_genotyping_qc/03_sex_check.sh            # ~1 min
+bash scripts/01B_genotyping_qc/04_heterozygosity.sh       # ~2 min (includes R visualization)
+bash scripts/01B_genotyping_qc/05_variant_callrate.sh     # ~1 min
+bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh       # ~2 min
+bash scripts/01B_genotyping_qc/07_relatedness.sh          # ~5 min (kinship computation)
+bash scripts/01B_genotyping_qc/08_maf_filter.sh           # ~1 min
+bash scripts/01B_genotyping_qc/09_qc_summary.sh           # ~1 min (report final numbers)
 ```
 
 ## Reproducibility & Customization
 
 All scripts expose a `--seed` argument:
 ```bash
-bash 01_initial_qc_stats.sh 2026
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh 2026
 ```
 
 And accept dataset paths as arguments (for chaining or reuse):
 ```bash
-bash 02_sample_callrate.sh /path/to/dataset
+bash scripts/01B_genotyping_qc/02_sample_callrate.sh 2026 /path/to/raw_data
 ```
 
 ## Output Files
@@ -84,18 +84,17 @@ bash 02_sample_callrate.sh /path/to/dataset
 After running the full pipeline, you will have:
 
 ```
-pdac_demo_qc.*.afreq       — allele frequencies
-pdac_demo_qc.*.imiss       — per-sample missing rates
-pdac_demo_qc.*.lmiss       — per-variant missing rates
-pdac_demo_qc.*.het         — heterozygosity (F statistic)
-pdac_demo_qc.*.sexcheck    — sex concordance check
-pdac_demo_qc.*.het.outliers.txt — list of het outliers to remove
-pdac_demo_qc.*.hwe         — Hardy-Weinberg p-values
-pdac_demo_qc.*.king.gz     — kinship coefficients (binary format)
-pdac_demo_qc.*.king_removal.txt — list of related samples to remove
-pdac_demo_qc.*.afreq.filtered   — final allele frequencies (post-QC)
-pdac_demo_qc_summary.txt   — final report
-pdac_demo_qc_decision_tree.png — decision tree visualization
+results/qc/pdac_demo_01_qc.afreq       — allele frequencies
+results/qc/pdac_demo_01_qc.smiss       — per-sample missing rates
+results/qc/pdac_demo_01_qc.vmiss       — per-variant missing rates
+results/qc/pdac_demo_04_het.het        — heterozygosity (F statistic)
+results/qc/pdac_demo_03_sexcheck.sexcheck — sex concordance check
+results/qc/pdac_demo_04_het_outliers.txt — list of het outliers to remove
+results/qc/pdac_demo_06_hwe.hardy      — Hardy-Weinberg p-values
+results/qc/pdac_demo_07_kinship.*      — kinship output files
+results/qc/pdac_demo_08_afreq.afreq    — final allele frequencies (post-QC)
+results/qc/pdac_demo_qc_summary.txt    — final report
+results/qc/pdac_demo_qc_decision_tree.pdf — decision tree visualization
 ```
 
 ## Context: PDAC and QC Choices

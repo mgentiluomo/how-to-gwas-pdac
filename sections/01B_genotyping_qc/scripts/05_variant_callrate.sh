@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 05: Variant Call Rate Filtering
@@ -26,12 +26,25 @@
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_INPUT="${2:-.}"
+DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
+OUT_DIR="${3:-results/qc}"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Filter variants by call rate
@@ -54,12 +67,12 @@ echo ""
 #   Post-QC, you can always be more stringent if power is not a concern.
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_04_filt \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_04_filt" \
   --geno 0.05 \
   --make-bed \
-  --out ${DATASET_NAME}_05_filt
+  --out "${OUT_DIR}/${DATASET_NAME}_05_filt"
 
-echo "✓ Variant-filtered dataset: ${DATASET_NAME}_05_filt.bed/bim/fam"
+echo "✓ Variant-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_05_filt.bed/bim/fam"
 
 # ============================================================================
 # SUMMARY & NEXT STEP
@@ -68,10 +81,10 @@ echo ""
 echo "=== Summary ==="
 echo ""
 
-NVAR_BEFORE=$(tail -n +2 ${DATASET_INPUT}/${DATASET_NAME}_04_filt.bim | wc -l)
-NVAR_AFTER=$(tail -n +2 ${DATASET_NAME}_05_filt.bim | wc -l)
+NVAR_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_04_filt.bim")
+NVAR_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_05_filt.bim")
 NVAR_REMOVED=$((NVAR_BEFORE - NVAR_AFTER))
-PERCENT_RETAINED=$(echo "scale=1; $NVAR_AFTER * 100 / $NVAR_BEFORE" | bc)
+PERCENT_RETAINED=$(awk -v after="$NVAR_AFTER" -v before="$NVAR_BEFORE" 'BEGIN {printf "%.1f", after * 100 / before}')
 
 echo "Variants before geno filter: ${NVAR_BEFORE}"
 echo "Variants after geno filter:  ${NVAR_AFTER}"
@@ -86,7 +99,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the Hardy-Weinberg equilibrium test:"
 echo ""
-echo "  bash 06_hardy_weinberg.sh"
+echo "  bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh"
 echo ""
 echo "This will:"
 echo "  - Test variants for deviation from Hardy-Weinberg equilibrium"

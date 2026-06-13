@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Initialize PDAC GWAS Project Structure (bash/macOS/Linux)
@@ -8,9 +8,10 @@
 # Usage: bash init_project.sh
 #
 # Creates:
-#   - scripts/         (where you'll add QC scripts)
+#   - scripts/         (where section scripts are copied)
+#   - scripts/dev/     (utility scripts)
 #   - demo_data/       (for downloaded dataset)
-#   - tools/bin/       (for plink, plink2, R executables)
+#   - tools/bin/       (for PLINK tool links)
 #   - data_processed/  (intermediate outputs)
 #   - results/         (organized by analysis type)
 #
@@ -36,6 +37,7 @@ echo ""
 # Define directory structure
 dirs=(
     'scripts'
+    'scripts/dev'
     'demo_data'
     'tools/bin'
     'data_processed'
@@ -79,19 +81,35 @@ echo -e "${CYAN}╔════════════════════�
 echo -e "${CYAN}║  Next Steps:                                                 ║${NC}"
 echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
-echo -e "${YELLOW}1. Add QC scripts to scripts/ folder:${NC}"
+echo -e "${YELLOW}1. Download and organize all scripts by section:${NC}"
 echo -e "   ${NC}git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git"
-echo -e "   ${NC}cp how-to-gwas-pdac/sections/01B_genotyping_qc/scripts/*.sh scripts/"
+echo -e "   ${NC}find how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;"
+echo -e "   ${NC}: > scripts/dev/section_manifest.txt"
+echo -e "   ${NC}: > scripts/dev/script_manifest.txt"
+echo -e "   ${NC}for section_dir in how-to-gwas-pdac/sections/*/; do"
+echo -e "   ${NC}  section=\$(basename \"\$section_dir\")"
+echo -e "   ${NC}  if [ -d \"\$section_dir/scripts\" ]; then"
+echo -e "   ${NC}    mkdir -p \"scripts/\$section\""
+echo -e "   ${NC}    echo \"scripts/\$section\" >> scripts/dev/section_manifest.txt"
+echo -e "   ${NC}    find \"\$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/\$section/\" \\;"
+echo -e "   ${NC}    find \"scripts/\$section\" -maxdepth 1 -type f | sort >> scripts/dev/script_manifest.txt"
+echo -e "   ${NC}  fi"
+echo -e "   ${NC}done"
+echo -e "   ${NC}find scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort >> scripts/dev/script_manifest.txt"
+echo -e "   ${NC}sort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt"
+echo -e "   ${NC}sort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt"
+echo -e "   ${NC}rm -r how-to-gwas-pdac"
 echo ""
-echo -e "${YELLOW}2. Download demo data:${NC}"
+echo -e "${YELLOW}2. Download and verify demo data:${NC}"
 echo -e "   ${NC}bash scripts/dev/download_demo_data.sh"
 echo ""
-echo -e "${YELLOW}3. Install PLINK tools to tools/bin/ (see docs/helpers/SETUP_PROJECT_STRUCTURE.md):${NC}"
-echo -e "   ${NC}Download PLINK2 and PLINK1.9 from official sources"
-echo -e "   ${NC}Place executables in tools/bin/"
+echo -e "${YELLOW}3. Install/check required tools and write the tool manifest:${NC}"
+echo -e "   ${NC}bash scripts/dev/tools_setup.sh"
 echo ""
-echo -e "${YELLOW}4. Set PATH and run first QC script:${NC}"
-echo -e "   ${NC}export PATH=\"\$(pwd)/tools/bin:\$PATH\""
+echo -e "${YELLOW}4. Test your setup:${NC}"
+echo -e "   ${NC}bash scripts/dev/test.sh"
+echo ""
+echo -e "${YELLOW}5. Run your first QC script:${NC}"
 echo -e "   ${NC}bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh"
 echo ""
 echo -e "${CYAN}For detailed instructions, see:${NC}"

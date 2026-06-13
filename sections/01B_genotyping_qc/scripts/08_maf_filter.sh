@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 08: Minor Allele Frequency (MAF) Filter
@@ -35,13 +35,26 @@
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_INPUT="${2:-.}"
+DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
-MAF_THRESHOLD="${3:-0.01}"  # Default: 1% (PDAC context)
+OUT_DIR="${3:-results/qc}"
+MAF_THRESHOLD="${4:-0.01}"  # Default: 1% (PDAC context)
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Apply MAF filter
@@ -64,12 +77,12 @@ echo ""
 # --maf 0.01 keeps variants where the rarer allele appears in ≥1% of the sample
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_07_filt \
-  --maf ${MAF_THRESHOLD} \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_07_filt" \
+  --maf "${MAF_THRESHOLD}" \
   --make-bed \
-  --out ${DATASET_NAME}_08_filt
+  --out "${OUT_DIR}/${DATASET_NAME}_08_filt"
 
-echo "✓ MAF-filtered dataset: ${DATASET_NAME}_08_filt.bed/bim/fam"
+echo "✓ MAF-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_08_filt.bed/bim/fam"
 
 # ============================================================================
 # STEP 2: Display filtered allele spectrum
@@ -80,14 +93,14 @@ echo ""
 
 # Compute final allele frequencies
 plink2 \
-  --bfile ${DATASET_NAME}_08_filt \
-  --freq counts \
-  --out ${DATASET_NAME}_08_afreq
+  --bfile "${OUT_DIR}/${DATASET_NAME}_08_filt" \
+  --freq \
+  --out "${OUT_DIR}/${DATASET_NAME}_08_afreq"
 
 # Summary statistics on final dataset
 echo "Final dataset summary:"
-NVAR_FINAL=$(tail -n +2 ${DATASET_NAME}_08_filt.bim | wc -l)
-NSAMP_FINAL=$(tail -n +2 ${DATASET_NAME}_08_filt.fam | wc -l)
+NVAR_FINAL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_08_filt.bim")
+NSAMP_FINAL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_08_filt.fam")
 
 # Count variants by MAF bins
 echo ""
@@ -102,7 +115,7 @@ awk 'NR > 1 {
 }
 END {
   for (b in count) print "  " b ": " count[b]
-}' ${DATASET_NAME}_08_afreq.afreq | sort
+}' "${OUT_DIR}/${DATASET_NAME}_08_afreq.afreq" | sort
 
 echo ""
 echo "Total variants: ${NVAR_FINAL}"
@@ -116,8 +129,8 @@ echo ""
 echo "=== Summary ==="
 echo ""
 
-NVAR_BEFORE=$(tail -n +2 ${DATASET_INPUT}/${DATASET_NAME}_07_filt.bim | wc -l)
-NVAR_AFTER=$(tail -n +2 ${DATASET_NAME}_08_filt.bim | wc -l)
+NVAR_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_07_filt.bim")
+NVAR_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_08_filt.bim")
 NVAR_REMOVED=$((NVAR_BEFORE - NVAR_AFTER))
 
 echo "Variants before MAF filter: ${NVAR_BEFORE}"
@@ -132,7 +145,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the final QC summary:"
 echo ""
-echo "  bash 09_qc_summary.sh"
+echo "  bash scripts/01B_genotyping_qc/09_qc_summary.sh"
 echo ""
 echo "This will:"
 echo "  - Summarize total samples and variants filtered at each step"

@@ -1,5 +1,5 @@
 ---
-title: "Before you start: setup and your first QC pipeline"
+title: "Before you start: setup"
 description: "Get your computer ready to run the GWAS pipeline"
 ---
 
@@ -7,8 +7,8 @@ description: "Get your computer ready to run the GWAS pipeline"
 This page gets your computer ready and walks you through your **first GWAS QC command**. By the end you will have:
 - Set up a portable project folder
 - Downloaded the demo dataset  
-- Installed PLINK2 and PLINK1.9
-- Run your first QC script that confirms everything works
+- Installed the required tools (currently PLINK2, PLINK1.9, METAL, REGENIE, and R)
+- Run your first test script that confirms everything works
 
 ::: {.callout-note title="What you will need"}
 - A computer running **Windows (with WSL2), macOS, or Linux**
@@ -21,20 +21,83 @@ You do **not** need any programming experience. Every command is provided in ful
 
 ## A note on the command line {#sec-terminal}
 
-Most steps in this guide are typed into a **terminal** (also called a "command line" or "console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
+Most steps in this guide are typed into a **SHELL** (also called a "command line" or "console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
 
 - **Windows:** You must use **WSL2 terminal** (see Step 0). WSL2 gives you Linux inside Windows.
 - **macOS:** Open the *Terminal* app (in *Applications → Utilities*).
 - **Linux:** Open your *Terminal*.
 - **Inside RStudio:** there is a *Terminal* tab next to the *Console* tab — you can use that too.
 
-Throughout the guide, lines you type into the terminal look like this:
+Let's practice using the terminal before we dive into the pipeline.
+
+Throughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice
+block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.
+
+ Please click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press <kbd>Enter</kbd> to run them. Don't worry if you don't understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Windows/Linux, or <kbd>Cmd</kbd> + <kbd>V</kbd> on macOS.
+
 
 ```bash
-bash scripts/01_initial_qc_stats.sh
+echo "Welcome to the GWAS tutorial."
+echo "1) Where am I?"
+pwd
+
+echo "2) What is in this folder?"
+ls
+
+echo "3) Make a practice folder."
+mkdir -p gwas_practice
+
+echo "4) Make a tiny practice file."
+echo "GWAS practice line 1: samples" > gwas_practice/hello.txt
+echo "GWAS practice line 2: variants" >> gwas_practice/hello.txt
+echo "GWAS practice line 3: quality control" >> gwas_practice/hello.txt
+
+echo "5) Print the whole file with cat."
+cat gwas_practice/hello.txt
+
+echo "6) Print the first two lines with head."
+head -n 2 gwas_practice/hello.txt
+
+echo "7) Print the last two lines with tail."
+tail -n 2 gwas_practice/hello.txt
+
+echo "8) Show the file with less."
+less -F -X gwas_practice/hello.txt
+
+echo "9) Remove the practice file and folder."
+rm gwas_practice/hello.txt
+rmdir gwas_practice
+
+echo "Done. You just used pwd, ls, mkdir, cat, head, tail, less, rm, and rmdir."
 ```
 
-Copy the command, paste it into your terminal, and press <kbd>Enter</kbd>. That's it.
+The commands you just ran do the following:
+
+- `echo` prints the text to the terminal. You can also use it to write text into files with `>` (create, overwrite) and `>>` (append, add end of file).
+- `pwd` prints your current folder.
+- `ls` lists files in the current folder.
+- `mkdir` creates folders. The -p argument allows you to create parent folders if they don't exist.
+- `cat` prints a whole file.
+- `head` and `tail` show the beginning and end of a file.
+- `less` opens a file for reading. You need to press `q`to exit from reading mode. push up and down arrows to scroll. Here we use `less -F -X`, so this tiny file is shown and the
+  command returns automatically.
+- `rm` removes a file.
+- `rmdir` removes an empty folder.
+
+In this exercise, `rm` only removes the practice file you just created, and `rmdir` removes the
+empty practice folder. This is a safe way to practice removing files without accidentally deleting
+important data. There is also `#rm -rf`, which can remove folders and files recursively and without
+asking questions. The `#` prefix indicates this is a commented-out command. Please be **very careful** with this command it will permanently delete data.
+
+If you want to learn more about these commands, you can check their manual pages by typing
+`man <command>` (for example, `man ls`) in the terminal.
+
+If you have any issues with these commands, don't worry. This is just a practice block to get you
+familiar with the terminal. Basic Bash knowledge **is not required**, but it will help you feel more
+comfortable as you move through the pipeline. There are many online materials available; here is
+one [recommendation](https://datacarpentry.github.io/shell-genomics/).
+
+**If you do not know how to open the terminal, just follow the next instructions (Step 0) carefully and ask for help if you get stuck.**
 
 ---
 
@@ -68,12 +131,12 @@ Before you begin, set up your OS environment.
 In the WSL2 bash terminal, run:
 ```bash
 sudo apt-get update
-sudo apt-get install git curl wget
+sudo apt-get install git curl wget unzip
 ```
 
 ✅ **WSL2 is now ready. From here on, all commands use this bash terminal.**
 
-For help troubleshooting WSL2, see [WSL_SETUP.md](docs/helpers/WSL_SETUP.md).
+For help troubleshooting WSL2, see [WSL Setup](docs/helpers/WSL_SETUP.md).
 
 ### macOS and Linux
 
@@ -88,17 +151,53 @@ Your system already has bash. No setup needed for Step 0.
 Choose any location on your computer and create a folder named `gwas_tutorial`. This will be your **working folder** for the entire pipeline.
 
 ```bash
-mkdir -p ~/gwas_tutorial
-cd ~/gwas_tutorial
+DIR="$HOME/gwas_tutorial"
+mkdir -p "$DIR"
+cd "$DIR"
 ```
 
-> **Tip:** You can place this folder anywhere: Desktop, Documents, custom path — it doesn't matter. Everything is portable because we use relative paths.
+::: {.callout-tip title="Tip"}
+You can place this folder anywhere: Desktop, Documents, custom path — it doesn't matter. Everything is portable because we use relative paths. `DIR` is a variable that holds the path to your project folder. `$HOME` means "home directory", so this creates the folder in your home directory. You can also create it on other drives or directories by changing the `DIR` variable, for example `DIR="/your/desired/directory"`.
+:::
 
 ---
 
 ## Step 2 — Create the directory structure {#sec-directories}
 
 Create the folder structure that keeps scripts, data, and tools organized.
+
+First let's check the project folder created successfully:
+
+```bash
+if [ -d "$DIR" ]; then
+  printf "%b\n"
+  printf "%b\n"
+  printf "%b\n" "✓ Project folder created successfully: $DIR"
+  printf "%b\n"
+  printf "%b\n"
+  printf "%b\n" "[NEXT] Stay in this folder for the next commands."
+  printf "%b\n"
+  printf "%b\n"
+  printf "%s\n\n" "Scripts, data, tools, and results will be stored here."
+else
+  printf "%b\n"
+  printf "%b\n"
+  printf "%b\n" "✗ Failed to create project folder: $DIR"
+  printf "%b\n"
+  printf "%b\n"
+  printf "%b\n" "[Go to previous step] and make sure the command to create the folder ran successfully."
+  exit 1
+fi
+```
+If the folder was created successfully, you should see a message like:
+
+```✓ Project folder created successfully: /home/user/gwas_tutorial 
+[NEXT] Stay in this folder for the next commands.
+Scripts, data, tools, and results will be stored here.```
+
+If you see an error message instead, please go back to the previous step and make sure the command to create the folder ran successfully.
+
+Next, create the subfolders for scripts, data, tools, and results. You can do this with one command or create them manually.
 
 ::: {.panel-tabset}
 
@@ -108,13 +207,20 @@ Download and run the setup script:
 
 ```bash
 # Download the automated setup script
-wget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/init_project.sh
+curl -L https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -o init_project.sh
 
 # Run it
 bash init_project.sh
 ```
 
 This creates all folders automatically.
+
+If `curl` is not available on your system, use `wget` instead:
+
+```bash
+wget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -O init_project.sh
+bash init_project.sh
+```
 
 ### Manual with mkdir
 
@@ -124,6 +230,7 @@ Create folders manually:
 # Create all needed folders
 mkdir -p \
     scripts \
+    scripts/dev \
     demo_data \
     tools/bin \
     data_processed \
@@ -132,7 +239,7 @@ mkdir -p \
 
 :::
 
-Your folder now looks like this:
+After Step 3, your folder will look like this:
 
 ```
 gwas_tutorial/
@@ -141,7 +248,9 @@ gwas_tutorial/
 │   │   ├── download_demo_data.sh
 │   │   ├── tools_setup.sh
 │   │   ├── test.sh
-│   │   └── init_project.sh
+│   │   ├── init_project.sh
+│   │   ├── section_manifest.txt
+│   │   └── script_manifest.txt
 │   ├── 01B_genotyping_qc/           # QC scripts
 │   │   ├── 01_initial_qc_stats.sh
 │   │   ├── 02_sample_callrate.sh
@@ -153,7 +262,14 @@ gwas_tutorial/
 ├── tools/bin/                       # Tools (eg PLINK, Step 5)
 ├── data_processed/                  # Processed output files
 └── results/                         # Results organized by workflow
+    └── qc/                          # QC output files
 ```
+
+
+::: {.callout-tip title="Setup helper pages"}
+For a compact project-folder overview, see [Setup Project Structure](docs/helpers/SETUP_PROJECT_STRUCTURE.md). If you are on Windows/WSL2, keep [WSL Setup](docs/helpers/WSL_SETUP.md) nearby for path and terminal troubleshooting.
+:::
+
 
 ---
 
@@ -165,28 +281,45 @@ Clone the GitHub repo to get all the GWAS pipeline scripts organized by section:
 # Clone the repo (temporary)
 git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git
 
+# Copy utility/dev scripts
+mkdir -p scripts/dev
+find how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \;
+
+# Start fresh manifest files for the setup test
+: > scripts/dev/section_manifest.txt
+: > scripts/dev/script_manifest.txt
+
 # Copy section scripts directly into section folders
 for section_dir in how-to-gwas-pdac/sections/*/; do
   section=$(basename "$section_dir")
-  mkdir -p "scripts/$section"
-  cp "$section_dir/scripts"/* "scripts/$section/"
+  if [ -d "$section_dir/scripts" ]; then
+    mkdir -p "scripts/$section"
+    echo "scripts/$section" >> scripts/dev/section_manifest.txt
+    find "$section_dir/scripts" -maxdepth 1 -type f -exec cp {} "scripts/$section/" \;
+    find "scripts/$section" -maxdepth 1 -type f | sort >> scripts/dev/script_manifest.txt
+  fi
 done
 
-# Copy utility/dev scripts
-cp how-to-gwas-pdac/scripts/dev/* scripts/dev/
+# Add utility/dev scripts to the script manifest
+find scripts/dev -maxdepth 1 -type f -name "*.sh" | sort >> scripts/dev/script_manifest.txt
+sort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt
+sort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt
 
-# Clean up
-rm -rf how-to-gwas-pdac
+# Optional cleanup: delete only the temporary cloned copy after scripts are copied
+rm -r how-to-gwas-pdac
 ```
 
 Verify the scripts downloaded:
 
 ```bash
-# Check QC scripts
+# Check which section folders were copied
+cat scripts/dev/section_manifest.txt
+
+# Check the currently available QC scripts
 ls scripts/01B_genotyping_qc/
 ```
 
-You should see: `01_initial_qc_stats.sh` through `09_qc_summary.sh`
+At this stage, the section list should include `scripts/01B_genotyping_qc`, and you should see `01_initial_qc_stats.sh` through `09_qc_summary.sh`.
 
 And utility scripts:
 
@@ -194,7 +327,7 @@ And utility scripts:
 ls scripts/dev/
 ```
 
-You should see: `download_demo_data.sh`, `tools_setup.sh`, `test.sh`, `init_project.sh`
+You should see: `download_demo_data.sh`, `tools_setup.sh`, `test.sh`, `init_project.sh`, plus `section_manifest.txt` and `script_manifest.txt`.
 
 ---
 
@@ -212,11 +345,11 @@ Run the download script from your project:
 bash scripts/dev/download_demo_data.sh
 ```
 
-This downloads all 7 files automatically and verifies them.
+This downloads all 7 files automatically and verifies them. It uses `curl`, which is already available on most macOS and Linux systems.
 
 ### Manual with wget
 
-Download files individually:
+Download files individually. If your system has `curl` but not `wget`, use the automated script instead.
 
 ```bash
 cd ~/gwas_tutorial  # Make sure you're in your project folder
@@ -257,7 +390,7 @@ If any file fails verification, the script will tell you which one and suggest r
 
 ## Step 5 — Install dependencies {#sec-install}
 
-Install PLINK2, PLINK1.9, and other required tools.
+Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.
 
 ::: {.panel-tabset}
 
@@ -269,29 +402,203 @@ Run the setup script from your project:
 bash scripts/dev/tools_setup.sh
 ```
 
-The script will:
-- Download PLINK2 to `tools/bin/`
-- Download PLINK1.9 to `tools/bin/`
-- Configure your PATH so both are accessible
+This script will:
+- Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon)
+- Download the correct PLINK2 and PLINK1.9 binaries from official sources
+- Download the official precompiled METAL binary for Linux/WSL or macOS
+- Install micromamba into `tools/micromamba/`
+- Install REGENIE into a micromamba environment named `regenie_env`
+- Extract and organize command-line tools in `tools/plink2/`, `tools/plink1.9/`, `tools/metal/`, `tools/micromamba/`, and `tools/regenie/`
+- Create symlinks in `tools/bin/` for easy access
+- Update your PATH so you can run `plink2`, `plink`, `metal`, and `regenie` from anywhere
+- Write `scripts/dev/tool_manifest.tsv`, which lists the tools checked by `test.sh`
+- Install wget, unzip, tar, and bzip2 if needed
+
+When finished, you'll see:
+```
+Detected: OS=Linux, Architecture=x86_64_avx2
+  ✓ PLINK2: PLINK v2.00a5 (64-bit build)
+  ✓ PLINK1.9: PLINK v1.90b7.2
+  ✓ METAL
+  ✓ REGENIE: regenie v...
+```
+
+The tool list used by the setup test is saved here:
+
+```bash
+cat scripts/dev/tool_manifest.tsv
+```
+
+REGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under `tools/micromamba-root/`, so users do not need an existing conda installation.
+
+The setup script also checks R. If it reports that R is missing, install R before running the setup test. On WSL/Linux you can usually use:
+
+```bash
+sudo apt-get install -y r-base
+```
+
+On macOS with Homebrew:
+
+```bash
+brew install r
+```
+
+Then run the tool setup again:
+
+```bash
+bash scripts/dev/tools_setup.sh
+```
 
 ### Manual Installation
 
-Install tools manually if you prefer. **PLINK** is the workhorse program for genotype data. We use **PLINK 2** (the command is `plink2`). It is a single program file — there is **no installer**: you download it, unzip it, and you are done.
+If you prefer to install manually:
 
-#### PLINK 2
+#### 1. Download PLINK2
 
-1. Go to the official download page: <https://www.cog-genomics.org/plink/2.0/>
-2. Download the build for your operating system (Linux / macOS / Windows).
-3. **Unzip** it. Inside you will find the program file: `plink2` (macOS/Linux) or `plink2.exe` (Windows).
+Visit: <https://www.cog-genomics.org/plink/2.0/>
 
-::: {.callout-tip title="The simplest setup"}
-Put the `plink2` (or `plink2.exe`) file **in the same folder as your tools**
-(`tools/bin/`). Then you can run it as `plink2` without worrying about installation paths. More advanced users can instead add PLINK to their system `PATH`.
-:::
+Choose the build for your system:
+- **Linux (Intel, AVX2):** `plink2_linux_avx2_*.zip`
+- **Linux (AMD, AVX2):** `plink2_linux_amd_avx2_*.zip`
+- **Linux (64-bit, no AVX2):** `plink2_linux_x86_64_*.zip`
+- **macOS (Intel, AVX2):** `plink2_mac_avx2_*.zip`
+- **macOS (Intel, no AVX2):** `plink2_mac_*.zip`
+- **macOS (Apple Silicon):** `plink2_mac_arm64_*.zip`
 
-#### Other tools
+Extract and move to your tools folder:
+```bash
+mkdir -p tools/plink2
+cd tools/plink2
+# Download your platform's ZIP file here
+unzip plink2_*.zip
+cd ../..
+```
 
-*(Coming soon — instructions for PLINK 1.9, R, and other dependencies)*
+#### 2. Download PLINK1.9
+
+Visit: <https://www.cog-genomics.org/plink/1.9/>
+
+Choose the build for your system:
+- **Linux (64-bit):** `plink_linux_x86_64_*.zip`
+- **macOS:** `plink_mac_*.zip`
+
+Extract and move to your tools folder:
+```bash
+mkdir -p tools/plink1.9
+cd tools/plink1.9
+# Download your platform's ZIP file here
+unzip plink_*.zip
+cd ../..
+```
+
+#### 3. Download METAL
+
+Visit: <https://csg.sph.umich.edu/abecasis/Metal/download/>
+
+Choose the precompiled binary for your system:
+- **Linux/WSL:** `Linux-metal.tar.gz`
+- **macOS:** `Darwin-metal.tar.gz`
+
+Extract it in your tools folder:
+```bash
+mkdir -p tools/metal
+cd tools/metal
+# Download the Linux/WSL or macOS archive here
+tar -xzf *-metal.tar.gz
+find . -type f \( -name "metal" -o -name "METAL" \) -exec chmod +x {} \;
+cd ../..
+```
+
+#### 4. Install micromamba and REGENIE
+
+The automated setup installs micromamba for you. If you are doing this manually, first download micromamba.
+
+For Linux/WSL x86_64:
+
+```bash
+mkdir -p tools/micromamba
+cd tools/micromamba
+curl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
+cd ../..
+```
+
+For macOS Apple Silicon:
+
+```bash
+mkdir -p tools/micromamba
+cd tools/micromamba
+curl -Ls https://micro.mamba.pm/api/micromamba/osx-arm64/latest | tar -xvj bin/micromamba
+cd ../..
+```
+
+For macOS Intel, replace `osx-arm64` with `osx-64`.
+
+Then create the REGENIE environment:
+
+```bash
+export MAMBA_ROOT_PREFIX="$(pwd)/tools/micromamba-root"
+tools/micromamba/bin/micromamba create -y -n regenie_env -c conda-forge -c bioconda regenie
+```
+
+Then create a small wrapper so REGENIE works like the other tutorial tools:
+
+```bash
+mkdir -p tools/regenie
+cat > tools/regenie/regenie <<'EOF'
+#!/usr/bin/env bash
+export MAMBA_ROOT_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")/../micromamba-root" && pwd)"
+MICROMAMBA="$(cd "$(dirname "${BASH_SOURCE[0]}")/../micromamba/bin" && pwd)/micromamba"
+exec "$MICROMAMBA" run -n regenie_env regenie "$@"
+EOF
+chmod +x tools/regenie/regenie
+```
+
+#### 5. Create Symbolic Links
+
+Create convenient shortcuts in `tools/bin/`:
+```bash
+mkdir -p tools/bin
+ln -s ../plink2/plink2 tools/bin/plink2
+ln -s ../plink1.9/plink tools/bin/plink
+METAL_BIN=$(find tools/metal -type f \( -name "metal" -o -name "METAL" \) | head -n 1)
+ln -s "../../$METAL_BIN" tools/bin/metal
+ln -s ../regenie/regenie tools/bin/regenie
+```
+
+#### 6. Update PATH
+
+Add the tools folder to your PATH:
+```bash
+export PATH="$(cd tools/bin && pwd):$PATH"
+```
+
+To make this permanent on Linux/WSL, add it to `~/.bashrc`:
+```bash
+echo 'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"' >> ~/.bashrc
+```
+
+On macOS, the default shell is usually zsh, so use `~/.zshrc` instead:
+```bash
+echo 'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"' >> ~/.zshrc
+```
+
+Then reload your shell. Use the file you edited:
+```bash
+source ~/.bashrc
+```
+
+For macOS zsh:
+```bash
+source ~/.zshrc
+```
+
+#### 7. Check R
+
+R is used later for QC plots, so confirm it is available:
+
+```bash
+R --version
+```
 
 :::
 
@@ -306,18 +613,34 @@ bash scripts/dev/test.sh
 ```
 
 This script will:
-1. Check installed tools (PLINK2, PLINK1.9)
-2. Load the demo dataset
-3. Print the next command to run
+1. Check the project folders
+2. Check the demo dataset files
+3. Check that every copied script listed in `scripts/dev/script_manifest.txt` exists
+4. Check every required tool listed in `scripts/dev/tool_manifest.tsv`
+5. Print the next command to run
 
 When it finishes, you should see output like:
 
 ```
-✓ Initial test done! PLINK2 and PLINK1.9 are working, and the demo dataset is accessible.
-Next command: bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
+✓ Initial test done! Folders, scripts, data, and required tools are working.
+Next command to run the QC pipeline:
+  bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
 ```
 
-If you see this message, **everything is working!** 🎉 You can now proceed to the next QC step.
+If you see this message, **everything is working!** You can now run the first QC script:
+
+```bash
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
+```
+
+This writes the first QC reports to `results/qc/`, including:
+
+```text
+results/qc/pdac_demo_01_qc.afreq
+results/qc/pdac_demo_01_qc.het
+results/qc/pdac_demo_01_qc.smiss
+results/qc/pdac_demo_01_qc.vmiss
+```
 
 ---
 
@@ -357,24 +680,60 @@ brew install wget
 ```
 :::
 
-::: {.callout-warning collapse="true" title="`plink: command not found` or `plink2: command not found`"}
-PLINK is not installed or not on your PATH.
+::: {.callout-warning collapse="true" title="`plink`, `plink2`, `metal`, or `regenie`: command not found"}
+One of the installed tools is not found in your PATH.
 
-**Solution:** The `tools_setup.sh` script should have installed PLINK to `tools/bin/`. Check if it's there:
+**Solution 1: Run the setup script again**
 
-```bash
-ls tools/bin/
-```
-
-If you don't see `plink` and `plink2`, re-run the setup:
+The automated script should have configured PATH:
 ```bash
 bash scripts/dev/tools_setup.sh
 ```
 
-If PLINK is there but still not found, your PATH may not be set. Add it manually:
+**Solution 2: Manually add to PATH**
+
+If the script completed but PATH isn't set, manually add it:
+
 ```bash
-export PATH="$(pwd)/tools/bin:$PATH"
-plink --version  # Test
+# Check if tools exist
+ls tools/bin/plink
+ls tools/bin/plink2
+ls tools/bin/metal
+ls tools/bin/regenie
+
+# Add to current session
+export PATH="$(cd tools/bin && pwd):$PATH"
+
+# Verify
+plink --version
+plink2 --version
+command -v metal
+regenie --version
+
+```
+
+To make this permanent on Linux/WSL:
+
+```bash
+echo 'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+On macOS zsh, use `~/.zshrc` instead:
+
+```bash
+echo 'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+**Solution 3: Use full path**
+
+If PATH setup is tricky, use the full path directly:
+```bash
+./tools/bin/plink --version
+./tools/bin/plink2 --version
+test -x ./tools/bin/metal && echo "metal is available"
+./tools/bin/regenie --version
 ```
 :::
 
@@ -397,7 +756,7 @@ The script file doesn't have execute permissions.
 
 **Solution:**
 ```bash
-chmod +x scripts/*/
+find scripts -type f -name "*.sh" -exec chmod +x {} \;
 bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
 ```
 :::

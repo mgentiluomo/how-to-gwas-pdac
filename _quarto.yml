@@ -21,7 +21,7 @@ website:
       - section: "Before you start"
         contents:
           - getting_started.qmd
-      - section: "Cleaning the data"
+      - section: "Quality control"
         contents:
           - qc.qmd
       # Manuscript sections will be added here as they are drafted:

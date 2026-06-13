@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 03: Sex Check
@@ -30,12 +30,25 @@
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_INPUT="${2:-.}"
+DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
+OUT_DIR="${3:-results/qc}"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Compute X-chromosome genotyping frequency (F statistic)
@@ -56,11 +69,11 @@ echo ""
 #   or swapped. Conversely, a sample labeled "male" with low F is suspicious.
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_02_filt \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_02_filt" \
   --check-sex \
-  --out ${DATASET_NAME}_03_sexcheck
+  --out "${OUT_DIR}/${DATASET_NAME}_03_sexcheck"
 
-echo "✓ Sex check complete: ${DATASET_NAME}_03_sexcheck.sexcheck"
+echo "✓ Sex check complete: ${OUT_DIR}/${DATASET_NAME}_03_sexcheck.sexcheck"
 
 # ============================================================================
 # STEP 2: Identify discordant samples
@@ -74,17 +87,27 @@ echo ""
 #   - Females (reported sex 2): F should be < 0.2 (mostly heterozygous on X)
 #   - Males (reported sex 1): F should be > 0.8 (mostly homozygous on X, haploid)
 
-echo "#FID IID" > ${DATASET_NAME}_03_sexcheck_discordant.txt
-awk '$5 == "PROBLEM" {print $1, $2}' ${DATASET_NAME}_03_sexcheck.sexcheck >> ${DATASET_NAME}_03_sexcheck_discordant.txt
+awk '
+  NR == 1 {
+    for (i = 1; i <= NF; i++) {
+      gsub(/^#/, "", $i)
+      if ($i == "FID") fid = i
+      if ($i == "IID") iid = i
+      if ($i == "STATUS") status = i
+    }
+    next
+  }
+  status && $status == "PROBLEM" { print $fid, $iid }
+' "${OUT_DIR}/${DATASET_NAME}_03_sexcheck.sexcheck" > "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt"
 
-NDISCORDANT=$(tail -n +2 ${DATASET_NAME}_03_sexcheck_discordant.txt | wc -l)
+NDISCORDANT=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt")
 
 echo "Discordant samples identified: ${NDISCORDANT}"
 
 if [ $NDISCORDANT -gt 0 ]; then
   echo ""
   echo "Samples to review:"
-  head -20 ${DATASET_NAME}_03_sexcheck_discordant.txt
+  head -20 "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt"
 fi
 
 # ============================================================================
@@ -94,13 +117,20 @@ echo ""
 echo "=== Removing discordant samples ==="
 echo ""
 
-plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_02_filt \
-  --remove ${DATASET_NAME}_03_sexcheck_discordant.txt \
-  --make-bed \
-  --out ${DATASET_NAME}_03_filt
+if [ -s "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt" ]; then
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_02_filt" \
+    --remove "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_03_filt"
+else
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_02_filt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_03_filt"
+fi
 
-echo "✓ Sex-filtered dataset: ${DATASET_NAME}_03_filt.bed/bim/fam"
+echo "✓ Sex-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_03_filt.bed/bim/fam"
 
 # ============================================================================
 # SUMMARY & NEXT STEP
@@ -109,8 +139,8 @@ echo ""
 echo "=== Summary ==="
 echo ""
 
-NSAMP_BEFORE=$(tail -n +2 ${DATASET_INPUT}/${DATASET_NAME}_02_filt.fam | wc -l)
-NSAMP_AFTER=$(tail -n +2 ${DATASET_NAME}_03_filt.fam | wc -l)
+NSAMP_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_02_filt.fam")
+NSAMP_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_03_filt.fam")
 NSAMP_REMOVED=$((NSAMP_BEFORE - NSAMP_AFTER))
 
 echo "Samples before sex check:      ${NSAMP_BEFORE}"
@@ -125,7 +155,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the heterozygosity check:"
 echo ""
-echo "  bash 04_heterozygosity.sh"
+echo "  bash scripts/01B_genotyping_qc/04_heterozygosity.sh"
 echo ""
 echo "This will:"
 echo "  - Compute per-sample heterozygosity (F coefficient on autosomes)"

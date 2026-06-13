@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 01: Initial Quality Assessment
@@ -24,12 +24,26 @@
 #
 ################################################################################
 
-set -e  # Exit immediately on error
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_DIR="../../demo_dataset/data"
+DATASET_DIR="${2:-demo_data}"
 DATASET_NAME="pdac_demo"
+OUT_DIR="${3:-results/qc}"
+OUT_PREFIX="${OUT_DIR}/${DATASET_NAME}_01_qc"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Compute allele frequency spectrum
@@ -49,11 +63,11 @@ echo ""
 #   This is already set correctly in our prepared dataset.
 
 plink2 \
-  --bfile ${DATASET_DIR}/${DATASET_NAME} \
-  --freq counts \
-  --out ${DATASET_NAME}_qc
+  --bfile "${DATASET_DIR}/${DATASET_NAME}" \
+  --freq \
+  --out "$OUT_PREFIX"
 
-echo "✓ Allele frequencies saved to ${DATASET_NAME}_qc.afreq"
+echo "✓ Allele frequencies saved to ${OUT_PREFIX}.afreq"
 
 # ============================================================================
 # STEP 2: Compute individual heterozygosity and inbreeding coefficient
@@ -72,11 +86,11 @@ echo ""
 # We'll use this in Step 4 to filter outliers.
 
 plink2 \
-  --bfile ${DATASET_DIR}/${DATASET_NAME} \
+  --bfile "${DATASET_DIR}/${DATASET_NAME}" \
   --het \
-  --out ${DATASET_NAME}_qc
+  --out "$OUT_PREFIX"
 
-echo "✓ Heterozygosity computed, saved to ${DATASET_NAME}_qc.het"
+echo "✓ Heterozygosity computed, saved to ${OUT_PREFIX}.het"
 
 # ============================================================================
 # STEP 3: Compute missing data rate by individual and variant
@@ -94,13 +108,13 @@ echo ""
 # We'll use the per-sample and per-variant missingness to apply filters in Step 2.
 
 plink2 \
-  --bfile ${DATASET_DIR}/${DATASET_NAME} \
+  --bfile "${DATASET_DIR}/${DATASET_NAME}" \
   --missing \
-  --out ${DATASET_NAME}_qc
+  --out "$OUT_PREFIX"
 
 echo "✓ Missing data rates saved to:"
-echo "  - ${DATASET_NAME}_qc.imiss (per individual)"
-echo "  - ${DATASET_NAME}_qc.lmiss (per variant/locus)"
+echo "  - ${OUT_PREFIX}.smiss (per sample)"
+echo "  - ${OUT_PREFIX}.vmiss (per variant)"
 
 # ============================================================================
 # STEP 4: Inspect basic summary statistics
@@ -110,13 +124,22 @@ echo "=== Computing summary statistics ==="
 echo ""
 
 # Variant count
-NVAR=$(awk 'NR==2 {print $5}' ${DATASET_NAME}_qc.afreq)
+NVAR=$(wc -l < "${DATASET_DIR}/${DATASET_NAME}.bim")
 
 # Sample count
-NSAMP=$(tail -n +2 ${DATASET_NAME}_qc.imiss | wc -l)
+NSAMP=$(wc -l < "${DATASET_DIR}/${DATASET_NAME}.fam")
 
 # Median heterozygosity
-MEDIAN_HET=$(tail -n +2 ${DATASET_NAME}_qc.het | awk '{print $(NF-1)}' | sort -n | awk '{a[NR]=$1} END {print a[int(NR/2)]}')
+MEDIAN_HET=$(awk '
+  NR == 1 {
+    for (i = 1; i <= NF; i++) {
+      gsub(/^#/, "", $i)
+      if ($i == "F") f_col = i
+    }
+    next
+  }
+  f_col && $f_col != "nan" { print $f_col }
+' "${OUT_PREFIX}.het" | sort -n | awk '{a[NR]=$1} END {if (NR) print a[int((NR + 1) / 2)]; else print "NA"}')
 
 echo "Baseline statistics:"
 echo "  - Variants:         ${NVAR}"
@@ -131,7 +154,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the variant filtering step:"
 echo ""
-echo "  bash 02_variant_filtering.sh"
+echo "  bash scripts/01B_genotyping_qc/02_sample_callrate.sh"
 echo ""
 echo "This will apply filters for:"
 echo "  - Variant call rate (--geno)"

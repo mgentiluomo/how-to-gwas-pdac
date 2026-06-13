@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ################################################################################
 # Section 1B: Genotyping QC — Step 04: Heterozygosity & Inbreeding Outliers
@@ -30,12 +30,25 @@
 #
 ################################################################################
 
-set -e
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -d "$SCRIPT_DIR/../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+elif [ -d "$SCRIPT_DIR/../../../scripts/dev" ]; then
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+else
+  PROJECT_ROOT="$(pwd)"
+fi
+cd "$PROJECT_ROOT"
 
 # Configuration
 SEED="${1:-2026}"
-DATASET_INPUT="${2:-.}"
+DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
+OUT_DIR="${3:-results/qc}"
+
+mkdir -p "$OUT_DIR"
 
 # ============================================================================
 # STEP 1: Compute heterozygosity
@@ -56,11 +69,11 @@ echo ""
 #   Sex-specific heterozygosity patterns confound X analysis
 
 plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_03_filt \
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_03_filt" \
   --het \
-  --out ${DATASET_NAME}_04_het
+  --out "${OUT_DIR}/${DATASET_NAME}_04_het"
 
-echo "✓ Heterozygosity computed: ${DATASET_NAME}_04_het.het"
+echo "✓ Heterozygosity computed: ${OUT_DIR}/${DATASET_NAME}_04_het.het"
 
 # ============================================================================
 # STEP 2: Identify outliers using R
@@ -70,7 +83,7 @@ echo "=== Identifying heterozygosity outliers (R) ==="
 echo ""
 
 # Create R script to detect outliers and visualize
-cat > ${DATASET_NAME}_04_het_outliers.R << 'EOF'
+cat > "${OUT_DIR}/${DATASET_NAME}_04_het_outliers.R" << 'EOF'
 #!/usr/bin/env Rscript
 
 # Configuration
@@ -82,12 +95,13 @@ seed <- as.numeric(args[3])
 set.seed(seed)
 
 # Read heterozygosity data
-het <- read.table(het_file, header = TRUE, stringsAsFactors = FALSE)
+het <- read.table(het_file, header = TRUE, stringsAsFactors = FALSE, check.names = FALSE, comment.char = "")
+names(het) <- sub("^#", "", names(het))
 
-# Calculate F statistics
-# NOTE: Het column represents observed heterozygosity
-# We compute inbreeding coefficient F manually if needed, or use PLINK2's output
-het$F <- 1 - (het$HET / (het$N_NM))  # het$HET = observed HET, het$N_NM = # non-missing
+if (!"F" %in% names(het)) {
+  stop("The PLINK2 .het file does not contain an F column.")
+}
+het$F <- as.numeric(het$F)
 
 # Identify outliers: mean(F) ± 3 * SD(F)
 mean_f <- mean(het$F, na.rm = TRUE)
@@ -118,7 +132,7 @@ write.table(
   file = paste0(output_prefix, "_outliers.txt"),
   quote = FALSE,
   row.names = FALSE,
-  col.names = TRUE,
+  col.names = FALSE,
   sep = " "
 )
 cat(sprintf("Outlier list written to: %s_outliers.txt\n\n", output_prefix))
@@ -143,10 +157,10 @@ cat(sprintf("Plot saved to: %s_outliers.pdf\n", output_prefix))
 EOF
 
 # Run R script
-Rscript ${DATASET_NAME}_04_het_outliers.R \
-  ${DATASET_NAME}_04_het.het \
-  ${DATASET_NAME}_04_het \
-  ${SEED}
+Rscript "${OUT_DIR}/${DATASET_NAME}_04_het_outliers.R" \
+  "${OUT_DIR}/${DATASET_NAME}_04_het.het" \
+  "${OUT_DIR}/${DATASET_NAME}_04_het" \
+  "${SEED}"
 
 # ============================================================================
 # STEP 3: Create dataset without outliers
@@ -155,13 +169,20 @@ echo ""
 echo "=== Removing heterozygosity outliers ==="
 echo ""
 
-plink2 \
-  --bfile ${DATASET_INPUT}/${DATASET_NAME}_03_filt \
-  --remove ${DATASET_NAME}_04_het_outliers.txt \
-  --make-bed \
-  --out ${DATASET_NAME}_04_filt
+if [ -s "${OUT_DIR}/${DATASET_NAME}_04_het_outliers.txt" ]; then
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_03_filt" \
+    --remove "${OUT_DIR}/${DATASET_NAME}_04_het_outliers.txt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_04_filt"
+else
+  plink2 \
+    --bfile "${DATASET_INPUT}/${DATASET_NAME}_03_filt" \
+    --make-bed \
+    --out "${OUT_DIR}/${DATASET_NAME}_04_filt"
+fi
 
-echo "✓ Het-filtered dataset: ${DATASET_NAME}_04_filt.bed/bim/fam"
+echo "✓ Het-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_04_filt.bed/bim/fam"
 
 # ============================================================================
 # SUMMARY & NEXT STEP
@@ -170,15 +191,15 @@ echo ""
 echo "=== Summary ==="
 echo ""
 
-NSAMP_BEFORE=$(tail -n +2 ${DATASET_INPUT}/${DATASET_NAME}_03_filt.fam | wc -l)
-NSAMP_AFTER=$(tail -n +2 ${DATASET_NAME}_04_filt.fam | wc -l)
+NSAMP_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_03_filt.fam")
+NSAMP_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_04_filt.fam")
 NSAMP_REMOVED=$((NSAMP_BEFORE - NSAMP_AFTER))
 
 echo "Samples before het filter:   ${NSAMP_BEFORE}"
 echo "Samples after het filter:    ${NSAMP_AFTER}"
 echo "Het outliers removed:        ${NSAMP_REMOVED}"
 echo ""
-echo "Visualization: ${DATASET_NAME}_04_het_outliers.pdf"
+echo "Visualization: ${OUT_DIR}/${DATASET_NAME}_04_het_outliers.pdf"
 echo ""
 
 # ============================================================================
@@ -188,7 +209,7 @@ echo "=== NEXT STEP ==="
 echo ""
 echo "Run the variant call rate filter:"
 echo ""
-echo "  bash 05_variant_callrate.sh"
+echo "  bash scripts/01B_genotyping_qc/05_variant_callrate.sh"
 echo ""
 echo "This will:"
 echo "  - Filter variants by genotyping call rate (--geno 0.05)"

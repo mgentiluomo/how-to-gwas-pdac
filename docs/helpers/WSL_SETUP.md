@@ -6,13 +6,13 @@ date: 2026-06-12
 
 # Running the PDAC GWAS Tutorial on Windows (via WSL)
 
-**For Windows users:** Using Windows Subsystem for Linux (WSL) is **strongly recommended** for this tutorial. The QC pipeline uses PLINK2, R scripts, and bash—tools that work best in a Linux environment.
+**For Windows users:** Using Windows Subsystem for Linux (WSL) is **strongly recommended** for this tutorial. The pipeline uses bash scripts and Linux/macOS command-line tools, which work most consistently inside WSL.
 
 ## Why WSL?
 
 | Aspect | Windows CMD/PowerShell | WSL (Linux) |
 |--------|----------------------|-------------|
-| **PLINK2 availability** | Requires manual Windows binary download | Native Linux package (`plink2`) |
+| **Tool setup** | Requires separate Windows binaries and PATH edits | Tutorial scripts install tools into the project folder |
 | **Bash scripts** | PowerShell emulation (fragile) | Full bash compatibility |
 | **File paths** | Windows-style (backslashes, drive letters) | Unix-style (forward slashes) |
 | **Performance** | Slower for file I/O intensive tasks | Native Linux speed |
@@ -62,9 +62,9 @@ Or click **Ubuntu** in Windows Terminal tabs.
 
 ---
 
-## Installation Instructions (in WSL)
+## Basic WSL Preparation
 
-Once you're in the WSL terminal, run these commands **once** to set up the environment:
+Once you're in the WSL terminal, run these commands **once** to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are installed later by `bash scripts/dev/tools_setup.sh`.
 
 ### Step 1: Update Package Manager
 
@@ -75,82 +75,32 @@ sudo apt-get upgrade -y
 
 *Note:* The `sudo` prompt may ask for your password (the one you set during WSL Ubuntu installation).
 
-### Step 2: Install PLINK2
+### Step 2: Install Basic Utilities
 
 ```bash
-sudo apt-get install -y plink2
+sudo apt-get install -y curl wget git unzip tar bzip2
 ```
 
-Verify:
-
-```bash
-plink2 --version
-```
-
-### Step 3: Install R
+Install R, which is used for QC plots and checked by the setup test:
 
 ```bash
 sudo apt-get install -y r-base r-base-dev
 ```
 
-Verify:
+Verify the basic utilities:
+
+```bash
+git --version
+curl --version
+wget --version
+```
+
+Verify R too:
 
 ```bash
 R --version
 ```
 
-### Step 4: Install Utilities
-
-```bash
-sudo apt-get install -y curl wget git
-```
-
-### Step 5: Clone or Navigate to the Repository
-
-If you haven't cloned the repo yet:
-
-```bash
-cd /tmp
-git clone https://github.com/<OWNER>/how-to-gwas-pdac.git
-cd how-to-gwas-pdac
-```
-
-Or, if you cloned on Windows, access it via `/mnt/s` (for S: drive):
-
-```bash
-cd /mnt/s/Github/how-to-gwas-pdac
-```
-
----
-
-## Running the QC Pipeline in WSL
-
-### Using Your gwas_tutorial Project
-
-Once your `gwas_tutorial` folder is set up (see `getting_started.qmd`), run scripts from your local copy:
-
-```bash
-# Navigate to your project
-cd ~/gwas_tutorial
-
-# Run utility scripts from scripts/dev/
-bash scripts/dev/download_demo_data.sh    # Download + verify data
-bash scripts/dev/tools_setup.sh           # Install PLINK2 and PLINK1.9
-bash scripts/dev/test.sh                  # Test everything
-
-# Run QC pipeline from scripts/01B_genotyping_qc/
-bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
-bash scripts/01B_genotyping_qc/02_sample_callrate.sh
-bash scripts/01B_genotyping_qc/03_sex_check.sh
-bash scripts/01B_genotyping_qc/04_heterozygosity.sh
-bash scripts/01B_genotyping_qc/05_variant_callrate.sh
-bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh
-bash scripts/01B_genotyping_qc/07_relatedness.sh
-bash scripts/01B_genotyping_qc/08_maf_filter.sh
-bash scripts/01B_genotyping_qc/09_qc_summary.sh
-```
-
-Each script prints the next command to run at the end.
 
 ---
 
@@ -165,59 +115,23 @@ Each script prints the next command to run at the end.
 | `S:\` drive | `/mnt/s/` |
 | `D:\` drive | `/mnt/d/` |
 
-### Example: Accessing S: Drive Files
+### Example: Accessing S: Drive and Example folder
 
-Your repo at `S:\Github\how-to-gwas-pdac` is accessible in WSL as:
+Your repo at `S:\Example` is accessible in WSL as:
 
 ```bash
-cd /mnt/s/Github/how-to-gwas-pdac
+cd /mnt/s/Example
+ls -la
+```
+You can return back to your HOME directory with:
+
+```bash
+cd $HOME
 ls -la
 ```
 
-### Editing Files
-
-You have two options:
-
-1. **Edit in Windows (VS Code)** → Run in WSL
-   - Open files in VS Code from Windows
-   - Make changes
-   - Run scripts in WSL terminal
-   - Both environments see the same files (via `/mnt/s/`)
-
-2. **Clone inside WSL** → Edit and run in WSL
-   - Clone the repo inside WSL (`/home/...` or `/tmp/...`)
-   - Edit and run entirely in WSL
-   - Push commits from WSL git
-   - **Faster**, but requires separate workflow
-
----
 
 ## Troubleshooting
-
-### Issue: "plink2 not found"
-
-**Solution:** Check installation:
-
-```bash
-which plink2
-plink2 --version
-```
-
-If not found, reinstall:
-
-```bash
-sudo apt-get remove plink2
-sudo apt-get install -y plink2
-```
-
-### Issue: "Permission denied" on script execution
-
-**Solution:** Make the script executable:
-
-```bash
-chmod +x sections/01B_genotyping_qc/scripts/*.sh
-bash sections/01B_genotyping_qc/scripts/01_initial_qc_stats.sh
-```
 
 ### Issue: "File not found" when accessing Windows files
 
@@ -238,52 +152,13 @@ cd /mnt/s/Github/how-to-gwas-pdac
 **Solution:** Clone the repo inside WSL:
 
 ```bash
-git clone https://github.com/<OWNER>/how-to-gwas-pdac.git ~/how-to-gwas-pdac
+git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git ~/how-to-gwas-pdac
 cd ~/how-to-gwas-pdac
 ```
 
 ---
 
-## Typical Workflow
 
-### With Your Portable gwas_tutorial Folder
-
-This is the **recommended approach** that works anywhere:
-
-```bash
-# 1. Create your project folder (on Windows or WSL, doesn't matter)
-mkdir -p ~/gwas_tutorial
-cd ~/gwas_tutorial
-
-# 2. In WSL terminal, clone the repo temporarily
-git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git
-
-# 3. Copy scripts to your local project
-for section_dir in how-to-gwas-pdac/sections/*/; do
-  section=$(basename "$section_dir")
-  mkdir -p "scripts/$section"
-  cp "$section_dir/scripts"/* "scripts/$section/"
-done
-cp how-to-gwas-pdac/scripts/dev/* scripts/dev/
-rm -rf how-to-gwas-pdac
-
-# 4. Run utility scripts
-bash scripts/dev/download_demo_data.sh
-bash scripts/dev/tools_setup.sh
-bash scripts/dev/test.sh
-
-# 5. Run your QC pipeline
-bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
-# ... continue with other steps
-```
-
-This approach is **fully portable** — your `gwas_tutorial` folder can be:
-- On your home directory (`~/gwas_tutorial`)
-- On a USB drive (`/media/usb/gwas_tutorial`)
-- On a network share
-- Anywhere with read/write access
-
----
 
 ## Quick Reference: WSL Commands
 
@@ -311,9 +186,7 @@ wsl --update
 
 ## Next Steps
 
-1. Follow the **Installation Instructions** above
-2. Download the demo dataset: `bash demo_dataset/download_data.sh`
-3. Run the first QC script: `bash sections/01B_genotyping_qc/scripts/01_initial_qc_stats.sh`
-4. Check output and troubleshoot any errors
+1. Follow [Before you start: setup and your first QC pipeline](../../getting_started.qmd)
+2. Return to this page if you need help with WSL paths or basic WSL commands.
 
-Good luck! 🚀
+Good luck!
