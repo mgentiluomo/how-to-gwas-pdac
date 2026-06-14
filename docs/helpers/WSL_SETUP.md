@@ -133,6 +133,85 @@ ls -la
 
 ## Troubleshooting
 
+### Issue: WSL cannot connect to the internet on a managed network
+
+**Reason:** Some universities, hospitals, and institutes use a network proxy. Windows may already know this proxy, but WSL may not use the Windows setting automatically.
+
+Ask your local IT team for the proxy address and port. It usually looks like:
+
+```bash
+http://proxy.example.org:3128/
+```
+
+Replace the example proxy below with your institution's real proxy:
+
+```bash
+PROXY="http://proxy.example.org:3128/"
+NO_PROXY="localhost,127.0.0.1"
+```
+
+Set the proxy for the current WSL terminal:
+
+```bash
+export http_proxy="$PROXY"
+export https_proxy="$PROXY"
+export ftp_proxy="$PROXY"
+export HTTP_PROXY="$PROXY"
+export HTTPS_PROXY="$PROXY"
+export FTP_PROXY="$PROXY"
+export no_proxy="$NO_PROXY"
+export NO_PROXY="$NO_PROXY"
+```
+
+Test the connection:
+
+```bash
+curl -I https://github.com
+wget --spider https://github.com
+```
+
+If this works, make it permanent for future WSL terminals:
+
+```bash
+cat >> "$HOME/.bashrc" <<'EOF'
+
+# Proxy for WSL network access.
+# Replace this example with your institution's proxy.
+export http_proxy="http://proxy.example.org:3128/"
+export https_proxy="http://proxy.example.org:3128/"
+export ftp_proxy="http://proxy.example.org:3128/"
+export HTTP_PROXY="http://proxy.example.org:3128/"
+export HTTPS_PROXY="http://proxy.example.org:3128/"
+export FTP_PROXY="http://proxy.example.org:3128/"
+export no_proxy="localhost,127.0.0.1"
+export NO_PROXY="localhost,127.0.0.1"
+EOF
+
+source "$HOME/.bashrc"
+```
+
+`apt-get` may need its own proxy setting because it runs with `sudo`:
+
+```bash
+sudo tee /etc/apt/apt.conf.d/95proxy >/dev/null <<EOF
+Acquire::http::Proxy "$PROXY";
+Acquire::https::Proxy "$PROXY";
+Acquire::ftp::Proxy "$PROXY";
+EOF
+
+sudo apt-get update
+```
+
+Git can also be configured separately:
+
+```bash
+git config --global http.proxy "$PROXY"
+git config --global https.proxy "$PROXY"
+git ls-remote https://github.com/git/git.git HEAD
+```
+
+If your proxy requires a username or password, ask your IT team for the recommended WSL setup. Avoid putting passwords into shared scripts or tutorial files.
+
 ### Issue: "File not found" when accessing Windows files
 
 **Solution:** Use `/mnt/` prefix for Windows drives:
