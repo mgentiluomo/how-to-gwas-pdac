@@ -32,8 +32,21 @@ you can reproduce the entire workflow from raw genotypes to final results.
 
 👉 **Start here:** [Before you start — setup and your first PLINK command](getting_started.qmd)
 
+## Target Groups
+
+This tutorial is designed for two main groups:
+
+- **Beginners** who have little or no previous experience with GWAS, bioinformatics, or command-line analysis.
+- **Intermediate and advanced users** who already have some experience with bioinformatics or GWAS and want a transparent, reproducible teaching workflow.
+
+The structure is intentionally step by step. Some tasks are split across more than one script, even when they could technically be merged into a single script, because the goal is to make each decision visible and easier to learn.
+
+For the same reason, this tutorial is not designed as a high-performance computing workflow or as a template for large-scale parallel processing. If you are working with large datasets, use an appropriate HPC environment and distribute jobs according to your institution's computing guidelines.
+
 ::: {.callout-tip title="No coding experience?"}
 You do **not** need to know how to program. Every command is given in full, with an explanation
 of what it does and what the output should look like. If you can copy, paste and press Enter,
 you can follow this guide.
 :::
+
+
