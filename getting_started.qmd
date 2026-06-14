@@ -207,8 +207,12 @@ Download and run the setup script:
 
 ```bash
 # Download the automated setup script
-curl -L https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -o init_project.sh
+# delete later, note for developers
+# use by branch for all downloads, I am keeping them as main for future: curl -fL https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/murat_v1/scripts/dev/init_project.sh -o init_project.sh && bash init_project.sh
 
+curl -L https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -o init_project.sh
+# Make it executable
+chmod +x init_project.sh
 # Run it
 bash init_project.sh
 ```
@@ -219,6 +223,7 @@ If `curl` is not available on your system, use `wget` instead:
 
 ```bash
 wget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -O init_project.sh
+chmod +x init_project.sh
 bash init_project.sh
 ```
 
@@ -278,7 +283,8 @@ For a compact project-folder overview, see [Setup Project Structure](docs/helper
 Clone the GitHub repo to get all the GWAS pipeline scripts organized by section:
 
 ```bash
-# Clone the repo (temporary)
+# Clone the repo
+# delete later, note for developers: git clone --branch murat_v1 --single-branch https://github.com/mgentiluomo/how-to-gwas-pdac.git
 git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git
 
 # Copy utility/dev scripts
