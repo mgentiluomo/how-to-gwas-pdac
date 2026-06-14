@@ -60,6 +60,13 @@ wsl
 
 Or click **Ubuntu** in Windows Terminal tabs.
 
+The short video below shows how to open Ubuntu from Windows Terminal:
+
+<video controls width="100%">
+  <source src="illustration/wsl_ubuntu.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ---
 
 ## Basic WSL Preparation
