@@ -243,27 +243,29 @@ register_tool() {
     local REQUIRED=${3:-required}
     local VERSION_ARGS=${4:---version}
     local INSTALL_HINT=${5:-"Install $LABEL, then run Step 5 again"}
+    local CHECK_SCOPE=${6:-path}
 
-    TOOL_MANIFEST_ROWS+=("${COMMAND}"$'\t'"${LABEL}"$'\t'"${REQUIRED}"$'\t'"${VERSION_ARGS}"$'\t'"${INSTALL_HINT}")
+    TOOL_MANIFEST_ROWS+=("${COMMAND}"$'\t'"${LABEL}"$'\t'"${REQUIRED}"$'\t'"${VERSION_ARGS}"$'\t'"${INSTALL_HINT}"$'\t'"${CHECK_SCOPE}")
 }
 
 register_default_tools() {
     TOOL_MANIFEST_ROWS=()
 
     # Add future tools here after their installer/check step is added.
-    # Format: command, display name, required|optional, version arguments, help text.
-    register_tool "plink2" "PLINK2" "required" "--version" "Run bash scripts/dev/tools_setup.sh"
-    register_tool "plink" "PLINK1.9" "required" "--version" "Run bash scripts/dev/tools_setup.sh"
-    register_tool "metal" "METAL" "required" "-" "Run bash scripts/dev/tools_setup.sh"
-    register_tool "regenie" "REGENIE" "required" "--version" "Run bash scripts/dev/tools_setup.sh"
-    register_tool "R" "R" "required" "--version" "Install R, then run bash scripts/dev/tools_setup.sh again"
+    # Format: command, display name, required|optional, version arguments, help text, project|path.
+    # Use project for tools installed into tools/bin/. Use path for system tools such as R.
+    register_tool "plink2" "PLINK2" "required" "--version" "Run bash scripts/dev/tools_setup.sh" "project"
+    register_tool "plink" "PLINK1.9" "required" "--version" "Run bash scripts/dev/tools_setup.sh" "project"
+    register_tool "metal" "METAL" "required" "-" "Run bash scripts/dev/tools_setup.sh" "project"
+    register_tool "regenie" "REGENIE" "required" "--version" "Run bash scripts/dev/tools_setup.sh" "project"
+    register_tool "R" "R" "required" "--version" "Install R, then run bash scripts/dev/tools_setup.sh again" "path"
 }
 
 write_tool_manifest() {
     mkdir -p "$(dirname "$TOOL_MANIFEST")"
 
     {
-        echo "# command<TAB>label<TAB>required<TAB>version_args<TAB>install_hint"
+        echo "# command<TAB>label<TAB>required<TAB>version_args<TAB>install_hint<TAB>check_scope"
         printf '%s\n' "${TOOL_MANIFEST_ROWS[@]}"
     } > "$TOOL_MANIFEST"
 
@@ -281,13 +283,14 @@ verify_tool_manifest() {
     local REQUIRED
     local VERSION_ARGS
     local INSTALL_HINT
+    local CHECK_SCOPE
 
     if [ ! -f "$TOOL_MANIFEST" ]; then
         echo -e "  ${RED}✗${NC} $TOOL_MANIFEST not found"
         return 1
     fi
 
-    while IFS=$'\t' read -r COMMAND LABEL REQUIRED VERSION_ARGS INSTALL_HINT; do
+    while IFS=$'\t' read -r COMMAND LABEL REQUIRED VERSION_ARGS INSTALL_HINT CHECK_SCOPE; do
         COMMAND=${COMMAND%$'\r'}
         [ -z "$COMMAND" ] && continue
         [[ "$COMMAND" == \#* ]] && continue
@@ -296,19 +299,44 @@ verify_tool_manifest() {
         REQUIRED=${REQUIRED:-required}
         VERSION_ARGS=${VERSION_ARGS:-}
         INSTALL_HINT=${INSTALL_HINT:-"Install $LABEL, then run Step 5 again"}
+        INSTALL_HINT=${INSTALL_HINT%$'\r'}
+        CHECK_SCOPE=${CHECK_SCOPE%$'\r'}
+        case "$COMMAND" in
+            plink2|plink|metal|regenie)
+                CHECK_SCOPE=${CHECK_SCOPE:-project}
+                ;;
+            *)
+                CHECK_SCOPE=${CHECK_SCOPE:-path}
+                ;;
+        esac
 
-        if command -v "$COMMAND" &> /dev/null; then
+        local TOOL_PATH=""
+        if [ "$CHECK_SCOPE" = "project" ]; then
+            TOOL_PATH="$PROJECT_ROOT/tools/bin/$COMMAND"
+            if [ ! -x "$TOOL_PATH" ]; then
+                TOOL_PATH=""
+            fi
+        elif command -v "$COMMAND" &> /dev/null; then
+            TOOL_PATH="$(command -v "$COMMAND")"
+        fi
+
+        if [ -n "$TOOL_PATH" ]; then
             local VERSION_OUTPUT=""
             if [ -n "$VERSION_ARGS" ] && [ "$VERSION_ARGS" != "-" ]; then
                 local VERSION_PARTS=()
                 read -r -a VERSION_PARTS <<< "$VERSION_ARGS"
-                VERSION_OUTPUT="$("$COMMAND" "${VERSION_PARTS[@]}" 2>&1 | head -1 || true)"
+                VERSION_OUTPUT="$("$TOOL_PATH" "${VERSION_PARTS[@]}" 2>&1 | head -1 || true)"
+            fi
+
+            local DISPLAY_PATH="$TOOL_PATH"
+            if [[ "$DISPLAY_PATH" == "$PROJECT_ROOT/"* ]]; then
+                DISPLAY_PATH="${DISPLAY_PATH#"$PROJECT_ROOT"/}"
             fi
 
             if [ -n "$VERSION_OUTPUT" ]; then
-                echo -e "  ${GREEN}✓${NC} $LABEL: $VERSION_OUTPUT"
+                echo -e "  ${GREEN}✓${NC} $LABEL: $VERSION_OUTPUT [$DISPLAY_PATH]"
             else
-                echo -e "  ${GREEN}✓${NC} $LABEL"
+                echo -e "  ${GREEN}✓${NC} $LABEL [$DISPLAY_PATH]"
             fi
         elif [ "$REQUIRED" = "optional" ]; then
             echo -e "  ${YELLOW}!${NC} $LABEL not found (optional)"

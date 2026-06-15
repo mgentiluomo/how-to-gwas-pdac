@@ -112,29 +112,54 @@ TOOLS_OK=true
 
 if [ -f "$TOOL_MANIFEST" ]; then
     TOOL_COUNT=0
-    while IFS=$'\t' read -r command label required version_args install_hint; do
-        command=${command%$'\r'}
-        [ -z "$command" ] && continue
-        [[ "$command" == \#* ]] && continue
+    while IFS=$'\t' read -r tool_command label required version_args install_hint check_scope; do
+        tool_command=${tool_command%$'\r'}
+        [ -z "$tool_command" ] && continue
+        [[ "$tool_command" == \#* ]] && continue
 
-        label=${label:-$command}
+        label=${label:-$tool_command}
         required=${required:-required}
         version_args=${version_args:-}
         install_hint=${install_hint:-"Install $label, then run Step 6 again"}
+        install_hint=${install_hint%$'\r'}
+        check_scope=${check_scope%$'\r'}
+        case "$tool_command" in
+            plink2|plink|metal|regenie)
+                check_scope=${check_scope:-project}
+                ;;
+            *)
+                check_scope=${check_scope:-path}
+                ;;
+        esac
         TOOL_COUNT=$((TOOL_COUNT + 1))
 
-        if command -v "$command" &> /dev/null; then
+        TOOL_PATH=""
+        if [ "$check_scope" = "project" ]; then
+            TOOL_PATH="$PROJECT_ROOT/tools/bin/$tool_command"
+            if [ ! -x "$TOOL_PATH" ]; then
+                TOOL_PATH=""
+            fi
+        elif command -v "$tool_command" &> /dev/null; then
+            TOOL_PATH="$(command -v "$tool_command")"
+        fi
+
+        if [ -n "$TOOL_PATH" ]; then
             VERSION_OUTPUT=""
             if [ -n "$version_args" ] && [ "$version_args" != "-" ]; then
                 VERSION_PARTS=()
                 read -r -a VERSION_PARTS <<< "$version_args"
-                VERSION_OUTPUT="$("$command" "${VERSION_PARTS[@]}" 2>&1 | head -1 || true)"
+                VERSION_OUTPUT="$("$TOOL_PATH" "${VERSION_PARTS[@]}" 2>&1 | head -1 || true)"
+            fi
+
+            DISPLAY_PATH="$TOOL_PATH"
+            if [[ "$DISPLAY_PATH" == "$PROJECT_ROOT/"* ]]; then
+                DISPLAY_PATH="${DISPLAY_PATH#"$PROJECT_ROOT"/}"
             fi
 
             if [ -n "$VERSION_OUTPUT" ]; then
-                echo "   ✓ $label ($VERSION_OUTPUT)"
+                echo "   ✓ $label ($VERSION_OUTPUT) [$DISPLAY_PATH]"
             else
-                echo "   ✓ $label"
+                echo "   ✓ $label [$DISPLAY_PATH]"
             fi
         elif [ "$required" = "optional" ]; then
             echo "   ! $label (optional; not found)"

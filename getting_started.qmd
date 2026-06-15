@@ -398,9 +398,29 @@ If any file fails verification, the script will tell you which one and suggest r
 
 Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.
 
-::: {.panel-tabset}
+### 5.1 Quick pre-check
 
-### Automated (Easiest)
+Before starting the install, check that you are in the project folder and that the basic download tools are visible:
+
+```bash
+cd "$HOME/gwas_tutorial"
+pwd
+ls scripts/dev/tools_setup.sh
+
+command -v curl || echo "curl is missing"
+command -v wget || echo "wget is missing"
+command -v git || echo "git is missing"
+command -v unzip || echo "unzip is missing"
+command -v tar || echo "tar is missing"
+command -v bzip2 || echo "bzip2 is missing"
+
+R --version || echo "R is not installed yet"
+curl -I https://github.com || echo "Internet connection check failed"
+```
+
+If the internet check fails inside WSL but works in Windows, see [WSL Setup](docs/helpers/WSL_SETUP.md) for managed-network and proxy troubleshooting.
+
+### 5.2 Automated install
 
 Run the setup script from your project:
 
@@ -418,7 +438,7 @@ This script will:
 - Create symlinks in `tools/bin/` for easy access
 - Update your PATH so you can run `plink2`, `plink`, `metal`, and `regenie` from anywhere
 - Write `scripts/dev/tool_manifest.tsv`, which lists the tools checked by `test.sh`
-- Install wget, unzip, tar, and bzip2 if needed
+- Check for basic helper tools such as `wget`, `unzip`, `tar`, and `bzip2`
 
 When finished, you'll see:
 ```
@@ -429,18 +449,36 @@ Detected: OS=Linux, Architecture=x86_64_avx2
   ✓ REGENIE: regenie v...
 ```
 
-The tool list used by the setup test is saved here:
-
-```bash
-cat scripts/dev/tool_manifest.tsv
-```
-
 REGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under `tools/micromamba-root/`, so users do not need an existing conda installation.
 
-The setup script also checks R. If it reports that R is missing, install R before running the setup test. On WSL/Linux you can usually use:
+### 5.3 Common Step 5 problems and fixes
+
+Most installation problems are caused by the shell not being in the right folder, internet/proxy access, an unfinished `apt-get` process, or R not being available yet. Start with the message printed in your terminal and match it to one of the cases below.
+
+| Error or symptom | What it usually means | What to try |
+|---|---|---|
+| `scripts/dev/tools_setup.sh: No such file or directory` | You are not in the project folder, or Step 3 did not copy the scripts | Run `cd "$HOME/gwas_tutorial"` and `ls scripts/dev/` |
+| `curl`, `wget`, or micromamba cannot connect | WSL or your terminal cannot reach the internet | Test `curl -I https://github.com`; WSL users on managed networks should check [WSL Setup](docs/helpers/WSL_SETUP.md) |
+| `Could not get lock /var/lib/apt/lists/lock` | Another `apt-get` process is running | Wait, or inspect the process with `ps -fp <PID>` shown in the error |
+| `Unable to locate package r-base` | Package lists are stale, `universe` is disabled, or the Ubuntu release is unusual | Run the R install commands below; for persistent problems, use an Ubuntu LTS WSL release |
+| `404: command not found` after running a downloaded script | A GitHub 404 page was saved instead of a script | Delete the file and repeat the current download command from this guide |
+| `plink`, `plink2`, `metal`, or `regenie`: command not found | Tools were not installed or `tools/bin` is not on PATH | Run `bash scripts/dev/tools_setup.sh` again, then check `ls tools/bin/` |
+| REGENIE or micromamba fails during environment creation | Usually a network, proxy, or conda-channel access problem | Confirm `curl -I https://github.com` works and retry `bash scripts/dev/tools_setup.sh` |
+
+If R is missing on WSL/Linux, first try the Ubuntu package:
 
 ```bash
-sudo apt-get install -y r-base
+sudo apt-get update
+sudo apt-get install -y r-base r-base-dev
+```
+
+If Ubuntu cannot find `r-base`, enable the `universe` repository and refresh the package list:
+
+```bash
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y universe
+sudo apt-get update
+sudo apt-get install -y r-base r-base-dev
 ```
 
 On macOS with Homebrew:
@@ -455,9 +493,28 @@ Then run the tool setup again:
 bash scripts/dev/tools_setup.sh
 ```
 
-### Manual Installation
+### 5.4 Confirm the tool manifest
 
-If you prefer to install manually:
+The tool list used by the setup test is saved here:
+
+```bash
+cat scripts/dev/tool_manifest.tsv
+```
+
+You can also check the project-local tool links directly. These commands use `./tools/bin/...`, so they work even if your PATH has not reloaded yet:
+
+```bash
+ls -l tools/bin/
+./tools/bin/plink2 --version
+./tools/bin/plink --version
+test -x ./tools/bin/metal && echo "METAL executable found: ./tools/bin/metal"
+./tools/bin/regenie --version
+R --version
+```
+
+### 5.5 Advanced fallback: manual installation
+
+The automated setup is recommended. Use this manual route only if you cannot use the setup script or need to inspect each tool installation step.
 
 #### 1. Download PLINK2
 
@@ -472,6 +529,7 @@ Choose the build for your system:
 - **macOS (Apple Silicon):** `plink2_mac_arm64_*.zip`
 
 Extract and move to your tools folder:
+
 ```bash
 mkdir -p tools/plink2
 cd tools/plink2
@@ -489,6 +547,7 @@ Choose the build for your system:
 - **macOS:** `plink_mac_*.zip`
 
 Extract and move to your tools folder:
+
 ```bash
 mkdir -p tools/plink1.9
 cd tools/plink1.9
@@ -506,6 +565,7 @@ Choose the precompiled binary for your system:
 - **macOS:** `Darwin-metal.tar.gz`
 
 Extract it in your tools folder:
+
 ```bash
 mkdir -p tools/metal
 cd tools/metal
@@ -559,9 +619,10 @@ EOF
 chmod +x tools/regenie/regenie
 ```
 
-#### 5. Create Symbolic Links
+#### 5. Create symbolic links
 
 Create convenient shortcuts in `tools/bin/`:
+
 ```bash
 mkdir -p tools/bin
 ln -s ../plink2/plink2 tools/bin/plink2
@@ -574,26 +635,31 @@ ln -s ../regenie/regenie tools/bin/regenie
 #### 6. Update PATH
 
 Add the tools folder to your PATH:
+
 ```bash
 export PATH="$(cd tools/bin && pwd):$PATH"
 ```
 
 To make this permanent on Linux/WSL, add it to `~/.bashrc`:
+
 ```bash
 echo 'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"' >> ~/.bashrc
 ```
 
 On macOS, the default shell is usually zsh, so use `~/.zshrc` instead:
+
 ```bash
 echo 'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"' >> ~/.zshrc
 ```
 
 Then reload your shell. Use the file you edited:
+
 ```bash
 source ~/.bashrc
 ```
 
 For macOS zsh:
+
 ```bash
 source ~/.zshrc
 ```
@@ -606,7 +672,13 @@ R is used later for QC plots, so confirm it is available:
 R --version
 ```
 
-:::
+### 5.6 Ready for the setup test
+
+The full setup test is the next step. If you want to check immediately, run:
+
+```bash
+bash scripts/dev/test.sh
+```
 
 ---
 
@@ -713,7 +785,7 @@ export PATH="$(cd tools/bin && pwd):$PATH"
 # Verify
 plink --version
 plink2 --version
-command -v metal
+command -v metal && echo "metal is on PATH"
 regenie --version
 
 ```
@@ -736,8 +808,8 @@ source ~/.zshrc
 
 If PATH setup is tricky, use the full path directly:
 ```bash
-./tools/bin/plink --version
 ./tools/bin/plink2 --version
+./tools/bin/plink --version
 test -x ./tools/bin/metal && echo "metal is available"
 ./tools/bin/regenie --version
 ```
