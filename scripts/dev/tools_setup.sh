@@ -13,6 +13,7 @@
 #   - tools/bin/plink  (symlink to PLINK1.9 binary)
 #   - tools/bin/metal  (symlink to METAL binary)
 #   - tools/bin/regenie (wrapper for the micromamba REGENIE environment)
+#   - Checks/install R as a system tool when possible
 #   - scripts/dev/tool_manifest.tsv (tools checked by test.sh)
 #   - Updates PATH to include tools/bin/
 #
@@ -237,6 +238,75 @@ download_file() {
     fi
 }
 
+# ============================================================================
+# Check or install R
+# ============================================================================
+install_r() {
+    echo ""
+    echo -e "${BLUE}Step 1: Checking R${NC}"
+    echo ""
+
+    if command -v R &> /dev/null; then
+        local R_VERSION
+        R_VERSION="$(R --version 2>/dev/null | head -1 || true)"
+        echo -e "  ${GREEN}✓${NC} R found (${R_VERSION:-version unknown})"
+        return 0
+    fi
+
+    echo -e "  ${YELLOW}⚠${NC}  R not found. Attempting to install..."
+
+    if command -v apt-get &> /dev/null; then
+        echo "  Installing R with apt-get..."
+        if sudo apt-get update && sudo apt-get install -y r-base r-base-dev; then
+            echo -e "  ${GREEN}✓${NC} R installed via apt-get"
+        else
+            echo -e "  ${RED}✗${NC} Failed to install R via apt-get"
+            echo "    If you see an apt lock, wait for the other apt process to finish."
+            echo "    If apt cannot find r-base, enable the Ubuntu universe repository or use an Ubuntu LTS WSL release."
+            echo "    If apt cannot connect, check WSL proxy/network settings."
+            return 1
+        fi
+    elif command -v dnf &> /dev/null; then
+        echo "  Installing R with dnf..."
+        if sudo dnf install -y R; then
+            echo -e "  ${GREEN}✓${NC} R installed via dnf"
+        else
+            echo -e "  ${RED}✗${NC} Failed to install R via dnf"
+            return 1
+        fi
+    elif command -v yum &> /dev/null; then
+        echo "  Installing R with yum..."
+        if sudo yum install -y R; then
+            echo -e "  ${GREEN}✓${NC} R installed via yum"
+        else
+            echo -e "  ${RED}✗${NC} Failed to install R via yum"
+            return 1
+        fi
+    elif command -v brew &> /dev/null; then
+        echo "  Installing R with Homebrew..."
+        if brew install r; then
+            echo -e "  ${GREEN}✓${NC} R installed via Homebrew"
+        else
+            echo -e "  ${RED}✗${NC} Failed to install R via Homebrew"
+            return 1
+        fi
+    else
+        echo -e "  ${RED}✗${NC} No supported package manager found. Cannot install R automatically."
+        echo "    Install R manually, then run this script again."
+        return 1
+    fi
+
+    if command -v R &> /dev/null; then
+        local R_VERSION
+        R_VERSION="$(R --version 2>/dev/null | head -1 || true)"
+        echo -e "  ${GREEN}✓${NC} R ready (${R_VERSION:-version unknown})"
+        return 0
+    fi
+
+    echo -e "  ${RED}✗${NC} R installation finished, but the R command is still not available"
+    return 1
+}
+
 register_tool() {
     local COMMAND=$1
     local LABEL=$2
@@ -274,7 +344,7 @@ write_tool_manifest() {
 
 verify_tool_manifest() {
     echo ""
-    echo -e "${BLUE}Step 8: Verifying tools from manifest${NC}"
+    echo -e "${BLUE}Step 9: Verifying tools from manifest${NC}"
     echo ""
 
     local TOOLS_OK=true
@@ -406,7 +476,7 @@ install_plink2() {
     local ARCH=$2
 
     echo ""
-    echo -e "${BLUE}Step 1: Installing PLINK2${NC}"
+    echo -e "${BLUE}Step 2: Installing PLINK2${NC}"
     echo "  OS: $OS, Architecture: $ARCH"
     echo ""
 
@@ -484,7 +554,7 @@ install_plink1_9() {
     local ARCH=$2
 
     echo ""
-    echo -e "${BLUE}Step 2: Installing PLINK1.9${NC}"
+    echo -e "${BLUE}Step 3: Installing PLINK1.9${NC}"
     echo "  OS: $OS, Architecture: $ARCH"
     echo ""
 
@@ -547,7 +617,7 @@ install_metal() {
     local OS=$1
 
     echo ""
-    echo -e "${BLUE}Step 3: Installing METAL${NC}"
+    echo -e "${BLUE}Step 4: Installing METAL${NC}"
     echo "  OS: $OS"
     echo ""
 
@@ -638,7 +708,7 @@ detect_micromamba_platform() {
 
 install_micromamba() {
     echo ""
-    echo -e "${BLUE}Step 4: Installing micromamba${NC}"
+    echo -e "${BLUE}Step 5: Installing micromamba${NC}"
     echo "  Location: tools/micromamba/"
     echo ""
 
@@ -684,7 +754,7 @@ install_micromamba() {
 # ============================================================================
 install_regenie() {
     echo ""
-    echo -e "${BLUE}Step 5: Installing REGENIE with micromamba${NC}"
+    echo -e "${BLUE}Step 6: Installing REGENIE with micromamba${NC}"
     echo "  Environment: $REGENIE_ENV_NAME"
     echo "  Environment root: tools/micromamba-root/"
     echo ""
@@ -721,7 +791,7 @@ EOF
 # ============================================================================
 create_symlinks() {
     echo ""
-    echo -e "${BLUE}Step 6: Creating symbolic links${NC}"
+    echo -e "${BLUE}Step 7: Creating symbolic links${NC}"
 
     # Remove old symlinks if they exist
     rm -f tools/bin/plink2 tools/bin/plink tools/bin/metal tools/bin/regenie
@@ -747,7 +817,7 @@ create_symlinks() {
 # ============================================================================
 add_to_path() {
     echo ""
-    echo -e "${BLUE}Step 7: Configuring PATH${NC}"
+    echo -e "${BLUE}Step 8: Configuring PATH${NC}"
 
     local TOOLS_BIN="$(cd tools/bin && pwd)"
     local PROFILE_FILE="$HOME/.bashrc"
@@ -799,6 +869,7 @@ main() {
     echo "Detected: OS=$OS, Architecture=$ARCH"
 
     # Install tools
+    install_r || exit 1
     install_plink2 "$OS" "$ARCH" || exit 1
     install_plink1_9 "$OS" "$ARCH" || exit 1
     install_metal "$OS" || exit 1

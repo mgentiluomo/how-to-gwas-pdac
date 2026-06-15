@@ -120,7 +120,7 @@ if [ -f "$TOOL_MANIFEST" ]; then
         label=${label:-$tool_command}
         required=${required:-required}
         version_args=${version_args:-}
-        install_hint=${install_hint:-"Install $label, then run Step 6 again"}
+        install_hint=${install_hint:-"Install $label, then run Step 5 again"}
         install_hint=${install_hint%$'\r'}
         check_scope=${check_scope%$'\r'}
         case "$tool_command" in

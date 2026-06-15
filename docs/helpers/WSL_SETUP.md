@@ -71,7 +71,7 @@ The short video below shows how to open Ubuntu from Windows Terminal:
 
 ## Basic WSL Preparation
 
-Once you're in the WSL terminal, run these commands **once** to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are installed later by `bash scripts/dev/tools_setup.sh`.
+Once you're in the WSL terminal, run these commands **once** to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by `bash scripts/dev/tools_setup.sh`.
 
 ### Step 1: Update Package Manager
 
@@ -88,12 +88,6 @@ sudo apt-get upgrade -y
 sudo apt-get install -y curl wget git unzip tar bzip2
 ```
 
-Install R, which is used for QC plots and checked by the setup test:
-
-```bash
-sudo apt-get install -y r-base r-base-dev
-```
-
 Verify the basic utilities:
 
 ```bash
@@ -102,11 +96,7 @@ curl --version
 wget --version
 ```
 
-Verify R too:
-
-```bash
-R --version
-```
+R is checked during Step 5 of the main tutorial. If it is missing, `bash scripts/dev/tools_setup.sh` will try to install it.
 
 
 ---
