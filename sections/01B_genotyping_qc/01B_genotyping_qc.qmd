@@ -1,27 +1,210 @@
 ---
-title: "Section 1B notes: Genotyping QC"
-description: "Maintainer note for the QC section source files"
+title: "Genotyping quality control"
+description: "Clean the demo genotype data before population structure and association testing"
 ---
 
-The canonical website page for this section is:
+Real genotype data is never perfect. Some samples have too many missing calls, some variants are
+poorly measured, sex labels can be wrong, and related individuals can break the independence
+assumption used by standard GWAS tests. **Quality control (QC)** removes or flags these problems
+before any association analysis.
 
-```text
-../../qc.qmd
+This page is the canonical QC tutorial for the website. The source scripts live in
+`sections/01B_genotyping_qc/scripts/`, but the learner runs the copied scripts from their tutorial
+working folder:
+
+```bash
+~/gwas_tutorial/
+├── demo_data/
+├── scripts/01B_genotyping_qc/
+└── results/qc/
 ```
 
-Keep the learner-facing QC tutorial there so the website has one clear page to review and edit.
-This folder keeps the source scripts and section notes:
+::: {.callout-tip title="Before you start"}
+Finish [Before you start](../../getting_started.qmd) first. You should have:
+
+- `demo_data/pdac_demo.bed`
+- `demo_data/pdac_demo.bim`
+- `demo_data/pdac_demo.fam`
+- working `plink2` and `plink` commands
+
+All commands below are run from the project root, for example `~/gwas_tutorial`.
+:::
+
+## What QC Does
+
+The demo QC pipeline is intentionally stepwise. Each script runs one check, writes output to
+`results/qc/`, and prints the next command to run.
 
 ```text
-sections/01B_genotyping_qc/
-├── README.md
-└── scripts/
+Raw demo genotypes: demo_data/pdac_demo.bed/.bim/.fam
+    |
+    | 01 Initial QC statistics
+    | 02 Sample call rate
+    | 03 Sex check
+    | 04 Heterozygosity outliers
+    | 05 Variant call rate
+    | 06 Hardy-Weinberg equilibrium
+    | 07 Relatedness
+    | 08 Minor allele frequency
+    | 09 QC summary
+    v
+Clean genotypes: results/qc/pdac_demo_08_filt.bed/.bim/.fam
 ```
 
-The scripts are copied into the learner project as:
+::: {.callout-note title="Why one step at a time?"}
+For teaching, we do not hide the QC decisions inside one long command. Running one step at a
+time lets you see how many samples or variants each filter removes. That is how you catch mistakes
+early.
+:::
+
+## Run the QC Pipeline
+
+## 01 - Initial QC Statistics
+
+**Why.** Before removing anything, measure the dataset: allele frequencies, heterozygosity, and
+missingness.
+
+```bash
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
+```
+
+Main outputs:
 
 ```text
-scripts/01B_genotyping_qc/
+results/qc/pdac_demo_01_qc.afreq
+results/qc/pdac_demo_01_qc.het
+results/qc/pdac_demo_01_qc.smiss
+results/qc/pdac_demo_01_qc.vmiss
+results/qc/pdac_demo_01_qc_variant_density_by_chromosome.tsv
+results/qc/pdac_demo_01_qc_variant_density_by_chromosome.png
+results/qc/pdac_demo_01_qc_sample_missingness_histogram.png
+results/qc/pdac_demo_01_qc_variant_missingness_histogram.png
+results/qc/pdac_demo_01_qc_allele_frequency_distribution.png
+results/qc/pdac_demo_01_qc_heterozygote_rate_distribution.png
 ```
 
-Use this file only for maintainer notes if needed; do not duplicate the tutorial narrative here.
+## 02 - Sample Call Rate
+
+**Why.** Samples with too many missing genotypes often reflect poor DNA quality, lab failure, or
+platform problems. In a rare cancer GWAS, every sample is valuable, but very low-quality samples
+can harm the entire analysis.
+
+```bash
+bash scripts/01B_genotyping_qc/02_sample_callrate.sh
+```
+
+This applies `--mind 0.02`, removing samples with more than 2% missing genotypes.
+
+## 03 - Sex Check
+
+**Why.** The genetic data on chromosome X should broadly agree with the recorded sex. A mismatch
+can indicate a sample swap, data entry error, or contamination.
+
+```bash
+bash scripts/01B_genotyping_qc/03_sex_check.sh
+```
+
+The script writes:
+
+```text
+results/qc/pdac_demo_03_sexcheck.sexcheck
+results/qc/pdac_demo_03_sexcheck_discordant.txt
+```
+
+## 04 - Heterozygosity Outliers
+
+**Why.** Extremely high or low heterozygosity can signal contamination, inbreeding, or ancestry
+outliers. This step uses R to identify and plot outliers.
+
+```bash
+bash scripts/01B_genotyping_qc/04_heterozygosity.sh
+```
+
+If R is not installed yet, install it before this step.
+
+## 05 - Variant Call Rate
+
+**Why.** Variants missing in many samples are unreliable. This step removes variants with more
+than 5% missing genotypes.
+
+```bash
+bash scripts/01B_genotyping_qc/05_variant_callrate.sh
+```
+
+This applies `--geno 0.05`.
+
+## 06 - Hardy-Weinberg Equilibrium
+
+**Why.** Strong Hardy-Weinberg equilibrium deviations in controls often indicate genotyping
+errors. In a case/control GWAS, controls are the safer group for this filter because true disease
+variants may deviate in cases.
+
+```bash
+bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh
+```
+
+This uses `demo_data/phenotype.txt` to identify controls, then removes variants with
+control-only HWE p-value below `1e-6`.
+
+## 07 - Relatedness
+
+**Why.** Standard GWAS regression assumes unrelated individuals. Related pairs can inflate test
+statistics if not removed or modelled.
+
+```bash
+bash scripts/01B_genotyping_qc/07_relatedness.sh
+```
+
+This uses LD-pruned variants and `--king-cutoff 0.1875` to prune related samples.
+
+## 08 - Minor Allele Frequency
+
+**Why.** Very rare variants can be unstable in small studies. For PDAC we keep the threshold low
+(`--maf 0.01`) because rare and low-frequency variants may be important in rare cancers.
+
+```bash
+bash scripts/01B_genotyping_qc/08_maf_filter.sh
+```
+
+The cleaned dataset is:
+
+```text
+results/qc/pdac_demo_08_filt.bed
+results/qc/pdac_demo_08_filt.bim
+results/qc/pdac_demo_08_filt.fam
+```
+
+## 09 - QC Summary
+
+**Why.** A reproducible GWAS needs a record of every threshold and how many samples or variants
+were removed at each step.
+
+```bash
+bash scripts/01B_genotyping_qc/09_qc_summary.sh
+```
+
+Main outputs:
+
+```text
+results/qc/pdac_demo_qc_summary.txt
+results/qc/pdac_demo_qc_counts.tsv
+results/qc/pdac_demo_qc_retention_rates.pdf
+results/qc/pdac_demo_qc_decision_tree.pdf
+```
+
+## PDAC-Specific Notes
+
+Pancreatic cancer GWAS is a rare-cancer setting. That changes how we think about QC:
+
+- Removing a case costs power, so sample-level filters should be justified and documented.
+- Overly aggressive MAF filtering can discard low-frequency signal.
+- Population stratification is especially important in multi-consortium analyses.
+- Relatedness and ancestry checks matter before association testing.
+
+The final QC-pass dataset is the starting point for population stratification and PCA.
+
+## References
+
+- [PMID: 16385451] Hardy-Weinberg equilibrium and QC thresholds
+- [PMID: 17701901] Relatedness and sample pruning
+- [PMID: 10944012] Heterozygosity and contamination detection

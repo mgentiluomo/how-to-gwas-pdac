@@ -23,7 +23,7 @@ website:
           - getting_started.qmd
       - section: "Quality control"
         contents:
-          - qc.qmd
+          - sections/01B_genotyping_qc/01B_genotyping_qc.qmd
       # Manuscript sections will be added here as they are drafted:
       # - section: "Pre-GWAS"
       #   contents:

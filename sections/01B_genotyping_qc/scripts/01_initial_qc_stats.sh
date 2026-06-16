@@ -12,10 +12,12 @@
 #   - pdac_demo.bed/bim/fam (raw genotypes)
 #
 # OUTPUT:
-#   - pdac_demo.afreq        (allele frequencies)
-#   - pdac_demo.het          (individual heterozygosity)
-#   - pdac_demo.missingxy    (missing data by chr, sex)
-#   - pdac_demo.nobs         (number of observations per variant)
+#   - pdac_demo_01_qc.afreq
+#   - pdac_demo_01_qc.het
+#   - pdac_demo_01_qc.smiss  (sample-level missingness)
+#   - pdac_demo_01_qc.vmiss  (variant-level missingness)
+#   - pdac_demo_01_qc_*png   (initial QC plots)
+#   - pdac_demo_01_qc_variant_density_by_chromosome.tsv
 #
 # NOTES:
 #   - GRCh38 genome build (assumed in the bim file)
@@ -105,7 +107,8 @@ echo ""
 #   - PCR failures or technical issues
 #   - Low-quality samples
 #
-# We'll use the per-sample and per-variant missingness to apply filters in Step 2.
+# Per-sample missingness is used in Step 02 (--mind).
+# Per-variant missingness is used in Step 05 (--geno).
 
 plink2 \
   --bfile "${DATASET_DIR}/${DATASET_NAME}" \
@@ -117,7 +120,38 @@ echo "  - ${OUT_PREFIX}.smiss (per sample)"
 echo "  - ${OUT_PREFIX}.vmiss (per variant)"
 
 # ============================================================================
-# STEP 4: Inspect basic summary statistics
+# STEP 4: Create initial QC plots
+# ============================================================================
+echo ""
+echo "=== Creating initial QC plots (R) ==="
+echo ""
+
+PLOT_SCRIPT="${SCRIPT_DIR}/01_initial_qc_plots.R"
+
+if ! command -v Rscript >/dev/null 2>&1; then
+  echo "✗ Rscript is not available."
+  echo "  Run Step 5 first: bash scripts/dev/tools_setup.sh"
+  exit 1
+fi
+
+Rscript "$PLOT_SCRIPT" \
+  "${DATASET_DIR}/${DATASET_NAME}.bim" \
+  "${OUT_PREFIX}.afreq" \
+  "${OUT_PREFIX}.smiss" \
+  "${OUT_PREFIX}.vmiss" \
+  "${OUT_PREFIX}.het" \
+  "$OUT_PREFIX"
+
+echo "✓ Initial QC plots saved to:"
+echo "  - ${OUT_PREFIX}_variant_density_by_chromosome.png"
+echo "  - ${OUT_PREFIX}_variant_density_by_chromosome.tsv"
+echo "  - ${OUT_PREFIX}_sample_missingness_histogram.png"
+echo "  - ${OUT_PREFIX}_variant_missingness_histogram.png"
+echo "  - ${OUT_PREFIX}_allele_frequency_distribution.png"
+echo "  - ${OUT_PREFIX}_heterozygote_rate_distribution.png"
+
+# ============================================================================
+# STEP 5: Inspect basic summary statistics
 # ============================================================================
 echo ""
 echo "=== Computing summary statistics ==="
@@ -152,12 +186,10 @@ echo ""
 # ============================================================================
 echo "=== NEXT STEP ==="
 echo ""
-echo "Run the variant filtering step:"
+echo "Run the sample call rate step:"
 echo ""
 echo "  bash scripts/01B_genotyping_qc/02_sample_callrate.sh"
 echo ""
-echo "This will apply filters for:"
-echo "  - Variant call rate (--geno)"
-echo "  - Hardy-Weinberg equilibrium (--hwe)"
-echo "  - Minor allele frequency (--maf) [optional]"
+echo "This will remove samples with too much missing data:"
+echo "  - Sample call rate (--mind)"
 echo ""

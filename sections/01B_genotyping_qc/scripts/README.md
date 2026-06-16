@@ -6,7 +6,7 @@ This folder contains annotated scripts for the **full sample and variant-level Q
 
 | # | Script | Purpose | Input | Output | Key Threshold |
 |---|--------|---------|-------|--------|---------------|
-| 1 | `01_initial_qc_stats.sh` | Baseline statistics | `demo_data/pdac_demo.bed/bim/fam` | afreq, het, smiss, vmiss | — |
+| 1 | `01_initial_qc_stats.sh` | Baseline statistics and plots | `demo_data/pdac_demo.bed/bim/fam` | afreq, het, smiss, vmiss, PNG plots | — |
 | 2 | `02_sample_callrate.sh` | Remove high-missingness samples | Raw demo data | sample-filtered dataset | --mind 0.02 |
 | 3 | `03_sex_check.sh` | Identify sex discordance | Dataset from 02 | sexcheck, discordant list | F stat anomaly |
 | 4 | `04_heterozygosity.sh` | Remove contamination/outliers | Dataset from 03 | het outliers list, plots | F ± 3 SD |
@@ -41,22 +41,14 @@ See [`../../WSL_SETUP.md`](../../WSL_SETUP.md) for detailed Windows/WSL instruct
 
 ### Linux/Mac Users
 
-Run `bash scripts/dev/tools_setup.sh` from the tutorial project root to install PLINK2 and PLINK1.9. R is needed later for the heterozygosity plots and final QC figures.
-
-```bash
-# Ubuntu/Debian, for R plots used in later QC steps
-sudo apt-get install r-base
-
-# macOS, for R plots used in later QC steps
-brew install r
-```
+Run `bash scripts/dev/tools_setup.sh` from the tutorial project root to install/check PLINK2, PLINK1.9, METAL, REGENIE, and R.
 
 ## Running the Full Pipeline
 
 Each script is **self-contained**: it outputs the command for the next step at the end.
 
 ```bash
-bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh     # ~1 min
+bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh     # ~1 min (includes R visualization)
 bash scripts/01B_genotyping_qc/02_sample_callrate.sh      # ~1 min
 bash scripts/01B_genotyping_qc/03_sex_check.sh            # ~1 min
 bash scripts/01B_genotyping_qc/04_heterozygosity.sh       # ~2 min (includes R visualization)
@@ -87,6 +79,12 @@ After running the full pipeline, you will have:
 results/qc/pdac_demo_01_qc.afreq       — allele frequencies
 results/qc/pdac_demo_01_qc.smiss       — per-sample missing rates
 results/qc/pdac_demo_01_qc.vmiss       — per-variant missing rates
+results/qc/pdac_demo_01_qc_variant_density_by_chromosome.tsv
+results/qc/pdac_demo_01_qc_variant_density_by_chromosome.png
+results/qc/pdac_demo_01_qc_sample_missingness_histogram.png
+results/qc/pdac_demo_01_qc_variant_missingness_histogram.png
+results/qc/pdac_demo_01_qc_allele_frequency_distribution.png
+results/qc/pdac_demo_01_qc_heterozygote_rate_distribution.png
 results/qc/pdac_demo_04_het.het        — heterozygosity (F statistic)
 results/qc/pdac_demo_03_sexcheck.sexcheck — sex concordance check
 results/qc/pdac_demo_04_het_outliers.txt — list of het outliers to remove
