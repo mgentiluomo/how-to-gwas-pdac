@@ -314,6 +314,10 @@ sort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt
 # Optional cleanup: delete only the temporary cloned copy after scripts are copied
 rm -r how-to-gwas-pdac
 ```
+::: {.callout-tip title="Tip"}
+If you see `rm: remove write-protected regular file 'how-to-gwas-pdac/.git/objects/pack/pack-XXX.rev'?`, type `y` and press <kbd>Enter</kbd> to confirm deletion. This is normal because the cloned repo is write-protected.
+:::
+
 
 Verify the scripts downloaded:
 
@@ -699,20 +703,7 @@ Next command to run the QC pipeline:
   bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
 ```
 
-If you see this message, **everything is working!** You can now run the first QC script:
-
-```bash
-bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
-```
-
-This writes the first QC reports to `results/qc/`, including:
-
-```text
-results/qc/pdac_demo_01_qc.afreq
-results/qc/pdac_demo_01_qc.het
-results/qc/pdac_demo_01_qc.smiss
-results/qc/pdac_demo_01_qc.vmiss
-```
+If you see this message, **everything is working!** You can now go to Quality Control (Section 1B) and run your first QC command.
 
 ---
 

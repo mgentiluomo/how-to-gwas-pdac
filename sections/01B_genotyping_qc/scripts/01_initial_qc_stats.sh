@@ -149,6 +149,7 @@ echo "  - ${OUT_PREFIX}_sample_missingness_histogram.png"
 echo "  - ${OUT_PREFIX}_variant_missingness_histogram.png"
 echo "  - ${OUT_PREFIX}_allele_frequency_distribution.png"
 echo "  - ${OUT_PREFIX}_heterozygote_rate_distribution.png"
+echo "  - ${OUT_PREFIX}_sample_missingness_vs_heterozygosity.png"
 
 # ============================================================================
 # STEP 5: Inspect basic summary statistics

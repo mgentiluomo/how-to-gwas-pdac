@@ -81,6 +81,7 @@ results/qc/pdac_demo_01_qc_sample_missingness_histogram.png
 results/qc/pdac_demo_01_qc_variant_missingness_histogram.png
 results/qc/pdac_demo_01_qc_allele_frequency_distribution.png
 results/qc/pdac_demo_01_qc_heterozygote_rate_distribution.png
+results/qc/pdac_demo_01_qc_sample_missingness_vs_heterozygosity.png
 ```
 
 ## 02 - Sample Call Rate
@@ -146,6 +147,17 @@ bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh
 This uses `demo_data/phenotype.txt` to identify controls, then removes variants with
 control-only HWE p-value below `1e-6`.
 
+Main outputs:
+
+```text
+results/qc/pdac_demo_06_hwe.hardy
+results/qc/pdac_demo_06_hwe_pvalue_distribution.png
+results/qc/pdac_demo_06_hwe_exclude.txt
+results/qc/pdac_demo_06_filt.bed
+results/qc/pdac_demo_06_filt.bim
+results/qc/pdac_demo_06_filt.fam
+```
+
 ## 07 - Relatedness
 
 **Why.** Standard GWAS regression assumes unrelated individuals. Related pairs can inflate test
@@ -155,7 +167,92 @@ statistics if not removed or modelled.
 bash scripts/01B_genotyping_qc/07_relatedness.sh
 ```
 
-This uses LD-pruned variants and `--king-cutoff 0.1875` to prune related samples.
+This step uses the phenotype file to protect rare cancer cases during pruning:
+
+| File | Required columns | Coding |
+|---|---|---|
+| `demo_data/phenotype.txt` | `FID IID PHENO` | `1 = control`, `2 = case` |
+
+The first two columns must match the family ID and individual ID in the `.fam` file.
+A header line is allowed.
+
+This uses LD-pruned variants and KING kinship to find duplicate/twin or first-degree
+related samples. The script runs the standard PLINK2 reference command
+`--king-cutoff 0.1875`, then builds a wider KING pair table with
+`--king-table-filter 0.0442` so second- and third-degree relationships can also be reviewed.
+It also runs the older PLINK 1.9 `--genome` command to report `PI_HAT`, which many
+GWAS QC tutorials use for identity-by-descent checks.
+
+`PI_HAT` and KING kinship are related but not the same scale. In ideal outbred pedigrees,
+`PI_HAT` is roughly twice KING kinship, but real data will not match perfectly. For that
+reason, this tutorial reports both and uses one method, KING, for the final pruning list.
+The script also writes a `KING vs PI_HAT` comparison table so you can check whether the
+two methods identify the same close relatives.
+
+Ideal pedigree expectations are useful for choosing thresholds:
+
+| Pair type | Degree | Approx. `PI_HAT` / relationship coefficient | Approx. KING kinship |
+|---|---:|---:|---:|
+| Unrelated | — | 0 | 0 |
+| Parent–offspring | 1st | 0.5 | 0.25 |
+| Full siblings | 1st | 0.5 | 0.25 |
+| Half-siblings | 2nd | 0.25 | 0.125 |
+| Grandparent–grandchild | 2nd | 0.25 | 0.125 |
+| Uncle/aunt–niece/nephew | 2nd | 0.25 | 0.125 |
+| First cousins | 3rd | 0.125 | 0.0625 |
+| Identical twins or duplicate DNA sample | — | 1 | 0.5 |
+
+The `0.1875` KING cutoff sits between the expected first-degree value (`0.25`) and
+second-degree value (`0.125`):
+
+```text
+(0.25 + 0.125) / 2 = 0.1875
+```
+
+That means pairs above `0.1875` are treated as duplicate/twin or first-degree-or-closer
+for pruning. Some tutorials use the nearby geometric-mean cutoff instead:
+
+```text
+sqrt(0.25 × 0.125) ≈ 0.177
+```
+
+Both cutoffs are trying to separate first-degree-or-closer pairs from more distant relatives.
+Here we use `0.1875` because it is common in GWAS QC scripts and easy to explain.
+
+Because this is a rare-cancer tutorial, the final pruning list is **phenotype-aware**:
+if a related pair above the `0.1875` removal threshold contains one case and one control,
+the script keeps the case and removes the control. If both samples have the same phenotype,
+it removes the sample involved in more related pairs.
+
+Main outputs:
+
+```text
+results/qc/pdac_demo_07_related_pairs.kin0
+results/qc/pdac_demo_07_king_cutoff.king.cutoff.in.id
+results/qc/pdac_demo_07_king_cutoff.king.cutoff.out.id
+results/qc/pdac_demo_07_ibd_pi_hat.genome
+results/qc/pdac_demo_07_ibd_pi_hat_annotated.tsv
+results/qc/pdac_demo_07_ibd_pi_hat_summary.tsv
+results/qc/pdac_demo_07_related_pairs_annotated.tsv
+results/qc/pdac_demo_07_relatedness_summary.tsv
+results/qc/pdac_demo_07_king_vs_pihat_comparison.tsv
+results/qc/pdac_demo_07_king_vs_pihat_summary.tsv
+results/qc/pdac_demo_07_pruning_components.tsv
+results/qc/pdac_demo_07_relatedness_pruning_diagnostics.tsv
+results/qc/pdac_demo_07_removal_decisions.tsv
+results/qc/pdac_demo_07_removal_summary.tsv
+results/qc/pdac_demo_07_removal_phenotype_counts.tsv
+results/qc/pdac_demo_07_removal_list.txt
+results/qc/pdac_demo_07_filt.bed
+results/qc/pdac_demo_07_filt.bim
+results/qc/pdac_demo_07_filt.fam
+```
+
+The relatedness summary counts duplicate/twin, first-degree, second-degree, third-degree,
+and samples with no third-degree-or-closer pair. The pruning diagnostics explain how many
+pairs triggered removal, how many unique samples were involved, whether they form large
+relatedness components, and how many controls or cases were removed. If this step removes
+many samples, inspect those diagnostics before continuing.
 
 ## 08 - Minor Allele Frequency
 

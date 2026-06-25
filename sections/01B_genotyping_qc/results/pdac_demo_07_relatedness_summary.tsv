@@ -1,0 +1,7 @@
+relationship_category	n_pairs	n_unique_samples
+Duplicate_or_twin	0	0
+First_degree	284	448
+Second_degree	4	8
+Third_degree	10	20
+No_third_degree_or_closer_pair	NA	964
+Total_samples_before_relatedness_filter	NA	1430

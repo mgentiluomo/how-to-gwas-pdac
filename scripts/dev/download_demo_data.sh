@@ -129,8 +129,8 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 if [ $FAIL -eq 0 ]; then
   echo "✓ All files verified successfully! ($PASS/$PASS)"
   echo ""
-  echo "Ready to run QC pipeline:"
-  echo "  bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh"
+  echo "Please continue getting started:"
+  echo "  Step 5 — Install dependencies"
   exit 0
 else
   echo "❌ Verification failed: $FAIL file(s) with issues"

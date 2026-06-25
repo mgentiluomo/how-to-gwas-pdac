@@ -13,7 +13,8 @@
 #   - pdac_demo.bed/bim/fam (raw genotypes)
 #
 # OUTPUT:
-#   - pdac_demo.02_samples_callrate_pass.txt — list of samples passing filter
+#   - pdac_demo_02_samples_keep.txt — list of samples passing filter
+#   - pdac_demo_02_filt.bed/bim/fam — sample call-rate filtered dataset
 #
 # THRESHOLD:
 #   --mind 0.02  (allow max 2% missing genotypes per sample)
@@ -72,7 +73,32 @@ plink2 \
   --write-samples \
   --out "${OUT_DIR}/${DATASET_NAME}_02_samples_callrate"
 
-awk 'NR > 1 {print $1, $2}' "${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.psam" > "${OUT_DIR}/${DATASET_NAME}_02_samples_keep.txt"
+SAMPLE_REPORT=""
+if [ -f "${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.id" ]; then
+  SAMPLE_REPORT="${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.id"
+elif [ -f "${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.psam" ]; then
+  SAMPLE_REPORT="${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.psam"
+else
+  echo "✗ Could not find PLINK2 sample report."
+  echo "  Expected one of:"
+  echo "  - ${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.id"
+  echo "  - ${OUT_DIR}/${DATASET_NAME}_02_samples_callrate.psam"
+  exit 1
+fi
+
+awk '
+  NR == 1 {
+    first = $1
+    second = $2
+    gsub(/^#/, "", first)
+    gsub(/^#/, "", second)
+    if (first == "FID" || first == "IID" || second == "IID") {
+      next
+    }
+  }
+  NF >= 2 { print $1, $2 }
+  NF == 1 { print 0, $1 }
+' "$SAMPLE_REPORT" > "${OUT_DIR}/${DATASET_NAME}_02_samples_keep.txt"
 
 echo "✓ Samples passing call rate filter: $(wc -l < "${OUT_DIR}/${DATASET_NAME}_02_samples_keep.txt")"
 

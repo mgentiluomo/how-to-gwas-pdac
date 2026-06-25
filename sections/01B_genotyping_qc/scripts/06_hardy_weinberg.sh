@@ -15,6 +15,8 @@
 #   - phenotype.txt (case/control status)
 #
 # OUTPUT:
+#   - pdac_demo_06_hwe.hardy — HWE p-values in controls
+#   - pdac_demo_06_hwe_pvalue_distribution.png — HWE p-value histogram
 #   - pdac_demo_06_filt.bed/bim/fam — HWE-filtered genotypes
 #
 # THRESHOLD:
@@ -103,7 +105,28 @@ plink2 \
 echo "✓ HWE test results: ${OUT_DIR}/${DATASET_NAME}_06_hwe.hardy"
 
 # ============================================================================
-# STEP 3: Identify HWE-failing variants
+# STEP 3: Plot HWE p-value distribution
+# ============================================================================
+echo ""
+echo "=== Creating HWE p-value plot (R) ==="
+echo ""
+
+PLOT_SCRIPT="${SCRIPT_DIR}/06_hwe_plot.R"
+
+if ! command -v Rscript >/dev/null 2>&1; then
+  echo "✗ Rscript is not available."
+  echo "  Run Step 5 first: bash scripts/dev/tools_setup.sh"
+  exit 1
+fi
+
+Rscript "$PLOT_SCRIPT" \
+  "${OUT_DIR}/${DATASET_NAME}_06_hwe.hardy" \
+  "${OUT_DIR}/${DATASET_NAME}_06_hwe"
+
+echo "✓ HWE p-value plot: ${OUT_DIR}/${DATASET_NAME}_06_hwe_pvalue_distribution.png"
+
+# ============================================================================
+# STEP 4: Identify HWE-failing variants
 # ============================================================================
 echo ""
 echo "=== Identifying HWE violations ==="
@@ -129,7 +152,7 @@ NHWE_FAIL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_06_hwe_exclude.txt")
 echo "Variants failing HWE (p < 1e-6): ${NHWE_FAIL}"
 
 # ============================================================================
-# STEP 4: Create HWE-filtered dataset
+# STEP 5: Create HWE-filtered dataset
 # ============================================================================
 echo ""
 echo "=== Removing HWE-failing variants ==="
@@ -176,7 +199,7 @@ echo ""
 echo "  bash scripts/01B_genotyping_qc/07_relatedness.sh"
 echo ""
 echo "This will:"
-echo "  - Compute kinship coefficients (IBD, PI_HAT)"
-echo "  - Identify related pairs (2nd degree or closer)"
-echo "  - Prune to one sample per related pair"
+echo "  - Compute KING kinship coefficients"
+echo "  - Identify duplicate/twin and first-degree related samples"
+echo "  - Prefer removing controls over cases in related case-control pairs"
 echo ""

@@ -1,0 +1,155 @@
+================================================================================
+PDAC GWAS Genotyping Quality Control Summary
+================================================================================
+
+Dataset: pdac_demo
+Analysis Date: Thu Jun 25 17:16:49 WEDT 2026
+Genome Build: GRCh38
+
+================================================================================
+QC PIPELINE SUMMARY
+================================================================================
+
+Step                          Samples    Variants   Samples Lost  Variants Lost
+─────────────────────────────────────────────────────────────────────────────
+00. Raw data                  1461      430000
+01. Initial stats             1461      430000        —             —
+02. Sample call rate          1436      430000        25        0
+03. Sex check                 1432      430000        4        0
+04. Heterozygosity            1430      430000        2        0
+05. Variant call rate         1430      421520        0        8480
+06. Hardy-Weinberg            1430      406947        0        14573
+07. Relatedness (KING)        1239      406947        191        0
+08. MAF filter (≥1%)          1239      401909        0        5038
+─────────────────────────────────────────────────────────────────────────────
+FINAL DATASET                 1239      401909        222        28091
+
+================================================================================
+RETENTION RATES
+================================================================================
+
+Sample retention:  84% of raw samples
+Variant retention: 93% of raw variants
+
+PDAC-specific notes:
+  - Sample-level filters: call rate, sex check, heterozygosity, relatedness
+  - Variant-level filters: call rate, HWE (controls), MAF ≥ 1%
+  - Low MAF threshold (1% vs standard 5%) preserves rare-variant signal
+  - Final dataset: ready for population stratification analysis (PCA)
+
+================================================================================
+QC THRESHOLDS APPLIED
+================================================================================
+
+Sample-level:
+  --mind 0.02         (sample call rate: keep samples with <2% missing)
+  Sex check           (F-statistic on chrX: remove discordant samples)
+  Heterozygosity      (F ± 3 SD on autosomes: remove outliers)
+  KING kinship > 0.1875 (relatedness: phenotype-aware pruning, prefer removing controls)
+  PLINK1 --genome     (PI_HAT report for teaching/review; final pruning uses KING)
+
+Variant-level:
+  --geno 0.05         (variant call rate: keep variants with <5% missing)
+  --hwe 1e-6          (Hardy-Weinberg p-value in controls: p > 1e-6)
+  --maf 0.01          (minor allele frequency: keep variants with MAF ≥ 1%)
+
+================================================================================
+QUALITY CONTROL DECISION RATIONALE
+================================================================================
+
+1. CALL RATE (sample level, --mind 0.02):
+   Removes samples with >2% missing genotypes, indicating platform or lab issues.
+   Threshold: 2% is standard; PDAC keeps this for sample retention.
+
+2. SEX CHECK:
+   Identifies and removes sex-discordant samples (genetic sex ≠ reported sex).
+   Catches sample swaps and data entry errors using X chromosome heterozygosity.
+
+3. HETEROZYGOSITY:
+   Removes samples with extreme inbreeding coefficients (F ± 3 SD).
+   Identifies contaminated samples (high F) or population outliers (low F).
+
+4. VARIANT CALL RATE (--geno 0.05):
+   Removes variants with >5% missing genotypes across the sample.
+   Indicates assay design problems or systematic genotyping failures.
+
+5. HARDY-WEINBERG EQUILIBRIUM (--hwe 1e-6):
+   Tests HWE in controls only; disease variants may deviate in cases.
+   Removes variants with p < 1e-6, indicating potential genotyping errors.
+   Threshold 1e-6 is conservative; provides Bonferroni-like protection.
+
+6. RELATEDNESS (KING kinship > 0.1875):
+   Identifies duplicate/twin and first-degree related samples using KING kinship.
+   Also writes a PLINK1.9 --genome PI_HAT report for comparison with older QC workflows.
+   The KING-vs-PI_HAT comparison table is for review; final pruning uses KING.
+   In case-control related pairs, removes the control and preserves the case.
+   In same-phenotype related pairs, removes one sample to maintain statistical independence.
+   Important for disease cohorts (family recruitment common in cancer GWAS).
+
+   Relatedness diagnostics:
+     - KING pairs above pruning threshold: 284
+     - Unique samples in those pairs: 448
+     - Relatedness graph components: 164
+     - Largest component size: 6 samples
+     - PLINK2 --king-cutoff removed: 167 samples
+     - Phenotype-aware pruning removed: 191 samples (13.4%)
+     - Controls removed: 154; cases removed: 37
+
+   If relatedness pruning removes a large fraction of samples, inspect:
+     - pdac_demo_07_pruning_components.tsv
+     - pdac_demo_07_relatedness_pruning_diagnostics.tsv
+     - pdac_demo_07_removal_decisions.tsv
+
+7. MINOR ALLELE FREQUENCY (--maf 0.01):
+   **PDAC-specific decision: use 1% threshold (not standard 5%)**
+   Rationale:
+     - Rare variants carry larger effect sizes in complex disease
+     - Small sample size: each variant is valuable
+     - Pancreatic cancer is rare: causal variants may be rare
+     - Common-variant + rare-variant mixed model
+   Standard GWAS uses --maf 0.05 (assumes common-disease common-variant model)
+   PDAC context requires retention of rare variants for power
+
+================================================================================
+POWER AND DOWNSTREAM IMPLICATIONS
+================================================================================
+
+Sample Loss Impact (~222 samples removed, 15% loss):
+  - Reduces effective sample size for association tests
+  - Final sample count after genotyping QC: 1239
+  - Use the phenotype-aware relatedness outputs to review how many cases and controls were removed
+  - Power impact: lower statistical power to detect effects of a given size
+  - Mitigation: preserve rare cancer cases where possible and consider meta-analysis if power is limited
+
+Variant Loss Impact (~28091 variants removed, 6% loss):
+  - Most loss from variant call rate + HWE: removes noisy/unreliable variants
+  - MAF filter removes ~5038 common variants
+  - **Result:** Higher-quality variant set for association testing
+  - Remaining variants are reliable for downstream imputation and analysis
+
+Recommendations:
+  - Confirm final sample/variant counts match expected ranges (see above)
+  - Document all threshold choices for manuscript Methods section
+  - Keep this summary in supplementary materials for reproducibility
+  - If power is insufficient post-association, consider: meta-analysis, imputation
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Verify final dataset files exist:
+   - pdac_demo_08_filt.bed/bim/fam
+
+2. Population stratification analysis (Section 2):
+   - PCA on final clean genotypes to identify ancestry subgroups
+   - Exclude non-EUR individuals for EUR-specific GWAS
+
+3. Imputation (Section 3, optional):
+   - Prepare pre-imputation QC-pass dataset
+   - Use tools like EAGLE (phasing) + minimac (imputation)
+
+4. Association testing (Section 4):
+   - Run logistic/linear regression on final QC-pass genotypes
+   - Adjust for principal components (PC1-10) and covariates
+
+================================================================================

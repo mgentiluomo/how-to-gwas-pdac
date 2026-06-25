@@ -1,0 +1,12 @@
+metric	value
+total_pairs_in_either_report	55337
+pairs_reported_by_both	298
+same_category	294
+different_category_check_values	4
+reported_by_king_only	0
+reported_by_pihat_only	55039
+pruning_pairs	284
+pruning_pairs_with_pihat	284
+pruning_pairs_without_pihat	0
+mean_abs_pihat_minus_2king	0.025632
+max_abs_pihat_minus_2king	0.126513

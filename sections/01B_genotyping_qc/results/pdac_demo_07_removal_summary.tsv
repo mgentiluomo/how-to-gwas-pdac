@@ -1,0 +1,9 @@
+metric	value
+pruning_pairs_evaluated	284
+pruning_pairs_already_resolved_by_prior_removal	93
+controls_removed	154
+cases_removed	37
+unknown_phenotype_removed	0
+total_removed	191
+case_control_pair_keep_case_remove_control	94
+same_phenotype_remove_higher_related_degree_or_id	97

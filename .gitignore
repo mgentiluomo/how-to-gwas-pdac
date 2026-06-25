@@ -14,3 +14,22 @@ scripts/dev/tool_manifest.tsv
 
 # Generated learner tool installs
 tools/
+
+# Large generated QC/runtime outputs inside tutorial section result folders.
+# Keep small summaries/plots in results folders; regenerate PLINK datasets locally.
+sections/**/results/*.bed
+sections/**/results/*.bim
+sections/**/results/*.fam
+sections/**/results/*.log
+sections/**/results/*.afreq
+sections/**/results/*.smiss
+sections/**/results/*.vmiss
+sections/**/results/*.het
+sections/**/results/*.hardy
+sections/**/results/*.hardy.*
+sections/**/results/*.genome
+sections/**/results/*.sexcheck
+sections/**/results/*.id
+sections/**/results/*.prune.in
+sections/**/results/*.prune.out
+sections/**/results/*_visualizations.R
