@@ -1,0 +1,67 @@
+PDAC GWAS Genotyping Quality Control Summary
+============================================
+
+Dataset: pdac_demo
+Analysis date: Thu Jun 25 17:46:45 WEDT 2026
+Genome build: GRCh38
+
+QC Pipeline Summary
+-------------------
+
+Step                          Samples    Variants   Samples lost   Variants lost
+00. Raw data                  1461      430000     0              0
+01. Initial stats             1461      430000     0              0
+02. Sample call rate          1436      430000     25             0
+03. Sex check                 1432      430000     4              0
+04. Heterozygosity            1430      430000     2              0
+05. Variant call rate         1430      421520     0              8480
+06. Hardy-Weinberg            1430      406947     0              14573
+07. Relatedness (KING)        1239      406947     191             0
+08. MAF filter (>=1%)         1239      401909     0              5038
+
+Final dataset: 1239 samples and 401909 variants
+Total sample loss: 222 (15.2%)
+Total variant loss: 28091 (6.5%)
+Sample retention: 84.8%
+Variant retention: 93.5%
+
+QC Thresholds Applied
+---------------------
+
+Sample-level:
+- Sample call rate: --mind 0.02
+- Sex check: X chromosome F-statistic discordance
+- Heterozygosity: autosomal F +/- 3 SD
+- Relatedness: KING kinship > 0.1875
+- Relatedness pruning strategy: phenotype-aware; prefer removing controls over cases
+
+Variant-level:
+- Variant call rate: --geno 0.05
+- Hardy-Weinberg equilibrium: --hwe 1e-6 in controls
+- Minor allele frequency: --maf 0.01
+
+Relatedness Diagnostics
+-----------------------
+
+- KING pairs above pruning threshold: 284
+- Unique samples in those pairs: 448
+- Relatedness graph components: 164
+- Largest relatedness component: 6 samples
+- PLINK2 --king-cutoff removed: 167 samples
+- Phenotype-aware pruning removed: 191 samples (13.4%)
+- Controls removed: 154
+- Cases removed: 37
+
+Interpretation Notes
+--------------------
+
+This tutorial uses a rare-cancer case-control setting. Case samples are valuable,
+so relatedness pruning is phenotype-aware: in a related case-control pair, the
+control is removed where possible and the case is preserved.
+
+If relatedness removes a large fraction of the dataset, inspect:
+- pdac_demo_07_pruning_components.tsv
+- pdac_demo_07_relatedness_pruning_diagnostics.tsv
+- pdac_demo_07_removal_decisions.tsv
+
+The final dataset is ready for population stratification analysis and PCA.

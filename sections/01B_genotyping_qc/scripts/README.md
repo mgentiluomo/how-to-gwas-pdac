@@ -14,7 +14,7 @@ This folder contains annotated scripts for the **full sample and variant-level Q
 | 6 | `06_hardy_weinberg.sh` | Remove HWE-deviant variants | Dataset from 05 | HWE filtered (controls) | p > 1e-6 |
 | 7 | `07_relatedness.sh` | Prune related samples (KING) | Dataset from 06 | phenotype-aware pruned samples list | KING kinship > 0.1875 |
 | 8 | `08_maf_filter.sh` | Apply MAF threshold (context-dependent) | Dataset from 07 | final variants | --maf 0.01 (PDAC) |
-| 9 | `09_qc_summary.sh` | Summarize QC impact | All datasets | summary table, decision tree | — |
+| 9 | `09_qc_summary.sh` + `09_qc_report.R` | Summarize QC impact | All datasets | combined PDF report, count table, text summary | — |
 
 ## System Requirements & Setup
 
@@ -58,7 +58,7 @@ bash scripts/01B_genotyping_qc/05_variant_callrate.sh     # ~1 min
 bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh       # ~2 min
 bash scripts/01B_genotyping_qc/07_relatedness.sh          # ~5 min (kinship computation)
 bash scripts/01B_genotyping_qc/08_maf_filter.sh           # ~1 min
-bash scripts/01B_genotyping_qc/09_qc_summary.sh           # ~1 min (report final numbers)
+bash scripts/01B_genotyping_qc/09_qc_summary.sh           # ~1 min (combined QC report)
 ```
 
 ## Reproducibility & Customization
@@ -110,8 +110,9 @@ results/qc/pdac_demo_07_removal_summary.tsv — case/control removal counts
 results/qc/pdac_demo_07_removal_phenotype_counts.tsv — final case/control counts from removal list
 results/qc/pdac_demo_07_removal_list.txt — samples removed by phenotype-aware pruning
 results/qc/pdac_demo_08_afreq.afreq    — final allele frequencies (post-QC)
-results/qc/pdac_demo_qc_summary.txt    — final report
-results/qc/pdac_demo_qc_decision_tree.pdf — decision tree visualization
+results/qc/pdac_demo_09_qc_counts.tsv  — final sample/variant count table
+results/qc/pdac_demo_09_qc_summary.txt — plain-text QC summary
+results/qc/pdac_demo_09_qc_report.pdf  — combined professional QC report
 ```
 
 ## Context: PDAC and QC Choices
