@@ -572,7 +572,7 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p>An unbalanced study behaves like a smaller balanced one:</p>
 <p><span class="math display">\[N_{\text{eff}} = \frac{4 \, N_{\text{cases}} \, N_{\text{controls}}}{N_{\text{cases}} + N_{\text{controls}}}\]</span></p>
-<p>On the demonstration data, 229 cases and 396 controls, <strong>625 people behave like 580</strong>. Past about four controls per case the curve flattens, so recruiting a fifth or sixth control adds almost nothing. If controls are cheap and cases are not, which is the usual situation in a rare cancer, this is where to stop.</p>
+<p>On the demonstration data, 224 cases and 387 controls, <strong>611 people behave like 568</strong>. Past about four controls per case the curve flattens, so recruiting a fifth or sixth control adds almost nothing. If controls are cheap and cases are not, which is the usual situation in a rare cancer, this is where to stop.</p>
 </div>
 </div>
 <hr>
@@ -590,40 +590,40 @@ window.Quarto = {
 <thead>
 <tr class="header">
 <th>Minor allele frequency</th>
-<th>Analysis set, N_eff 580</th>
-<th>All strata combined, N_eff 1,190</th>
+<th>Analysis set, N_eff 568</th>
+<th>All strata combined, N_eff 1,169</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>0.50</td>
-<td>2.09</td>
+<td>2.11</td>
 <td>1.68</td>
 </tr>
 <tr class="even">
 <td>0.30</td>
-<td>2.24</td>
+<td>2.26</td>
 <td>1.76</td>
 </tr>
 <tr class="odd">
 <td>0.20</td>
-<td>2.52</td>
-<td>1.91</td>
+<td>2.54</td>
+<td>1.92</td>
 </tr>
 <tr class="even">
 <td>0.10</td>
-<td>3.43</td>
-<td>2.36</td>
+<td>3.47</td>
+<td>2.38</td>
 </tr>
 <tr class="odd">
 <td>0.05</td>
-<td>5.45</td>
-<td>3.27</td>
+<td>5.55</td>
+<td>3.30</td>
 </tr>
 <tr class="even">
 <td>0.02</td>
-<td>13.99</td>
-<td>6.32</td>
+<td>14.42</td>
+<td>6.42</td>
 </tr>
 </tbody>
 </table>
@@ -650,13 +650,13 @@ window.Quarto = {
 </tr>
 <tr class="odd">
 <td>OR 1.5</td>
-<td>1.1%</td>
+<td>1.0%</td>
 <td>0.0%</td>
 </tr>
 <tr class="even">
 <td>OR 2.0</td>
-<td>48.4%</td>
-<td>2.8%</td>
+<td>46.0%</td>
+<td>2.6%</td>
 </tr>
 </tbody>
 </table>
@@ -676,10 +676,10 @@ window.Quarto = {
 </div>
 <section id="the-one-variant-that-was-detectable-and-what-its-detection-cost" class="level3">
 <h3 class="anchored" data-anchor-id="the-one-variant-that-was-detectable-and-what-its-detection-cost">The one variant that was detectable, and what its detection cost</h3>
-<p>The demonstration phenotype was simulated from a variant with an odds ratio of 2.40 at a frequency of 0.085. Its power in the European analysis set is <strong>9.8%</strong>.</p>
-<p>It was detected anyway, at <em>P</em> = 5.3 × 10⁻⁹. That is not luck to be celebrated; it is a selection event to be reckoned with. In an underpowered scan the variants that cross the threshold are those whose estimates happened to fall high, which is exactly why the odds ratio recovered in Section 4A is <strong>3.80</strong> and not 2.40, an inflation of 58%.</p>
+<p>The demonstration phenotype was simulated from a variant with an odds ratio of 2.40 at a frequency of 0.0855. Its power in the European analysis set is <strong>9.2%</strong>.</p>
+<p>It was detected anyway, at <em>P</em> = 5.5 × 10⁻⁹. That is not luck to be celebrated; it is a selection event to be reckoned with. In an underpowered scan the variants that cross the threshold are those whose estimates happened to fall high, which is exactly why the odds ratio recovered in Section 4A is <strong>3.90</strong> and not 2.40, an inflation of 62%.</p>
 <p>Power and the winner’s curse are two descriptions of one situation. Low power does not only mean missing real effects; it means that the effects you do find are overstated, and by an amount that grows as power falls. An effect size taken from a discovery scan of this size should never be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study.</p>
-<p>Across the three ancestry strata combined the effective sample size rises to 1,190 and power at the same variant to <strong>69.3%</strong>. That is the quantitative case for <a href="../../sections/05_meta_analysis/05_meta_analysis.html">meta-analysis</a>, made on this dataset rather than asserted.</p>
+<p>Across the three ancestry strata combined the effective sample size rises to 1,169 and power at the same variant to <strong>68.0%</strong>. That is the quantitative case for <a href="../../sections/05_meta_analysis/05_meta_analysis.html">meta-analysis</a>, made on this dataset rather than asserted.</p>
 <hr>
 </section>
 </section>
@@ -695,19 +695,19 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>Individuals with follow up</td>
-<td>625</td>
+<td>611</td>
 </tr>
 <tr class="even">
 <td>Observed events</td>
-<td><strong>144</strong></td>
+<td><strong>140</strong></td>
 </tr>
 <tr class="odd">
 <td>Censored</td>
-<td>481</td>
+<td>471</td>
 </tr>
 </tbody>
 </table>
-<p><strong>The number that governs power is 144, not 625.</strong> With 144 events, the smallest detectable hazard ratio at MAF 0.30 is 2.25, and a hazard ratio of 1.5 has 1.1% power.</p>
+<p><strong>The number that governs power is 140, not 611.</strong> With 140 events, the smallest detectable hazard ratio at MAF 0.30 is 2.27, and a hazard ratio of 1.5 has 1.0% power.</p>
 <p>Turning it round gives the number to put in a protocol:</p>
 <table class="caption-top table">
 <thead>

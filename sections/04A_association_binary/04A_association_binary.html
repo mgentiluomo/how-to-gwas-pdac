@@ -547,7 +547,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="running-the-test">02 - Running the test</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/04A_association_binary/02_association.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Three parts of that command are worth understanding.</p>
-<p><strong><code>--glm firth-fallback</code>.</strong> Ordinary logistic regression breaks down when a variant is rare, when cases are few, or when a genotype almost perfectly separates cases from controls: the estimate diverges and the P value cannot be trusted. Firth’s penalised likelihood fixes this. The fallback form uses ordinary regression by default and switches to Firth only where it is needed. On the demonstration data Firth is invoked for <strong>2,221</strong> variants, all of them low-frequency. With a few hundred cases this is not a refinement, it is a requirement.</p>
+<p><strong><code>--glm firth-fallback</code>.</strong> Ordinary logistic regression breaks down when a variant is rare, when cases are few, or when a genotype almost perfectly separates cases from controls: the estimate diverges and the P value cannot be trusted. Firth’s penalised likelihood fixes this. The fallback form uses ordinary regression by default and switches to Firth only where it is needed. On the demonstration data Firth is invoked for <strong>2,289</strong> variants, all of them low-frequency. With a few hundred cases this is not a refinement, it is a requirement.</p>
 <p><strong><code>--covar-name SEX,AGE,PC1...PC10</code>.</strong> The adjustment set. In a multi-centre study, recruitment centre or genotyping batch belongs here too, as a categorical term.</p>
 <p><strong><code>--chr 1-22</code>.</strong> Autosomes only. The chromosome X in this dataset is simulated so that the sex check in Section 1B has something to act on, and carries no phenotype signal. PLINK 2 also models sex itself on chrX, which collides with sex as a user covariate and stops the run with a <code>CORR_TOO_HIGH</code> error. Analysing chrX properly is a real task with its own rules and is out of scope here.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="When PLINK 2 is not the right tool">
@@ -563,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For a single, moderately imbalanced, essentially unrelated cohort of this size, logistic regression with a Firth fallback is adequate and transparent. Two situations call for something else. Where relatedness is extensive enough that pruning would cost a substantial share of cases, retain those individuals and use a mixed model or whole-genome regression: SAIGE or REGENIE. Where a modest case series is merged with a very large external control set, increasingly common with biobank controls, a saddlepoint-corrected method is required rather than optional, because standard asymptotics fail at those ratios.</p>
 </div>
 </div>
-<p>The log reports what was actually analysed. On the demonstration data: <strong>229 cases and 396 controls</strong>.</p>
+<p>The log reports what was actually analysed. On the demonstration data: <strong>224 cases and 387 controls</strong>.</p>
 <hr>
 </section>
 <section id="checking-the-result-before-believing-it" class="level2">
@@ -572,7 +572,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/04A_association_binary/03_qq_lambda.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="results/pdac_demo_04A_qq.png" class="img-fluid"></p>
 <p>Points should follow the diagonal, lifting off only in the extreme upper tail where true associations live. A curve that rises above the line along its whole length means inflation affecting every variant, which is a property of the analysis rather than of biology.</p>
-<p>On the demonstration data <strong>λ = 1.028</strong>, and λ₁₀₀₀ = 1.098.</p>
+<p>On the demonstration data <strong>λ = 1.028</strong>, and λ₁₀₀₀ = 1.100.</p>
 <div class="callout callout-style-default callout-warning callout-titled" title="Compute lambda correctly">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -608,7 +608,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="results/pdac_demo_04A_manhattan.png" class="img-fluid"></p>
 <p>One peak. Everything else is flat.</p>
 <p>If you have followed a tutorial built on a well-powered common-disease cohort, you have seen a dozen peaks and you may read this plot as a failed analysis. It is not. The phenotype here was simulated from a <strong>single causal locus</strong> at <em>ABO</em> with no polygenic background, so one signal is the correct answer and the flat genome is the true one.</p>
-<p>The deeper point is the one this guide exists to make. At an effective sample size of 580, the smallest odds ratio detectable with 80% power at genome-wide significance is about 2.2 even for a common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it was conducted. The scan is sound; it is simply not powered, and those are different things.</p>
+<p>The deeper point is the one this guide exists to make. At an effective sample size of 568, the smallest odds ratio detectable with 80% power at genome-wide significance is about 2.3 even for a common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it was conducted. The scan is sound; it is simply not powered, and those are different things.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="The two thresholds">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -620,7 +620,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>5 × 10⁻⁸</strong> is approximately a Bonferroni correction for one million independent tests in European-ancestry data. It is somewhat conservative for a single ancestry and anticonservative for trans-ancestry analyses, where LD blocks are shorter.</p>
-<p><strong>1 × 10⁻⁵</strong> is the conventional suggestive line: <strong>8 variants</strong> here. These are not findings and must never be presented as such. But in a rare cancer, discarding them entirely also discards the most plausible candidates for the next consortium round. Report them transparently, flagged as requiring replication, next to the power curve that explains why the study could not resolve them.</p>
+<p><strong>1 × 10⁻⁵</strong> is the conventional suggestive line: <strong>7 variants</strong> here. These are not findings and must never be presented as such. But in a rare cancer, discarding them entirely also discards the most plausible candidates for the next consortium round. Report them transparently, flagged as requiring replication, next to the power curve that explains why the study could not resolve them.</p>
 </div>
 </div>
 <hr>
@@ -644,15 +644,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Effect allele</td>
-<td>G, frequency 0.085</td>
+<td>G, frequency 0.0855</td>
 </tr>
 <tr class="odd">
 <td>Odds ratio</td>
-<td>3.80 (95% CI 2.43 to 5.95)</td>
+<td>3.90 (95% CI 2.47 to 6.15)</td>
 </tr>
 <tr class="even">
 <td>P</td>
-<td>5.3 × 10⁻⁹</td>
+<td>5.5 × 10⁻⁹</td>
 </tr>
 </tbody>
 </table>
@@ -670,7 +670,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The simulated odds ratio at this variant is <strong>2.40</strong>. The analysis recovered <strong>3.80</strong>, with a confidence interval whose lower bound, 2.43, sits just above the truth. The estimate is inflated by roughly 58%.</p>
+<p>The simulated odds ratio at this variant is <strong>2.40</strong>. The analysis recovered <strong>3.90</strong>, with a confidence interval whose lower bound, 2.47, sits just above the truth. The estimate is inflated by roughly 62%.</p>
 <p>This is the <strong>winner’s curse</strong>. When an effect size is read from the same underpowered scan that discovered it, only upward fluctuations cross the significance threshold, so surviving estimates are systematically too large. What is unusual here is that the truth is known, so the bias can be measured instead of merely anticipated.</p>
 <p>In a real study the same distortion operates invisibly. Effect estimates from a discovery scan should not be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study without correction. Where replication data exist, take effect sizes from the replication or the combined analysis.</p>
 </div>

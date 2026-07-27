@@ -569,12 +569,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     | 03 Sex check
     | 04 Heterozygosity outliers
     | 05 Variant call rate
-    | 06 Hardy-Weinberg equilibrium
+    | 06 Hardy-Weinberg equilibrium (flagged, not removed)
     | 07 Relatedness
     | 08 Minor allele frequency
     | 09 QC summary report
     v
-Clean genotypes: results/qc/pdac_demo_08_filt.bed/.bim/.fam</code></pre>
+Clean genotypes: results/qc/pdac_demo_08_filt.bed/.bim/.fam
+    |
+    | HWE within ancestry, applied in Section 2 after the split
+    v
+Analysis-ready: results/pca/pdac_demo_02_hwe_filt.bed/.bim/.fam</code></pre>
 <div class="callout callout-style-default callout-note callout-titled" title="Why one step at a time?">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -704,7 +708,8 @@ results/qc/pdac_demo_03_filt.fam</code></pre>
 </section>
 <section id="heterozygosity-outliers" class="level2">
 <h2 class="anchored" data-anchor-id="heterozygosity-outliers">04 - Heterozygosity Outliers</h2>
-<p><strong>Why.</strong> Extremely high or low heterozygosity can signal contamination, inbreeding, ancestry outliers, or technical artifacts. This step uses autosomal heterozygosity and removes samples outside a standard deviation-based threshold.</p>
+<p><strong>Why.</strong> Extremely high or low heterozygosity can signal contamination, inbreeding, or a technical artefact. The inbreeding coefficient <em>F</em> compares observed with expected heterozygous genotype counts across autosomal variants, and samples outside a standard-deviation band around the mean are flagged.</p>
+<p>In a multi-ancestry cohort that calculation cannot be done on everyone at once. The groups differ in mean <em>F</em>, so the pooled standard deviation is inflated by the variance <strong>between</strong> groups and the band becomes too wide to catch anything. The expected heterozygosity is also computed from pooled allele frequencies, which biases <em>F</em> upward for every group at the same time. The script therefore runs <code>--het</code> separately within each ancestry group, so that both the observed and the expected heterozygosity use that group’s own allele frequencies.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/04_heterozygosity.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Main outputs:</p>
 <pre class="text"><code>results/qc/pdac_demo_04_het.het
@@ -713,7 +718,56 @@ results/qc/pdac_demo_04_het_outliers.pdf
 results/qc/pdac_demo_04_filt.bed
 results/qc/pdac_demo_04_filt.bim
 results/qc/pdac_demo_04_filt.fam</code></pre>
-<p>In the demo run, this step removed <strong>2 samples</strong>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean <em>F</em></th>
+<th style="text-align: right;">SD <em>F</em></th>
+<th style="text-align: right;">outliers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pooled</td>
+<td style="text-align: right;">1,432</td>
+<td style="text-align: right;">0.0683</td>
+<td style="text-align: right;">0.0288</td>
+<td style="text-align: right;"><strong>2</strong></td>
+</tr>
+<tr class="even">
+<td>European</td>
+<td style="text-align: right;">743</td>
+<td style="text-align: right;">0.0061</td>
+<td style="text-align: right;">0.0116</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="odd">
+<td>African</td>
+<td style="text-align: right;">343</td>
+<td style="text-align: right;">0.0049</td>
+<td style="text-align: right;">0.0183</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>East Asian</td>
+<td style="text-align: right;">346</td>
+<td style="text-align: right;">0.0085</td>
+<td style="text-align: right;">0.0138</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td><strong>Union across groups</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><strong>20</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Read the mean before the outlier count. Pooled, <em>F</em> averages 0.068; within each group it falls to between 0.005 and 0.009, which is what an inbreeding coefficient should be in a randomly mating sample. Pooled, the statistic was not measuring inbreeding at all: it was measuring population structure, and the width of the band it produced made the filter almost inert.</p>
+<p>In the demo run, this step removed <strong>20 samples</strong>.</p>
 <p>The baseline heterozygosity distribution from Step 01 is shown again here because it is the plot that motivates this filter:</p>
 <p><img src="results/pdac_demo_01_qc_heterozygote_rate_distribution.png" class="img-fluid" alt="Distribution of heterozygote rates used to motivate heterozygosity outlier filtering."></p>
 <div class="callout callout-style-default callout-tip callout-titled" title="For rare cancer studies">
@@ -746,9 +800,10 @@ results/qc/pdac_demo_05_filt.fam</code></pre>
 </section>
 <section id="hardy-weinberg-equilibrium" class="level2">
 <h2 class="anchored" data-anchor-id="hardy-weinberg-equilibrium">06 - Hardy-Weinberg Equilibrium</h2>
-<p><strong>Why.</strong> Strong Hardy-Weinberg equilibrium (HWE) deviations in controls often indicate genotyping errors. In a case/control GWAS, controls are the safer group for this filter because true disease variants may deviate in cases.</p>
+<p><strong>Why.</strong> Strong departure from Hardy-Weinberg equilibrium more often indicates a genotyping error than real biology. Two conditions must hold for the test to mean that, and most tutorials state only the first.</p>
+<p>The filter must be computed <strong>in controls only</strong>, because a true disease association legitimately produces deviation in cases. And it must be computed <strong>within a genetically homogeneous group</strong>, because the exact test assumes a single randomly mating population. Applied to a structured sample it detects the Wahlund effect, that is, the allele-frequency differences between the constituent populations, and reports them as genotyping failure.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/06_hardy_weinberg.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This uses <code>demo_data/phenotype.txt</code> to identify controls, then removes variants with control-only HWE p-value below <code>1e-6</code>.</p>
+<p>This step therefore <strong>flags and does not remove</strong>. It computes the test in the pooled control series, records the result, and passes every variant forward. The exclusion happens after ancestry assignment, in Section 2.</p>
 <p>Main outputs:</p>
 <pre class="text"><code>results/qc/pdac_demo_06_controls.txt
 results/qc/pdac_demo_06_hwe.hardy
@@ -757,19 +812,64 @@ results/qc/pdac_demo_06_hwe_exclude.txt
 results/qc/pdac_demo_06_filt.bed
 results/qc/pdac_demo_06_filt.bim
 results/qc/pdac_demo_06_filt.fam</code></pre>
-<p>In the demo run this step removed <strong>14,573 variants</strong>, leaving <strong>406,947 variants</strong>.</p>
-<p><img src="results/pdac_demo_06_hwe_pvalue_distribution.png" class="img-fluid" alt="Histogram of minus log10 Hardy-Weinberg p-values."></p>
-<div class="callout callout-style-default callout-warning callout-titled" title="Do HWE in controls">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Threshold, pooled controls</th>
+<th style="text-align: right;">Variants below it</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1e-6</td>
+<td style="text-align: right;">14,378</td>
+</tr>
+<tr class="even">
+<td>1e-10</td>
+<td style="text-align: right;">2,278</td>
+</tr>
+<tr class="odd">
+<td>1e-15</td>
+<td style="text-align: right;">172</td>
+</tr>
+<tr class="even">
+<td>1e-20</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td>1e-30</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Computed within each ancestry group instead, at the same <code>1e-6</code>, the counts are four in the European group, none in the African and one in the East Asian: <strong>five variants</strong>.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Why a gentler threshold does not fix it">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Do HWE in controls
+<span class="screen-reader-only">Important</span>Why a gentler threshold does not fix it
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For disease GWAS, avoid filtering on HWE calculated in all samples if cases are included. A real disease association can create deviation in cases. This tutorial therefore performs the HWE filter using controls.</p>
+<p>The obvious response to 14,378 exclusions is to lower the threshold until the number looks reasonable. It does not work, and the reason is worth seeing.</p>
+<p>The twelve variants that still fail the pooled test at <code>1e-20</code> have <strong>no overlap at all</strong> with the five that fail within a group. The two tests are not a lenient and a stringent version of one procedure; they are measuring different things. No pooled threshold exists at which the test stops detecting structure and starts detecting error.</p>
+</div>
+</div>
+<p><img src="results/pdac_demo_06_hwe_pvalue_distribution.png" class="img-fluid" alt="Histogram of minus log10 Hardy-Weinberg p-values."></p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Two conditions, not one">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Two conditions, not one
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Compute HWE in controls, and compute it within ancestry. Getting the first right and the second wrong discards 14,373 variants that have nothing wrong with them, which in a rare-trait study is power you cannot afford and did not need to lose.</p>
+<p>Where discrete ancestry groups cannot be defined, as in admixed cohorts, ancestry-aware tests that model individual ancestry directly are the appropriate substitute.</p>
 </div>
 </div>
 </section>
@@ -921,8 +1021,8 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 </tr>
 <tr class="even">
 <td>First degree</td>
-<td style="text-align: right;">284</td>
-<td style="text-align: right;">448</td>
+<td style="text-align: right;">280</td>
+<td style="text-align: right;">443</td>
 </tr>
 <tr class="odd">
 <td>Second degree</td>
@@ -935,14 +1035,9 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 <td style="text-align: right;">20</td>
 </tr>
 <tr class="odd">
-<td>No third-degree-or-closer pair</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">964</td>
-</tr>
-<tr class="even">
 <td>Total samples before relatedness filter</td>
 <td style="text-align: right;">NA</td>
-<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">1,412</td>
 </tr>
 </tbody>
 </table>
@@ -957,19 +1052,19 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 <tbody>
 <tr class="odd">
 <td>Samples before relatedness filter</td>
-<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">1,412</td>
 </tr>
 <tr class="even">
 <td>KING pruning pairs &gt; 0.1875</td>
-<td style="text-align: right;">284</td>
+<td style="text-align: right;">280</td>
 </tr>
 <tr class="odd">
 <td>Unique samples in KING pruning pairs</td>
-<td style="text-align: right;">448</td>
+<td style="text-align: right;">443</td>
 </tr>
 <tr class="even">
 <td>Relatedness components</td>
-<td style="text-align: right;">164</td>
+<td style="text-align: right;">163</td>
 </tr>
 <tr class="odd">
 <td>Largest component samples</td>
@@ -981,70 +1076,19 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 </tr>
 <tr class="odd">
 <td>Phenotype-aware removed samples</td>
-<td style="text-align: right;">191</td>
+<td style="text-align: right;">195</td>
 </tr>
 <tr class="even">
 <td>Phenotype-aware removed percent</td>
-<td style="text-align: right;">13.4</td>
+<td style="text-align: right;">13.8</td>
 </tr>
 <tr class="odd">
 <td>Controls removed</td>
-<td style="text-align: right;">154</td>
+<td style="text-align: right;">158</td>
 </tr>
 <tr class="even">
 <td>Cases removed</td>
 <td style="text-align: right;">37</td>
-</tr>
-</tbody>
-</table>
-<p>Example KING vs PI_HAT summary:</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Metric</th>
-<th style="text-align: right;">Value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Total pairs in either report</td>
-<td style="text-align: right;">55,337</td>
-</tr>
-<tr class="even">
-<td>Pairs reported by both</td>
-<td style="text-align: right;">298</td>
-</tr>
-<tr class="odd">
-<td>Same category</td>
-<td style="text-align: right;">294</td>
-</tr>
-<tr class="even">
-<td>Different category, check values</td>
-<td style="text-align: right;">4</td>
-</tr>
-<tr class="odd">
-<td>Reported by KING only</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td>Reported by PI_HAT only</td>
-<td style="text-align: right;">55,039</td>
-</tr>
-<tr class="odd">
-<td>Pruning pairs</td>
-<td style="text-align: right;">284</td>
-</tr>
-<tr class="even">
-<td>Pruning pairs with PI_HAT</td>
-<td style="text-align: right;">284</td>
-</tr>
-<tr class="odd">
-<td>Mean absolute <code>PI_HAT - 2 * KING</code></td>
-<td style="text-align: right;">0.025632</td>
-</tr>
-<tr class="even">
-<td>Maximum absolute <code>PI_HAT - 2 * KING</code></td>
-<td style="text-align: right;">0.126513</td>
 </tr>
 </tbody>
 </table>
@@ -1058,7 +1102,7 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In the demo run, phenotype-aware pruning removed <strong>191 samples</strong>. That is a substantial sample loss. If a real cohort loses many samples at this step, inspect <code>pdac_demo_07_pruning_components.tsv</code>, <code>pdac_demo_07_relatedness_pruning_diagnostics.tsv</code>, and <code>pdac_demo_07_removal_decisions.tsv</code> before continuing.</p>
+<p>In the demo run, phenotype-aware pruning removed <strong>195 samples</strong>. That is a substantial sample loss. If a real cohort loses many samples at this step, inspect <code>pdac_demo_07_pruning_components.tsv</code>, <code>pdac_demo_07_relatedness_pruning_diagnostics.tsv</code>, and <code>pdac_demo_07_removal_decisions.tsv</code> before continuing.</p>
 </div>
 </div>
 </section>
@@ -1072,7 +1116,7 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 results/qc/pdac_demo_08_filt.bim
 results/qc/pdac_demo_08_filt.fam
 results/qc/pdac_demo_08_afreq.afreq</code></pre>
-<p>In the demo run this step removed <strong>5,038 variants</strong>, leaving <strong>401,909 variants</strong> and <strong>1,239 samples</strong>.</p>
+<p>In the demo run this step removed <strong>6,820 variants</strong>, leaving <strong>414,695 variants</strong> and <strong>1,217 samples</strong>.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Why not use MAF 5%?">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1233,6 +1277,13 @@ results/qc/pdac_demo_09_qc_report.pdf</code></pre>
 </div>
 <p>The demo run used in this page ended with:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>Stage</th>
@@ -1272,43 +1323,50 @@ results/qc/pdac_demo_09_qc_report.pdf</code></pre>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td>Heterozygosity</td>
-<td style="text-align: right;">1,430</td>
+<td>Heterozygosity, within ancestry</td>
+<td style="text-align: right;">1,412</td>
 <td style="text-align: right;">430,000</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">20</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td>Variant call rate</td>
-<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">1,412</td>
 <td style="text-align: right;">421,520</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">8,480</td>
 </tr>
 <tr class="odd">
-<td>Hardy-Weinberg</td>
-<td style="text-align: right;">1,430</td>
-<td style="text-align: right;">406,947</td>
+<td>Hardy-Weinberg, pooled, diagnostic</td>
+<td style="text-align: right;">1,412</td>
+<td style="text-align: right;">421,520</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">14,573</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td>Relatedness</td>
-<td style="text-align: right;">1,239</td>
-<td style="text-align: right;">406,947</td>
-<td style="text-align: right;">191</td>
+<td style="text-align: right;">1,217</td>
+<td style="text-align: right;">421,520</td>
+<td style="text-align: right;">195</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td>MAF filter</td>
-<td style="text-align: right;">1,239</td>
-<td style="text-align: right;">401,909</td>
+<td style="text-align: right;">1,217</td>
+<td style="text-align: right;">414,700</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">5,038</td>
+<td style="text-align: right;">6,820</td>
+</tr>
+<tr class="even">
+<td>Hardy-Weinberg, within ancestry (Section 2)</td>
+<td style="text-align: right;">1,217</td>
+<td style="text-align: right;">414,695</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
 </tr>
 </tbody>
 </table>
-<p>Final retention in the demo run was <strong>84.8% of samples</strong> and <strong>93.5% of variants</strong>.</p>
+<p>Final retention in the demo run was <strong>83.3% of samples</strong> and <strong>96.4% of variants</strong>.</p>
 </section>
 </section>
 <section id="pdac-specific-notes" class="level2">

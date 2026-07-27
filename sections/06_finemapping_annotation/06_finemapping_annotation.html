@@ -568,7 +568,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="the-region-and-its-linkage-disequilibrium">01 - The region and its linkage disequilibrium</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/06_finemapping_annotation/01_region_and_ld.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Two inputs are needed: the association statistics for a window, and the correlations between the variants in it.</p>
-<p><strong>Choosing the window.</strong> Wide enough to contain the signal and its flanks, narrow enough that assuming a single cause is plausible. A few hundred kilobases either side of the lead variant is conventional; here 132.9 to 133.6 Mb on chromosome 9, which contains <strong>198 variants</strong>.</p>
+<p><strong>Choosing the window.</strong> Wide enough to contain the signal and its flanks, narrow enough that assuming a single cause is plausible. A few hundred kilobases either side of the lead variant is conventional; here 132.9 to 133.6 Mb on chromosome 9, which contains <strong>204 variants</strong>.</p>
 <p>That number is worth pausing on. A genotyping array carries a couple of hundred markers in a 700 kb window, and the resolution of any fine mapping is bounded by what was measured. Imputation raises the count but not the information.</p>
 <div class="callout callout-style-default callout-important callout-titled" title="Which linkage disequilibrium, and why it is the commonest way to be confidently wrong">
 <div class="callout-header d-flex align-content-center">
@@ -613,11 +613,11 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>Variants in the region</td>
-<td>198</td>
+<td>204</td>
 </tr>
 <tr class="even">
 <td>Variants in the 95% credible set</td>
-<td><strong>55</strong></td>
+<td><strong>77</strong></td>
 </tr>
 <tr class="odd">
 <td>Top variant</td>
@@ -629,7 +629,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>The method puts the true causal variant at the top, which is reassuring, and then spreads the remaining half of the probability across 54 other variants, which is the honest part. A credible set of 55 variants is not a shortlist for functional work. It is a statement that at this sample size the locus cannot be resolved further.</p>
+<p>The method puts the true causal variant at the top, which is reassuring, and then spreads the remaining half of the probability across 76 other variants, which is the honest part. A credible set of that size is not a shortlist for functional work. Those 76 span 628 kb, from 132,968,574 to 133,596,524, and only 32 of the 77 fall inside <em>ABO</em> itself; the rest sit up to 300 kb away on either side. It is a statement that at this sample size the locus cannot be resolved further, and reporting it as a gene-level finding would misrepresent what the data support.</p>
 <p><img src="results/pdac_demo_06_regional.png" class="img-fluid"></p>
 <p>The lower panel is the one to read. Probability is not concentrated on a peak, it is scattered across the region, because the causal variant is correlated with many others and the data cannot distinguish them.</p>
 <hr>
@@ -651,7 +651,7 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>Variants in the 95% credible set</td>
-<td>55</td>
+<td>77</td>
 <td><strong>1</strong></td>
 </tr>
 <tr class="even">

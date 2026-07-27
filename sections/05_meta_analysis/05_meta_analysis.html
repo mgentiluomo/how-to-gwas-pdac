@@ -588,35 +588,35 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>European</td>
-<td>625</td>
-<td>229</td>
-<td>396</td>
-<td>580.4</td>
+<td>611</td>
+<td>224</td>
+<td>387</td>
+<td>567.5</td>
 </tr>
 <tr class="even">
 <td>African</td>
-<td>295</td>
-<td>142</td>
-<td>153</td>
-<td>294.6</td>
+<td>290</td>
+<td>139</td>
+<td>151</td>
+<td>289.5</td>
 </tr>
 <tr class="odd">
 <td>East Asian</td>
-<td>319</td>
+<td>316</td>
 <td>141</td>
-<td>178</td>
-<td>314.7</td>
+<td>175</td>
+<td>312.3</td>
 </tr>
 <tr class="even">
 <td><strong>Combined</strong></td>
-<td><strong>1,239</strong></td>
-<td><strong>512</strong></td>
-<td><strong>727</strong></td>
-<td><strong>1,189.7</strong></td>
+<td><strong>1,217</strong></td>
+<td><strong>504</strong></td>
+<td><strong>713</strong></td>
+<td><strong>1,169.4</strong></td>
 </tr>
 </tbody>
 </table>
-<p>Notice the African stratum. It has fewer than half the individuals of the European one, but because its case-control ratio is nearly balanced it contributes an effective sample size of 295 against 580: proportionally far more per participant. Effective sample size, not headline count, is what a meta-analysis is really combining.</p>
+<p>Notice the African stratum. It has fewer than half the individuals of the European one, but because its case-control ratio is nearly balanced it contributes an effective sample size of 290 against 568: proportionally far more per participant. Effective sample size, not headline count, is what a meta-analysis is really combining.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Five components, not ten">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -628,7 +628,7 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <p>Section 4A used ten principal components in the European stratum. Here every stratum uses five, because estimating ten components in fewer than 320 individuals spends parameters the data cannot support, and because the strata must be treated identically for their results to be comparable.</p>
-<p>This gives a free stability check, one of the three the guide recommends. In the European stratum, the lead variant’s P value is 5.31 × 10⁻⁹ with ten components and 5.41 × 10⁻⁹ with five. The choice does not matter here, and now we know that rather than assuming it.</p>
+<p>This gives a free stability check, one of the three the guide recommends. In the European stratum, the lead variant’s P value is 5.50 × 10⁻⁹ with ten components and 6.72 × 10⁻⁹ with five. The choice does not matter here, and now we know that rather than assuming it.</p>
 </div>
 </div>
 <hr>
@@ -647,13 +647,13 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Comparing the effect allele across strata, the script had to flip the sign of the effect estimate for <strong>32,829</strong> variants in the African stratum and <strong>30,878</strong> in the East Asian one. Roughly one variant in nine.</p>
+<p>Comparing the effect allele across strata, the script had to flip the sign of the effect estimate for <strong>37,731</strong> variants in the African stratum and <strong>35,822</strong> in the East Asian one. Roughly one variant in seven.</p>
 <p>These strata came from <em>the same genotype file</em>. The cause is that PLINK 2 reports the effect allele as the minor allele <strong>in the sample being analysed</strong>, and which allele is minor changes between populations. At <code>1:817341:A:G</code>, G has frequency 0.16 in the European stratum and is the minor allele; in the African stratum G reaches 0.70, so A becomes minor and the reported effect refers to the other allele.</p>
 <p>Combining those numbers without aligning them would have cancelled real signal and manufactured false signal, and nothing in the output would have looked wrong. If this can happen within a single file, it will certainly happen across cohorts genotyped in different laboratories a decade apart. <strong>Always align on an explicitly named effect allele, never on column position or on the assumption that two files agree.</strong></p>
 </div>
 </div>
 <p>The other three checks the script performs:</p>
-<p><strong>Strand ambiguity.</strong> At A/T and C/G variants the effect allele cannot be resolved by comparing alleles, because A complements T and C complements G. Here 1,833 variants (0.6%) are ambiguous, 339 of them with frequency between 0.4 and 0.6, where frequency cannot resolve them either. They are flagged. Many consortia simply exclude ambiguous variants in that frequency band.</p>
+<p><strong>Strand ambiguity.</strong> At A/T and C/G variants the effect allele cannot be resolved by comparing alleles, because A complements T and C complements G. Here 1,640 variants (0.6%) are ambiguous, 339 of them with frequency between 0.4 and 0.6, where frequency cannot resolve them either. They are flagged. Many consortia simply exclude ambiguous variants in that frequency band.</p>
 <p><strong>Effect-size scale.</strong> A log odds ratio, an odds ratio and a linear-model beta cannot be averaged together. Confirm what each contributing study reported, in writing, before combining anything.</p>
 <p><strong>Sample overlap.</strong> If the same individuals appear in two contributing studies the estimates are correlated, the fixed-effect standard error is too small, and significance is inflated. This cannot be detected from summary statistics; it has to come from the study descriptions.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Fewer variants than you started with">
@@ -666,7 +666,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The European analysis tested 392,331 variants. Only <strong>296,678</strong> are present in all three strata, because a variant that is monomorphic in one population cannot be tested there. A real meta-analysis usually keeps such variants, combining each across whatever studies carry it and reporting the study count per variant. This demonstration takes the simpler route of using the intersection, which is why the meta-analysis has fewer variants than the single-stratum scan.</p>
+<p>The European analysis tested 394,627 variants. Only <strong>268,393</strong> are present in all three strata, because a variant that is monomorphic in one population cannot be tested there. A real meta-analysis usually keeps such variants, combining each across whatever studies carry it and reporting the study count per variant. This demonstration takes the simpler route of using the intersection, which is why the meta-analysis has fewer variants than the single-stratum scan.</p>
 </div>
 </div>
 <hr>
@@ -685,7 +685,7 @@ window.Quarto = {
 <thead>
 <tr class="header">
 <th></th>
-<th>European alone</th>
+<th>European stratum, 5 PCs</th>
 <th>Meta-analysis</th>
 </tr>
 </thead>
@@ -693,7 +693,7 @@ window.Quarto = {
 <tr class="odd">
 <td>Lead variant P</td>
 <td>5.4 × 10⁻⁹</td>
-<td><strong>2.4 × 10⁻²²</strong></td>
+<td><strong>6.3 × 10⁻²²</strong></td>
 </tr>
 <tr class="even">
 <td>Genome-wide significant</td>
@@ -708,7 +708,7 @@ window.Quarto = {
 <tr class="even">
 <td>λ</td>
 <td>1.022</td>
-<td>1.003</td>
+<td>1.006</td>
 </tr>
 </tbody>
 </table>
@@ -723,7 +723,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="reading-the-disagreement">04 - Reading the disagreement</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/05_meta_analysis/04_meta_plots.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="results/pdac_demo_05_forest.png" class="img-fluid"></p>
-<p>The lead variant, stratum by stratum. The odds ratios are 3.78 in Europeans, 3.07 in Africans and 4.76 in East Asians, with a combined estimate of 3.74 and confidence intervals that overlap heavily. I² = 0%, heterogeneity P = 0.44: the strata agree, and the fixed-effect model is appropriate.</p>
+<p>The lead variant, stratum by stratum. The odds ratios are 3.83 in Europeans, 3.14 in Africans and 4.46 in East Asians, with a combined estimate of 3.71 and confidence intervals that overlap heavily. I² = 0%, heterogeneity P = 0.58: the strata agree, and the fixed-effect model is appropriate.</p>
 <p>The dashed green line marks the true simulated odds ratio, 2.40. Every stratum overestimates it, and so does the meta-analysis. This is the winner’s curse from Section 4A, and meta-analysis does not cure it: combining biased discovery estimates gives a more precise biased estimate. The remedy is replication in data not used for discovery, not more of the same data.</p>
 <div class="callout callout-style-default callout-important callout-titled" title="Where heterogeneity comes from, and what it means">
 <div class="callout-header d-flex align-content-center">
@@ -739,7 +739,7 @@ window.Quarto = {
 <p>Look at the pattern rather than the peak. The causal variant, the open diamond, has I² = 0: it behaves identically in all three populations, because it <em>is</em> the cause and its effect does not depend on ancestry.</p>
 <p>Its correlated neighbours do not. At <code>9:133256264</code> I² reaches 79% and the heterogeneity P value is 0.009. Under fixed effects that variant looks genome-wide significant at 1.3 × 10⁻⁹; under random effects its P value collapses to 0.0035.</p>
 <p>Nothing is wrong with the data. Those variants are not causal, they merely tag the causal variant through linkage disequilibrium, and LD structure differs between populations, so how well they tag it differs too. <strong>Strong heterogeneity at a proxy with none at the lead is a signature of a shared causal variant seen through different LD</strong>, and it is a reason to fine-map per ancestry rather than pooled (Section 6).</p>
-<p>Across all 296,678 variants, 4.4% have a heterogeneity P below 0.05, against the 5% expected by chance alone. Genome-wide there is no excess: the heterogeneity is concentrated exactly where the signal is.</p>
+<p>Across all 268,393 variants, 5.0% have a heterogeneity P below 0.05, against the 5% expected by chance alone. Genome-wide there is no excess: the heterogeneity is concentrated exactly where the signal is.</p>
 </div>
 </div>
 <hr>
@@ -757,7 +757,7 @@ window.Quarto = {
 <section id="the-pitfalls-checklist" class="level2">
 <h2 class="anchored" data-anchor-id="the-pitfalls-checklist">The pitfalls checklist</h2>
 <ol type="1">
-<li><strong>Effect allele.</strong> Align explicitly, by allele name. This demonstration needed 63,707 sign flips within a single genotype file.</li>
+<li><strong>Effect allele.</strong> Align explicitly, by allele name. This demonstration needed 73,553 sign flips within a single genotype file.</li>
 <li><strong>Strand.</strong> A/T and C/G variants near 50% frequency cannot be resolved. Flag or drop them.</li>
 <li><strong>Scale.</strong> Log odds ratio, odds ratio and linear beta are not interchangeable.</li>
 <li><strong>Overlap.</strong> Shared individuals inflate significance and are invisible in summary statistics.</li>

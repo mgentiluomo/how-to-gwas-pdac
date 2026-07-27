@@ -470,6 +470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#looking-at-the-result" id="toc-looking-at-the-result" class="nav-link" data-scroll-target="#looking-at-the-result">03 - Looking at the result</a></li>
   <li><a href="#deciding-who-is-analysed" id="toc-deciding-who-is-analysed" class="nav-link" data-scroll-target="#deciding-who-is-analysed">04 - Deciding who is analysed</a></li>
   <li><a href="#recomputing-the-components-within-the-analysis-set" id="toc-recomputing-the-components-within-the-analysis-set" class="nav-link" data-scroll-target="#recomputing-the-components-within-the-analysis-set">05 - Recomputing the components within the analysis set</a></li>
+  <li><a href="#the-hardy-weinberg-filter-that-had-to-wait" id="toc-the-hardy-weinberg-filter-that-had-to-wait" class="nav-link" data-scroll-target="#the-hardy-weinberg-filter-that-had-to-wait">06 - The Hardy-Weinberg filter that had to wait</a></li>
   <li><a href="#what-you-now-have" id="toc-what-you-now-have" class="nav-link" data-scroll-target="#what-you-now-have">What you now have</a></li>
   <li><a href="#key-decisions-on-this-page" id="toc-key-decisions-on-this-page" class="nav-link" data-scroll-target="#key-decisions-on-this-page">Key decisions on this page</a></li>
   </ul>
@@ -547,7 +548,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="ld-pruning">01 - LD pruning</h2>
 <p><strong>Why.</strong> Principal component analysis has to run on variants that are approximately independent. Variants in linkage disequilibrium repeat the same information, and dense regions such as the major histocompatibility complex on chromosome 6 would otherwise dominate the result, so that the leading components describe local genomic architecture instead of ancestry.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/01_ld_pruning.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On the demonstration data this keeps <strong>221,352</strong> variants and prunes away <strong>180,557</strong>. Losing almost half is expected: it is redundancy being removed. The pruned set is used for PCA and relatedness only, never for association testing.</p>
+<p>On the demonstration data this keeps <strong>222,538</strong> variants and prunes away <strong>192,157</strong>. Losing almost half is expected: it is redundancy being removed. The pruned set is used for PCA and relatedness only, never for association testing.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="The r-squared threshold is a decision, not a standard">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -579,7 +580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p><img src="results/pdac_demo_02_pca_scree.png" class="img-fluid"></p>
-<p>How many components carry real signal? On the demonstration data PC1 explains 47.0% of the variance and PC2 38.1%, then the curve collapses to 3.7% at PC3. That cliff is the signature of discrete continental ancestry: two components separate three groups, and everything after is noise and fine structure.</p>
+<p>How many components carry real signal? On the demonstration data PC1 explains 47.9% of the variance and PC2 38.2%, then the curve collapses to 3.5% at PC3. That cliff is the signature of discrete continental ancestry: two components separate three groups, and everything after is noise and fine structure.</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p><img src="results/pdac_demo_02_pca_pc1_pc2.png" class="img-fluid"></p>
@@ -646,27 +647,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>QC-passed total</td>
-<td>1,239</td>
+<td>1,217</td>
 </tr>
 <tr class="even">
 <td>European</td>
-<td>625</td>
+<td>611</td>
 </tr>
 <tr class="odd">
 <td>East Asian</td>
-<td>319</td>
+<td>316</td>
 </tr>
 <tr class="even">
 <td>African</td>
-<td>295</td>
+<td>290</td>
 </tr>
 <tr class="odd">
 <td><strong>Analysis set</strong></td>
-<td><strong>625: 229 cases, 396 controls</strong></td>
+<td><strong>611: 224 cases, 387 controls</strong></td>
 </tr>
 <tr class="even">
 <td>Effective sample size</td>
-<td>580.4</td>
+<td>567.5</td>
 </tr>
 </tbody>
 </table>
@@ -681,7 +682,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>4 × cases × controls / (cases + controls) = 580.4, not 625. In an unbalanced design the effective figure is what governs power, and it is what should be reported. Section 4A returns to what this number does and does not make detectable.</p>
+<p>4 × cases × controls / (cases + controls) = 567.5, not 611. In an unbalanced design the effective figure is what governs power, and it is what should be reported. Section 4A returns to what this number does and does not make detectable.</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled" title="How the groups are assigned here">
@@ -705,7 +706,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The components from Step 02 describe continental separation. Once the non-European individuals are removed, those axes describe something that is no longer in the data. What remains, and what can still confound the test, is fine-scale structure within Europe, and only a PCA computed within the analysis set can see it. LD pruning is repeated for the same reason: which variants are correlated depends on allele frequencies, which differ between populations.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/05_pca_within_eur.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="results/pdac_demo_02_pca_eur_scree.png" class="img-fluid"></p>
-<p>Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2 11.8%, and the curve declines gently instead of collapsing, which is what within-population structure looks like: continuous gradients rather than discrete groups.</p>
+<p>Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.8% and PC2 11.9%, and the curve declines gently instead of collapsing, which is what within-population structure looks like: continuous gradients rather than discrete groups.</p>
 <div class="callout callout-style-default callout-tip callout-titled" title="How many components should you keep?">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -723,6 +724,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Confirm that the genomic inflation factor and the leading associations are stable across a range of component counts.</li>
 </ol>
 <p>If the results move materially between five and twenty components, that instability is itself the finding and belongs in the paper.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="the-hardy-weinberg-filter-that-had-to-wait" class="level2">
+<h2 class="anchored" data-anchor-id="the-hardy-weinberg-filter-that-had-to-wait">06 - The Hardy-Weinberg filter that had to wait</h2>
+<p><strong>Why.</strong> Section 1B computed the Hardy-Weinberg test and deliberately excluded nothing, because the test assumes a homogeneous population and there was not one yet. Now there is.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/06_hwe_within_ancestry.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The test runs in controls, within each group, at the same <code>1e-6</code> threshold used before. A variant is excluded if it fails in any group: a genotyping error is a property of the assay, so failing anywhere is evidence against the variant.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th style="text-align: right;">Controls tested</th>
+<th style="text-align: right;">Variants failing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>European</td>
+<td style="text-align: right;">387</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td>African</td>
+<td style="text-align: right;">151</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>East Asian</td>
+<td style="text-align: right;">175</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td><strong>Union</strong></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"><strong>5</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Five, against the 14,378 the same threshold flagged on the pooled sample. The difference is not a matter of degree. Almost every variant the pooled test rejected was rejected for having different allele frequencies in Europe, Africa and East Asia, which is true of a large part of the genome and says nothing whatever about genotyping quality.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="What this cost, and what it bought">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>What this cost, and what it bought
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Running the filter in the wrong place would have discarded 3.4% of the genome for no reason. It would also have been invisible: the pipeline runs, the counts look plausible, and the association test that follows is well controlled either way. The genomic inflation factor is 1.028 with those variants and 1.028 without them.</p>
 </div>
 </div>
 <hr>
