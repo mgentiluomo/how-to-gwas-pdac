@@ -44,6 +44,9 @@ website:
       - section: "Combining studies"
         contents:
           - sections/05_meta_analysis/05_meta_analysis.qmd
+      - section: "From signal to variant"
+        contents:
+          - sections/06_finemapping_annotation/06_finemapping_annotation.qmd
       # Manuscript sections will be added here as they are drafted:
       # - section: "Pre-GWAS"
       #   contents:
