@@ -1,5 +1,93 @@
 [
   {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html",
+    "href": "sections/04A_association_binary/04A_association_binary.html",
+    "title": "Association testing: case-control",
+    "section": "",
+    "text": "This is the step everything so far has been preparing for: testing each variant for association with disease status. It is also the shortest step to run and the easiest to misread.\nThe test itself is a logistic regression, one variant at a time, asking whether carrying more copies of an allele changes the odds of being a case. What takes judgement is everything around it: which covariates enter the model, which test handles a small and unbalanced case series, and how to tell a result worth reporting from a result worth investigating.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#assembling-the-covariates",
+    "href": "sections/04A_association_binary/04A_association_binary.html#assembling-the-covariates",
+    "title": "Association testing: case-control",
+    "section": "01 - Assembling the covariates",
+    "text": "01 - Assembling the covariates\nWhy. Covariate adjustment is the mechanism by which the confounding found in Section 2 is actually removed. A principal component that is computed and then not used has corrected nothing.\nRscript scripts/04A_association_binary/01_make_covariates.R\nThis merges sex and age with the ten within-Europe components, and additionally tests each component against case status in a model containing sex and age. On the demonstration data no component is associated with status, which is what a single-ancestry analysis set should look like.\n\n\n\n\n\n\nImportantWhat it means if several components are strongly associated\n\n\n\nIt means something differs systematically between cases and controls along the axes of genetic variation. In a well-designed study that is residual ancestry, and adding components helps. In a multi-centre study it is often recruitment: cases from one country, controls from another. No number of principal components repairs a design in which cases and controls were drawn from different populations. Diagnose it here, before the association test, not afterwards.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#running-the-test",
+    "href": "sections/04A_association_binary/04A_association_binary.html#running-the-test",
+    "title": "Association testing: case-control",
+    "section": "02 - Running the test",
+    "text": "02 - Running the test\nbash scripts/04A_association_binary/02_association.sh\nThree parts of that command are worth understanding.\n--glm firth-fallback. Ordinary logistic regression breaks down when a variant is rare, when cases are few, or when a genotype almost perfectly separates cases from controls: the estimate diverges and the P value cannot be trusted. Firth’s penalised likelihood fixes this. The fallback form uses ordinary regression by default and switches to Firth only where it is needed. On the demonstration data Firth is invoked for 2,221 variants, all of them low-frequency. With a few hundred cases this is not a refinement, it is a requirement.\n--covar-name SEX,AGE,PC1...PC10. The adjustment set. In a multi-centre study, recruitment centre or genotyping batch belongs here too, as a categorical term.\n--chr 1-22. Autosomes only. The chromosome X in this dataset is simulated so that the sex check in Section 1B has something to act on, and carries no phenotype signal. PLINK 2 also models sex itself on chrX, which collides with sex as a user covariate and stops the run with a CORR_TOO_HIGH error. Analysing chrX properly is a real task with its own rules and is out of scope here.\n\n\n\n\n\n\nNoteWhen PLINK 2 is not the right tool\n\n\n\nFor a single, moderately imbalanced, essentially unrelated cohort of this size, logistic regression with a Firth fallback is adequate and transparent. Two situations call for something else. Where relatedness is extensive enough that pruning would cost a substantial share of cases, retain those individuals and use a mixed model or whole-genome regression: SAIGE or REGENIE. Where a modest case series is merged with a very large external control set, increasingly common with biobank controls, a saddlepoint-corrected method is required rather than optional, because standard asymptotics fail at those ratios.\n\n\nThe log reports what was actually analysed. On the demonstration data: 229 cases and 396 controls.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#checking-the-result-before-believing-it",
+    "href": "sections/04A_association_binary/04A_association_binary.html#checking-the-result-before-believing-it",
+    "title": "Association testing: case-control",
+    "section": "03 - Checking the result before believing it",
+    "text": "03 - Checking the result before believing it\nWhy. Before looking at any peak, check whether the test statistics as a whole behave as they should under the null. This is what catches residual structure, cryptic relatedness and batch effects.\nRscript scripts/04A_association_binary/03_qq_lambda.R\n\nPoints should follow the diagonal, lifting off only in the extreme upper tail where true associations live. A curve that rises above the line along its whole length means inflation affecting every variant, which is a property of the analysis rather than of biology.\nOn the demonstration data λ = 1.028, and λ₁₀₀₀ = 1.098.\n\n\n\n\n\n\nWarningCompute lambda correctly\n\n\n\nlambda = median(qchisq(1 - P, df = 1)) / qchisq(0.5, df = 1)\nCompute it this way. During the construction of this very dataset, an earlier version calculated it by sorting test statistics in awk; the code was wrong and reported a convincing inflation signal that did not exist. It cost a day of chasing a problem that was not there.\n\n\n\n\n\n\n\n\nNoteReading lambda in a small study\n\n\n\nLambda scales with sample size under genuine polygenicity, so it must be read relative to the size of the study. With a few hundred cases it is estimated with considerable uncertainty, and 1.05 can be entirely compatible with a well-controlled analysis. λ₁₀₀₀, rescaled to 1,000 cases and 1,000 controls, is the figure comparable across studies. Note also that inflation and deflation have different causes and different remedies, and lambda alone does not tell you which is operating.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#the-manhattan-plot",
+    "href": "sections/04A_association_binary/04A_association_binary.html#the-manhattan-plot",
+    "title": "Association testing: case-control",
+    "section": "04 - The Manhattan plot",
+    "text": "04 - The Manhattan plot\nRscript scripts/04A_association_binary/04_manhattan.R\n\nOne peak. Everything else is flat.\nIf you have followed a tutorial built on a well-powered common-disease cohort, you have seen a dozen peaks and you may read this plot as a failed analysis. It is not. The phenotype here was simulated from a single causal locus at ABO with no polygenic background, so one signal is the correct answer and the flat genome is the true one.\nThe deeper point is the one this guide exists to make. At an effective sample size of 580, the smallest odds ratio detectable with 80% power at genome-wide significance is about 2.2 even for a common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it was conducted. The scan is sound; it is simply not powered, and those are different things.\n\n\n\n\n\n\nNoteThe two thresholds\n\n\n\n5 × 10⁻⁸ is approximately a Bonferroni correction for one million independent tests in European-ancestry data. It is somewhat conservative for a single ancestry and anticonservative for trans-ancestry analyses, where LD blocks are shorter.\n1 × 10⁻⁵ is the conventional suggestive line: 8 variants here. These are not findings and must never be presented as such. But in a rare cancer, discarding them entirely also discards the most plausible candidates for the next consortium round. Report them transparently, flagged as requiring replication, next to the power curve that explains why the study could not resolve them.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#the-top-locus-and-what-its-effect-size-is-worth",
+    "href": "sections/04A_association_binary/04A_association_binary.html#the-top-locus-and-what-its-effect-size-is-worth",
+    "title": "Association testing: case-control",
+    "section": "05 - The top locus, and what its effect size is worth",
+    "text": "05 - The top locus, and what its effect size is worth\nRscript scripts/04A_association_binary/05_summary.R\n\nRegional viewLead variant\n\n\n\nThis plot is what tells you whether a peak is real. A genuine association appears as a cluster: the lead variant surrounded by correlated neighbours with progressively weaker signal, because linkage disequilibrium carries the signal to them. A single isolated point with nothing around it is usually a genotyping artefact and should be checked in the cluster plots before it is believed.\n\n\n\n\n\nVariant\n9:133249045:A:G, at ABO (9q34.2)\n\n\nEffect allele\nG, frequency 0.085\n\n\nOdds ratio\n3.80 (95% CI 2.43 to 5.95)\n\n\nP\n5.3 × 10⁻⁹\n\n\n\nABO is the most robustly replicated PDAC susceptibility locus, and it is the locus the phenotype was simulated from. Recovering it is the positive control: it confirms the pipeline works end to end.\n\n\n\n\n\n\n\n\n\nImportantThe effect size is wrong, and knowing by how much is the lesson\n\n\n\nThe simulated odds ratio at this variant is 2.40. The analysis recovered 3.80, with a confidence interval whose lower bound, 2.43, sits just above the truth. The estimate is inflated by roughly 58%.\nThis is the winner’s curse. When an effect size is read from the same underpowered scan that discovered it, only upward fluctuations cross the significance threshold, so surviving estimates are systematically too large. What is unusual here is that the truth is known, so the bias can be measured instead of merely anticipated.\nIn a real study the same distortion operates invisibly. Effect estimates from a discovery scan should not be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study without correction. Where replication data exist, take effect sizes from the replication or the combined analysis.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#key-decisions-on-this-page",
+    "href": "sections/04A_association_binary/04A_association_binary.html#key-decisions-on-this-page",
+    "title": "Association testing: case-control",
+    "section": "Key decisions on this page",
+    "text": "Key decisions on this page\n\nAdditive model versus alternatives, and the covariate set.\nFirth fallback versus a saddlepoint-corrected whole-genome regression, chosen on imbalance and relatedness rather than habit.\nThe interpretation of λ relative to sample size, and which of inflation’s several causes is operating.\nThe significance thresholds, and the explicit status assigned to suggestive results.\nWhether an effect estimate is fit to be reused downstream, or whether the winner’s curse makes it fit only for reporting.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
+    "objectID": "sections/04A_association_binary/04A_association_binary.html#what-comes-next",
+    "href": "sections/04A_association_binary/04A_association_binary.html#what-comes-next",
+    "title": "Association testing: case-control",
+    "section": "What comes next",
+    "text": "What comes next\nA single underpowered cohort is where most rare-cancer studies start, not where they end. The result above is a legitimate contribution to a meta-analysis that will eventually have power, and producing it correctly, with full summary statistics and documented decisions, is what makes that contribution usable.",
+    "crumbs": [
+      "Association testing",
+      "Association testing: case-control"
+    ]
+  },
+  {
     "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html",
     "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html",
     "title": "Genotyping quality control",
@@ -547,6 +635,94 @@
     "text": "How to use this guide\nEvery analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.\n👉 Start here: Before you start, setup and your first PLINK command\n\n\n\n\n\n\nTipNo coding experience?\n\n\n\nYou do not need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.\n\n\nThe structure is intentionally step by step. Some tasks are split across more than one script even where they could be merged into a single command, because the purpose is to make each decision visible and to let you see what each filter actually removed.\nFor the same reason, this is not a high-performance computing workflow and it is not a template for large-scale parallel processing. If you are working with a full consortium dataset, run the same steps in an appropriate computing environment and distribute jobs according to your institution’s guidelines.",
     "crumbs": [
       "Home"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html",
+    "href": "sections/02_population_stratification/02_population_stratification.html",
+    "title": "Population stratification",
+    "section": "",
+    "text": "Population stratification is what happens when the people in a study differ in ancestry, and those differences line up with case or control status. Allele frequencies vary between populations for reasons that have nothing to do with disease, so if one ancestry group is over-represented among cases, every variant whose frequency differs between groups will look associated.\nThe damage is not only false positives. Uncorrected structure can equally mask a real association, producing a false negative and a loss of power that leaves no trace in the output. In a rare cancer, where the sample size gives no margin for either error, this is among the most consequential steps in the whole workflow.\nThis page covers three things: seeing the structure, deciding what to do about it, and producing the covariates that Section 4A will use.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#ld-pruning",
+    "href": "sections/02_population_stratification/02_population_stratification.html#ld-pruning",
+    "title": "Population stratification",
+    "section": "01 - LD pruning",
+    "text": "01 - LD pruning\nWhy. Principal component analysis has to run on variants that are approximately independent. Variants in linkage disequilibrium repeat the same information, and dense regions such as the major histocompatibility complex on chromosome 6 would otherwise dominate the result, so that the leading components describe local genomic architecture instead of ancestry.\nbash scripts/02_population_stratification/01_ld_pruning.sh\nOn the demonstration data this keeps 221,352 variants and prunes away 180,557. Losing almost half is expected: it is redundancy being removed. The pruned set is used for PCA and relatedness only, never for association testing.\n\n\n\n\n\n\nNoteThe r-squared threshold is a decision, not a standard\n\n\n\n--indep-pairwise 50 5 0.2 uses a 50-variant window, a step of 5, and an r² threshold of 0.2. A threshold of 0.1 (|r| ≈ 0.32) is more stringent; 0.2 (|r| ≈ 0.45) more permissive. Neither is correct in the abstract. What is required is to report the value used and to confirm that the leading components do not change materially when it is varied.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#principal-component-analysis",
+    "href": "sections/02_population_stratification/02_population_stratification.html#principal-component-analysis",
+    "title": "Population stratification",
+    "section": "02 - Principal component analysis",
+    "text": "02 - Principal component analysis\nWhy. PCA reduces the genotype matrix to a handful of uncorrelated axes, ordered by how much variance each explains. It assumes nothing about population structure; structure is simply the strongest biological signal in the variance that PCA summarises when a cohort spans continents.\nbash scripts/02_population_stratification/02_pca_all.sh\nOutputs are pdac_demo_02_pca_all.eigenvec, one row per individual, and pdac_demo_02_pca_all.eigenval, the variance carried by each component.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#looking-at-the-result",
+    "href": "sections/02_population_stratification/02_population_stratification.html#looking-at-the-result",
+    "title": "Population stratification",
+    "section": "03 - Looking at the result",
+    "text": "03 - Looking at the result\nRscript scripts/02_population_stratification/03_pca_plots.R\nThree plots, each answering a different question.\n\nScree plotPC1 versus PC2Higher components\n\n\n\nHow many components carry real signal? On the demonstration data PC1 explains 47.0% of the variance and PC2 38.1%, then the curve collapses to 3.7% at PC3. That cliff is the signature of discrete continental ancestry: two components separate three groups, and everything after is noise and fine structure.\n\n\n\nThree clusters, cleanly separated. This is what a multi-ancestry cohort looks like, and it is why the primary analysis cannot simply pool everyone.\n\n\n\nThe panel most often skipped, and the one most often needed. In a cohort that looks homogeneous on PC1 and PC2, real structure frequently appears further down, and it confounds the association test just as effectively. Always inspect at least PC1 through PC6.\n\n\n\n\n\n\n\n\n\nImportantA caution about this demonstration\n\n\n\nThe separation here is unusually clean because the dataset was deliberately built from three distinct continental groups. Real cohorts are messier: a predominantly European PDAC consortium will show one diffuse cloud with gradients running through it, not three islands. The skill to carry away is reading the scree plot and the higher components, not recognising a picture that looks like this one.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#deciding-who-is-analysed",
+    "href": "sections/02_population_stratification/02_population_stratification.html#deciding-who-is-analysed",
+    "title": "Population stratification",
+    "section": "04 - Deciding who is analysed",
+    "text": "04 - Deciding who is analysed\nWhy. Seeing the structure is not the same as handling it. Three strategies are defensible.\n\n\n\n\n\n\n\n\nStrategy\nWhat it costs\nWhen it is right\n\n\n\n\nAnalyse the largest group alone\nDiscards data\nOther groups too small to stand alone\n\n\nKeep everyone, ancestry as covariate\nAssumes effects are portable across populations\nGroups are small and effects plausibly shared\n\n\nAnalyse each group, then meta-analyse\nNothing, but needs each group to be large enough\nGenuinely multi-ancestry cohorts\n\n\n\nbash scripts/02_population_stratification/04_define_analysis_set.sh\nOn the demonstration data:\n\n\n\nQC-passed total\n1,239\n\n\nEuropean\n625\n\n\nEast Asian\n319\n\n\nAfrican\n295\n\n\nAnalysis set\n625: 229 cases, 396 controls\n\n\nEffective sample size\n580.4\n\n\n\nThe third strategy is the one to prefer whenever it is available, because it neither discards data nor assumes that effect sizes transfer between populations with different causal-allele frequencies and LD structures. Here the non-European groups are too small to form meaningful strata, which is the situation of most real rare-cancer cohorts, so the analysis proceeds on the European subset alone.\n\n\n\n\n\n\nNoteEffective sample size is the number that matters\n\n\n\n4 × cases × controls / (cases + controls) = 580.4, not 625. In an unbalanced design the effective figure is what governs power, and it is what should be reported. Section 4A returns to what this number does and does not make detectable.\n\n\n\n\n\n\n\n\nWarningHow the groups are assigned here\n\n\n\nThis dataset ships with true ancestry labels, which is a teaching convenience. In a real study no such labels exist: the assignment comes from the PCA itself, or from projection onto a reference panel such as 1000 Genomes or HGDP, with a threshold on the estimated ancestry proportion, 80% being a common choice. Step 03 above is the check that the labels and the genetic data agree, which is worth doing whenever metadata claims an ancestry.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#recomputing-the-components-within-the-analysis-set",
+    "href": "sections/02_population_stratification/02_population_stratification.html#recomputing-the-components-within-the-analysis-set",
+    "title": "Population stratification",
+    "section": "05 - Recomputing the components within the analysis set",
+    "text": "05 - Recomputing the components within the analysis set\nWhy. This step is frequently skipped, and skipping it is a mistake.\nThe components from Step 02 describe continental separation. Once the non-European individuals are removed, those axes describe something that is no longer in the data. What remains, and what can still confound the test, is fine-scale structure within Europe, and only a PCA computed within the analysis set can see it. LD pruning is repeated for the same reason: which variants are correlated depends on allele frequencies, which differ between populations.\nbash scripts/02_population_stratification/05_pca_within_eur.sh\n\nCompare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2 11.8%, and the curve declines gently instead of collapsing, which is what within-population structure looks like: continuous gradients rather than discrete groups.\n\n\n\n\n\n\nTipHow many components should you keep?\n\n\n\nTen is a convention with no justification attached. The guide recommends three checks instead:\n\nInspect the scree plot for the point where additional components explain negligible variance.\nTest each component for association with case status, which Section 4A does automatically.\nConfirm that the genomic inflation factor and the leading associations are stable across a range of component counts.\n\nIf the results move materially between five and twenty components, that instability is itself the finding and belongs in the paper.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#what-you-now-have",
+    "href": "sections/02_population_stratification/02_population_stratification.html#what-you-now-have",
+    "title": "Population stratification",
+    "section": "What you now have",
+    "text": "What you now have\npdac_demo_02_pca_eur.eigenvec holds the covariates for association testing, and pdac_demo_02_eur_keep.txt defines who is analysed. Both feed directly into the next section.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#key-decisions-on-this-page",
+    "href": "sections/02_population_stratification/02_population_stratification.html#key-decisions-on-this-page",
+    "title": "Population stratification",
+    "section": "Key decisions on this page",
+    "text": "Key decisions on this page\n\nThe r² threshold for LD pruning, reported and checked for stability.\nWhich ancestry strategy: single group, pooled with a covariate, or stratified with meta-analysis.\nWhether individuals distant from the main cluster are genuine outliers or genuine diversity. Distance alone does not justify exclusion, and in a rare cancer every excluded case is a permanent loss of power. Document the number of components examined, the threshold, the number removed, and the effect of their removal on the inflation factor.\nHow many components to carry forward, decided from evidence rather than convention.\n\nNext: Association testing.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
     ]
   }
 ]

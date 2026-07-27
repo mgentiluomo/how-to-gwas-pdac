@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Contributors">
-<meta name="dcterms.date" content="2026-06-12">
+<meta name="description" content="Find the ancestry structure in the cohort, decide who is analysed, and build the covariates that remove the confounding">
 
-<title>WSL Setup for PDAC GWAS Tutorial – How to carry out a GWAS</title>
+<title>Population stratification – How to carry out a GWAS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -67,6 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../sections/04A_association_binary/04A_association_binary.html" rel="next">
+<link href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -285,7 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">WSL Setup for PDAC GWAS Tutorial</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/02_population_stratification/02_population_stratification.html">Ancestry and structure</a></li><li class="breadcrumb-item"><a href="../../sections/02_population_stratification/02_population_stratification.html">Population stratification</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -354,16 +355,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
  <span class="menu-text">Ancestry and structure</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Population stratification</span></a>
   </div>
 </li>
@@ -396,63 +397,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#running-the-pdac-gwas-tutorial-on-windows-via-wsl" id="toc-running-the-pdac-gwas-tutorial-on-windows-via-wsl" class="nav-link active" data-scroll-target="#running-the-pdac-gwas-tutorial-on-windows-via-wsl">Running the PDAC GWAS Tutorial on Windows (via WSL)</a>
-  <ul class="collapse">
-  <li><a href="#why-wsl" id="toc-why-wsl" class="nav-link" data-scroll-target="#why-wsl">Why WSL?</a></li>
-  <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link" data-scroll-target="#prerequisites">Prerequisites</a>
-  <ul class="collapse">
-  <li><a href="#enable-wsl2-on-windows" id="toc-enable-wsl2-on-windows" class="nav-link" data-scroll-target="#enable-wsl2-on-windows">1. Enable WSL2 on Windows</a></li>
-  <li><a href="#install-ubuntu-in-wsl" id="toc-install-ubuntu-in-wsl" class="nav-link" data-scroll-target="#install-ubuntu-in-wsl">2. Install Ubuntu in WSL</a></li>
-  <li><a href="#launch-wsl-terminal" id="toc-launch-wsl-terminal" class="nav-link" data-scroll-target="#launch-wsl-terminal">3. Launch WSL Terminal</a></li>
-  </ul></li>
-  <li><a href="#basic-wsl-preparation" id="toc-basic-wsl-preparation" class="nav-link" data-scroll-target="#basic-wsl-preparation">Basic WSL Preparation</a>
-  <ul class="collapse">
-  <li><a href="#step-1-update-package-manager" id="toc-step-1-update-package-manager" class="nav-link" data-scroll-target="#step-1-update-package-manager">Step 1: Update Package Manager</a></li>
-  <li><a href="#step-2-install-basic-utilities" id="toc-step-2-install-basic-utilities" class="nav-link" data-scroll-target="#step-2-install-basic-utilities">Step 2: Install Basic Utilities</a></li>
-  </ul></li>
-  <li><a href="#accessing-your-files" id="toc-accessing-your-files" class="nav-link" data-scroll-target="#accessing-your-files">Accessing Your Files</a>
-  <ul class="collapse">
-  <li><a href="#windows-path-wsl-path-mapping" id="toc-windows-path-wsl-path-mapping" class="nav-link" data-scroll-target="#windows-path-wsl-path-mapping">Windows Path → WSL Path Mapping</a></li>
-  <li><a href="#example-accessing-s-drive-and-example-folder" id="toc-example-accessing-s-drive-and-example-folder" class="nav-link" data-scroll-target="#example-accessing-s-drive-and-example-folder">Example: Accessing S: Drive and Example folder</a></li>
-  </ul></li>
-  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a>
-  <ul class="collapse">
-  <li><a href="#issue-wsl-cannot-connect-to-the-internet-on-a-managed-network" id="toc-issue-wsl-cannot-connect-to-the-internet-on-a-managed-network" class="nav-link" data-scroll-target="#issue-wsl-cannot-connect-to-the-internet-on-a-managed-network">Issue: WSL cannot connect to the internet on a managed network</a></li>
-  <li><a href="#issue-file-not-found-when-accessing-windows-files" id="toc-issue-file-not-found-when-accessing-windows-files" class="nav-link" data-scroll-target="#issue-file-not-found-when-accessing-windows-files">Issue: “File not found” when accessing Windows files</a></li>
-  <li><a href="#issue-slow-performance-on-mnts-windows-drive" id="toc-issue-slow-performance-on-mnts-windows-drive" class="nav-link" data-scroll-target="#issue-slow-performance-on-mnts-windows-drive">Issue: Slow performance on /mnt/s/ (Windows drive)</a></li>
-  </ul></li>
-  <li><a href="#quick-reference-wsl-commands" id="toc-quick-reference-wsl-commands" class="nav-link" data-scroll-target="#quick-reference-wsl-commands">Quick Reference: WSL Commands</a></li>
-  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
-  </ul></li>
+  <li><a href="#ld-pruning" id="toc-ld-pruning" class="nav-link active" data-scroll-target="#ld-pruning">01 - LD pruning</a></li>
+  <li><a href="#principal-component-analysis" id="toc-principal-component-analysis" class="nav-link" data-scroll-target="#principal-component-analysis">02 - Principal component analysis</a></li>
+  <li><a href="#looking-at-the-result" id="toc-looking-at-the-result" class="nav-link" data-scroll-target="#looking-at-the-result">03 - Looking at the result</a></li>
+  <li><a href="#deciding-who-is-analysed" id="toc-deciding-who-is-analysed" class="nav-link" data-scroll-target="#deciding-who-is-analysed">04 - Deciding who is analysed</a></li>
+  <li><a href="#recomputing-the-components-within-the-analysis-set" id="toc-recomputing-the-components-within-the-analysis-set" class="nav-link" data-scroll-target="#recomputing-the-components-within-the-analysis-set">05 - Recomputing the components within the analysis set</a></li>
+  <li><a href="#what-you-now-have" id="toc-what-you-now-have" class="nav-link" data-scroll-target="#what-you-now-have">What you now have</a></li>
+  <li><a href="#key-decisions-on-this-page" id="toc-key-decisions-on-this-page" class="nav-link" data-scroll-target="#key-decisions-on-this-page">Key decisions on this page</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/docs/helpers/WSL_SETUP.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/02_population_stratification/02_population_stratification.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/02_population_stratification/02_population_stratification.html">Ancestry and structure</a></li><li class="breadcrumb-item"><a href="../../sections/02_population_stratification/02_population_stratification.html">Population stratification</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">WSL Setup for PDAC GWAS Tutorial</h1>
+<h1 class="title">Population stratification</h1>
 </div>
 
+<div>
+  <div class="description">
+    Find the ancestry structure in the cohort, decide who is analysed, and build the covariates that remove the confounding
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Contributors </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">June 12, 2026</p>
-    </div>
-  </div>
   
     
   </div>
@@ -462,246 +435,245 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="running-the-pdac-gwas-tutorial-on-windows-via-wsl" class="level1">
-<h1>Running the PDAC GWAS Tutorial on Windows (via WSL)</h1>
-<p><strong>For Windows users:</strong> Using Windows Subsystem for Linux (WSL) is <strong>strongly recommended</strong> for this tutorial. The pipeline uses bash scripts and Linux/macOS command-line tools, which work most consistently inside WSL.</p>
-<section id="why-wsl" class="level2">
-<h2 class="anchored" data-anchor-id="why-wsl">Why WSL?</h2>
+<p>Population stratification is what happens when the people in a study differ in ancestry, and those differences line up with case or control status. Allele frequencies vary between populations for reasons that have nothing to do with disease, so if one ancestry group is over-represented among cases, every variant whose frequency differs between groups will look associated.</p>
+<p>The damage is not only false positives. Uncorrected structure can equally <strong>mask</strong> a real association, producing a false negative and a loss of power that leaves no trace in the output. In a rare cancer, where the sample size gives no margin for either error, this is among the most consequential steps in the whole workflow.</p>
+<p>This page covers three things: seeing the structure, deciding what to do about it, and producing the covariates that Section 4A will use.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/gwas_tutorial/</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> demo_data/</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> scripts/02_population_stratification/</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> results/pca/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Before you start">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Before you start
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Finish <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html">Genotyping quality control</a> first. You need:</p>
+<ul>
+<li><code>results/qc/pdac_demo_08_filt.bed/.bim/.fam</code>, the QC-passed dataset</li>
+<li><code>demo_data/sample_ancestry.tsv</code> and <code>demo_data/phenotype.txt</code></li>
+<li>working <code>plink2</code> and <code>Rscript</code> commands</li>
+</ul>
+<p>All commands are run from the project root.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="About the example figures">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About the example figures
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Your commands write to <code>results/pca/</code>. The figures shown here are the outputs committed in <code>sections/02_population_stratification/results/</code>, produced by exactly these scripts on the demonstration data.</p>
+</div>
+</div>
+<hr>
+<section id="ld-pruning" class="level2">
+<h2 class="anchored" data-anchor-id="ld-pruning">01 - LD pruning</h2>
+<p><strong>Why.</strong> Principal component analysis has to run on variants that are approximately independent. Variants in linkage disequilibrium repeat the same information, and dense regions such as the major histocompatibility complex on chromosome 6 would otherwise dominate the result, so that the leading components describe local genomic architecture instead of ancestry.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/01_ld_pruning.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On the demonstration data this keeps <strong>221,352</strong> variants and prunes away <strong>180,557</strong>. Losing almost half is expected: it is redundancy being removed. The pruned set is used for PCA and relatedness only, never for association testing.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="The r-squared threshold is a decision, not a standard">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The r-squared threshold is a decision, not a standard
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>--indep-pairwise 50 5 0.2</code> uses a 50-variant window, a step of 5, and an r² threshold of 0.2. A threshold of 0.1 (|r| ≈ 0.32) is more stringent; 0.2 (|r| ≈ 0.45) more permissive. Neither is correct in the abstract. What is required is to report the value used and to confirm that the leading components do not change materially when it is varied.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="principal-component-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="principal-component-analysis">02 - Principal component analysis</h2>
+<p><strong>Why.</strong> PCA reduces the genotype matrix to a handful of uncorrelated axes, ordered by how much variance each explains. It assumes nothing about population structure; structure is simply the strongest biological signal in the variance that PCA summarises when a cohort spans continents.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/02_pca_all.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Outputs are <code>pdac_demo_02_pca_all.eigenvec</code>, one row per individual, and <code>pdac_demo_02_pca_all.eigenval</code>, the variance carried by each component.</p>
+<hr>
+</section>
+<section id="looking-at-the-result" class="level2">
+<h2 class="anchored" data-anchor-id="looking-at-the-result">03 - Looking at the result</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/02_population_stratification/03_pca_plots.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Three plots, each answering a different question.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Scree plot</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">PC1 versus PC2</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Higher components</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><img src="results/pdac_demo_02_pca_scree.png" class="img-fluid"></p>
+<p>How many components carry real signal? On the demonstration data PC1 explains 47.0% of the variance and PC2 38.1%, then the curve collapses to 3.7% at PC3. That cliff is the signature of discrete continental ancestry: two components separate three groups, and everything after is noise and fine structure.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><img src="results/pdac_demo_02_pca_pc1_pc2.png" class="img-fluid"></p>
+<p>Three clusters, cleanly separated. This is what a multi-ancestry cohort looks like, and it is why the primary analysis cannot simply pool everyone.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p><img src="results/pdac_demo_02_pca_pairwise.png" class="img-fluid"></p>
+<p>The panel most often skipped, and the one most often needed. In a cohort that looks homogeneous on PC1 and PC2, real structure frequently appears further down, and it confounds the association test just as effectively. Always inspect at least PC1 through PC6.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="A caution about this demonstration">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A caution about this demonstration
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The separation here is unusually clean because the dataset was deliberately built from three distinct continental groups. Real cohorts are messier: a predominantly European PDAC consortium will show one diffuse cloud with gradients running through it, not three islands. The skill to carry away is reading the scree plot and the higher components, not recognising a picture that looks like this one.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="deciding-who-is-analysed" class="level2">
+<h2 class="anchored" data-anchor-id="deciding-who-is-analysed">04 - Deciding who is analysed</h2>
+<p><strong>Why.</strong> Seeing the structure is not the same as handling it. Three strategies are defensible.</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 18%">
-<col style="width: 51%">
-<col style="width: 30%">
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Aspect</th>
-<th>Windows CMD/PowerShell</th>
-<th>WSL (Linux)</th>
+<th>Strategy</th>
+<th>What it costs</th>
+<th>When it is right</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Tool setup</strong></td>
-<td>Requires separate Windows binaries and PATH edits</td>
-<td>Tutorial scripts install tools into the project folder</td>
+<td>Analyse the largest group alone</td>
+<td>Discards data</td>
+<td>Other groups too small to stand alone</td>
 </tr>
 <tr class="even">
-<td><strong>Bash scripts</strong></td>
-<td>PowerShell emulation (fragile)</td>
-<td>Full bash compatibility</td>
+<td>Keep everyone, ancestry as covariate</td>
+<td>Assumes effects are portable across populations</td>
+<td>Groups are small and effects plausibly shared</td>
 </tr>
 <tr class="odd">
-<td><strong>File paths</strong></td>
-<td>Windows-style (backslashes, drive letters)</td>
-<td>Unix-style (forward slashes)</td>
-</tr>
-<tr class="even">
-<td><strong>Performance</strong></td>
-<td>Slower for file I/O intensive tasks</td>
-<td>Native Linux speed</td>
-</tr>
-<tr class="odd">
-<td><strong>Scripting</strong></td>
-<td>Complex escaping, quoting issues</td>
-<td>Standard shell behavior</td>
+<td>Analyse each group, then meta-analyse</td>
+<td>Nothing, but needs each group to be large enough</td>
+<td>Genuinely multi-ancestry cohorts</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Recommendation:</strong> Install WSL2 with Ubuntu, then follow this guide.</p>
-<hr>
-</section>
-<section id="prerequisites" class="level2">
-<h2 class="anchored" data-anchor-id="prerequisites">Prerequisites</h2>
-<section id="enable-wsl2-on-windows" class="level3">
-<h3 class="anchored" data-anchor-id="enable-wsl2-on-windows">1. Enable WSL2 on Windows</h3>
-<p>Open <strong>PowerShell as Administrator</strong> and run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># or, if you already have WSL1:</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>set-default-version <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Restart your computer, then verify:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>list <span class="op">--</span>verbose</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You should see Ubuntu (or your chosen distro) with VERSION = 2.</p>
-</section>
-<section id="install-ubuntu-in-wsl" class="level3">
-<h3 class="anchored" data-anchor-id="install-ubuntu-in-wsl">2. Install Ubuntu in WSL</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install <span class="op">-</span>d Ubuntu</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Or use the Microsoft Store to download Ubuntu 22.04 LTS or later.</p>
-</section>
-<section id="launch-wsl-terminal" class="level3">
-<h3 class="anchored" data-anchor-id="launch-wsl-terminal">3. Launch WSL Terminal</h3>
-<p>From PowerShell or Windows Terminal:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>wsl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Or click <strong>Ubuntu</strong> in Windows Terminal tabs.</p>
-<p>The short video below shows how to open Ubuntu from Windows Terminal:</p>
-<video controls="" width="100%">
-<source src="illustration/wsl_ubuntu.mp4" type="video/mp4">
-<p>Your browser does not support the video tag. </p>
-<hr>
-</video></section>
-</section>
-<section id="basic-wsl-preparation" class="level2">
-<h2 class="anchored" data-anchor-id="basic-wsl-preparation">Basic WSL Preparation</h2>
-<p>Once you’re in the WSL terminal, run these commands <strong>once</strong> to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by <code>bash scripts/dev/tools_setup.sh</code>.</p>
-<section id="step-1-update-package-manager" class="level3">
-<h3 class="anchored" data-anchor-id="step-1-update-package-manager">Step 1: Update Package Manager</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update <span class="at">-y</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get upgrade <span class="at">-y</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><em>Note:</em> The <code>sudo</code> prompt may ask for your password (the one you set during WSL Ubuntu installation).</p>
-</section>
-<section id="step-2-install-basic-utilities" class="level3">
-<h3 class="anchored" data-anchor-id="step-2-install-basic-utilities">Step 2: Install Basic Utilities</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> curl wget git unzip tar bzip2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Verify the basic utilities:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> <span class="at">--version</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--version</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>R is checked during Step 5 of the main tutorial. If it is missing, <code>bash scripts/dev/tools_setup.sh</code> will try to install it.</p>
-<hr>
-</section>
-</section>
-<section id="accessing-your-files" class="level2">
-<h2 class="anchored" data-anchor-id="accessing-your-files">Accessing Your Files</h2>
-<section id="windows-path-wsl-path-mapping" class="level3">
-<h3 class="anchored" data-anchor-id="windows-path-wsl-path-mapping">Windows Path → WSL Path Mapping</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/04_define_analysis_set.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On the demonstration data:</p>
 <table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Windows</th>
-<th>WSL</th>
-</tr>
-</thead>
 <tbody>
 <tr class="odd">
-<td><code>C:\Users\...</code></td>
-<td><code>/home/username/...</code></td>
+<td>QC-passed total</td>
+<td>1,239</td>
 </tr>
 <tr class="even">
-<td><code>C:\</code> drive</td>
-<td><code>/mnt/c/</code></td>
+<td>European</td>
+<td>625</td>
 </tr>
 <tr class="odd">
-<td><code>S:\</code> drive</td>
-<td><code>/mnt/s/</code></td>
+<td>East Asian</td>
+<td>319</td>
 </tr>
 <tr class="even">
-<td><code>D:\</code> drive</td>
-<td><code>/mnt/d/</code></td>
+<td>African</td>
+<td>295</td>
+</tr>
+<tr class="odd">
+<td><strong>Analysis set</strong></td>
+<td><strong>625: 229 cases, 396 controls</strong></td>
+</tr>
+<tr class="even">
+<td>Effective sample size</td>
+<td>580.4</td>
 </tr>
 </tbody>
 </table>
-</section>
-<section id="example-accessing-s-drive-and-example-folder" class="level3">
-<h3 class="anchored" data-anchor-id="example-accessing-s-drive-and-example-folder">Example: Accessing S: Drive and Example folder</h3>
-<p>Your repo at <code>S:\Example</code> is accessible in WSL as:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /mnt/s/Example</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You can return back to your HOME directory with:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$HOME</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-la</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="troubleshooting" class="level2">
-<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
-<section id="issue-wsl-cannot-connect-to-the-internet-on-a-managed-network" class="level3">
-<h3 class="anchored" data-anchor-id="issue-wsl-cannot-connect-to-the-internet-on-a-managed-network">Issue: WSL cannot connect to the internet on a managed network</h3>
-<p><strong>Reason:</strong> Some universities, hospitals, and institutes use a network proxy. Windows may already know this proxy, but WSL may not use the Windows setting automatically.</p>
-<p>Ask your local IT team for the proxy address and port. It usually looks like:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">http://proxy.example.org:3128/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Replace the example proxy below with your institution’s real proxy:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="va">PROXY</span><span class="op">=</span><span class="st">"http://proxy.example.org:3128/"</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="va">NO_PROXY</span><span class="op">=</span><span class="st">"localhost,127.0.0.1"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Set the proxy for the current WSL terminal:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">http_proxy</span><span class="op">=</span><span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">https_proxy</span><span class="op">=</span><span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">ftp_proxy</span><span class="op">=</span><span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">HTTP_PROXY</span><span class="op">=</span><span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">HTTPS_PROXY</span><span class="op">=</span><span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">FTP_PROXY</span><span class="op">=</span><span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">no_proxy</span><span class="op">=</span><span class="st">"</span><span class="va">$NO_PROXY</span><span class="st">"</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">NO_PROXY</span><span class="op">=</span><span class="st">"</span><span class="va">$NO_PROXY</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Test the connection:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-I</span> https://github.com</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> <span class="at">--spider</span> https://github.com</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If this works, make it permanent for future WSL terminals:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;&gt;</span> <span class="st">"</span><span class="va">$HOME</span><span class="st">/.bashrc"</span> <span class="op">&lt;&lt;'EOF'</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="st"># Proxy for WSL network access.</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="st"># Replace this example with your institution's proxy.</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">export http_proxy="http://proxy.example.org:3128/"</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="st">export https_proxy="http://proxy.example.org:3128/"</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="st">export ftp_proxy="http://proxy.example.org:3128/"</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="st">export HTTP_PROXY="http://proxy.example.org:3128/"</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="st">export HTTPS_PROXY="http://proxy.example.org:3128/"</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="st">export FTP_PROXY="http://proxy.example.org:3128/"</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="st">export no_proxy="localhost,127.0.0.1"</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="st">export NO_PROXY="localhost,127.0.0.1"</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="st">"</span><span class="va">$HOME</span><span class="st">/.bashrc"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>apt-get</code> may need its own proxy setting because it runs with <code>sudo</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tee /etc/apt/apt.conf.d/95proxy <span class="op">&gt;</span>/dev/null <span class="op">&lt;&lt;EOF</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="st">Acquire::http::Proxy "</span><span class="va">$PROXY</span><span class="st">";</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="st">Acquire::https::Proxy "</span><span class="va">$PROXY</span><span class="st">";</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">Acquire::ftp::Proxy "</span><span class="va">$PROXY</span><span class="st">";</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Git can also be configured separately:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> http.proxy <span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config <span class="at">--global</span> https.proxy <span class="st">"</span><span class="va">$PROXY</span><span class="st">"</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> ls-remote https://github.com/git/git.git HEAD</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If your proxy requires a username or password, ask your IT team for the recommended WSL setup. Avoid putting passwords into shared scripts or tutorial files.</p>
-</section>
-<section id="issue-file-not-found-when-accessing-windows-files" class="level3">
-<h3 class="anchored" data-anchor-id="issue-file-not-found-when-accessing-windows-files">Issue: “File not found” when accessing Windows files</h3>
-<p><strong>Solution:</strong> Use <code>/mnt/</code> prefix for Windows drives:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ✗ Wrong</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> S:<span class="dt">\G</span>ithub<span class="dt">\h</span>ow-to-gwas-pdac</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ✓ Correct</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /mnt/s/Github/how-to-gwas-pdac</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="issue-slow-performance-on-mnts-windows-drive" class="level3">
-<h3 class="anchored" data-anchor-id="issue-slow-performance-on-mnts-windows-drive">Issue: Slow performance on /mnt/s/ (Windows drive)</h3>
-<p><strong>Reason:</strong> WSL filesystem performance is slower when accessing Windows drives.</p>
-<p><strong>Solution:</strong> Clone the repo inside WSL:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/mgentiluomo/how-to-gwas-pdac.git ~/how-to-gwas-pdac</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/how-to-gwas-pdac</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The third strategy is the one to prefer whenever it is available, because it neither discards data nor assumes that effect sizes transfer between populations with different causal-allele frequencies and LD structures. Here the non-European groups are too small to form meaningful strata, which is the situation of most real rare-cancer cohorts, so the analysis proceeds on the European subset alone.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Effective sample size is the number that matters">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Effective sample size is the number that matters
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>4 × cases × controls / (cases + controls) = 580.4, not 625. In an unbalanced design the effective figure is what governs power, and it is what should be reported. Section 4A returns to what this number does and does not make detectable.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="How the groups are assigned here">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>How the groups are assigned here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This dataset ships with true ancestry labels, which is a teaching convenience. In a real study no such labels exist: the assignment comes from the PCA itself, or from projection onto a reference panel such as 1000 Genomes or HGDP, with a threshold on the estimated ancestry proportion, 80% being a common choice. Step 03 above is the check that the labels and the genetic data agree, which is worth doing whenever metadata claims an ancestry.</p>
+</div>
+</div>
 <hr>
 </section>
-</section>
-<section id="quick-reference-wsl-commands" class="level2">
-<h2 class="anchored" data-anchor-id="quick-reference-wsl-commands">Quick Reference: WSL Commands</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check WSL version and distro</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--list</span> <span class="at">--verbose</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Switch default distro</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--set-default</span> <span class="op">&lt;</span>distro-name<span class="op">&gt;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Enter WSL</span></span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Exit WSL</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="bu">exit</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Run single WSL command from PowerShell</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> bash <span class="at">-c</span> <span class="st">"cd /mnt/s/Github/how-to-gwas-pdac &amp;&amp; ls"</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Update WSL</span></span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="ex">wsl</span> <span class="at">--update</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
-</section>
-<section id="next-steps" class="level2">
-<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<section id="recomputing-the-components-within-the-analysis-set" class="level2">
+<h2 class="anchored" data-anchor-id="recomputing-the-components-within-the-analysis-set">05 - Recomputing the components within the analysis set</h2>
+<p><strong>Why.</strong> This step is frequently skipped, and skipping it is a mistake.</p>
+<p>The components from Step 02 describe continental separation. Once the non-European individuals are removed, those axes describe something that is no longer in the data. What remains, and what can still confound the test, is fine-scale structure within Europe, and only a PCA computed within the analysis set can see it. LD pruning is repeated for the same reason: which variants are correlated depends on allele frequencies, which differ between populations.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/02_population_stratification/05_pca_within_eur.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="results/pdac_demo_02_pca_eur_scree.png" class="img-fluid"></p>
+<p>Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2 11.8%, and the curve declines gently instead of collapsing, which is what within-population structure looks like: continuous gradients rather than discrete groups.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="How many components should you keep?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>How many components should you keep?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ten is a convention with no justification attached. The guide recommends three checks instead:</p>
 <ol type="1">
-<li>Follow <a href="../../getting_started.html">Before you start: setup and your first QC pipeline</a></li>
-<li>Return to this page if you need help with WSL paths or basic WSL commands.</li>
+<li>Inspect the scree plot for the point where additional components explain negligible variance.</li>
+<li>Test each component for association with case status, which Section 4A does automatically.</li>
+<li>Confirm that the genomic inflation factor and the leading associations are stable across a range of component counts.</li>
 </ol>
-<p>Good luck!</p>
-
-
+<p>If the results move materially between five and twenty components, that instability is itself the finding and belongs in the paper.</p>
+</div>
+</div>
+<hr>
 </section>
+<section id="what-you-now-have" class="level2">
+<h2 class="anchored" data-anchor-id="what-you-now-have">What you now have</h2>
+<p><code>pdac_demo_02_pca_eur.eigenvec</code> holds the covariates for association testing, and <code>pdac_demo_02_eur_keep.txt</code> defines who is analysed. Both feed directly into the next section.</p>
+</section>
+<section id="key-decisions-on-this-page" class="level2">
+<h2 class="anchored" data-anchor-id="key-decisions-on-this-page">Key decisions on this page</h2>
+<ul>
+<li>The r² threshold for LD pruning, reported and checked for stability.</li>
+<li>Which ancestry strategy: single group, pooled with a covariate, or stratified with meta-analysis.</li>
+<li>Whether individuals distant from the main cluster are genuine outliers or genuine diversity. Distance alone does not justify exclusion, and in a rare cancer every excluded case is a permanent loss of power. Document the number of components examined, the threshold, the number removed, and the effect of their removal on the inflation factor.</li>
+<li>How many components to carry forward, decided from evidence rather than convention.</li>
+</ul>
+<p>Next: <a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing</a>.</p>
+
+
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -1118,9 +1090,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" class="pagination-link" aria-label="Genotyping quality control">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Genotyping quality control</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../sections/04A_association_binary/04A_association_binary.html" class="pagination-link" aria-label="Association testing: case-control">
+        <span class="nav-page-text">Association testing: case-control</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/docs/helpers/WSL_SETUP.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/02_population_stratification/02_population_stratification.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
