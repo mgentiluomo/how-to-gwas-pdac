@@ -56,12 +56,16 @@ Raw demo genotypes: demo_data/pdac_demo.bed/.bim/.fam
     | 03 Sex check
     | 04 Heterozygosity outliers
     | 05 Variant call rate
-    | 06 Hardy-Weinberg equilibrium
+    | 06 Hardy-Weinberg equilibrium (flagged, not removed)
     | 07 Relatedness
     | 08 Minor allele frequency
     | 09 QC summary report
     v
 Clean genotypes: results/qc/pdac_demo_08_filt.bed/.bim/.fam
+    |
+    | HWE within ancestry, applied in Section 2 after the split
+    v
+Analysis-ready: results/pca/pdac_demo_02_hwe_filt.bed/.bim/.fam
 ```
 
 ::: {.callout-note title="Why one step at a time?"}
@@ -215,9 +219,17 @@ the first visible sign that labels, sample IDs, or genotype files were mixed.
 
 ## 04 - Heterozygosity Outliers
 
-**Why.** Extremely high or low heterozygosity can signal contamination, inbreeding, ancestry
-outliers, or technical artifacts. This step uses autosomal heterozygosity and removes samples
-outside a standard deviation-based threshold.
+**Why.** Extremely high or low heterozygosity can signal contamination, inbreeding, or a
+technical artefact. The inbreeding coefficient *F* compares observed with expected heterozygous
+genotype counts across autosomal variants, and samples outside a standard-deviation band around
+the mean are flagged.
+
+In a multi-ancestry cohort that calculation cannot be done on everyone at once. The groups differ
+in mean *F*, so the pooled standard deviation is inflated by the variance **between** groups and
+the band becomes too wide to catch anything. The expected heterozygosity is also computed from
+pooled allele frequencies, which biases *F* upward for every group at the same time. The script
+therefore runs `--het` separately within each ancestry group, so that both the observed and the
+expected heterozygosity use that group's own allele frequencies.
 
 ```bash
 bash scripts/01B_genotyping_qc/04_heterozygosity.sh
@@ -234,7 +246,20 @@ results/qc/pdac_demo_04_filt.bim
 results/qc/pdac_demo_04_filt.fam
 ```
 
-In the demo run, this step removed **2 samples**.
+| | n | mean *F* | SD *F* | outliers |
+|---|---:|---:|---:|---:|
+| Pooled | 1,432 | 0.0683 | 0.0288 | **2** |
+| European | 743 | 0.0061 | 0.0116 | 9 |
+| African | 343 | 0.0049 | 0.0183 | 6 |
+| East Asian | 346 | 0.0085 | 0.0138 | 5 |
+| **Union across groups** | | | | **20** |
+
+Read the mean before the outlier count. Pooled, *F* averages 0.068; within each group it falls to
+between 0.005 and 0.009, which is what an inbreeding coefficient should be in a randomly mating
+sample. Pooled, the statistic was not measuring inbreeding at all: it was measuring population
+structure, and the width of the band it produced made the filter almost inert.
+
+In the demo run, this step removed **20 samples**.
 
 The baseline heterozygosity distribution from Step 01 is shown again here because it is the plot
 that motivates this filter:
@@ -278,16 +303,23 @@ The Step 01 variant missingness plot shows why this filter exists:
 
 ## 06 - Hardy-Weinberg Equilibrium
 
-**Why.** Strong Hardy-Weinberg equilibrium (HWE) deviations in controls often indicate genotyping
-errors. In a case/control GWAS, controls are the safer group for this filter because true disease
-variants may deviate in cases.
+**Why.** Strong departure from Hardy-Weinberg equilibrium more often indicates a genotyping error
+than real biology. Two conditions must hold for the test to mean that, and most tutorials state
+only the first.
+
+The filter must be computed **in controls only**, because a true disease association legitimately
+produces deviation in cases. And it must be computed **within a genetically homogeneous group**,
+because the exact test assumes a single randomly mating population. Applied to a structured sample
+it detects the Wahlund effect, that is, the allele-frequency differences between the constituent
+populations, and reports them as genotyping failure.
 
 ```bash
 bash scripts/01B_genotyping_qc/06_hardy_weinberg.sh
 ```
 
-This uses `demo_data/phenotype.txt` to identify controls, then removes variants with
-control-only HWE p-value below `1e-6`.
+This step therefore **flags and does not remove**. It computes the test in the pooled control
+series, records the result, and passes every variant forward. The exclusion happens after ancestry
+assignment, in Section 2.
 
 Main outputs:
 
@@ -301,14 +333,36 @@ results/qc/pdac_demo_06_filt.bim
 results/qc/pdac_demo_06_filt.fam
 ```
 
-In the demo run this step removed **14,573 variants**, leaving **406,947 variants**.
+| Threshold, pooled controls | Variants below it |
+|---|---:|
+| 1e-6 | 14,378 |
+| 1e-10 | 2,278 |
+| 1e-15 | 172 |
+| 1e-20 | 12 |
+| 1e-30 | 0 |
+
+Computed within each ancestry group instead, at the same `1e-6`, the counts are four in the
+European group, none in the African and one in the East Asian: **five variants**.
+
+::: {.callout-important title="Why a gentler threshold does not fix it"}
+The obvious response to 14,378 exclusions is to lower the threshold until the number looks
+reasonable. It does not work, and the reason is worth seeing.
+
+The twelve variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
+five that fail within a group. The two tests are not a lenient and a stringent version of one
+procedure; they are measuring different things. No pooled threshold exists at which the test stops
+detecting structure and starts detecting error.
+:::
 
 ![](results/pdac_demo_06_hwe_pvalue_distribution.png){fig-alt="Histogram of minus log10 Hardy-Weinberg p-values."}
 
-::: {.callout-warning title="Do HWE in controls"}
-For disease GWAS, avoid filtering on HWE calculated in all samples if cases are included. A real
-disease association can create deviation in cases. This tutorial therefore performs the HWE filter
-using controls.
+::: {.callout-warning title="Two conditions, not one"}
+Compute HWE in controls, and compute it within ancestry. Getting the first right and the second
+wrong discards 14,373 variants that have nothing wrong with them, which in a rare-trait study is
+power you cannot afford and did not need to lose.
+
+Where discrete ancestry groups cannot be defined, as in admixed cohorts, ancestry-aware tests that
+model individual ancestry directly are the appropriate substitute.
 :::
 
 ## 07 - Relatedness
@@ -404,41 +458,26 @@ Example relatedness summary:
 | Relationship category | Pairs | Unique samples |
 |---|---:|---:|
 | Duplicate or twin | 0 | 0 |
-| First degree | 284 | 448 |
+| First degree | 280 | 443 |
 | Second degree | 4 | 8 |
 | Third degree | 10 | 20 |
-| No third-degree-or-closer pair | NA | 964 |
-| Total samples before relatedness filter | NA | 1,430 |
+| Total samples before relatedness filter | NA | 1,412 |
 
 Example pruning diagnostics:
 
 | Metric | Value |
 |---|---:|
-| Samples before relatedness filter | 1,430 |
-| KING pruning pairs > 0.1875 | 284 |
-| Unique samples in KING pruning pairs | 448 |
-| Relatedness components | 164 |
+| Samples before relatedness filter | 1,412 |
+| KING pruning pairs > 0.1875 | 280 |
+| Unique samples in KING pruning pairs | 443 |
+| Relatedness components | 163 |
 | Largest component samples | 6 |
 | PLINK2 `--king-cutoff` removed samples | 167 |
-| Phenotype-aware removed samples | 191 |
-| Phenotype-aware removed percent | 13.4 |
-| Controls removed | 154 |
+| Phenotype-aware removed samples | 195 |
+| Phenotype-aware removed percent | 13.8 |
+| Controls removed | 158 |
 | Cases removed | 37 |
 
-Example KING vs PI_HAT summary:
-
-| Metric | Value |
-|---|---:|
-| Total pairs in either report | 55,337 |
-| Pairs reported by both | 298 |
-| Same category | 294 |
-| Different category, check values | 4 |
-| Reported by KING only | 0 |
-| Reported by PI_HAT only | 55,039 |
-| Pruning pairs | 284 |
-| Pruning pairs with PI_HAT | 284 |
-| Mean absolute `PI_HAT - 2 * KING` | 0.025632 |
-| Maximum absolute `PI_HAT - 2 * KING` | 0.126513 |
 
 ::: {.callout-warning title="Review large relatedness loss"}
 In the demo run, phenotype-aware pruning removed **195 samples**. That is a substantial sample
@@ -582,11 +621,12 @@ The demo run used in this page ended with:
 | Initial stats | 1,461 | 430,000 | 0 | 0 |
 | Sample call rate | 1,436 | 430,000 | 25 | 0 |
 | Sex check | 1,432 | 430,000 | 4 | 0 |
-| Heterozygosity | 1,430 | 430,000 | 2 | 0 |
-| Variant call rate | 1,430 | 421,520 | 0 | 8,480 |
-| Hardy-Weinberg | 1,430 | 406,947 | 0 | 14,573 |
-| Relatedness | 1,217 | 406,947 | 191 | 0 |
-| MAF filter | 1,217 | 414,695 | 0 | 6,820 |
+| Heterozygosity, within ancestry | 1,412 | 430,000 | 20 | 0 |
+| Variant call rate | 1,412 | 421,520 | 0 | 8,480 |
+| Hardy-Weinberg, pooled, diagnostic | 1,412 | 421,520 | 0 | 0 |
+| Relatedness | 1,217 | 421,520 | 195 | 0 |
+| MAF filter | 1,217 | 414,700 | 0 | 6,820 |
+| Hardy-Weinberg, within ancestry (Section 2) | 1,217 | 414,695 | 0 | 5 |
 
 Final retention in the demo run was **83.3% of samples** and **96.4% of variants**.
 

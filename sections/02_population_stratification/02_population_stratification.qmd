@@ -208,6 +208,40 @@ finding and belongs in the paper.
 
 ---
 
+## 06 - The Hardy-Weinberg filter that had to wait
+
+**Why.** Section 1B computed the Hardy-Weinberg test and deliberately excluded nothing, because
+the test assumes a homogeneous population and there was not one yet. Now there is.
+
+```bash
+bash scripts/02_population_stratification/06_hwe_within_ancestry.sh
+```
+
+The test runs in controls, within each group, at the same `1e-6` threshold used before. A variant
+is excluded if it fails in any group: a genotyping error is a property of the assay, so failing
+anywhere is evidence against the variant.
+
+| Group | Controls tested | Variants failing |
+|---|---:|---:|
+| European | 387 | 4 |
+| African | 151 | 0 |
+| East Asian | 175 | 1 |
+| **Union** | | **5** |
+
+Five, against the 14,378 the same threshold flagged on the pooled sample. The difference is not a
+matter of degree. Almost every variant the pooled test rejected was rejected for having different
+allele frequencies in Europe, Africa and East Asia, which is true of a large part of the genome
+and says nothing whatever about genotyping quality.
+
+::: {.callout-note title="What this cost, and what it bought"}
+Running the filter in the wrong place would have discarded 3.4% of the genome for no reason. It
+would also have been invisible: the pipeline runs, the counts look plausible, and the association
+test that follows is well controlled either way. The genomic inflation factor is 1.028 with those
+variants and 1.028 without them.
+:::
+
+---
+
 ## What you now have
 
 `pdac_demo_02_pca_eur.eigenvec` holds the covariates for association testing, and

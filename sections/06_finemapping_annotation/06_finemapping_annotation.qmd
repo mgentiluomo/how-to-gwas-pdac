@@ -104,8 +104,10 @@ probability towards rarer variants, and conversely.
 
 The method puts the true causal variant at the top, which is reassuring, and then spreads the
 remaining half of the probability across 76 other variants, which is the honest part. A credible
-set of 77 variants is not a shortlist for functional work. It is a statement that at this sample
-size the locus cannot be resolved further.
+set of that size is not a shortlist for functional work. Those 76 span 628 kb, from 132,968,574 to
+133,596,524, and only 32 of the 77 fall inside *ABO* itself; the rest sit up to 300 kb away on
+either side. It is a statement that at this sample size the locus cannot be resolved further, and
+reporting it as a gene-level finding would misrepresent what the data support.
 
 ![](results/pdac_demo_06_regional.png)
 
