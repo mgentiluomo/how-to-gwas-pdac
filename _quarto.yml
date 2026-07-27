@@ -5,7 +5,7 @@ project:
   # documents to render. Without this, Quarto tries to execute them.
   render:
     - "*.qmd"
-    - "*.md"
+    - "CONTRIBUTING.md"
     - "sections/**/*.qmd"
     - "docs/**/*.md"
 
