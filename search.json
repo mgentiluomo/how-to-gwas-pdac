@@ -182,372 +182,58 @@
     ]
   },
   {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html",
-    "href": "sections/02_population_stratification/02_population_stratification.html",
-    "title": "Population stratification",
+    "objectID": "sections/03B_statistical_power/03B_statistical_power.html",
+    "href": "sections/03B_statistical_power/03B_statistical_power.html",
+    "title": "Statistical power",
     "section": "",
-    "text": "Population stratification is what happens when the people in a study differ in ancestry, and those differences line up with case or control status. Allele frequencies vary between populations for reasons that have nothing to do with disease, so if one ancestry group is over-represented among cases, every variant whose frequency differs between groups will look associated.\nThe damage is not only false positives. Uncorrected structure can equally mask a real association, producing a false negative and a loss of power that leaves no trace in the output. In a rare cancer, where the sample size gives no margin for either error, this is among the most consequential steps in the whole workflow.\nThis page covers three things: seeing the structure, deciding what to do about it, and producing the covariates that Section 4A will use.",
+    "text": "Power analysis has a reputation as a formality performed for a grant application and then forgotten. In a rare and complex trait it is the step that decides which of the analyses in this guide are legitimate at all, and it belongs exactly here: after the analysis set is fixed, and before any association test whose result you will be tempted to believe.\nThe question it answers is narrow and useful. Given the people actually in hand, how large would an effect have to be for this study to find it?",
     "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
+      "What the data can support",
+      "Statistical power"
     ]
   },
   {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#ld-pruning",
-    "href": "sections/02_population_stratification/02_population_stratification.html#ld-pruning",
-    "title": "Population stratification",
-    "section": "01 - LD pruning",
-    "text": "01 - LD pruning\nWhy. Principal component analysis has to run on variants that are approximately independent. Variants in linkage disequilibrium repeat the same information, and dense regions such as the major histocompatibility complex on chromosome 6 would otherwise dominate the result, so that the leading components describe local genomic architecture instead of ancestry.\nbash scripts/02_population_stratification/01_ld_pruning.sh\nOn the demonstration data this keeps 221,352 variants and prunes away 180,557. Losing almost half is expected: it is redundancy being removed. The pruned set is used for PCA and relatedness only, never for association testing.\n\n\n\n\n\n\nNoteThe r-squared threshold is a decision, not a standard\n\n\n\n--indep-pairwise 50 5 0.2 uses a 50-variant window, a step of 5, and an r² threshold of 0.2. A threshold of 0.1 (|r| ≈ 0.32) is more stringent; 0.2 (|r| ≈ 0.45) more permissive. Neither is correct in the abstract. What is required is to report the value used and to confirm that the leading components do not change materially when it is varied.",
+    "objectID": "sections/03B_statistical_power/03B_statistical_power.html#the-arithmetic-in-three-lines",
+    "href": "sections/03B_statistical_power/03B_statistical_power.html#the-arithmetic-in-three-lines",
+    "title": "Statistical power",
+    "section": "The arithmetic, in three lines",
+    "text": "The arithmetic, in three lines\nPower depends on how much information the design carries about the genetic effect, and that information is a product of three things:\n\\[\\text{information} \\;=\\; N \\times \\pi(1-\\pi) \\times \\operatorname{Var}(G), \\qquad \\operatorname{Var}(G) = 2p(1-p)\\]\nthe sample size, the variability of the outcome, and the variability of the genotype. Multiplying by the squared effect gives the non-centrality parameter of a one degree of freedom chi-squared statistic, and power is the probability that this exceeds the critical value set by the significance threshold.\nEach term earns its place, and each says something practical.\nVar(G) = 2p(1 − p) means information collapses as a variant becomes rare. This is why low-frequency variants are hard, and why a rare disease does not confer any special ability to detect rare variants.\nπ(1 − π), where π is the proportion of cases, is maximised at π = 0.5. A balanced design is the most efficient one, and imbalance costs information that no analysis can recover.\nN is the only term you can buy.\n\n\n\n\n\n\nImportantReport the effective sample size, not the total\n\n\n\nAn unbalanced study behaves like a smaller balanced one:\n\\[N_{\\text{eff}} = \\frac{4 \\, N_{\\text{cases}} \\, N_{\\text{controls}}}{N_{\\text{cases}} + N_{\\text{controls}}}\\]\nOn the demonstration data, 229 cases and 396 controls, 625 people behave like 580. Past about four controls per case the curve flattens, so recruiting a fifth or sixth control adds almost nothing. If controls are cheap and cases are not, which is the usual situation in a rare cancer, this is where to stop.",
     "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
+      "What the data can support",
+      "Statistical power"
     ]
   },
   {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#principal-component-analysis",
-    "href": "sections/02_population_stratification/02_population_stratification.html#principal-component-analysis",
-    "title": "Population stratification",
-    "section": "02 - Principal component analysis",
-    "text": "02 - Principal component analysis\nWhy. PCA reduces the genotype matrix to a handful of uncorrelated axes, ordered by how much variance each explains. It assumes nothing about population structure; structure is simply the strongest biological signal in the variance that PCA summarises when a cohort spans continents.\nbash scripts/02_population_stratification/02_pca_all.sh\nOutputs are pdac_demo_02_pca_all.eigenvec, one row per individual, and pdac_demo_02_pca_all.eigenval, the variance carried by each component.",
+    "objectID": "sections/03B_statistical_power/03B_statistical_power.html#what-this-study-could-have-found",
+    "href": "sections/03B_statistical_power/03B_statistical_power.html#what-this-study-could-have-found",
+    "title": "Statistical power",
+    "section": "01 - What this study could have found",
+    "text": "01 - What this study could have found\nRscript scripts/03B_statistical_power/01_power_curves.R\n\n\n\n\n\n\n\n\n\nMinor allele frequency\nAnalysis set, N_eff 580\nAll strata combined, N_eff 1,190\n\n\n\n\n0.50\n2.09\n1.68\n\n\n0.30\n2.24\n1.76\n\n\n0.20\n2.52\n1.91\n\n\n0.10\n3.43\n2.36\n\n\n0.05\n5.45\n3.27\n\n\n0.02\n13.99\n6.32\n\n\n\nThose are the smallest odds ratios detectable with 80% power at P &lt; 5 × 10⁻⁸. Read them against the effects that actually exist: established cancer susceptibility loci have odds ratios between 1.1 and 1.5, the grey band on the figure. Nothing in that band is reachable at either sample size.\nPut as power rather than as a threshold, the same fact is starker:\n\n\n\n\nPower at MAF 0.30\nPower at MAF 0.10\n\n\n\n\nOR 1.2\n0.0%\n0.0%\n\n\nOR 1.3\n0.0%\n0.0%\n\n\nOR 1.5\n1.1%\n0.0%\n\n\nOR 2.0\n48.4%\n2.8%\n\n\n\n\n\n\n\n\n\nWarningThe result of this study was determined before it was run\n\n\n\nA typical cancer susceptibility variant, odds ratio 1.3, had no chance of detection here. The shape of the Manhattan plot in Association testing, one peak and nothing else, was fixed by this table, not by the biology and not by the quality of the analysis.\nThis is worth stating plainly because it changes what the result means. A scan that finds nothing under these conditions has not failed. It has returned the correct answer for its size, and reporting it as such, with this table alongside, is a contribution rather than an admission.\n\n\n\nThe one variant that was detectable, and what its detection cost\nThe demonstration phenotype was simulated from a variant with an odds ratio of 2.40 at a frequency of 0.085. Its power in the European analysis set is 9.8%.\nIt was detected anyway, at P = 5.3 × 10⁻⁹. That is not luck to be celebrated; it is a selection event to be reckoned with. In an underpowered scan the variants that cross the threshold are those whose estimates happened to fall high, which is exactly why the odds ratio recovered in Section 4A is 3.80 and not 2.40, an inflation of 58%.\nPower and the winner’s curse are two descriptions of one situation. Low power does not only mean missing real effects; it means that the effects you do find are overstated, and by an amount that grows as power falls. An effect size taken from a discovery scan of this size should never be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study.\nAcross the three ancestry strata combined the effective sample size rises to 1,190 and power at the same variant to 69.3%. That is the quantitative case for meta-analysis, made on this dataset rather than asserted.",
     "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
+      "What the data can support",
+      "Statistical power"
     ]
   },
   {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#looking-at-the-result",
-    "href": "sections/02_population_stratification/02_population_stratification.html#looking-at-the-result",
-    "title": "Population stratification",
-    "section": "03 - Looking at the result",
-    "text": "03 - Looking at the result\nRscript scripts/02_population_stratification/03_pca_plots.R\nThree plots, each answering a different question.\n\nScree plotPC1 versus PC2Higher components\n\n\n\nHow many components carry real signal? On the demonstration data PC1 explains 47.0% of the variance and PC2 38.1%, then the curve collapses to 3.7% at PC3. That cliff is the signature of discrete continental ancestry: two components separate three groups, and everything after is noise and fine structure.\n\n\n\nThree clusters, cleanly separated. This is what a multi-ancestry cohort looks like, and it is why the primary analysis cannot simply pool everyone.\n\n\n\nThe panel most often skipped, and the one most often needed. In a cohort that looks homogeneous on PC1 and PC2, real structure frequently appears further down, and it confounds the association test just as effectively. Always inspect at least PC1 through PC6.\n\n\n\n\n\n\n\n\n\nImportantA caution about this demonstration\n\n\n\nThe separation here is unusually clean because the dataset was deliberately built from three distinct continental groups. Real cohorts are messier: a predominantly European PDAC consortium will show one diffuse cloud with gradients running through it, not three islands. The skill to carry away is reading the scree plot and the higher components, not recognising a picture that looks like this one.",
+    "objectID": "sections/03B_statistical_power/03B_statistical_power.html#survival-analysis-obeys-a-different-rule",
+    "href": "sections/03B_statistical_power/03B_statistical_power.html#survival-analysis-obeys-a-different-rule",
+    "title": "Statistical power",
+    "section": "02 - Survival analysis obeys a different rule",
+    "text": "02 - Survival analysis obeys a different rule\nRscript scripts/03B_statistical_power/02_power_events.R\n\nIn a Cox model the partial likelihood compares, at each event time, the genotype of the individual having the event with those still at risk. Only event times contribute a comparison, so the information is\n\\[\\text{information} = D \\times \\operatorname{Var}(G)\\]\nwith D the number of observed events. Censored individuals enter the risk sets and add nothing to the test.\nOn the demonstration data, restricted to the European analysis set:\n\n\n\nIndividuals with follow up\n625\n\n\nObserved events\n144\n\n\nCensored\n481\n\n\n\nThe number that governs power is 144, not 625. With 144 events, the smallest detectable hazard ratio at MAF 0.30 is 2.25, and a hazard ratio of 1.5 has 1.1% power.\nTurning it round gives the number to put in a protocol:\n\n\n\nTo detect, at MAF 0.30 with 80% power\nEvents required\n\n\n\n\nHR 1.3\n1,370\n\n\nHR 1.5\n574\n\n\nHR 2.0\n196\n\n\n\n\n\n\n\n\n\nImportantWhat this means for a rapidly fatal cancer\n\n\n\nThe way to power a survival scan is to raise the event count: enrich for individuals at higher risk, or extend follow up. Recruiting more people who will be censored does not help, and a study that reports several thousand participants may be, for this purpose, a small study.\nThere is an uncomfortable corollary specific to PDAC. Because survival is short, events accrue quickly, which is the one respect in which this disease is easier than most. The binding constraint is instead how many patients can be recruited and followed at all.",
     "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
+      "What the data can support",
+      "Statistical power"
     ]
   },
   {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#deciding-who-is-analysed",
-    "href": "sections/02_population_stratification/02_population_stratification.html#deciding-who-is-analysed",
-    "title": "Population stratification",
-    "section": "04 - Deciding who is analysed",
-    "text": "04 - Deciding who is analysed\nWhy. Seeing the structure is not the same as handling it. Three strategies are defensible.\n\n\n\n\n\n\n\n\nStrategy\nWhat it costs\nWhen it is right\n\n\n\n\nAnalyse the largest group alone\nDiscards data\nOther groups too small to stand alone\n\n\nKeep everyone, ancestry as covariate\nAssumes effects are portable across populations\nGroups are small and effects plausibly shared\n\n\nAnalyse each group, then meta-analyse\nNothing, but needs each group to be large enough\nGenuinely multi-ancestry cohorts\n\n\n\nbash scripts/02_population_stratification/04_define_analysis_set.sh\nOn the demonstration data:\n\n\n\nQC-passed total\n1,239\n\n\nEuropean\n625\n\n\nEast Asian\n319\n\n\nAfrican\n295\n\n\nAnalysis set\n625: 229 cases, 396 controls\n\n\nEffective sample size\n580.4\n\n\n\nThe third strategy is the one to prefer whenever it is available, because it neither discards data nor assumes that effect sizes transfer between populations with different causal-allele frequencies and LD structures. Here the non-European groups are too small to form meaningful strata, which is the situation of most real rare-cancer cohorts, so the analysis proceeds on the European subset alone.\n\n\n\n\n\n\nNoteEffective sample size is the number that matters\n\n\n\n4 × cases × controls / (cases + controls) = 580.4, not 625. In an unbalanced design the effective figure is what governs power, and it is what should be reported. Section 4A returns to what this number does and does not make detectable.\n\n\n\n\n\n\n\n\nWarningHow the groups are assigned here\n\n\n\nThis dataset ships with true ancestry labels, which is a teaching convenience. In a real study no such labels exist: the assignment comes from the PCA itself, or from projection onto a reference panel such as 1000 Genomes or HGDP, with a threshold on the estimated ancestry proportion, 80% being a common choice. Step 03 above is the check that the labels and the genetic data agree, which is worth doing whenever metadata claims an ancestry.",
-    "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
-    ]
-  },
-  {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#recomputing-the-components-within-the-analysis-set",
-    "href": "sections/02_population_stratification/02_population_stratification.html#recomputing-the-components-within-the-analysis-set",
-    "title": "Population stratification",
-    "section": "05 - Recomputing the components within the analysis set",
-    "text": "05 - Recomputing the components within the analysis set\nWhy. This step is frequently skipped, and skipping it is a mistake.\nThe components from Step 02 describe continental separation. Once the non-European individuals are removed, those axes describe something that is no longer in the data. What remains, and what can still confound the test, is fine-scale structure within Europe, and only a PCA computed within the analysis set can see it. LD pruning is repeated for the same reason: which variants are correlated depends on allele frequencies, which differ between populations.\nbash scripts/02_population_stratification/05_pca_within_eur.sh\n\nCompare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2 11.8%, and the curve declines gently instead of collapsing, which is what within-population structure looks like: continuous gradients rather than discrete groups.\n\n\n\n\n\n\nTipHow many components should you keep?\n\n\n\nTen is a convention with no justification attached. The guide recommends three checks instead:\n\nInspect the scree plot for the point where additional components explain negligible variance.\nTest each component for association with case status, which Section 4A does automatically.\nConfirm that the genomic inflation factor and the leading associations are stable across a range of component counts.\n\nIf the results move materially between five and twenty components, that instability is itself the finding and belongs in the paper.",
-    "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
-    ]
-  },
-  {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#what-you-now-have",
-    "href": "sections/02_population_stratification/02_population_stratification.html#what-you-now-have",
-    "title": "Population stratification",
-    "section": "What you now have",
-    "text": "What you now have\npdac_demo_02_pca_eur.eigenvec holds the covariates for association testing, and pdac_demo_02_eur_keep.txt defines who is analysed. Both feed directly into the next section.",
-    "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
-    ]
-  },
-  {
-    "objectID": "sections/02_population_stratification/02_population_stratification.html#key-decisions-on-this-page",
-    "href": "sections/02_population_stratification/02_population_stratification.html#key-decisions-on-this-page",
-    "title": "Population stratification",
+    "objectID": "sections/03B_statistical_power/03B_statistical_power.html#key-decisions-on-this-page",
+    "href": "sections/03B_statistical_power/03B_statistical_power.html#key-decisions-on-this-page",
+    "title": "Statistical power",
     "section": "Key decisions on this page",
-    "text": "Key decisions on this page\n\nThe r² threshold for LD pruning, reported and checked for stability.\nWhich ancestry strategy: single group, pooled with a covariate, or stratified with meta-analysis.\nWhether individuals distant from the main cluster are genuine outliers or genuine diversity. Distance alone does not justify exclusion, and in a rare cancer every excluded case is a permanent loss of power. Document the number of components examined, the threshold, the number removed, and the effect of their removal on the inflation factor.\nHow many components to carry forward, decided from evidence rather than convention.\n\nNext: Association testing.",
+    "text": "Key decisions on this page\n\nWhether the study is powered for the intended primary analysis. If it is not, say so in the protocol rather than discovering it in the discussion.\nThe effective sample size rather than the nominal one, reported as such.\nWhether a planned secondary analysis, survival, subgroup, gene by environment or rare variant, has enough events or carriers to be run honestly, or should be pre-specified as exploratory. This is the decision most often skipped.\nWhether an effect estimate from this study is fit to be reused downstream, given how much the winner’s curse inflates estimates at this power.\nWhether the answer to all of the above is that the study should contribute to a meta-analysis rather than stand alone. For a rare cancer it usually is, and recognising it early changes what is worth doing.",
     "crumbs": [
-      "Ancestry and structure",
-      "Population stratification"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html",
-    "href": "sections/01A_study_design/01A_study_design.html",
-    "title": "Genotyping technologies and file formats",
-    "section": "",
-    "text": "Every other page in this guide starts from a clean PLINK dataset. This one is about how that dataset comes into existence, and about the decisions taken before it exists that constrain everything afterwards.\nTwo of them matter most. Which array was used, which fixes what can ever be measured or imputed. And whether the cohort was genotyped on one platform or several, which in a rare cancer is usually several, because the samples were collected over fifteen years.",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#choosing-an-array",
-    "href": "sections/01A_study_design/01A_study_design.html#choosing-an-array",
-    "title": "Genotyping technologies and file formats",
-    "section": "Choosing an array",
-    "text": "Choosing an array\nBefore any file exists, someone chooses a platform. The intuition is that a bigger array is a better array. The evidence says otherwise.\nVerlouw and colleagues compared 28 arrays, 10 from Affymetrix and 18 from Illumina, on content, coverage, imputation quality and clinically relevant genes doi:10.1038/s41431-021-00917-7. Their central finding is that genome-wide coverage correlates strongly with the number of variants on the array but does not correlate with imputation quality, which is what actually determines whether the array is usable for a GWAS. After imputation, essentially every GWAS-oriented array covers more than 90% of known GWAS loci well. Their recommendation is to stop using coverage as a selection criterion.\nWhat should drive the choice instead:\n\n\n\n\n\n\n\nConsideration\nWhy it matters\n\n\n\n\nAdditional content\nPharmacogenetic star alleles, HLA tag variants, ACMG actionable genes. This is where arrays genuinely differ\n\n\nAncestry of the study\nCoverage ranges from 2% to 84% in Europeans but only 2% to 40% in Africans. An array designed on European haplotypes tags other populations less well\n\n\nCompatibility with what you already have\nConsecutive arrays from the same manufacturer overlap surprisingly little\n\n\nCost per sample\nA denser array means fewer samples for the same budget, and in a rare cancer sample size is the binding constraint\n\n\n\n\n\n\n\n\n\nImportantWhy this is a rare-trait decision, not a technical one\n\n\n\nFor a common disease with 50,000 cases available, array choice is a minor optimisation. For a rare cancer it interacts with the thing you cannot buy: cases. Spending the budget on a denser array means genotyping fewer people, and the power calculation in Section 7 of the manuscript shows that at these sample sizes power is dominated by the number of cases, not by marker density. The cheap, current, GWAS-oriented array is almost always the right answer.",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#what-comes-off-the-machine",
-    "href": "sections/01A_study_design/01A_study_design.html#what-comes-off-the-machine",
-    "title": "Genotyping technologies and file formats",
-    "section": "01 - What comes off the machine",
-    "text": "01 - What comes off the machine\nWhy. Almost every expensive error, wrong strand, wrong build, wrong allele coding, silently low-quality calls, is visible in the raw export and invisible afterwards.\nbash scripts/01A_study_design/01_inspect_final_report.sh\nAn Illumina array is scanned, the intensities are clustered by the calling software, and the result is exported as a Final Report: one row per variant per sample, with the two called alleles and a confidence score. Affymetrix platforms produce the equivalent from .CEL files with different column names and the same logic.\nThree things in the header must be recorded now, because recovering them later is painful: the array manifest name, the calling software version, and the number of variants and samples the file claims.\n\nThe GenCall score. Every call carries a confidence between 0 and 1. Illumina’s guidance is that calls below about 0.15 are failures. Note what that means: a low-confidence call is not missing in the file. It looks like any other genotype unless you check. In this excerpt the median is 0.72 and 1.4% of calls fall below the threshold.\n\n\n\n\n\n\nNoteA finding worth pausing on\n\n\n\nIn the full report this excerpt came from, the variants named by rs number have a median GenCall of 0.720 and 1.2% failures. The variants named by position, which are the array’s custom content, mostly copy-number and gene-tiling probes, have a median of 0.441 and 4.5% failures.\nThe custom content on an array performs measurably worse than the standard backbone. If your analysis depends on that content, check it separately rather than trusting an overall call rate that the backbone dominates.\n\n\n\nWho called the genotypes, and with what\nArray and genome build are not the whole of provenance. The calling software is part of it, because the same scanner output analysed by different software gives different genotypes.\n\n\n\nPlatform\nCalling software\nOutput\n\n\n\n\nIllumina Infinium\nGenomeStudio\nFinal Report, .csv\n\n\nIllumina Infinium\nDRAGEN Array, local or cloud, the current path\ngenotypes, CNV, PGx star alleles, from .idat\n\n\nAffymetrix / Thermo Fisher\nAxiom Analysis Suite, APT\ncalls from .CEL\n\n\nAffymetrix 5.0 / 6.0, legacy\nBirdseed and Birdsuite (Broad Institute)\ncalls, plus copy-number-aware genotypes\n\n\n\n\n\n\n\n\n\nImportantTwo consequences that reach all the way to your association test\n\n\n\nThe caller changes the genotypes. On the same .CEL files, Birdseed and Birdsuite produce identical calls outside copy-number variable regions and different calls inside them. Birdsuite is copy-number aware and can emit genotypes such as A/- or -/- for a variant sitting in a deletion; Birdseed either miscalls those or leaves them uncalled. This matters concretely for anyone receiving legacy consortium data: PLINK’s biallelic model has no way to represent a hemizygous call, so converting Birdsuite output to .bed silently discards exactly the information that made it better. Record which caller and which version produced your genotypes, and keep the original output.\nThe plate is baked into the calls. Cluster-based callers need many samples at once. Birdsuite is documented as requiring roughly one chemistry plate at a time, about 96 samples and no fewer than 20 to 40, with the explicit warning that running several plates together introduces batch effects the authors describe as unresolvable.\nThis is where batch effects are actually created: not during analysis, but during calling, before the dataset exists. It is also why samples added to a study later cannot simply be appended. They were clustered separately, so they carry a systematic difference from the original set. For a rare cancer whose cohort accrues over a decade, this is the normal situation, not the exception, and it is the reason recruitment centre and genotyping batch belong in the covariate file from the very beginning.",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#from-final-report-to-plink-using-the-manifest",
-    "href": "sections/01A_study_design/01A_study_design.html#from-final-report-to-plink-using-the-manifest",
-    "title": "Genotyping technologies and file formats",
-    "section": "02 - From Final Report to PLINK, using the manifest",
-    "text": "02 - From Final Report to PLINK, using the manifest\n\n\n\n\n\n\nImportantYou need the array manifest, and it must be the right one\n\n\n\nA Final Report names variants and gives their alleles. It does not contain coordinates, the genome build, or the design strand. All three come from the manifest: the .csv file the manufacturer distributes for each array product, free of charge.\nGet the manifest for exactly the product and version named on the Content line of your report header, and keep it with the raw data. This tutorial does not ship a manifest: it is the manufacturer’s file, and the one you need is the one matching your array, not ours.\n\n\nRscript scripts/01A_study_design/02_report_to_lgen.R \\\n        example_data/example_final_report.csv \\\n        /path/to/GSA-24v3-0_A2.csv \\\n        0.15\nBefore converting anything, the script runs five checks. They exist because every one of them caught a real error while this section was being written.\n1. Product. Compares the Content line of the report with Descriptor File Name in the manifest. On real data this is the check that fails most often, and it failed while this section was being written: the report came from GSAMD-24v3-0-EA, the Global Screening Array with the multi-disease drop-in and 730,059 variants, while the manifest to hand described GSA-24v3-0_A2, the base product with 654,027 loci. Same family, different array, and 6% of variants unmappable as a result.\n2. Size. Loci in the manifest against variants in the report.\n3. Name matching. How many report identifiers are found: 7,520 of 8,000, 94.0% here, the remainder being the variants deliberately left out of the manifest. The script also tests whether stripping a GSA- prefix improves the match, because some manifests prefix their identifiers while reports do not, and a merge on exact names then fails for every rs-numbered variant without a single error message. That happened too. Below 90% the script warns.\n4. Genome build. Taken from the manifest’s GenomeBuild column: 38 for all matched variants here. Note that the same array has an A1 manifest on GRCh37 and an A2 manifest on GRCh38. Choosing the wrong one shifts every coordinate.\n5. A diagnostic worth running once.\n\n\n\n\n\n\nWarningVariant names are not coordinates\n\n\n\nSome array identifiers look like positions, for instance 1:103380393. It is tempting to parse them instead of using the manifest. Measured on the example data:\n\n\n\nVariants with a positional name\n1,860\n\n\nName position equals the manifest coordinate\n0\n\n\nName position differs\n1,860\n\n\nChromosome also differs\n97\n\n\n\nThe offsets here are 384 to 543 kb, the size of a build shift. On the real array this was measured directly: of 5,745 positionally named variants, only 776 agreed with the manifest coordinate and 4,969 differed, because the names carry GRCh37 positions while the A2 manifest is GRCh38. Coordinates read from names would be wrong for the great majority of variants and would look entirely plausible. Nothing downstream would complain.\n\n\n\nWhat the conversion does\nStrand. The manifest gives the design alleles as [A/G] on the design strand, and RefStrand says whether that is the plus strand of the reference. In the example data 3,194 of 7,520 variants, 42.5%, are on the minus strand and must be complemented before they can be compared with plus-strand genotypes; the real array measured 43%. Skip this and you get the wrong reference allele for nearly half the array, silently.\nQuality. Calls below the GenCall threshold are written as missing rather than deleted, so the loss stays visible as missingness for Section 1B to find. The threshold is an argument, and the count goes in the log.\nThree things hide in the allele columns. This is the one that surprised us:\n\n\n\nIn the report\nCount in sample DEMO001\nTreatment\n\n\n\n\nA C G T\n7,292\nkept\n\n\n-\n102\nno-call, written as missing\n\n\nI or D\n606 (7.6%)\nindel, dropped, and counted\n\n\n\nThe array carries insertion and deletion probes. A filter written as “keep only A, C, G, T”, which is the natural thing to write, discards them along with the no-calls, and nothing says so. Dropping indels is a defensible choice, since PLINK’s biallelic model represents them poorly and most GWAS analyse SNPs only. Doing it without knowing is not.\nThe per-sample log records all of it:\n sample calls no_call indel failed_gc unmapped written\nDEMO001  8000     102   606        86      480    6793\nDEMO002  8000     112   601       109      480    6759\nDEMO003  8000     113   607       114      480    6757",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#to-binary-merged-and-repaired",
-    "href": "sections/01A_study_design/01A_study_design.html#to-binary-merged-and-repaired",
-    "title": "Genotyping technologies and file formats",
-    "section": "03 - To binary, merged and repaired",
-    "text": "03 - To binary, merged and repaired\nbash scripts/01A_study_design/03_lgen_to_binary.sh\nEach sample is converted independently, then samples are added to the merge one at a time. That order matters in practice: Final Reports usually arrive one file per sample and genotyping runs arrive months apart, so a new run is added by converting it and merging it in rather than reprocessing everything. Merging incrementally is slower than a single --merge-list, but when a conflict appears you know exactly which sample caused it.\n\n\n\n\n\n\nImportantWhat a merge conflict means, and what to do about it\n\n\n\nOn the example data the run reports:\n  base: DEMO001\n  DEMO002: merged cleanly\n  DEMO003: merge conflict on 142 variants\n    resolved by flipping 142 variants in DEMO003: it was a strand difference\nA variant that shows three or more alleles once two samples are put together does not exist biologically. It means the same variant was coded differently in the two files, and the usual cause is a strand difference.\nThe tempting response is to exclude the offending variants, and it is the wrong one: it hides the problem and leaves the rest of the dataset built on the same mistake. The right response is to flip the strand of the sample that conflicts and retry. If the conflict survives the flip, the samples were genuinely converted against different references, and that has to be fixed upstream rather than patched here.\nNote also why flipping every sample is wrong: it resolves this conflict and creates others. Only the sample that disagrees should be changed, which is why the merge is done one sample at a time.\n\n\n\n\n\n\n\n\nImportantThe repair almost nobody mentions\n\n\n\nA variant that is monomorphic among the samples in hand shows only one allele, so PLINK writes 0 in the other allele column of the .bim. That zero is not missing data, it is an unobserved allele, and it breaks later merges, strand checks and imputation.\nIn the example, across three samples, 1,546 of 6,938 variants carry such a zero: the fewer samples you have, the more variants look monomorphic, and with a single sample it would be most of them. The manifest knows what the second allele should be, so the script fills it in: take the observed allele, look up the design pair, write the other one. All 1,546 are repaired.\nWithout this step the dataset looks fine and cannot be combined with anything.\n\n\nWhy binary. A .ped stores roughly four bytes per genotype; a .bed packs four genotypes into one byte. On chromosome 22 of the demonstration dataset the text export is 36 MB against 1.5 MB for the PLINK 2 native format.\n\n\n\n\n\n\n\nFile\nContent\n\n\n\n\n.bed\nthe genotypes, packed binary, not human-readable\n\n\n.bim\none row per variant: chromosome, ID, genetic distance, position, allele 1, allele 2\n\n\n.fam\none row per sample: family ID, individual ID, father, mother, sex, phenotype\n\n\n\n\n\n\n\n\n\nNoteThe formats you will meet\n\n\n\n\n\n\nFormat\nFiles\nWhere it appears\n\n\n\n\nFinal Report\n.csv\nIllumina calling output\n\n\nCEL / AxiomGT\n.CEL, .txt\nAffymetrix calling output\n\n\nManifest\n.csv, .bpm\ncoordinates, alleles, strand, build\n\n\nPLINK long\n.lgen .map .fam\nconversion bridge only\n\n\nPLINK text\n.ped .map\ninspection, legacy tools\n\n\nPLINK 1 binary\n.bed .bim .fam\nthe working standard\n\n\nPLINK 2 native\n.pgen .pvar .psam\nfaster, supports dosages\n\n\nVCF\n.vcf / .vcf.gz\nimputation servers, sharing, sequencing",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#pre-flight-checks",
-    "href": "sections/01A_study_design/01A_study_design.html#pre-flight-checks",
-    "title": "Genotyping technologies and file formats",
-    "section": "04 - Pre-flight checks",
-    "text": "04 - Pre-flight checks\nbash scripts/01A_study_design/04_preflight_and_formats.sh\nFour checks, each cheap now and expensive later. On the converted example, and on the demonstration dataset for comparison:\n\n\n\nCheck\nConverted example\nDemo dataset\n\n\n\n\nVariants\n6,938\n430,000\n\n\nUnplaced\n0\n0\n\n\nDuplicated positions\n0\n22\n\n\nDuplicated identifiers\n0\n0\n\n\nStrand-ambiguous (A/T, C/G)\n82\n2,430\n\n\n\nThe converted example is clean on the first three because the manifest supplied every coordinate and the synthetic array carries one probe per position. Real arrays do not: they place several probes at one coordinate when tiling a gene for copy-number calling, and a real GSA report measured 255 duplicated positions in 6,677 variants. Run the check on your own data rather than assuming.\nStrand-ambiguous variants cannot be oriented by comparing alleles, because A complements T and C complements G. They are the classic source of sign errors when combining studies, and Section 5 shows what that costs.\nGenome build is recorded nowhere in a .bim. A GRCh37 dataset analysed as GRCh38 gives coordinates wrong by megabases, and nothing complains. Everything in this guide is GRCh38 with identifiers in chr:pos:ref:alt form.\nNote that even the curated demonstration dataset carries 22 duplicated positions and 2,430 ambiguous variants. Clean data are not the same as unchecked data.",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#the-problem-that-defines-rare-cancer-consortia",
-    "href": "sections/01A_study_design/01A_study_design.html#the-problem-that-defines-rare-cancer-consortia",
-    "title": "Genotyping technologies and file formats",
-    "section": "The problem that defines rare-cancer consortia",
-    "text": "The problem that defines rare-cancer consortia\nA cohort assembled over fifteen years across a dozen centres was not genotyped on one platform. It cannot have been: the arrays used in 2010 are not sold today, and consecutive arrays from one manufacturer overlap less than you would expect.\nThe obvious response is to impute everything to a common set of variants and analyse the result. This is wrong, and the way it fails is silent.\nJohnson and colleagues measured it, using among others the PanScan pancreatic cancer data doi:10.1007/s00439-013-1266-7, PMID:23334152. Assigning case and control labels arbitrarily between two groups of healthy people genotyped on different arrays, and imputing from the union of their genotyped variants, produced:\n\n\n\n\n\n\n\nArrays compared\nSpurious associations\n\n\n\n\nIllumina 1M vs 550v3\n0.20% of variants, about 2,000 false positives per million\n\n\nIllumina 550v1 vs 550v3 (nearly identical)\n0.07%\n\n\nIllumina 1M vs Affymetrix 6.0\n0.53–0.63%, about 5,000–6,000 per million\n\n\n\nThere were no true associations to find. Adjusting for array with principal components failed. Post-imputation filtering, even at the extreme threshold of R² ≥ 0.98, did not remove the bias.\nThe correction is simple and counterintuitive: impute from the intersection of variants genotyped on all arrays, not the union. Using less information eliminates the bias entirely, and imputation quality holds up well even when only about 30% of the original variants remain.\n\n\n\n\n\n\nImportantWhat this means for your study\n\n\n\nEstablish at the design stage which platforms your cohort spans, and plan to either impute from the intersection or impute each platform batch separately and meta-analyse (Section 5). This is not a detail to settle during analysis: it determines how quality control and imputation are organised.\nAnd note what a 0.5% false-positive rate means at the scale of a rare-cancer GWAS. With a few hundred cases you expect at most one real signal. Several thousand artefacts per million imputed variants do not merely add noise; they can be the only thing in your Manhattan plot.",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "sections/01A_study_design/01A_study_design.html#key-decisions-on-this-page",
-    "href": "sections/01A_study_design/01A_study_design.html#key-decisions-on-this-page",
-    "title": "Genotyping technologies and file formats",
-    "section": "Key decisions on this page",
-    "text": "Key decisions on this page\n\nWhich array, judged on additional content and on the ancestry of the study rather than on marker count, and weighed against how many samples the budget then allows.\nWhether to accept the genotyping facility’s calling and quality thresholds or repeat them, and which caller and version produced the genotypes. On legacy Affymetrix data, whether the calls came from Birdseed or from the copy-number-aware Birdsuite changes what is in the file.\nWhether samples added later were called together with the original set or separately. If separately, batch is a covariate you must record, not an afterthought.\nThe GenCall threshold, and whether failed calls are set to missing or deleted. Set to missing.\nWhether the manifest matches the product in the report header, not merely the array family, and which build it declares. If not, stop and get the right one.\nWhether indels are analysed or dropped, decided and counted rather than filtered away by a condition written for SNPs.\nIf the cohort spans platforms: intersection-based imputation, or batch-wise imputation with meta-analysis. Decide before quality control, not after.\n\nNext: Genotyping quality control.",
-    "crumbs": [
-      "Before the data",
-      "Genotyping technologies and file formats"
-    ]
-  },
-  {
-    "objectID": "getting_started.html",
-    "href": "getting_started.html",
-    "title": "Before you start: setup",
-    "section": "",
-    "text": "This page gets your computer ready and walks you through your first GWAS QC command. By the end you will have: - Set up a portable project folder - Downloaded the demo dataset\n- Installed the required tools (currently PLINK2, PLINK1.9, METAL, REGENIE, and R) - Run your first test script that confirms everything works",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-terminal",
-    "href": "getting_started.html#sec-terminal",
-    "title": "Before you start: setup",
-    "section": "A note on the command line",
-    "text": "A note on the command line\nMost steps in this guide are typed into a SHELL (also called a “command line” or “console”) — a window where you type a command, press Enter, and the program runs.\n\nWindows: You must use WSL2 terminal (see Step 0). WSL2 gives you Linux inside Windows.\nmacOS: Open the Terminal app (in Applications → Utilities).\nLinux: Open your Terminal.\nInside RStudio: there is a Terminal tab next to the Console tab — you can use that too.\n\nLet’s practice using the terminal before we dive into the pipeline.\nThroughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.\nPlease click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press Enter to run them. Don’t worry if you don’t understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use Ctrl + Shift + V on Windows/Linux, or Cmd + V on macOS.\necho \"Welcome to the GWAS tutorial.\"\necho \"1) Where am I?\"\npwd\n\necho \"2) What is in this folder?\"\nls\n\necho \"3) Make a practice folder.\"\nmkdir -p gwas_practice\n\necho \"4) Make a tiny practice file.\"\necho \"GWAS practice line 1: samples\" &gt; gwas_practice/hello.txt\necho \"GWAS practice line 2: variants\" &gt;&gt; gwas_practice/hello.txt\necho \"GWAS practice line 3: quality control\" &gt;&gt; gwas_practice/hello.txt\n\necho \"5) Print the whole file with cat.\"\ncat gwas_practice/hello.txt\n\necho \"6) Print the first two lines with head.\"\nhead -n 2 gwas_practice/hello.txt\n\necho \"7) Print the last two lines with tail.\"\ntail -n 2 gwas_practice/hello.txt\n\necho \"8) Show the file with less.\"\nless -F -X gwas_practice/hello.txt\n\necho \"9) Remove the practice file and folder.\"\nrm gwas_practice/hello.txt\nrmdir gwas_practice\n\necho \"Done. You just used pwd, ls, mkdir, cat, head, tail, less, rm, and rmdir.\"\nThe commands you just ran do the following:\n\necho prints the text to the terminal. You can also use it to write text into files with &gt; (create, overwrite) and &gt;&gt; (append, add end of file).\npwd prints your current folder.\nls lists files in the current folder.\nmkdir creates folders. The -p argument allows you to create parent folders if they don’t exist.\ncat prints a whole file.\nhead and tail show the beginning and end of a file.\nless opens a file for reading. You need to press qto exit from reading mode. push up and down arrows to scroll. Here we use less -F -X, so this tiny file is shown and the command returns automatically.\nrm removes a file.\nrmdir removes an empty folder.\n\nIn this exercise, rm only removes the practice file you just created, and rmdir removes the empty practice folder. This is a safe way to practice removing files without accidentally deleting important data. There is also #rm -rf, which can remove folders and files recursively and without asking questions. The # prefix indicates this is a commented-out command. Please be very careful with this command it will permanently delete data.\nIf you want to learn more about these commands, you can check their manual pages by typing man &lt;command&gt; (for example, man ls) in the terminal.\nIf you have any issues with these commands, don’t worry. This is just a practice block to get you familiar with the terminal. Basic Bash knowledge is not required, but it will help you feel more comfortable as you move through the pipeline. There are many online materials available; here is one recommendation.\nIf you do not know how to open the terminal, just follow the next instructions (Step 0) carefully and ask for help if you get stuck.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-os-setup",
-    "href": "getting_started.html#sec-os-setup",
-    "title": "Before you start: setup",
-    "section": "Step 0 — Prepare your operating system",
-    "text": "Step 0 — Prepare your operating system\nBefore you begin, set up your OS environment.\n\nWindows: Install WSL2 (Required)macOS and Linux\n\n\nWSL2 (Windows Subsystem for Linux) gives you a Linux environment inside Windows. The GWAS pipeline uses bash scripts, so WSL2 is required.\nPart A: Install WSL2\n\nOpen PowerShell as Administrator (right-click and select “Run as administrator”)\nRun:\nwsl --install\nRestart your computer when prompted\n\nPart B: Open WSL2 Terminal\n\nAfter restart, open Windows Terminal (search for it in the Start menu)\nClick the dropdown arrow and select Ubuntu\nYou should see a bash prompt like user@computer:~$\n\nPart C: Install Basic Tools\nIn the WSL2 bash terminal, run:\nsudo apt-get update\nsudo apt-get install git curl wget unzip\n✅ WSL2 is now ready. From here on, all commands use this bash terminal.\nFor help troubleshooting WSL2, see WSL Setup.\n\n\nYour system already has bash. No setup needed for Step 0.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-project-folder",
-    "href": "getting_started.html#sec-project-folder",
-    "title": "Before you start: setup",
-    "section": "Step 1 — Create your project folder",
-    "text": "Step 1 — Create your project folder\nChoose any location on your computer and create a folder named gwas_tutorial. This will be your working folder for the entire pipeline.\nDIR=\"$HOME/gwas_tutorial\"\nmkdir -p \"$DIR\"\ncd \"$DIR\"\n\n\n\n\n\n\nTipTip\n\n\n\nYou can place this folder anywhere: Desktop, Documents, custom path — it doesn’t matter. Everything is portable because we use relative paths. DIR is a variable that holds the path to your project folder. $HOME means “home directory”, so this creates the folder in your home directory. You can also create it on other drives or directories by changing the DIR variable, for example DIR=\"/your/desired/directory\".",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-directories",
-    "href": "getting_started.html#sec-directories",
-    "title": "Before you start: setup",
-    "section": "Step 2 — Create the directory structure",
-    "text": "Step 2 — Create the directory structure\nCreate the folder structure that keeps scripts, data, and tools organized.\nFirst let’s check the project folder created successfully:\nif [ -d \"$DIR\" ]; then\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"✓ Project folder created successfully: $DIR\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"[NEXT] Stay in this folder for the next commands.\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%s\\n\\n\" \"Scripts, data, tools, and results will be stored here.\"\nelse\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"✗ Failed to create project folder: $DIR\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"[Go to previous step] and make sure the command to create the folder ran successfully.\"\n  exit 1\nfi\nIf the folder was created successfully, you should see a message like:\n✓ Project folder created successfully: /home/user/gwas_tutorial  [NEXT] Stay in this folder for the next commands. Scripts, data, tools, and results will be stored here.\nIf you see an error message instead, please go back to the previous step and make sure the command to create the folder ran successfully.\nNext, create the subfolders for scripts, data, tools, and results. You can do this with one command or create them manually.\n\nAutomated (Easiest)Manual with mkdir\n\n\nDownload and run the setup script:\n# Download the automated setup script\n\ncurl -L https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -o init_project.sh\n# Make it executable\nchmod +x init_project.sh\n# Run it\nbash init_project.sh\nThis creates all folders automatically.\nIf curl is not available on your system, use wget instead:\nwget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -O init_project.sh\nchmod +x init_project.sh\nbash init_project.sh\n\n\nCreate folders manually:\n# Create all needed folders\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\n\n\nAfter Step 3, your folder will look like this:\ngwas_tutorial/\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   └── script_manifest.txt\n│   ├── 01B_genotyping_qc/           # QC scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   └── ...09_qc_summary.sh\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n├── demo_data/                       # Demo dataset (Step 4)\n├── tools/bin/                       # Tools (eg PLINK, Step 5)\n├── data_processed/                  # Processed output files\n└── results/                         # Results organized by workflow\n    └── qc/                          # QC output files\n\n\n\n\n\n\nTipSetup helper pages\n\n\n\nFor a compact project-folder overview, see Setup Project Structure. If you are on Windows/WSL2, keep WSL Setup nearby for path and terminal troubleshooting.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-scripts",
-    "href": "getting_started.html#sec-scripts",
-    "title": "Before you start: setup",
-    "section": "Step 3 — Download the GWAS scripts",
-    "text": "Step 3 — Download the GWAS scripts\nClone the GitHub repo to get all the GWAS pipeline scripts organized by section:\n# Clone the repo\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\n# Copy utility/dev scripts\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n# Start fresh manifest files for the setup test\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\n# Copy section scripts directly into section folders\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\n# Add utility/dev scripts to the script manifest\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\n\n# Optional cleanup: delete only the temporary cloned copy after scripts are copied\nrm -r how-to-gwas-pdac\n\n\n\n\n\n\nTipTip\n\n\n\nIf you see rm: remove write-protected regular file 'how-to-gwas-pdac/.git/objects/pack/pack-XXX.rev'?, type y and press Enter to confirm deletion. This is normal because the cloned repo is write-protected.\n\n\nVerify the scripts downloaded:\n# Check which section folders were copied\ncat scripts/dev/section_manifest.txt\n\n# Check the currently available QC scripts\nls scripts/01B_genotyping_qc/\nAt this stage, the section list should include scripts/01B_genotyping_qc, and you should see 01_initial_qc_stats.sh through 09_qc_summary.sh.\nAnd utility scripts:\nls scripts/dev/\nYou should see: download_demo_data.sh, tools_setup.sh, test.sh, init_project.sh, plus section_manifest.txt and script_manifest.txt.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-data",
-    "href": "getting_started.html#sec-data",
-    "title": "Before you start: setup",
-    "section": "Step 4 — Download the demo dataset",
-    "text": "Step 4 — Download the demo dataset\nDownload the 7 demo dataset files (~164 MB total) to your demo_data/ folder.\n\nAutomated (Easiest)Manual with wget\n\n\nRun the download script from your project:\nbash scripts/dev/download_demo_data.sh\nThis downloads all 7 files automatically and verifies them. It uses curl, which is already available on most macOS and Linux systems.\n\n\nDownload files individually. If your system has curl but not wget, use the automated script instead.\ncd ~/gwas_tutorial  # Make sure you're in your project folder\n\n# Download all 7 files\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed -O demo_data/pdac_demo.bed\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim -O demo_data/pdac_demo.bim\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam -O demo_data/pdac_demo.fam\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/phenotype.txt -O demo_data/phenotype.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/covariates.txt -O demo_data/covariates.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/survival.txt -O demo_data/survival.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/sample_ancestry.tsv -O demo_data/sample_ancestry.tsv\n\n\n\nVerify the files downloaded:\nls -lh demo_data/\nYou should see all 7 files.\n\n\n\n\n\n\nTipFile Integrity Check\n\n\n\nThe download script automatically verifies the SHA256 hash of each file to ensure they were downloaded correctly. You should see messages like:\n✓ OK: pdac_demo.bed\n✓ OK: pdac_demo.bim\n...\n✓ All files verified successfully! (7/7)\nIf any file fails verification, the script will tell you which one and suggest re-downloading it. This built-in verification ensures your data is safe and ready for analysis.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-install",
-    "href": "getting_started.html#sec-install",
-    "title": "Before you start: setup",
-    "section": "Step 5 — Install dependencies",
-    "text": "Step 5 — Install dependencies\nInstall the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.\n\nAutomated (Recommended)ManualConfirm toolsTroubleshooting\n\n\nBefore starting the install, check that you are in the project folder and that the basic download tools are visible:\ncd \"$HOME/gwas_tutorial\"\npwd\nls scripts/dev/tools_setup.sh\n\ncommand -v curl || echo \"curl is missing\"\ncommand -v wget || echo \"wget is missing\"\ncommand -v git || echo \"git is missing\"\ncommand -v unzip || echo \"unzip is missing\"\ncommand -v tar || echo \"tar is missing\"\ncommand -v bzip2 || echo \"bzip2 is missing\"\n\nR --version || echo \"R is not installed yet\"\ncurl -I https://github.com || echo \"Internet connection check failed\"\nIf the internet check fails inside WSL but works in Windows, see WSL Setup for managed-network and proxy troubleshooting.\nRun the setup script from your project:\nbash scripts/dev/tools_setup.sh\nThis script will: - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon) - Check whether R is available and try to install it if it is missing - Download the correct PLINK2 and PLINK1.9 binaries from official sources - Download the official precompiled METAL binary for Linux/WSL or macOS - Install micromamba into tools/micromamba/ - Install REGENIE into a micromamba environment named regenie_env - Extract and organize command-line tools in tools/plink2/, tools/plink1.9/, tools/metal/, tools/micromamba/, and tools/regenie/ - Create symlinks in tools/bin/ for easy access - Update your PATH so you can run plink2, plink, metal, and regenie from anywhere - Write scripts/dev/tool_manifest.tsv, which lists the tools checked by test.sh - Check for basic helper tools such as wget, unzip, tar, and bzip2\nWhen finished, you’ll see:\nDetected: OS=Linux, Architecture=x86_64_avx2\n  ✓ R found\n  ✓ PLINK2: PLINK v2.00a5 (64-bit build)\n  ✓ PLINK1.9: PLINK v1.90b7.2\n  ✓ METAL\n  ✓ REGENIE: regenie v...\nREGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under tools/micromamba-root/, so users do not need an existing conda installation.\n\n\nThe automated setup is recommended. Use this manual route only if you cannot use the setup script or need to inspect each tool installation step.\n\n1. Install R\nR is used later for QC plots and summary tables.\nOn WSL/Linux:\nsudo apt-get update\nsudo apt-get install -y r-base r-base-dev\nR --version\nOn macOS with Homebrew:\nbrew install r\nR --version\n\n\n2. Download PLINK2\nVisit: https://www.cog-genomics.org/plink/2.0/\nChoose the build for your system: - Linux (Intel, AVX2): plink2_linux_avx2_*.zip - Linux (AMD, AVX2): plink2_linux_amd_avx2_*.zip - Linux (64-bit, no AVX2): plink2_linux_x86_64_*.zip - macOS (Intel, AVX2): plink2_mac_avx2_*.zip - macOS (Intel, no AVX2): plink2_mac_*.zip - macOS (Apple Silicon): plink2_mac_arm64_*.zip\nExtract and move to your tools folder:\nmkdir -p tools/plink2\ncd tools/plink2\n# Download your platform's ZIP file here\nunzip plink2_*.zip\ncd ../..\n\n\n3. Download PLINK1.9\nVisit: https://www.cog-genomics.org/plink/1.9/\nChoose the build for your system: - Linux (64-bit): plink_linux_x86_64_*.zip - macOS: plink_mac_*.zip\nExtract and move to your tools folder:\nmkdir -p tools/plink1.9\ncd tools/plink1.9\n# Download your platform's ZIP file here\nunzip plink_*.zip\ncd ../..\n\n\n4. Download METAL\nVisit: https://csg.sph.umich.edu/abecasis/Metal/download/\nChoose the precompiled binary for your system: - Linux/WSL: Linux-metal.tar.gz - macOS: Darwin-metal.tar.gz\nExtract it in your tools folder:\nmkdir -p tools/metal\ncd tools/metal\n# Download the Linux/WSL or macOS archive here\ntar -xzf *-metal.tar.gz\nfind . -type f \\( -name \"metal\" -o -name \"METAL\" \\) -exec chmod +x {} \\;\ncd ../..\n\n\n5. Install micromamba and REGENIE\nThe automated setup installs micromamba for you. If you are doing this manually, first download micromamba.\nFor Linux/WSL x86_64:\nmkdir -p tools/micromamba\ncd tools/micromamba\ncurl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba\ncd ../..\nFor macOS Apple Silicon:\nmkdir -p tools/micromamba\ncd tools/micromamba\ncurl -Ls https://micro.mamba.pm/api/micromamba/osx-arm64/latest | tar -xvj bin/micromamba\ncd ../..\nFor macOS Intel, replace osx-arm64 with osx-64.\nThen create the REGENIE environment:\nexport MAMBA_ROOT_PREFIX=\"$(pwd)/tools/micromamba-root\"\ntools/micromamba/bin/micromamba create -y -n regenie_env -c conda-forge -c bioconda regenie\nThen create a small wrapper so REGENIE works like the other tutorial tools:\nmkdir -p tools/regenie\ncat &gt; tools/regenie/regenie &lt;&lt;'EOF'\n#!/usr/bin/env bash\nexport MAMBA_ROOT_PREFIX=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/../micromamba-root\" && pwd)\"\nMICROMAMBA=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/../micromamba/bin\" && pwd)/micromamba\"\nexec \"$MICROMAMBA\" run -n regenie_env regenie \"$@\"\nEOF\nchmod +x tools/regenie/regenie\n\n\n6. Create symbolic links\nCreate convenient shortcuts in tools/bin/:\nmkdir -p tools/bin\nln -s ../plink2/plink2 tools/bin/plink2\nln -s ../plink1.9/plink tools/bin/plink\nMETAL_BIN=$(find tools/metal -type f \\( -name \"metal\" -o -name \"METAL\" \\) | head -n 1)\nln -s \"../../$METAL_BIN\" tools/bin/metal\nln -s ../regenie/regenie tools/bin/regenie\n\n\n7. Update PATH\nAdd the tools folder to your PATH:\nexport PATH=\"$(cd tools/bin && pwd):$PATH\"\nTo make this permanent on Linux/WSL, add it to ~/.bashrc:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.bashrc\nOn macOS, the default shell is usually zsh, so use ~/.zshrc instead:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.zshrc\nThen reload your shell. Use the file you edited:\nsource ~/.bashrc\nFor macOS zsh:\nsource ~/.zshrc\n\n\n\nThe tool list used by the setup test is saved here:\ncat scripts/dev/tool_manifest.tsv\nYou can also check the project-local tool links directly. These commands use ./tools/bin/..., so they work even if your PATH has not reloaded yet:\nls -l tools/bin/\n./tools/bin/plink2 --version\n./tools/bin/plink --version\ntest -x ./tools/bin/metal && echo \"METAL executable found: ./tools/bin/metal\"\n./tools/bin/regenie --version\nR --version\n\n\nMost installation problems are caused by the shell not being in the right folder, internet/proxy access, an unfinished apt-get process, or R not being available yet. Start with the message printed in your terminal and match it to one of the cases below.\n\n\n\nError or symptom\nWhat it usually means\nWhat to try\n\n\n\n\nscripts/dev/tools_setup.sh: No such file or directory\nYou are not in the project folder, or Step 3 did not copy the scripts\nRun cd \"$HOME/gwas_tutorial\" and ls scripts/dev/\n\n\ncurl, wget, or micromamba cannot connect\nWSL or your terminal cannot reach the internet\nTest curl -I https://github.com; WSL users on managed networks should check WSL Setup\n\n\nCould not get lock /var/lib/apt/lists/lock\nAnother apt-get process is running\nWait, or inspect the process with ps -fp &lt;PID&gt; shown in the error\n\n\nUnable to locate package r-base\nPackage lists are stale, universe is disabled, or the Ubuntu release is unusual\nSee the R commands in the Manual tab; for persistent problems, use an Ubuntu LTS WSL release\n\n\n404: command not found after running a downloaded script\nA GitHub 404 page was saved instead of a script\nDelete the file and repeat the current download command from this guide\n\n\nplink, plink2, metal, or regenie: command not found\nTools were not installed or tools/bin is not on PATH\nRun bash scripts/dev/tools_setup.sh again, then check ls tools/bin/\n\n\nREGENIE or micromamba fails during environment creation\nUsually a network, proxy, or conda-channel access problem\nConfirm curl -I https://github.com works and retry bash scripts/dev/tools_setup.sh\n\n\n\nIf automatic R installation fails because Ubuntu cannot find r-base, enable the universe repository and refresh the package list:\nsudo apt-get install -y software-properties-common\nsudo add-apt-repository -y universe\nsudo apt-get update\nsudo apt-get install -y r-base r-base-dev\nThen run the tool setup again:\nbash scripts/dev/tools_setup.sh",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-first-run",
-    "href": "getting_started.html#sec-first-run",
-    "title": "Before you start: setup",
-    "section": "Step 6 — Test tools and scripts",
-    "text": "Step 6 — Test tools and scripts\nRun the test script to verify everything is installed and working:\nbash scripts/dev/test.sh\nThis script will: 1. Check the project folders 2. Check the demo dataset files 3. Check that every copied script listed in scripts/dev/script_manifest.txt exists 4. Check every required tool listed in scripts/dev/tool_manifest.tsv 5. Print the next command to run\nWhen it finishes, you should see output like:\n✓ Initial test done! Folders, scripts, data, and required tools are working.\nNext command to run the QC pipeline:\n  bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\nIf you see this message, everything is working! You can now go to Quality Control (Section 1B) and run your first QC command.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-troubleshooting",
-    "href": "getting_started.html#sec-troubleshooting",
-    "title": "Before you start: setup",
-    "section": "Troubleshooting",
-    "text": "Troubleshooting\n\n\n\n\n\n\nWarninggit: command not found\n\n\n\n\n\nGit is not installed on your system.\nSolution (Windows WSL2):\nsudo apt-get update\nsudo apt-get install git\nSolution (macOS):\nbrew install git\nSolution (Linux):\nsudo apt-get install git\n\n\n\n\n\n\n\n\n\nWarningwget: command not found\n\n\n\n\n\nwget is not installed.\nSolution (Windows WSL2 / Linux):\nsudo apt-get install wget\nSolution (macOS):\nbrew install wget\n\n\n\n\n\n\n\n\n\nWarningplink, plink2, metal, or regenie: command not found\n\n\n\n\n\nOne of the installed tools is not found in your PATH.\nSolution 1: Run the setup script again\nThe automated script should have configured PATH:\nbash scripts/dev/tools_setup.sh\nSolution 2: Manually add to PATH\nIf the script completed but PATH isn’t set, manually add it:\n# Check if tools exist\nls tools/bin/plink\nls tools/bin/plink2\nls tools/bin/metal\nls tools/bin/regenie\n\n# Add to current session\nexport PATH=\"$(cd tools/bin && pwd):$PATH\"\n\n# Verify\nplink --version\nplink2 --version\ncommand -v metal && echo \"metal is on PATH\"\nregenie --version\nTo make this permanent on Linux/WSL:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.bashrc\nsource ~/.bashrc\nOn macOS zsh, use ~/.zshrc instead:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.zshrc\nsource ~/.zshrc\nSolution 3: Use full path\nIf PATH setup is tricky, use the full path directly:\n./tools/bin/plink2 --version\n./tools/bin/plink --version\ntest -x ./tools/bin/metal && echo \"metal is available\"\n./tools/bin/regenie --version\n\n\n\n\n\n\n\n\n\nWarningError: Failed to open pdac_demo.bed\n\n\n\n\n\nPLINK cannot find the demo dataset.\nSolution: Make sure all demo files were downloaded:\nls demo_data/pdac_demo.*\nYou should see .bed, .bim, and .fam files. If any are missing, re-run Step 4:\nbash scripts/dev/download_demo_data.sh\n\n\n\n\n\n\n\n\n\nWarningPermission denied when running a script\n\n\n\n\n\nThe script file doesn’t have execute permissions.\nSolution:\nfind scripts -type f -name \"*.sh\" -exec chmod +x {} \\;\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\n\n\n\n\n\n\n\n\n\nWarningScript not found or can’t find data files\n\n\n\n\n\nYou’re in the wrong directory or files are missing.\nSolution:\n# Make sure you're in your project folder\ncd ~/gwas_tutorial\n\n# Check files exist\nls scripts/01B_genotyping_qc/\nls demo_data/\n\n# Then run the first QC script\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#additional-resources",
-    "href": "getting_started.html#additional-resources",
-    "title": "Before you start: setup",
-    "section": "Additional Resources",
-    "text": "Additional Resources\n\nSetup Project Structure — Detailed setup guide\nWSL Setup — WSL2 troubleshooting",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#sec-next",
-    "href": "getting_started.html#sec-next",
-    "title": "Before you start: setup",
-    "section": "What’s next",
-    "text": "What’s next\nYou now have a working GWAS pipeline setup and have confirmed the tools runs successfully. Continue with the QC and other steps:\n\nQuality control (Section 1B) — cleaning the raw genotypes before any analysis.\nPopulation stratification (Section 2) — detecting and correcting for ancestry.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "getting_started.html#these-sections-will-be-linked-here-as-they-are-added.",
-    "href": "getting_started.html#these-sections-will-be-linked-here-as-they-are-added.",
-    "title": "Before you start: setup",
-    "section": "(These sections will be linked here as they are added.)",
-    "text": "(These sections will be linked here as they are added.)",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "How to carry out a Genome-Wide Association Study",
-    "section": "",
-    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, submitted to Human Genomics. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers without a bioinformatics background.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#what-is-a-gwas",
-    "href": "index.html#what-is-a-gwas",
-    "title": "How to carry out a Genome-Wide Association Study",
-    "section": "What is a GWAS?",
-    "text": "What is a GWAS?\nA genome-wide association study (GWAS) tests the statistical association between genetic variants, typically single-nucleotide polymorphisms (SNPs), and a trait across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#why-pancreatic-cancer",
-    "href": "index.html#why-pancreatic-cancer",
-    "title": "How to carry out a Genome-Wide Association Study",
-    "section": "Why pancreatic cancer?",
-    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a relatively rare, multifactorial cancer with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia, such as PanScan, PanC4 and PANDoRA, are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would: a correctly executed pipeline does not, on its own, guarantee a genome-wide significant result, and this guide is built to show why.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#who-this-guide-is-for",
-    "href": "index.html#who-this-guide-is-for",
-    "title": "How to carry out a Genome-Wide Association Study",
-    "section": "Who this guide is for",
-    "text": "Who this guide is for\nThe tutorial is written for two kinds of reader:\n\nBeginners, with little or no previous experience of GWAS, bioinformatics or the command line. Every command is given in full, together with the output you should expect to see.\nIntermediate and advanced users, who already work with genetic data and want a transparent, reproducible teaching workflow in which each decision is visible rather than buried in a wrapper.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#how-to-use-this-guide",
-    "href": "index.html#how-to-use-this-guide",
-    "title": "How to carry out a Genome-Wide Association Study",
-    "section": "How to use this guide",
-    "text": "How to use this guide\nEvery analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.\n👉 Start here: Before you start, setup and your first PLINK command\n\n\n\n\n\n\nTipNo coding experience?\n\n\n\nYou do not need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.\n\n\nThe structure is intentionally step by step. Some tasks are split across more than one script even where they could be merged into a single command, because the purpose is to make each decision visible and to let you see what each filter actually removed.\nFor the same reason, this is not a high-performance computing workflow and it is not a template for large-scale parallel processing. If you are working with a full consortium dataset, run the same steps in an appropriate computing environment and distribute jobs according to your institution’s guidelines.",
-    "crumbs": [
-      "Home"
+      "What the data can support",
+      "Statistical power"
     ]
   },
   {
@@ -702,6 +388,375 @@
     "crumbs": [
       "Quality control",
       "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "",
+    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, submitted to Human Genomics. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers without a bioinformatics background.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#what-is-a-gwas",
+    "href": "index.html#what-is-a-gwas",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "What is a GWAS?",
+    "text": "What is a GWAS?\nA genome-wide association study (GWAS) tests the statistical association between genetic variants, typically single-nucleotide polymorphisms (SNPs), and a trait across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#why-pancreatic-cancer",
+    "href": "index.html#why-pancreatic-cancer",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "Why pancreatic cancer?",
+    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a relatively rare, multifactorial cancer with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia, such as PanScan, PanC4 and PANDoRA, are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would: a correctly executed pipeline does not, on its own, guarantee a genome-wide significant result, and this guide is built to show why.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#who-this-guide-is-for",
+    "href": "index.html#who-this-guide-is-for",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "Who this guide is for",
+    "text": "Who this guide is for\nThe tutorial is written for two kinds of reader:\n\nBeginners, with little or no previous experience of GWAS, bioinformatics or the command line. Every command is given in full, together with the output you should expect to see.\nIntermediate and advanced users, who already work with genetic data and want a transparent, reproducible teaching workflow in which each decision is visible rather than buried in a wrapper.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-use-this-guide",
+    "href": "index.html#how-to-use-this-guide",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "How to use this guide",
+    "text": "How to use this guide\nEvery analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.\n👉 Start here: Before you start, setup and your first PLINK command\n\n\n\n\n\n\nTipNo coding experience?\n\n\n\nYou do not need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.\n\n\nThe structure is intentionally step by step. Some tasks are split across more than one script even where they could be merged into a single command, because the purpose is to make each decision visible and to let you see what each filter actually removed.\nFor the same reason, this is not a high-performance computing workflow and it is not a template for large-scale parallel processing. If you are working with a full consortium dataset, run the same steps in an appropriate computing environment and distribute jobs according to your institution’s guidelines.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "getting_started.html",
+    "href": "getting_started.html",
+    "title": "Before you start: setup",
+    "section": "",
+    "text": "This page gets your computer ready and walks you through your first GWAS QC command. By the end you will have: - Set up a portable project folder - Downloaded the demo dataset\n- Installed the required tools (currently PLINK2, PLINK1.9, METAL, REGENIE, and R) - Run your first test script that confirms everything works",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-terminal",
+    "href": "getting_started.html#sec-terminal",
+    "title": "Before you start: setup",
+    "section": "A note on the command line",
+    "text": "A note on the command line\nMost steps in this guide are typed into a SHELL (also called a “command line” or “console”) — a window where you type a command, press Enter, and the program runs.\n\nWindows: You must use WSL2 terminal (see Step 0). WSL2 gives you Linux inside Windows.\nmacOS: Open the Terminal app (in Applications → Utilities).\nLinux: Open your Terminal.\nInside RStudio: there is a Terminal tab next to the Console tab — you can use that too.\n\nLet’s practice using the terminal before we dive into the pipeline.\nThroughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.\nPlease click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press Enter to run them. Don’t worry if you don’t understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use Ctrl + Shift + V on Windows/Linux, or Cmd + V on macOS.\necho \"Welcome to the GWAS tutorial.\"\necho \"1) Where am I?\"\npwd\n\necho \"2) What is in this folder?\"\nls\n\necho \"3) Make a practice folder.\"\nmkdir -p gwas_practice\n\necho \"4) Make a tiny practice file.\"\necho \"GWAS practice line 1: samples\" &gt; gwas_practice/hello.txt\necho \"GWAS practice line 2: variants\" &gt;&gt; gwas_practice/hello.txt\necho \"GWAS practice line 3: quality control\" &gt;&gt; gwas_practice/hello.txt\n\necho \"5) Print the whole file with cat.\"\ncat gwas_practice/hello.txt\n\necho \"6) Print the first two lines with head.\"\nhead -n 2 gwas_practice/hello.txt\n\necho \"7) Print the last two lines with tail.\"\ntail -n 2 gwas_practice/hello.txt\n\necho \"8) Show the file with less.\"\nless -F -X gwas_practice/hello.txt\n\necho \"9) Remove the practice file and folder.\"\nrm gwas_practice/hello.txt\nrmdir gwas_practice\n\necho \"Done. You just used pwd, ls, mkdir, cat, head, tail, less, rm, and rmdir.\"\nThe commands you just ran do the following:\n\necho prints the text to the terminal. You can also use it to write text into files with &gt; (create, overwrite) and &gt;&gt; (append, add end of file).\npwd prints your current folder.\nls lists files in the current folder.\nmkdir creates folders. The -p argument allows you to create parent folders if they don’t exist.\ncat prints a whole file.\nhead and tail show the beginning and end of a file.\nless opens a file for reading. You need to press qto exit from reading mode. push up and down arrows to scroll. Here we use less -F -X, so this tiny file is shown and the command returns automatically.\nrm removes a file.\nrmdir removes an empty folder.\n\nIn this exercise, rm only removes the practice file you just created, and rmdir removes the empty practice folder. This is a safe way to practice removing files without accidentally deleting important data. There is also #rm -rf, which can remove folders and files recursively and without asking questions. The # prefix indicates this is a commented-out command. Please be very careful with this command it will permanently delete data.\nIf you want to learn more about these commands, you can check their manual pages by typing man &lt;command&gt; (for example, man ls) in the terminal.\nIf you have any issues with these commands, don’t worry. This is just a practice block to get you familiar with the terminal. Basic Bash knowledge is not required, but it will help you feel more comfortable as you move through the pipeline. There are many online materials available; here is one recommendation.\nIf you do not know how to open the terminal, just follow the next instructions (Step 0) carefully and ask for help if you get stuck.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-os-setup",
+    "href": "getting_started.html#sec-os-setup",
+    "title": "Before you start: setup",
+    "section": "Step 0 — Prepare your operating system",
+    "text": "Step 0 — Prepare your operating system\nBefore you begin, set up your OS environment.\n\nWindows: Install WSL2 (Required)macOS and Linux\n\n\nWSL2 (Windows Subsystem for Linux) gives you a Linux environment inside Windows. The GWAS pipeline uses bash scripts, so WSL2 is required.\nPart A: Install WSL2\n\nOpen PowerShell as Administrator (right-click and select “Run as administrator”)\nRun:\nwsl --install\nRestart your computer when prompted\n\nPart B: Open WSL2 Terminal\n\nAfter restart, open Windows Terminal (search for it in the Start menu)\nClick the dropdown arrow and select Ubuntu\nYou should see a bash prompt like user@computer:~$\n\nPart C: Install Basic Tools\nIn the WSL2 bash terminal, run:\nsudo apt-get update\nsudo apt-get install git curl wget unzip\n✅ WSL2 is now ready. From here on, all commands use this bash terminal.\nFor help troubleshooting WSL2, see WSL Setup.\n\n\nYour system already has bash. No setup needed for Step 0.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-project-folder",
+    "href": "getting_started.html#sec-project-folder",
+    "title": "Before you start: setup",
+    "section": "Step 1 — Create your project folder",
+    "text": "Step 1 — Create your project folder\nChoose any location on your computer and create a folder named gwas_tutorial. This will be your working folder for the entire pipeline.\nDIR=\"$HOME/gwas_tutorial\"\nmkdir -p \"$DIR\"\ncd \"$DIR\"\n\n\n\n\n\n\nTipTip\n\n\n\nYou can place this folder anywhere: Desktop, Documents, custom path — it doesn’t matter. Everything is portable because we use relative paths. DIR is a variable that holds the path to your project folder. $HOME means “home directory”, so this creates the folder in your home directory. You can also create it on other drives or directories by changing the DIR variable, for example DIR=\"/your/desired/directory\".",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-directories",
+    "href": "getting_started.html#sec-directories",
+    "title": "Before you start: setup",
+    "section": "Step 2 — Create the directory structure",
+    "text": "Step 2 — Create the directory structure\nCreate the folder structure that keeps scripts, data, and tools organized.\nFirst let’s check the project folder created successfully:\nif [ -d \"$DIR\" ]; then\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"✓ Project folder created successfully: $DIR\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"[NEXT] Stay in this folder for the next commands.\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%s\\n\\n\" \"Scripts, data, tools, and results will be stored here.\"\nelse\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"✗ Failed to create project folder: $DIR\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"[Go to previous step] and make sure the command to create the folder ran successfully.\"\n  exit 1\nfi\nIf the folder was created successfully, you should see a message like:\n✓ Project folder created successfully: /home/user/gwas_tutorial  [NEXT] Stay in this folder for the next commands. Scripts, data, tools, and results will be stored here.\nIf you see an error message instead, please go back to the previous step and make sure the command to create the folder ran successfully.\nNext, create the subfolders for scripts, data, tools, and results. You can do this with one command or create them manually.\n\nAutomated (Easiest)Manual with mkdir\n\n\nDownload and run the setup script:\n# Download the automated setup script\n\ncurl -L https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -o init_project.sh\n# Make it executable\nchmod +x init_project.sh\n# Run it\nbash init_project.sh\nThis creates all folders automatically.\nIf curl is not available on your system, use wget instead:\nwget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -O init_project.sh\nchmod +x init_project.sh\nbash init_project.sh\n\n\nCreate folders manually:\n# Create all needed folders\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\n\n\nAfter Step 3, your folder will look like this:\ngwas_tutorial/\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   └── script_manifest.txt\n│   ├── 01B_genotyping_qc/           # QC scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   └── ...09_qc_summary.sh\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n├── demo_data/                       # Demo dataset (Step 4)\n├── tools/bin/                       # Tools (eg PLINK, Step 5)\n├── data_processed/                  # Processed output files\n└── results/                         # Results organized by workflow\n    └── qc/                          # QC output files\n\n\n\n\n\n\nTipSetup helper pages\n\n\n\nFor a compact project-folder overview, see Setup Project Structure. If you are on Windows/WSL2, keep WSL Setup nearby for path and terminal troubleshooting.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-scripts",
+    "href": "getting_started.html#sec-scripts",
+    "title": "Before you start: setup",
+    "section": "Step 3 — Download the GWAS scripts",
+    "text": "Step 3 — Download the GWAS scripts\nClone the GitHub repo to get all the GWAS pipeline scripts organized by section:\n# Clone the repo\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\n# Copy utility/dev scripts\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n# Start fresh manifest files for the setup test\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\n# Copy section scripts directly into section folders\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\n# Add utility/dev scripts to the script manifest\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\n\n# Optional cleanup: delete only the temporary cloned copy after scripts are copied\nrm -r how-to-gwas-pdac\n\n\n\n\n\n\nTipTip\n\n\n\nIf you see rm: remove write-protected regular file 'how-to-gwas-pdac/.git/objects/pack/pack-XXX.rev'?, type y and press Enter to confirm deletion. This is normal because the cloned repo is write-protected.\n\n\nVerify the scripts downloaded:\n# Check which section folders were copied\ncat scripts/dev/section_manifest.txt\n\n# Check the currently available QC scripts\nls scripts/01B_genotyping_qc/\nAt this stage, the section list should include scripts/01B_genotyping_qc, and you should see 01_initial_qc_stats.sh through 09_qc_summary.sh.\nAnd utility scripts:\nls scripts/dev/\nYou should see: download_demo_data.sh, tools_setup.sh, test.sh, init_project.sh, plus section_manifest.txt and script_manifest.txt.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-data",
+    "href": "getting_started.html#sec-data",
+    "title": "Before you start: setup",
+    "section": "Step 4 — Download the demo dataset",
+    "text": "Step 4 — Download the demo dataset\nDownload the 7 demo dataset files (~164 MB total) to your demo_data/ folder.\n\nAutomated (Easiest)Manual with wget\n\n\nRun the download script from your project:\nbash scripts/dev/download_demo_data.sh\nThis downloads all 7 files automatically and verifies them. It uses curl, which is already available on most macOS and Linux systems.\n\n\nDownload files individually. If your system has curl but not wget, use the automated script instead.\ncd ~/gwas_tutorial  # Make sure you're in your project folder\n\n# Download all 7 files\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed -O demo_data/pdac_demo.bed\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim -O demo_data/pdac_demo.bim\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam -O demo_data/pdac_demo.fam\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/phenotype.txt -O demo_data/phenotype.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/covariates.txt -O demo_data/covariates.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/survival.txt -O demo_data/survival.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/sample_ancestry.tsv -O demo_data/sample_ancestry.tsv\n\n\n\nVerify the files downloaded:\nls -lh demo_data/\nYou should see all 7 files.\n\n\n\n\n\n\nTipFile Integrity Check\n\n\n\nThe download script automatically verifies the SHA256 hash of each file to ensure they were downloaded correctly. You should see messages like:\n✓ OK: pdac_demo.bed\n✓ OK: pdac_demo.bim\n...\n✓ All files verified successfully! (7/7)\nIf any file fails verification, the script will tell you which one and suggest re-downloading it. This built-in verification ensures your data is safe and ready for analysis.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-install",
+    "href": "getting_started.html#sec-install",
+    "title": "Before you start: setup",
+    "section": "Step 5 — Install dependencies",
+    "text": "Step 5 — Install dependencies\nInstall the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.\n\nAutomated (Recommended)ManualConfirm toolsTroubleshooting\n\n\nBefore starting the install, check that you are in the project folder and that the basic download tools are visible:\ncd \"$HOME/gwas_tutorial\"\npwd\nls scripts/dev/tools_setup.sh\n\ncommand -v curl || echo \"curl is missing\"\ncommand -v wget || echo \"wget is missing\"\ncommand -v git || echo \"git is missing\"\ncommand -v unzip || echo \"unzip is missing\"\ncommand -v tar || echo \"tar is missing\"\ncommand -v bzip2 || echo \"bzip2 is missing\"\n\nR --version || echo \"R is not installed yet\"\ncurl -I https://github.com || echo \"Internet connection check failed\"\nIf the internet check fails inside WSL but works in Windows, see WSL Setup for managed-network and proxy troubleshooting.\nRun the setup script from your project:\nbash scripts/dev/tools_setup.sh\nThis script will: - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon) - Check whether R is available and try to install it if it is missing - Download the correct PLINK2 and PLINK1.9 binaries from official sources - Download the official precompiled METAL binary for Linux/WSL or macOS - Install micromamba into tools/micromamba/ - Install REGENIE into a micromamba environment named regenie_env - Extract and organize command-line tools in tools/plink2/, tools/plink1.9/, tools/metal/, tools/micromamba/, and tools/regenie/ - Create symlinks in tools/bin/ for easy access - Update your PATH so you can run plink2, plink, metal, and regenie from anywhere - Write scripts/dev/tool_manifest.tsv, which lists the tools checked by test.sh - Check for basic helper tools such as wget, unzip, tar, and bzip2\nWhen finished, you’ll see:\nDetected: OS=Linux, Architecture=x86_64_avx2\n  ✓ R found\n  ✓ PLINK2: PLINK v2.00a5 (64-bit build)\n  ✓ PLINK1.9: PLINK v1.90b7.2\n  ✓ METAL\n  ✓ REGENIE: regenie v...\nREGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under tools/micromamba-root/, so users do not need an existing conda installation.\n\n\nThe automated setup is recommended. Use this manual route only if you cannot use the setup script or need to inspect each tool installation step.\n\n1. Install R\nR is used later for QC plots and summary tables.\nOn WSL/Linux:\nsudo apt-get update\nsudo apt-get install -y r-base r-base-dev\nR --version\nOn macOS with Homebrew:\nbrew install r\nR --version\n\n\n2. Download PLINK2\nVisit: https://www.cog-genomics.org/plink/2.0/\nChoose the build for your system: - Linux (Intel, AVX2): plink2_linux_avx2_*.zip - Linux (AMD, AVX2): plink2_linux_amd_avx2_*.zip - Linux (64-bit, no AVX2): plink2_linux_x86_64_*.zip - macOS (Intel, AVX2): plink2_mac_avx2_*.zip - macOS (Intel, no AVX2): plink2_mac_*.zip - macOS (Apple Silicon): plink2_mac_arm64_*.zip\nExtract and move to your tools folder:\nmkdir -p tools/plink2\ncd tools/plink2\n# Download your platform's ZIP file here\nunzip plink2_*.zip\ncd ../..\n\n\n3. Download PLINK1.9\nVisit: https://www.cog-genomics.org/plink/1.9/\nChoose the build for your system: - Linux (64-bit): plink_linux_x86_64_*.zip - macOS: plink_mac_*.zip\nExtract and move to your tools folder:\nmkdir -p tools/plink1.9\ncd tools/plink1.9\n# Download your platform's ZIP file here\nunzip plink_*.zip\ncd ../..\n\n\n4. Download METAL\nVisit: https://csg.sph.umich.edu/abecasis/Metal/download/\nChoose the precompiled binary for your system: - Linux/WSL: Linux-metal.tar.gz - macOS: Darwin-metal.tar.gz\nExtract it in your tools folder:\nmkdir -p tools/metal\ncd tools/metal\n# Download the Linux/WSL or macOS archive here\ntar -xzf *-metal.tar.gz\nfind . -type f \\( -name \"metal\" -o -name \"METAL\" \\) -exec chmod +x {} \\;\ncd ../..\n\n\n5. Install micromamba and REGENIE\nThe automated setup installs micromamba for you. If you are doing this manually, first download micromamba.\nFor Linux/WSL x86_64:\nmkdir -p tools/micromamba\ncd tools/micromamba\ncurl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba\ncd ../..\nFor macOS Apple Silicon:\nmkdir -p tools/micromamba\ncd tools/micromamba\ncurl -Ls https://micro.mamba.pm/api/micromamba/osx-arm64/latest | tar -xvj bin/micromamba\ncd ../..\nFor macOS Intel, replace osx-arm64 with osx-64.\nThen create the REGENIE environment:\nexport MAMBA_ROOT_PREFIX=\"$(pwd)/tools/micromamba-root\"\ntools/micromamba/bin/micromamba create -y -n regenie_env -c conda-forge -c bioconda regenie\nThen create a small wrapper so REGENIE works like the other tutorial tools:\nmkdir -p tools/regenie\ncat &gt; tools/regenie/regenie &lt;&lt;'EOF'\n#!/usr/bin/env bash\nexport MAMBA_ROOT_PREFIX=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/../micromamba-root\" && pwd)\"\nMICROMAMBA=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/../micromamba/bin\" && pwd)/micromamba\"\nexec \"$MICROMAMBA\" run -n regenie_env regenie \"$@\"\nEOF\nchmod +x tools/regenie/regenie\n\n\n6. Create symbolic links\nCreate convenient shortcuts in tools/bin/:\nmkdir -p tools/bin\nln -s ../plink2/plink2 tools/bin/plink2\nln -s ../plink1.9/plink tools/bin/plink\nMETAL_BIN=$(find tools/metal -type f \\( -name \"metal\" -o -name \"METAL\" \\) | head -n 1)\nln -s \"../../$METAL_BIN\" tools/bin/metal\nln -s ../regenie/regenie tools/bin/regenie\n\n\n7. Update PATH\nAdd the tools folder to your PATH:\nexport PATH=\"$(cd tools/bin && pwd):$PATH\"\nTo make this permanent on Linux/WSL, add it to ~/.bashrc:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.bashrc\nOn macOS, the default shell is usually zsh, so use ~/.zshrc instead:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.zshrc\nThen reload your shell. Use the file you edited:\nsource ~/.bashrc\nFor macOS zsh:\nsource ~/.zshrc\n\n\n\nThe tool list used by the setup test is saved here:\ncat scripts/dev/tool_manifest.tsv\nYou can also check the project-local tool links directly. These commands use ./tools/bin/..., so they work even if your PATH has not reloaded yet:\nls -l tools/bin/\n./tools/bin/plink2 --version\n./tools/bin/plink --version\ntest -x ./tools/bin/metal && echo \"METAL executable found: ./tools/bin/metal\"\n./tools/bin/regenie --version\nR --version\n\n\nMost installation problems are caused by the shell not being in the right folder, internet/proxy access, an unfinished apt-get process, or R not being available yet. Start with the message printed in your terminal and match it to one of the cases below.\n\n\n\nError or symptom\nWhat it usually means\nWhat to try\n\n\n\n\nscripts/dev/tools_setup.sh: No such file or directory\nYou are not in the project folder, or Step 3 did not copy the scripts\nRun cd \"$HOME/gwas_tutorial\" and ls scripts/dev/\n\n\ncurl, wget, or micromamba cannot connect\nWSL or your terminal cannot reach the internet\nTest curl -I https://github.com; WSL users on managed networks should check WSL Setup\n\n\nCould not get lock /var/lib/apt/lists/lock\nAnother apt-get process is running\nWait, or inspect the process with ps -fp &lt;PID&gt; shown in the error\n\n\nUnable to locate package r-base\nPackage lists are stale, universe is disabled, or the Ubuntu release is unusual\nSee the R commands in the Manual tab; for persistent problems, use an Ubuntu LTS WSL release\n\n\n404: command not found after running a downloaded script\nA GitHub 404 page was saved instead of a script\nDelete the file and repeat the current download command from this guide\n\n\nplink, plink2, metal, or regenie: command not found\nTools were not installed or tools/bin is not on PATH\nRun bash scripts/dev/tools_setup.sh again, then check ls tools/bin/\n\n\nREGENIE or micromamba fails during environment creation\nUsually a network, proxy, or conda-channel access problem\nConfirm curl -I https://github.com works and retry bash scripts/dev/tools_setup.sh\n\n\n\nIf automatic R installation fails because Ubuntu cannot find r-base, enable the universe repository and refresh the package list:\nsudo apt-get install -y software-properties-common\nsudo add-apt-repository -y universe\nsudo apt-get update\nsudo apt-get install -y r-base r-base-dev\nThen run the tool setup again:\nbash scripts/dev/tools_setup.sh",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-first-run",
+    "href": "getting_started.html#sec-first-run",
+    "title": "Before you start: setup",
+    "section": "Step 6 — Test tools and scripts",
+    "text": "Step 6 — Test tools and scripts\nRun the test script to verify everything is installed and working:\nbash scripts/dev/test.sh\nThis script will: 1. Check the project folders 2. Check the demo dataset files 3. Check that every copied script listed in scripts/dev/script_manifest.txt exists 4. Check every required tool listed in scripts/dev/tool_manifest.tsv 5. Print the next command to run\nWhen it finishes, you should see output like:\n✓ Initial test done! Folders, scripts, data, and required tools are working.\nNext command to run the QC pipeline:\n  bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\nIf you see this message, everything is working! You can now go to Quality Control (Section 1B) and run your first QC command.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-troubleshooting",
+    "href": "getting_started.html#sec-troubleshooting",
+    "title": "Before you start: setup",
+    "section": "Troubleshooting",
+    "text": "Troubleshooting\n\n\n\n\n\n\nWarninggit: command not found\n\n\n\n\n\nGit is not installed on your system.\nSolution (Windows WSL2):\nsudo apt-get update\nsudo apt-get install git\nSolution (macOS):\nbrew install git\nSolution (Linux):\nsudo apt-get install git\n\n\n\n\n\n\n\n\n\nWarningwget: command not found\n\n\n\n\n\nwget is not installed.\nSolution (Windows WSL2 / Linux):\nsudo apt-get install wget\nSolution (macOS):\nbrew install wget\n\n\n\n\n\n\n\n\n\nWarningplink, plink2, metal, or regenie: command not found\n\n\n\n\n\nOne of the installed tools is not found in your PATH.\nSolution 1: Run the setup script again\nThe automated script should have configured PATH:\nbash scripts/dev/tools_setup.sh\nSolution 2: Manually add to PATH\nIf the script completed but PATH isn’t set, manually add it:\n# Check if tools exist\nls tools/bin/plink\nls tools/bin/plink2\nls tools/bin/metal\nls tools/bin/regenie\n\n# Add to current session\nexport PATH=\"$(cd tools/bin && pwd):$PATH\"\n\n# Verify\nplink --version\nplink2 --version\ncommand -v metal && echo \"metal is on PATH\"\nregenie --version\nTo make this permanent on Linux/WSL:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.bashrc\nsource ~/.bashrc\nOn macOS zsh, use ~/.zshrc instead:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.zshrc\nsource ~/.zshrc\nSolution 3: Use full path\nIf PATH setup is tricky, use the full path directly:\n./tools/bin/plink2 --version\n./tools/bin/plink --version\ntest -x ./tools/bin/metal && echo \"metal is available\"\n./tools/bin/regenie --version\n\n\n\n\n\n\n\n\n\nWarningError: Failed to open pdac_demo.bed\n\n\n\n\n\nPLINK cannot find the demo dataset.\nSolution: Make sure all demo files were downloaded:\nls demo_data/pdac_demo.*\nYou should see .bed, .bim, and .fam files. If any are missing, re-run Step 4:\nbash scripts/dev/download_demo_data.sh\n\n\n\n\n\n\n\n\n\nWarningPermission denied when running a script\n\n\n\n\n\nThe script file doesn’t have execute permissions.\nSolution:\nfind scripts -type f -name \"*.sh\" -exec chmod +x {} \\;\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\n\n\n\n\n\n\n\n\n\nWarningScript not found or can’t find data files\n\n\n\n\n\nYou’re in the wrong directory or files are missing.\nSolution:\n# Make sure you're in your project folder\ncd ~/gwas_tutorial\n\n# Check files exist\nls scripts/01B_genotyping_qc/\nls demo_data/\n\n# Then run the first QC script\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#additional-resources",
+    "href": "getting_started.html#additional-resources",
+    "title": "Before you start: setup",
+    "section": "Additional Resources",
+    "text": "Additional Resources\n\nSetup Project Structure — Detailed setup guide\nWSL Setup — WSL2 troubleshooting",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-next",
+    "href": "getting_started.html#sec-next",
+    "title": "Before you start: setup",
+    "section": "What’s next",
+    "text": "What’s next\nYou now have a working GWAS pipeline setup and have confirmed the tools runs successfully. Continue with the QC and other steps:\n\nQuality control (Section 1B) — cleaning the raw genotypes before any analysis.\nPopulation stratification (Section 2) — detecting and correcting for ancestry.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#these-sections-will-be-linked-here-as-they-are-added.",
+    "href": "getting_started.html#these-sections-will-be-linked-here-as-they-are-added.",
+    "title": "Before you start: setup",
+    "section": "(These sections will be linked here as they are added.)",
+    "text": "(These sections will be linked here as they are added.)",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html",
+    "href": "sections/01A_study_design/01A_study_design.html",
+    "title": "Genotyping technologies and file formats",
+    "section": "",
+    "text": "Every other page in this guide starts from a clean PLINK dataset. This one is about how that dataset comes into existence, and about the decisions taken before it exists that constrain everything afterwards.\nTwo of them matter most. Which array was used, which fixes what can ever be measured or imputed. And whether the cohort was genotyped on one platform or several, which in a rare cancer is usually several, because the samples were collected over fifteen years.",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#choosing-an-array",
+    "href": "sections/01A_study_design/01A_study_design.html#choosing-an-array",
+    "title": "Genotyping technologies and file formats",
+    "section": "Choosing an array",
+    "text": "Choosing an array\nBefore any file exists, someone chooses a platform. The intuition is that a bigger array is a better array. The evidence says otherwise.\nVerlouw and colleagues compared 28 arrays, 10 from Affymetrix and 18 from Illumina, on content, coverage, imputation quality and clinically relevant genes doi:10.1038/s41431-021-00917-7. Their central finding is that genome-wide coverage correlates strongly with the number of variants on the array but does not correlate with imputation quality, which is what actually determines whether the array is usable for a GWAS. After imputation, essentially every GWAS-oriented array covers more than 90% of known GWAS loci well. Their recommendation is to stop using coverage as a selection criterion.\nWhat should drive the choice instead:\n\n\n\n\n\n\n\nConsideration\nWhy it matters\n\n\n\n\nAdditional content\nPharmacogenetic star alleles, HLA tag variants, ACMG actionable genes. This is where arrays genuinely differ\n\n\nAncestry of the study\nCoverage ranges from 2% to 84% in Europeans but only 2% to 40% in Africans. An array designed on European haplotypes tags other populations less well\n\n\nCompatibility with what you already have\nConsecutive arrays from the same manufacturer overlap surprisingly little\n\n\nCost per sample\nA denser array means fewer samples for the same budget, and in a rare cancer sample size is the binding constraint\n\n\n\n\n\n\n\n\n\nImportantWhy this is a rare-trait decision, not a technical one\n\n\n\nFor a common disease with 50,000 cases available, array choice is a minor optimisation. For a rare cancer it interacts with the thing you cannot buy: cases. Spending the budget on a denser array means genotyping fewer people, and the power calculation in Section 7 of the manuscript shows that at these sample sizes power is dominated by the number of cases, not by marker density. The cheap, current, GWAS-oriented array is almost always the right answer.",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#what-comes-off-the-machine",
+    "href": "sections/01A_study_design/01A_study_design.html#what-comes-off-the-machine",
+    "title": "Genotyping technologies and file formats",
+    "section": "01 - What comes off the machine",
+    "text": "01 - What comes off the machine\nWhy. Almost every expensive error, wrong strand, wrong build, wrong allele coding, silently low-quality calls, is visible in the raw export and invisible afterwards.\nbash scripts/01A_study_design/01_inspect_final_report.sh\nAn Illumina array is scanned, the intensities are clustered by the calling software, and the result is exported as a Final Report: one row per variant per sample, with the two called alleles and a confidence score. Affymetrix platforms produce the equivalent from .CEL files with different column names and the same logic.\nThree things in the header must be recorded now, because recovering them later is painful: the array manifest name, the calling software version, and the number of variants and samples the file claims.\n\nThe GenCall score. Every call carries a confidence between 0 and 1. Illumina’s guidance is that calls below about 0.15 are failures. Note what that means: a low-confidence call is not missing in the file. It looks like any other genotype unless you check. In this excerpt the median is 0.72 and 1.4% of calls fall below the threshold.\n\n\n\n\n\n\nNoteA finding worth pausing on\n\n\n\nIn the full report this excerpt came from, the variants named by rs number have a median GenCall of 0.720 and 1.2% failures. The variants named by position, which are the array’s custom content, mostly copy-number and gene-tiling probes, have a median of 0.441 and 4.5% failures.\nThe custom content on an array performs measurably worse than the standard backbone. If your analysis depends on that content, check it separately rather than trusting an overall call rate that the backbone dominates.\n\n\n\nWho called the genotypes, and with what\nArray and genome build are not the whole of provenance. The calling software is part of it, because the same scanner output analysed by different software gives different genotypes.\n\n\n\nPlatform\nCalling software\nOutput\n\n\n\n\nIllumina Infinium\nGenomeStudio\nFinal Report, .csv\n\n\nIllumina Infinium\nDRAGEN Array, local or cloud, the current path\ngenotypes, CNV, PGx star alleles, from .idat\n\n\nAffymetrix / Thermo Fisher\nAxiom Analysis Suite, APT\ncalls from .CEL\n\n\nAffymetrix 5.0 / 6.0, legacy\nBirdseed and Birdsuite (Broad Institute)\ncalls, plus copy-number-aware genotypes\n\n\n\n\n\n\n\n\n\nImportantTwo consequences that reach all the way to your association test\n\n\n\nThe caller changes the genotypes. On the same .CEL files, Birdseed and Birdsuite produce identical calls outside copy-number variable regions and different calls inside them. Birdsuite is copy-number aware and can emit genotypes such as A/- or -/- for a variant sitting in a deletion; Birdseed either miscalls those or leaves them uncalled. This matters concretely for anyone receiving legacy consortium data: PLINK’s biallelic model has no way to represent a hemizygous call, so converting Birdsuite output to .bed silently discards exactly the information that made it better. Record which caller and which version produced your genotypes, and keep the original output.\nThe plate is baked into the calls. Cluster-based callers need many samples at once. Birdsuite is documented as requiring roughly one chemistry plate at a time, about 96 samples and no fewer than 20 to 40, with the explicit warning that running several plates together introduces batch effects the authors describe as unresolvable.\nThis is where batch effects are actually created: not during analysis, but during calling, before the dataset exists. It is also why samples added to a study later cannot simply be appended. They were clustered separately, so they carry a systematic difference from the original set. For a rare cancer whose cohort accrues over a decade, this is the normal situation, not the exception, and it is the reason recruitment centre and genotyping batch belong in the covariate file from the very beginning.",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#from-final-report-to-plink-using-the-manifest",
+    "href": "sections/01A_study_design/01A_study_design.html#from-final-report-to-plink-using-the-manifest",
+    "title": "Genotyping technologies and file formats",
+    "section": "02 - From Final Report to PLINK, using the manifest",
+    "text": "02 - From Final Report to PLINK, using the manifest\n\n\n\n\n\n\nImportantYou need the array manifest, and it must be the right one\n\n\n\nA Final Report names variants and gives their alleles. It does not contain coordinates, the genome build, or the design strand. All three come from the manifest: the .csv file the manufacturer distributes for each array product, free of charge.\nGet the manifest for exactly the product and version named on the Content line of your report header, and keep it with the raw data. This tutorial does not ship a manifest: it is the manufacturer’s file, and the one you need is the one matching your array, not ours.\n\n\nRscript scripts/01A_study_design/02_report_to_lgen.R \\\n        example_data/example_final_report.csv \\\n        /path/to/GSA-24v3-0_A2.csv \\\n        0.15\nBefore converting anything, the script runs five checks. They exist because every one of them caught a real error while this section was being written.\n1. Product. Compares the Content line of the report with Descriptor File Name in the manifest. On real data this is the check that fails most often, and it failed while this section was being written: the report came from GSAMD-24v3-0-EA, the Global Screening Array with the multi-disease drop-in and 730,059 variants, while the manifest to hand described GSA-24v3-0_A2, the base product with 654,027 loci. Same family, different array, and 6% of variants unmappable as a result.\n2. Size. Loci in the manifest against variants in the report.\n3. Name matching. How many report identifiers are found: 7,520 of 8,000, 94.0% here, the remainder being the variants deliberately left out of the manifest. The script also tests whether stripping a GSA- prefix improves the match, because some manifests prefix their identifiers while reports do not, and a merge on exact names then fails for every rs-numbered variant without a single error message. That happened too. Below 90% the script warns.\n4. Genome build. Taken from the manifest’s GenomeBuild column: 38 for all matched variants here. Note that the same array has an A1 manifest on GRCh37 and an A2 manifest on GRCh38. Choosing the wrong one shifts every coordinate.\n5. A diagnostic worth running once.\n\n\n\n\n\n\nWarningVariant names are not coordinates\n\n\n\nSome array identifiers look like positions, for instance 1:103380393. It is tempting to parse them instead of using the manifest. Measured on the example data:\n\n\n\nVariants with a positional name\n1,860\n\n\nName position equals the manifest coordinate\n0\n\n\nName position differs\n1,860\n\n\nChromosome also differs\n97\n\n\n\nThe offsets here are 384 to 543 kb, the size of a build shift. On the real array this was measured directly: of 5,745 positionally named variants, only 776 agreed with the manifest coordinate and 4,969 differed, because the names carry GRCh37 positions while the A2 manifest is GRCh38. Coordinates read from names would be wrong for the great majority of variants and would look entirely plausible. Nothing downstream would complain.\n\n\n\nWhat the conversion does\nStrand. The manifest gives the design alleles as [A/G] on the design strand, and RefStrand says whether that is the plus strand of the reference. In the example data 3,194 of 7,520 variants, 42.5%, are on the minus strand and must be complemented before they can be compared with plus-strand genotypes; the real array measured 43%. Skip this and you get the wrong reference allele for nearly half the array, silently.\nQuality. Calls below the GenCall threshold are written as missing rather than deleted, so the loss stays visible as missingness for Section 1B to find. The threshold is an argument, and the count goes in the log.\nThree things hide in the allele columns. This is the one that surprised us:\n\n\n\nIn the report\nCount in sample DEMO001\nTreatment\n\n\n\n\nA C G T\n7,292\nkept\n\n\n-\n102\nno-call, written as missing\n\n\nI or D\n606 (7.6%)\nindel, dropped, and counted\n\n\n\nThe array carries insertion and deletion probes. A filter written as “keep only A, C, G, T”, which is the natural thing to write, discards them along with the no-calls, and nothing says so. Dropping indels is a defensible choice, since PLINK’s biallelic model represents them poorly and most GWAS analyse SNPs only. Doing it without knowing is not.\nThe per-sample log records all of it:\n sample calls no_call indel failed_gc unmapped written\nDEMO001  8000     102   606        86      480    6793\nDEMO002  8000     112   601       109      480    6759\nDEMO003  8000     113   607       114      480    6757",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#to-binary-merged-and-repaired",
+    "href": "sections/01A_study_design/01A_study_design.html#to-binary-merged-and-repaired",
+    "title": "Genotyping technologies and file formats",
+    "section": "03 - To binary, merged and repaired",
+    "text": "03 - To binary, merged and repaired\nbash scripts/01A_study_design/03_lgen_to_binary.sh\nEach sample is converted independently, then samples are added to the merge one at a time. That order matters in practice: Final Reports usually arrive one file per sample and genotyping runs arrive months apart, so a new run is added by converting it and merging it in rather than reprocessing everything. Merging incrementally is slower than a single --merge-list, but when a conflict appears you know exactly which sample caused it.\n\n\n\n\n\n\nImportantWhat a merge conflict means, and what to do about it\n\n\n\nOn the example data the run reports:\n  base: DEMO001\n  DEMO002: merged cleanly\n  DEMO003: merge conflict on 142 variants\n    resolved by flipping 142 variants in DEMO003: it was a strand difference\nA variant that shows three or more alleles once two samples are put together does not exist biologically. It means the same variant was coded differently in the two files, and the usual cause is a strand difference.\nThe tempting response is to exclude the offending variants, and it is the wrong one: it hides the problem and leaves the rest of the dataset built on the same mistake. The right response is to flip the strand of the sample that conflicts and retry. If the conflict survives the flip, the samples were genuinely converted against different references, and that has to be fixed upstream rather than patched here.\nNote also why flipping every sample is wrong: it resolves this conflict and creates others. Only the sample that disagrees should be changed, which is why the merge is done one sample at a time.\n\n\n\n\n\n\n\n\nImportantThe repair almost nobody mentions\n\n\n\nA variant that is monomorphic among the samples in hand shows only one allele, so PLINK writes 0 in the other allele column of the .bim. That zero is not missing data, it is an unobserved allele, and it breaks later merges, strand checks and imputation.\nIn the example, across three samples, 1,546 of 6,938 variants carry such a zero: the fewer samples you have, the more variants look monomorphic, and with a single sample it would be most of them. The manifest knows what the second allele should be, so the script fills it in: take the observed allele, look up the design pair, write the other one. All 1,546 are repaired.\nWithout this step the dataset looks fine and cannot be combined with anything.\n\n\nWhy binary. A .ped stores roughly four bytes per genotype; a .bed packs four genotypes into one byte. On chromosome 22 of the demonstration dataset the text export is 36 MB against 1.5 MB for the PLINK 2 native format.\n\n\n\n\n\n\n\nFile\nContent\n\n\n\n\n.bed\nthe genotypes, packed binary, not human-readable\n\n\n.bim\none row per variant: chromosome, ID, genetic distance, position, allele 1, allele 2\n\n\n.fam\none row per sample: family ID, individual ID, father, mother, sex, phenotype\n\n\n\n\n\n\n\n\n\nNoteThe formats you will meet\n\n\n\n\n\n\nFormat\nFiles\nWhere it appears\n\n\n\n\nFinal Report\n.csv\nIllumina calling output\n\n\nCEL / AxiomGT\n.CEL, .txt\nAffymetrix calling output\n\n\nManifest\n.csv, .bpm\ncoordinates, alleles, strand, build\n\n\nPLINK long\n.lgen .map .fam\nconversion bridge only\n\n\nPLINK text\n.ped .map\ninspection, legacy tools\n\n\nPLINK 1 binary\n.bed .bim .fam\nthe working standard\n\n\nPLINK 2 native\n.pgen .pvar .psam\nfaster, supports dosages\n\n\nVCF\n.vcf / .vcf.gz\nimputation servers, sharing, sequencing",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#pre-flight-checks",
+    "href": "sections/01A_study_design/01A_study_design.html#pre-flight-checks",
+    "title": "Genotyping technologies and file formats",
+    "section": "04 - Pre-flight checks",
+    "text": "04 - Pre-flight checks\nbash scripts/01A_study_design/04_preflight_and_formats.sh\nFour checks, each cheap now and expensive later. On the converted example, and on the demonstration dataset for comparison:\n\n\n\nCheck\nConverted example\nDemo dataset\n\n\n\n\nVariants\n6,938\n430,000\n\n\nUnplaced\n0\n0\n\n\nDuplicated positions\n0\n22\n\n\nDuplicated identifiers\n0\n0\n\n\nStrand-ambiguous (A/T, C/G)\n82\n2,430\n\n\n\nThe converted example is clean on the first three because the manifest supplied every coordinate and the synthetic array carries one probe per position. Real arrays do not: they place several probes at one coordinate when tiling a gene for copy-number calling, and a real GSA report measured 255 duplicated positions in 6,677 variants. Run the check on your own data rather than assuming.\nStrand-ambiguous variants cannot be oriented by comparing alleles, because A complements T and C complements G. They are the classic source of sign errors when combining studies, and Section 5 shows what that costs.\nGenome build is recorded nowhere in a .bim. A GRCh37 dataset analysed as GRCh38 gives coordinates wrong by megabases, and nothing complains. Everything in this guide is GRCh38 with identifiers in chr:pos:ref:alt form.\nNote that even the curated demonstration dataset carries 22 duplicated positions and 2,430 ambiguous variants. Clean data are not the same as unchecked data.",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#the-problem-that-defines-rare-cancer-consortia",
+    "href": "sections/01A_study_design/01A_study_design.html#the-problem-that-defines-rare-cancer-consortia",
+    "title": "Genotyping technologies and file formats",
+    "section": "The problem that defines rare-cancer consortia",
+    "text": "The problem that defines rare-cancer consortia\nA cohort assembled over fifteen years across a dozen centres was not genotyped on one platform. It cannot have been: the arrays used in 2010 are not sold today, and consecutive arrays from one manufacturer overlap less than you would expect.\nThe obvious response is to impute everything to a common set of variants and analyse the result. This is wrong, and the way it fails is silent.\nJohnson and colleagues measured it, using among others the PanScan pancreatic cancer data doi:10.1007/s00439-013-1266-7, PMID:23334152. Assigning case and control labels arbitrarily between two groups of healthy people genotyped on different arrays, and imputing from the union of their genotyped variants, produced:\n\n\n\n\n\n\n\nArrays compared\nSpurious associations\n\n\n\n\nIllumina 1M vs 550v3\n0.20% of variants, about 2,000 false positives per million\n\n\nIllumina 550v1 vs 550v3 (nearly identical)\n0.07%\n\n\nIllumina 1M vs Affymetrix 6.0\n0.53–0.63%, about 5,000–6,000 per million\n\n\n\nThere were no true associations to find. Adjusting for array with principal components failed. Post-imputation filtering, even at the extreme threshold of R² ≥ 0.98, did not remove the bias.\nThe correction is simple and counterintuitive: impute from the intersection of variants genotyped on all arrays, not the union. Using less information eliminates the bias entirely, and imputation quality holds up well even when only about 30% of the original variants remain.\n\n\n\n\n\n\nImportantWhat this means for your study\n\n\n\nEstablish at the design stage which platforms your cohort spans, and plan to either impute from the intersection or impute each platform batch separately and meta-analyse (Section 5). This is not a detail to settle during analysis: it determines how quality control and imputation are organised.\nAnd note what a 0.5% false-positive rate means at the scale of a rare-cancer GWAS. With a few hundred cases you expect at most one real signal. Several thousand artefacts per million imputed variants do not merely add noise; they can be the only thing in your Manhattan plot.",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/01A_study_design/01A_study_design.html#key-decisions-on-this-page",
+    "href": "sections/01A_study_design/01A_study_design.html#key-decisions-on-this-page",
+    "title": "Genotyping technologies and file formats",
+    "section": "Key decisions on this page",
+    "text": "Key decisions on this page\n\nWhich array, judged on additional content and on the ancestry of the study rather than on marker count, and weighed against how many samples the budget then allows.\nWhether to accept the genotyping facility’s calling and quality thresholds or repeat them, and which caller and version produced the genotypes. On legacy Affymetrix data, whether the calls came from Birdseed or from the copy-number-aware Birdsuite changes what is in the file.\nWhether samples added later were called together with the original set or separately. If separately, batch is a covariate you must record, not an afterthought.\nThe GenCall threshold, and whether failed calls are set to missing or deleted. Set to missing.\nWhether the manifest matches the product in the report header, not merely the array family, and which build it declares. If not, stop and get the right one.\nWhether indels are analysed or dropped, decided and counted rather than filtered away by a condition written for SNPs.\nIf the cohort spans platforms: intersection-based imputation, or batch-wise imputation with meta-analysis. Decide before quality control, not after.\n\nNext: Genotyping quality control.",
+    "crumbs": [
+      "Before the data",
+      "Genotyping technologies and file formats"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html",
+    "href": "sections/02_population_stratification/02_population_stratification.html",
+    "title": "Population stratification",
+    "section": "",
+    "text": "Population stratification is what happens when the people in a study differ in ancestry, and those differences line up with case or control status. Allele frequencies vary between populations for reasons that have nothing to do with disease, so if one ancestry group is over-represented among cases, every variant whose frequency differs between groups will look associated.\nThe damage is not only false positives. Uncorrected structure can equally mask a real association, producing a false negative and a loss of power that leaves no trace in the output. In a rare cancer, where the sample size gives no margin for either error, this is among the most consequential steps in the whole workflow.\nThis page covers three things: seeing the structure, deciding what to do about it, and producing the covariates that Section 4A will use.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#ld-pruning",
+    "href": "sections/02_population_stratification/02_population_stratification.html#ld-pruning",
+    "title": "Population stratification",
+    "section": "01 - LD pruning",
+    "text": "01 - LD pruning\nWhy. Principal component analysis has to run on variants that are approximately independent. Variants in linkage disequilibrium repeat the same information, and dense regions such as the major histocompatibility complex on chromosome 6 would otherwise dominate the result, so that the leading components describe local genomic architecture instead of ancestry.\nbash scripts/02_population_stratification/01_ld_pruning.sh\nOn the demonstration data this keeps 221,352 variants and prunes away 180,557. Losing almost half is expected: it is redundancy being removed. The pruned set is used for PCA and relatedness only, never for association testing.\n\n\n\n\n\n\nNoteThe r-squared threshold is a decision, not a standard\n\n\n\n--indep-pairwise 50 5 0.2 uses a 50-variant window, a step of 5, and an r² threshold of 0.2. A threshold of 0.1 (|r| ≈ 0.32) is more stringent; 0.2 (|r| ≈ 0.45) more permissive. Neither is correct in the abstract. What is required is to report the value used and to confirm that the leading components do not change materially when it is varied.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#principal-component-analysis",
+    "href": "sections/02_population_stratification/02_population_stratification.html#principal-component-analysis",
+    "title": "Population stratification",
+    "section": "02 - Principal component analysis",
+    "text": "02 - Principal component analysis\nWhy. PCA reduces the genotype matrix to a handful of uncorrelated axes, ordered by how much variance each explains. It assumes nothing about population structure; structure is simply the strongest biological signal in the variance that PCA summarises when a cohort spans continents.\nbash scripts/02_population_stratification/02_pca_all.sh\nOutputs are pdac_demo_02_pca_all.eigenvec, one row per individual, and pdac_demo_02_pca_all.eigenval, the variance carried by each component.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#looking-at-the-result",
+    "href": "sections/02_population_stratification/02_population_stratification.html#looking-at-the-result",
+    "title": "Population stratification",
+    "section": "03 - Looking at the result",
+    "text": "03 - Looking at the result\nRscript scripts/02_population_stratification/03_pca_plots.R\nThree plots, each answering a different question.\n\nScree plotPC1 versus PC2Higher components\n\n\n\nHow many components carry real signal? On the demonstration data PC1 explains 47.0% of the variance and PC2 38.1%, then the curve collapses to 3.7% at PC3. That cliff is the signature of discrete continental ancestry: two components separate three groups, and everything after is noise and fine structure.\n\n\n\nThree clusters, cleanly separated. This is what a multi-ancestry cohort looks like, and it is why the primary analysis cannot simply pool everyone.\n\n\n\nThe panel most often skipped, and the one most often needed. In a cohort that looks homogeneous on PC1 and PC2, real structure frequently appears further down, and it confounds the association test just as effectively. Always inspect at least PC1 through PC6.\n\n\n\n\n\n\n\n\n\nImportantA caution about this demonstration\n\n\n\nThe separation here is unusually clean because the dataset was deliberately built from three distinct continental groups. Real cohorts are messier: a predominantly European PDAC consortium will show one diffuse cloud with gradients running through it, not three islands. The skill to carry away is reading the scree plot and the higher components, not recognising a picture that looks like this one.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#deciding-who-is-analysed",
+    "href": "sections/02_population_stratification/02_population_stratification.html#deciding-who-is-analysed",
+    "title": "Population stratification",
+    "section": "04 - Deciding who is analysed",
+    "text": "04 - Deciding who is analysed\nWhy. Seeing the structure is not the same as handling it. Three strategies are defensible.\n\n\n\n\n\n\n\n\nStrategy\nWhat it costs\nWhen it is right\n\n\n\n\nAnalyse the largest group alone\nDiscards data\nOther groups too small to stand alone\n\n\nKeep everyone, ancestry as covariate\nAssumes effects are portable across populations\nGroups are small and effects plausibly shared\n\n\nAnalyse each group, then meta-analyse\nNothing, but needs each group to be large enough\nGenuinely multi-ancestry cohorts\n\n\n\nbash scripts/02_population_stratification/04_define_analysis_set.sh\nOn the demonstration data:\n\n\n\nQC-passed total\n1,239\n\n\nEuropean\n625\n\n\nEast Asian\n319\n\n\nAfrican\n295\n\n\nAnalysis set\n625: 229 cases, 396 controls\n\n\nEffective sample size\n580.4\n\n\n\nThe third strategy is the one to prefer whenever it is available, because it neither discards data nor assumes that effect sizes transfer between populations with different causal-allele frequencies and LD structures. Here the non-European groups are too small to form meaningful strata, which is the situation of most real rare-cancer cohorts, so the analysis proceeds on the European subset alone.\n\n\n\n\n\n\nNoteEffective sample size is the number that matters\n\n\n\n4 × cases × controls / (cases + controls) = 580.4, not 625. In an unbalanced design the effective figure is what governs power, and it is what should be reported. Section 4A returns to what this number does and does not make detectable.\n\n\n\n\n\n\n\n\nWarningHow the groups are assigned here\n\n\n\nThis dataset ships with true ancestry labels, which is a teaching convenience. In a real study no such labels exist: the assignment comes from the PCA itself, or from projection onto a reference panel such as 1000 Genomes or HGDP, with a threshold on the estimated ancestry proportion, 80% being a common choice. Step 03 above is the check that the labels and the genetic data agree, which is worth doing whenever metadata claims an ancestry.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#recomputing-the-components-within-the-analysis-set",
+    "href": "sections/02_population_stratification/02_population_stratification.html#recomputing-the-components-within-the-analysis-set",
+    "title": "Population stratification",
+    "section": "05 - Recomputing the components within the analysis set",
+    "text": "05 - Recomputing the components within the analysis set\nWhy. This step is frequently skipped, and skipping it is a mistake.\nThe components from Step 02 describe continental separation. Once the non-European individuals are removed, those axes describe something that is no longer in the data. What remains, and what can still confound the test, is fine-scale structure within Europe, and only a PCA computed within the analysis set can see it. LD pruning is repeated for the same reason: which variants are correlated depends on allele frequencies, which differ between populations.\nbash scripts/02_population_stratification/05_pca_within_eur.sh\n\nCompare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2 11.8%, and the curve declines gently instead of collapsing, which is what within-population structure looks like: continuous gradients rather than discrete groups.\n\n\n\n\n\n\nTipHow many components should you keep?\n\n\n\nTen is a convention with no justification attached. The guide recommends three checks instead:\n\nInspect the scree plot for the point where additional components explain negligible variance.\nTest each component for association with case status, which Section 4A does automatically.\nConfirm that the genomic inflation factor and the leading associations are stable across a range of component counts.\n\nIf the results move materially between five and twenty components, that instability is itself the finding and belongs in the paper.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#what-you-now-have",
+    "href": "sections/02_population_stratification/02_population_stratification.html#what-you-now-have",
+    "title": "Population stratification",
+    "section": "What you now have",
+    "text": "What you now have\npdac_demo_02_pca_eur.eigenvec holds the covariates for association testing, and pdac_demo_02_eur_keep.txt defines who is analysed. Both feed directly into the next section.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
+    ]
+  },
+  {
+    "objectID": "sections/02_population_stratification/02_population_stratification.html#key-decisions-on-this-page",
+    "href": "sections/02_population_stratification/02_population_stratification.html#key-decisions-on-this-page",
+    "title": "Population stratification",
+    "section": "Key decisions on this page",
+    "text": "Key decisions on this page\n\nThe r² threshold for LD pruning, reported and checked for stability.\nWhich ancestry strategy: single group, pooled with a covariate, or stratified with meta-analysis.\nWhether individuals distant from the main cluster are genuine outliers or genuine diversity. Distance alone does not justify exclusion, and in a rare cancer every excluded case is a permanent loss of power. Document the number of components examined, the threshold, the number removed, and the effect of their removal on the inflation factor.\nHow many components to carry forward, decided from evidence rather than convention.\n\nNext: Association testing.",
+    "crumbs": [
+      "Ancestry and structure",
+      "Population stratification"
     ]
   },
   {

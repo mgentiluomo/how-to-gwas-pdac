@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Work out what the data can support before running the test that will be interpreted">
 
-<title>contributing – How to carry out a GWAS</title>
+<title>Statistical power – How to carry out a GWAS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,28 +59,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../sections/04A_association_binary/04A_association_binary.html" rel="next">
+<link href="../../sections/02_population_stratification/02_population_stratification.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,8 +111,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -283,7 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/03B_statistical_power/03B_statistical_power.html">What the data can support</a></li><li class="breadcrumb-item"><a href="../../sections/03B_statistical_power/03B_statistical_power.html">Statistical power</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -297,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
+      <a href="../../index.html" class="sidebar-logo-link">
       </a>
       <div class="sidebar-tools-main">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -312,7 +344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
@@ -327,7 +359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">
+  <a href="../../getting_started.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Before you start: setup</span></a>
   </div>
 </li>
@@ -344,7 +376,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Genotyping technologies and file formats</span></a>
   </div>
 </li>
@@ -361,7 +393,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Genotyping quality control</span></a>
   </div>
 </li>
@@ -378,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Population stratification</span></a>
   </div>
 </li>
@@ -386,16 +418,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
  <span class="menu-text">What the data can support</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/03B_statistical_power/03B_statistical_power.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/03B_statistical_power/03B_statistical_power.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Statistical power</span></a>
   </div>
 </li>
@@ -412,7 +444,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Association testing: case-control</span></a>
   </div>
 </li>
@@ -429,7 +461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/05_meta_analysis/05_meta_analysis.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/05_meta_analysis/05_meta_analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Meta-analysis</span></a>
   </div>
 </li>
@@ -446,7 +478,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/06_finemapping_annotation/06_finemapping_annotation.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Fine mapping</span></a>
   </div>
 </li>
@@ -462,102 +494,270 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#contributing" id="toc-contributing" class="nav-link active" data-scroll-target="#contributing">Contributing</a>
+  <li><a href="#the-arithmetic-in-three-lines" id="toc-the-arithmetic-in-three-lines" class="nav-link active" data-scroll-target="#the-arithmetic-in-three-lines">The arithmetic, in three lines</a></li>
+  <li><a href="#what-this-study-could-have-found" id="toc-what-this-study-could-have-found" class="nav-link" data-scroll-target="#what-this-study-could-have-found">01 - What this study could have found</a>
   <ul class="collapse">
-  <li><a href="#one-time-setup" id="toc-one-time-setup" class="nav-link" data-scroll-target="#one-time-setup">1. One-time setup</a></li>
-  <li><a href="#the-day-to-day-workflow" id="toc-the-day-to-day-workflow" class="nav-link" data-scroll-target="#the-day-to-day-workflow">2. The day-to-day workflow</a></li>
-  <li><a href="#code-style-kept-uniform-on-purpose" id="toc-code-style-kept-uniform-on-purpose" class="nav-link" data-scroll-target="#code-style-kept-uniform-on-purpose">3. Code style (kept uniform on purpose)</a></li>
-  <li><a href="#documentation-references" id="toc-documentation-references" class="nav-link" data-scroll-target="#documentation-references">4. Documentation &amp; references</a></li>
-  <li><a href="#what-must-not-go-into-git" id="toc-what-must-not-go-into-git" class="nav-link" data-scroll-target="#what-must-not-go-into-git">5. What must NOT go into git</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">6. Questions</a></li>
+  <li><a href="#the-one-variant-that-was-detectable-and-what-its-detection-cost" id="toc-the-one-variant-that-was-detectable-and-what-its-detection-cost" class="nav-link" data-scroll-target="#the-one-variant-that-was-detectable-and-what-its-detection-cost">The one variant that was detectable, and what its detection cost</a></li>
   </ul></li>
+  <li><a href="#survival-analysis-obeys-a-different-rule" id="toc-survival-analysis-obeys-a-different-rule" class="nav-link" data-scroll-target="#survival-analysis-obeys-a-different-rule">02 - Survival analysis obeys a different rule</a></li>
+  <li><a href="#key-decisions-on-this-page" id="toc-key-decisions-on-this-page" class="nav-link" data-scroll-target="#key-decisions-on-this-page">Key decisions on this page</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/CONTRIBUTING.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/03B_statistical_power/03B_statistical_power.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
 
 
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/03B_statistical_power/03B_statistical_power.html">What the data can support</a></li><li class="breadcrumb-item"><a href="../../sections/03B_statistical_power/03B_statistical_power.html">Statistical power</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Statistical power</h1>
+</div>
+
+<div>
+  <div class="description">
+    Work out what the data can support before running the test that will be interpreted
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
 
-<section id="contributing" class="level1">
-<h1>Contributing</h1>
-<p>Thank you for contributing to the GWAS guide. This file explains <strong>how we work together</strong> so that everyone builds on the same, consistent base of files.</p>
-<p>The golden rule: <strong><code>main</code> is protected.</strong> It always reflects the agreed, harmonised version. You never commit directly to it — you propose changes through a Pull Request (PR), which a maintainer reviews and merges.</p>
-<p>Maintainers (the only people who merge to <code>main</code>): <strong>Manuel Gentiluomo</strong> and <strong>Riccardo Farinella</strong>.</p>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Power analysis has a reputation as a formality performed for a grant application and then forgotten. In a rare and complex trait it is the step that decides which of the analyses in this guide are legitimate at all, and it belongs exactly here: after the analysis set is fixed, and before any association test whose result you will be tempted to believe.</p>
+<p>The question it answers is narrow and useful. Given the people actually in hand, how large would an effect have to be for this study to find it?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/gwas_tutorial/</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> scripts/03B_statistical_power/</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> results/power/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Before you start">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Before you start
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Finish <a href="../../sections/02_population_stratification/02_population_stratification.html">Population stratification</a>, which defines the analysis set. The comparison with all ancestries combined also uses <a href="../../sections/05_meta_analysis/05_meta_analysis.html">Meta-analysis</a>.</p>
+</div>
+</div>
 <hr>
-<section id="one-time-setup" class="level2">
-<h2 class="anchored" data-anchor-id="one-time-setup">1. One-time setup</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># clone the repository</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/<span class="op">&lt;</span>OWNER<span class="op">&gt;</span>/how-to-gwas-pdac.git</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> how-to-gwas-pdac</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># tell git who you are (so your contributions are attributed correctly)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config user.name  <span class="st">"Your Name"</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> config user.email <span class="st">"your.email@institution.edu"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If you do not yet have write access, ask Manuel to add you as a collaborator, or fork the repository and open PRs from your fork.</p>
+<section id="the-arithmetic-in-three-lines" class="level2">
+<h2 class="anchored" data-anchor-id="the-arithmetic-in-three-lines">The arithmetic, in three lines</h2>
+<p>Power depends on how much information the design carries about the genetic effect, and that information is a product of three things:</p>
+<p><span class="math display">\[\text{information} \;=\; N \times \pi(1-\pi) \times \operatorname{Var}(G), \qquad \operatorname{Var}(G) = 2p(1-p)\]</span></p>
+<p>the sample size, the variability of the outcome, and the variability of the genotype. Multiplying by the squared effect gives the non-centrality parameter of a one degree of freedom chi-squared statistic, and power is the probability that this exceeds the critical value set by the significance threshold.</p>
+<p>Each term earns its place, and each says something practical.</p>
+<p><strong>Var(G) = 2p(1 − p)</strong> means information collapses as a variant becomes rare. This is why low-frequency variants are hard, and why a rare disease does not confer any special ability to detect rare variants.</p>
+<p><strong>π(1 − π)</strong>, where π is the proportion of cases, is maximised at π = 0.5. A balanced design is the most efficient one, and imbalance costs information that no analysis can recover.</p>
+<p><strong>N</strong> is the only term you can buy.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="Report the effective sample size, not the total">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Report the effective sample size, not the total
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An unbalanced study behaves like a smaller balanced one:</p>
+<p><span class="math display">\[N_{\text{eff}} = \frac{4 \, N_{\text{cases}} \, N_{\text{controls}}}{N_{\text{cases}} + N_{\text{controls}}}\]</span></p>
+<p>On the demonstration data, 229 cases and 396 controls, <strong>625 people behave like 580</strong>. Past about four controls per case the curve flattens, so recruiting a fifth or sixth control adds almost nothing. If controls are cheap and cases are not, which is the usual situation in a rare cancer, this is where to stop.</p>
+</div>
+</div>
 <hr>
 </section>
-<section id="the-day-to-day-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="the-day-to-day-workflow">2. The day-to-day workflow</h2>
-<ol type="1">
-<li><p><strong>Sync</strong> with the latest <code>main</code> before starting:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout main</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p><strong>Create a branch</strong> for your work. Use the convention <code>section&lt;NN&gt;-&lt;short-topic&gt;</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="at">-b</span> section02-pca-draft</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p><strong>Work inside your section folder</strong> (<code>sections/&lt;your section&gt;/</code>). Add your Markdown text and your annotated scripts there. Do not edit other people’s sections without coordinating first.</p></li>
-<li><p><strong>Commit</strong> in small, clear steps:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add sections/02_population_stratification/</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"Section 2: first draft of PCA narrative + plink2 PCA script"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
-<li><p><strong>Push</strong> your branch and <strong>open a Pull Request</strong> to <code>main</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> push <span class="at">-u</span> origin section02-pca-draft</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Then open the PR on GitHub and request review from a maintainer.</p></li>
-<li><p>A maintainer reviews, may ask for small edits, and <strong>merges</strong>. After merge, delete your branch and start the next piece from a fresh <code>main</code>.</p></li>
-</ol>
-<blockquote class="blockquote">
-<p>Working on the same files at the same time? Pull often and keep branches short-lived to avoid conflicts.</p>
-</blockquote>
+<section id="what-this-study-could-have-found" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-study-could-have-found">01 - What this study could have found</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/03B_statistical_power/01_power_curves.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="results/pdac_demo_07_power_curves.png" class="img-fluid"></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Minor allele frequency</th>
+<th>Analysis set, N_eff 580</th>
+<th>All strata combined, N_eff 1,190</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.50</td>
+<td>2.09</td>
+<td>1.68</td>
+</tr>
+<tr class="even">
+<td>0.30</td>
+<td>2.24</td>
+<td>1.76</td>
+</tr>
+<tr class="odd">
+<td>0.20</td>
+<td>2.52</td>
+<td>1.91</td>
+</tr>
+<tr class="even">
+<td>0.10</td>
+<td>3.43</td>
+<td>2.36</td>
+</tr>
+<tr class="odd">
+<td>0.05</td>
+<td>5.45</td>
+<td>3.27</td>
+</tr>
+<tr class="even">
+<td>0.02</td>
+<td>13.99</td>
+<td>6.32</td>
+</tr>
+</tbody>
+</table>
+<p>Those are the smallest odds ratios detectable with 80% power at <em>P</em> &lt; 5 × 10⁻⁸. Read them against the effects that actually exist: established cancer susceptibility loci have odds ratios between 1.1 and 1.5, the grey band on the figure. Nothing in that band is reachable at either sample size.</p>
+<p>Put as power rather than as a threshold, the same fact is starker:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Power at MAF 0.30</th>
+<th>Power at MAF 0.10</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>OR 1.2</td>
+<td>0.0%</td>
+<td>0.0%</td>
+</tr>
+<tr class="even">
+<td>OR 1.3</td>
+<td>0.0%</td>
+<td>0.0%</td>
+</tr>
+<tr class="odd">
+<td>OR 1.5</td>
+<td>1.1%</td>
+<td>0.0%</td>
+</tr>
+<tr class="even">
+<td>OR 2.0</td>
+<td>48.4%</td>
+<td>2.8%</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-warning callout-titled" title="The result of this study was determined before it was run">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>The result of this study was determined before it was run
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A typical cancer susceptibility variant, odds ratio 1.3, had <strong>no chance</strong> of detection here. The shape of the Manhattan plot in <a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing</a>, one peak and nothing else, was fixed by this table, not by the biology and not by the quality of the analysis.</p>
+<p>This is worth stating plainly because it changes what the result means. A scan that finds nothing under these conditions has not failed. It has returned the correct answer for its size, and reporting it as such, with this table alongside, is a contribution rather than an admission.</p>
+</div>
+</div>
+<section id="the-one-variant-that-was-detectable-and-what-its-detection-cost" class="level3">
+<h3 class="anchored" data-anchor-id="the-one-variant-that-was-detectable-and-what-its-detection-cost">The one variant that was detectable, and what its detection cost</h3>
+<p>The demonstration phenotype was simulated from a variant with an odds ratio of 2.40 at a frequency of 0.085. Its power in the European analysis set is <strong>9.8%</strong>.</p>
+<p>It was detected anyway, at <em>P</em> = 5.3 × 10⁻⁹. That is not luck to be celebrated; it is a selection event to be reckoned with. In an underpowered scan the variants that cross the threshold are those whose estimates happened to fall high, which is exactly why the odds ratio recovered in Section 4A is <strong>3.80</strong> and not 2.40, an inflation of 58%.</p>
+<p>Power and the winner’s curse are two descriptions of one situation. Low power does not only mean missing real effects; it means that the effects you do find are overstated, and by an amount that grows as power falls. An effect size taken from a discovery scan of this size should never be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study.</p>
+<p>Across the three ancestry strata combined the effective sample size rises to 1,190 and power at the same variant to <strong>69.3%</strong>. That is the quantitative case for <a href="../../sections/05_meta_analysis/05_meta_analysis.html">meta-analysis</a>, made on this dataset rather than asserted.</p>
 <hr>
 </section>
-<section id="code-style-kept-uniform-on-purpose" class="level2">
-<h2 class="anchored" data-anchor-id="code-style-kept-uniform-on-purpose">3. Code style (kept uniform on purpose)</h2>
+</section>
+<section id="survival-analysis-obeys-a-different-rule" class="level2">
+<h2 class="anchored" data-anchor-id="survival-analysis-obeys-a-different-rule">02 - Survival analysis obeys a different rule</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/03B_statistical_power/02_power_events.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><img src="results/pdac_demo_07_survival_power.png" class="img-fluid"></p>
+<p>In a Cox model the partial likelihood compares, at each event time, the genotype of the individual having the event with those still at risk. Only event times contribute a comparison, so the information is</p>
+<p><span class="math display">\[\text{information} = D \times \operatorname{Var}(G)\]</span></p>
+<p>with <em>D</em> the number of observed <strong>events</strong>. Censored individuals enter the risk sets and add nothing to the test.</p>
+<p>On the demonstration data, restricted to the European analysis set:</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Individuals with follow up</td>
+<td>625</td>
+</tr>
+<tr class="even">
+<td>Observed events</td>
+<td><strong>144</strong></td>
+</tr>
+<tr class="odd">
+<td>Censored</td>
+<td>481</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The number that governs power is 144, not 625.</strong> With 144 events, the smallest detectable hazard ratio at MAF 0.30 is 2.25, and a hazard ratio of 1.5 has 1.1% power.</p>
+<p>Turning it round gives the number to put in a protocol:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>To detect, at MAF 0.30 with 80% power</th>
+<th>Events required</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>HR 1.3</td>
+<td>1,370</td>
+</tr>
+<tr class="even">
+<td>HR 1.5</td>
+<td>574</td>
+</tr>
+<tr class="odd">
+<td>HR 2.0</td>
+<td>196</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled" title="What this means for a rapidly fatal cancer">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What this means for a rapidly fatal cancer
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The way to power a survival scan is to raise the event count: enrich for individuals at higher risk, or extend follow up. Recruiting more people who will be censored does not help, and a study that reports several thousand participants may be, for this purpose, a small study.</p>
+<p>There is an uncomfortable corollary specific to PDAC. Because survival is short, events accrue quickly, which is the one respect in which this disease is easier than most. The binding constraint is instead how many patients can be recruited and followed at all.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="key-decisions-on-this-page" class="level2">
+<h2 class="anchored" data-anchor-id="key-decisions-on-this-page">Key decisions on this page</h2>
 <ul>
-<li><strong>Languages/tools:</strong> PLINK 2 and R only, unless agreed otherwise.</li>
-<li><strong>One step = one script</strong>, numbered, self-contained, and <strong>heavily commented</strong> — remember the audience has no bioinformatics background. A reader should understand <em>why</em> each flag/option is used, not just <em>what</em> it does.</li>
-<li>Every script <strong>prints the command for the next step</strong> at the end.</li>
-<li>Use the demo dataset (<code>demo_dataset/</code>) as the running example so all sections are consistent. Do <strong>not</strong> introduce a different example dataset without agreement.</li>
-<li>Make randomness reproducible: expose a <code>--seed</code> (default <code>2026</code>).</li>
-<li>Assume genome build <strong>GRCh38</strong>.</li>
+<li>Whether the study is powered for the intended primary analysis. If it is not, say so in the protocol rather than discovering it in the discussion.</li>
+<li>The effective sample size rather than the nominal one, reported as such.</li>
+<li>Whether a planned secondary analysis, survival, subgroup, gene by environment or rare variant, has enough events or carriers to be run honestly, or should be pre-specified as exploratory. This is the decision most often skipped.</li>
+<li>Whether an effect estimate from this study is fit to be reused downstream, given how much the winner’s curse inflates estimates at this power.</li>
+<li>Whether the answer to all of the above is that the study should contribute to a meta-analysis rather than stand alone. For a rare cancer it usually is, and recognising it early changes what is worth doing.</li>
 </ul>
-<hr>
-</section>
-<section id="documentation-references" class="level2">
-<h2 class="anchored" data-anchor-id="documentation-references">4. Documentation &amp; references</h2>
-<ul>
-<li>Write narrative in <strong>Markdown</strong>.</li>
-<li>Cite as provisional placeholders: <code>[DOI/PMID]</code> in square brackets, <strong>highlighted yellow</strong>. Final formatting will be harmonised to <strong>Vancouver</strong> style by the editors.</li>
-<li>Keep figures in <code>docs/</code> (PNG/PDF, 300 dpi).</li>
-</ul>
-<hr>
-</section>
-<section id="what-must-not-go-into-git" class="level2">
-<h2 class="anchored" data-anchor-id="what-must-not-go-into-git">5. What must NOT go into git</h2>
-<ul>
-<li>Raw or intermediate genotype data (<code>*.bed/bim/fam</code>, <code>*.pgen/pvar/psam</code>, <code>*.vcf*</code>, downloaded HAPNEST files). These are large and are regenerated by the scripts. The <code>.gitignore</code> already excludes them.</li>
-<li>Any real, access-controlled individual-level data (e.g.&nbsp;dbGaP / PANSCAN). The demo example uses only the <strong>synthetic</strong> HAPNEST data.</li>
-<li>Credentials, tokens, absolute local paths.</li>
-</ul>
-<p>Commit only: scripts, Markdown text, final summary statistics, and figures.</p>
-<hr>
-</section>
-<section id="questions" class="level2">
-<h2 class="anchored" data-anchor-id="questions">6. Questions</h2>
-<p>Open a GitHub <strong>Issue</strong> for anything that needs group discussion (scope of a section, an overlap between sections, a data question). Use Issues rather than email threads so the decision is visible to everyone and stays with the code.</p>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -974,9 +1174,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../sections/02_population_stratification/02_population_stratification.html" class="pagination-link" aria-label="Population stratification">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Population stratification</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../sections/04A_association_binary/04A_association_binary.html" class="pagination-link" aria-label="Association testing: case-control">
+        <span class="nav-page-text">Association testing: case-control</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/CONTRIBUTING.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/03B_statistical_power/03B_statistical_power.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
