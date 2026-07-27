@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Test every variant against disease status, check the result before believing it, and read a scan that is mostly null">
+<meta name="description" content="What comes off the array, how it becomes analysable, and which decisions here you cannot undo later">
 
-<title>Association testing: case-control – How to carry out a GWAS</title>
+<title>Genotyping technologies and file formats – How to carry out a GWAS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../sections/05_meta_analysis/05_meta_analysis.html" rel="next">
-<link href="../../sections/02_population_stratification/02_population_stratification.html" rel="prev">
+<link href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" rel="next">
+<link href="../../getting_started.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -286,7 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing</a></li><li class="breadcrumb-item"><a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing: case-control</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/01A_study_design/01A_study_design.html">Before the data</a></li><li class="breadcrumb-item"><a href="../../sections/01A_study_design/01A_study_design.html">Genotyping technologies and file formats</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -338,16 +338,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Before the data</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Genotyping technologies and file formats</span></a>
   </div>
 </li>
@@ -389,16 +389,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false">
  <span class="menu-text">Association testing</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Association testing: case-control</span></a>
   </div>
 </li>
@@ -431,28 +431,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#assembling-the-covariates" id="toc-assembling-the-covariates" class="nav-link active" data-scroll-target="#assembling-the-covariates">01 - Assembling the covariates</a></li>
-  <li><a href="#running-the-test" id="toc-running-the-test" class="nav-link" data-scroll-target="#running-the-test">02 - Running the test</a></li>
-  <li><a href="#checking-the-result-before-believing-it" id="toc-checking-the-result-before-believing-it" class="nav-link" data-scroll-target="#checking-the-result-before-believing-it">03 - Checking the result before believing it</a></li>
-  <li><a href="#the-manhattan-plot" id="toc-the-manhattan-plot" class="nav-link" data-scroll-target="#the-manhattan-plot">04 - The Manhattan plot</a></li>
-  <li><a href="#the-top-locus-and-what-its-effect-size-is-worth" id="toc-the-top-locus-and-what-its-effect-size-is-worth" class="nav-link" data-scroll-target="#the-top-locus-and-what-its-effect-size-is-worth">05 - The top locus, and what its effect size is worth</a></li>
+  <li><a href="#choosing-an-array" id="toc-choosing-an-array" class="nav-link active" data-scroll-target="#choosing-an-array">Choosing an array</a></li>
+  <li><a href="#what-comes-off-the-machine" id="toc-what-comes-off-the-machine" class="nav-link" data-scroll-target="#what-comes-off-the-machine">01 - What comes off the machine</a>
+  <ul class="collapse">
+  <li><a href="#who-called-the-genotypes-and-with-what" id="toc-who-called-the-genotypes-and-with-what" class="nav-link" data-scroll-target="#who-called-the-genotypes-and-with-what">Who called the genotypes, and with what</a></li>
+  </ul></li>
+  <li><a href="#from-final-report-to-plink-using-the-manifest" id="toc-from-final-report-to-plink-using-the-manifest" class="nav-link" data-scroll-target="#from-final-report-to-plink-using-the-manifest">02 - From Final Report to PLINK, using the manifest</a>
+  <ul class="collapse">
+  <li><a href="#what-the-conversion-does" id="toc-what-the-conversion-does" class="nav-link" data-scroll-target="#what-the-conversion-does">What the conversion does</a></li>
+  </ul></li>
+  <li><a href="#to-binary-merged-and-repaired" id="toc-to-binary-merged-and-repaired" class="nav-link" data-scroll-target="#to-binary-merged-and-repaired">03 - To binary, merged and repaired</a></li>
+  <li><a href="#pre-flight-checks" id="toc-pre-flight-checks" class="nav-link" data-scroll-target="#pre-flight-checks">04 - Pre-flight checks</a></li>
+  <li><a href="#the-problem-that-defines-rare-cancer-consortia" id="toc-the-problem-that-defines-rare-cancer-consortia" class="nav-link" data-scroll-target="#the-problem-that-defines-rare-cancer-consortia">The problem that defines rare-cancer consortia</a></li>
   <li><a href="#key-decisions-on-this-page" id="toc-key-decisions-on-this-page" class="nav-link" data-scroll-target="#key-decisions-on-this-page">Key decisions on this page</a></li>
-  <li><a href="#what-comes-next" id="toc-what-comes-next" class="nav-link" data-scroll-target="#what-comes-next">What comes next</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/04A_association_binary/04A_association_binary.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/01A_study_design/01A_study_design.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing</a></li><li class="breadcrumb-item"><a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing: case-control</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/01A_study_design/01A_study_design.html">Before the data</a></li><li class="breadcrumb-item"><a href="../../sections/01A_study_design/01A_study_design.html">Genotyping technologies and file formats</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Association testing: case-control</h1>
+<h1 class="title">Genotyping technologies and file formats</h1>
 </div>
 
 <div>
   <div class="description">
-    Test every variant against disease status, check the result before believing it, and read a scan that is mostly null
+    What comes off the array, how it becomes analysable, and which decisions here you cannot undo later
   </div>
 </div>
 
@@ -469,176 +475,533 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is the step everything so far has been preparing for: testing each variant for association with disease status. It is also the shortest step to run and the easiest to misread.</p>
-<p>The test itself is a logistic regression, one variant at a time, asking whether carrying more copies of an allele changes the odds of being a case. What takes judgement is everything around it: which covariates enter the model, which test handles a small and unbalanced case series, and how to tell a result worth reporting from a result worth investigating.</p>
+<p>Every other page in this guide starts from a clean PLINK dataset. This one is about how that dataset comes into existence, and about the decisions taken before it exists that constrain everything afterwards.</p>
+<p>Two of them matter most. Which array was used, which fixes what can ever be measured or imputed. And whether the cohort was genotyped on one platform or several, which in a rare cancer is usually several, because the samples were collected over fifteen years.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/gwas_tutorial/</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> demo_data/</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> scripts/04A_association_binary/</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> results/assoc/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Before you start">
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> example_data/            a real Illumina Final Report, one sample</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> scripts/01A_study_design/</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> results/raw/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="What you need">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Before you start
+<span class="screen-reader-only">Tip</span>What you need
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Finish <a href="../../sections/02_population_stratification/02_population_stratification.html">Population stratification</a> first. You need <code>results/pca/pdac_demo_02_pca_eur.eigenvec</code> and <code>results/pca/pdac_demo_02_eur_keep.txt</code>.</p>
+<p><code>plink</code> (version 1.9) as well as <code>plink2</code>, and <code>Rscript</code>. The long format used in Step 02 is a PLINK 1 input, which is why both are needed on this page and only <code>plink2</code> elsewhere.</p>
 </div>
 </div>
-<hr>
-<section id="assembling-the-covariates" class="level2">
-<h2 class="anchored" data-anchor-id="assembling-the-covariates">01 - Assembling the covariates</h2>
-<p><strong>Why.</strong> Covariate adjustment is the mechanism by which the confounding found in Section 2 is actually removed. A principal component that is computed and then not used has corrected nothing.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/04A_association_binary/01_make_covariates.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This merges sex and age with the ten within-Europe components, and additionally tests each component against case status in a model containing sex and age. On the demonstration data <strong>no component is associated with status</strong>, which is what a single-ancestry analysis set should look like.</p>
-<div class="callout callout-style-default callout-important callout-titled" title="What it means if several components are strongly associated">
+<div class="callout callout-style-default callout-note callout-titled" title="About the example data">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>What it means if several components are strongly associated
+<span class="screen-reader-only">Note</span>About the example data
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>It means something differs systematically between cases and controls along the axes of genetic variation. In a well-designed study that is residual ancestry, and adding components helps. In a multi-centre study it is often recruitment: cases from one country, controls from another. No number of principal components repairs a design in which cases and controls were drawn from different populations. Diagnose it here, before the association test, not afterwards.</p>
-</div>
-</div>
-<hr>
-</section>
-<section id="running-the-test" class="level2">
-<h2 class="anchored" data-anchor-id="running-the-test">02 - Running the test</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/04A_association_binary/02_association.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Three parts of that command are worth understanding.</p>
-<p><strong><code>--glm firth-fallback</code>.</strong> Ordinary logistic regression breaks down when a variant is rare, when cases are few, or when a genotype almost perfectly separates cases from controls: the estimate diverges and the P value cannot be trusted. Firth’s penalised likelihood fixes this. The fallback form uses ordinary regression by default and switches to Firth only where it is needed. On the demonstration data Firth is invoked for <strong>2,221</strong> variants, all of them low-frequency. With a few hundred cases this is not a refinement, it is a requirement.</p>
-<p><strong><code>--covar-name SEX,AGE,PC1...PC10</code>.</strong> The adjustment set. In a multi-centre study, recruitment centre or genotyping batch belongs here too, as a categorical term.</p>
-<p><strong><code>--chr 1-22</code>.</strong> Autosomes only. The chromosome X in this dataset is simulated so that the sex check in Section 1B has something to act on, and carries no phenotype signal. PLINK 2 also models sex itself on chrX, which collides with sex as a user covariate and stops the run with a <code>CORR_TOO_HIGH</code> error. Analysing chrX properly is a real task with its own rules and is out of scope here.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="When PLINK 2 is not the right tool">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>When PLINK 2 is not the right tool
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>For a single, moderately imbalanced, essentially unrelated cohort of this size, logistic regression with a Firth fallback is adequate and transparent. Two situations call for something else. Where relatedness is extensive enough that pruning would cost a substantial share of cases, retain those individuals and use a mixed model or whole-genome regression: SAIGE or REGENIE. Where a modest case series is merged with a very large external control set, increasingly common with biobank controls, a saddlepoint-corrected method is required rather than optional, because standard asymptotics fail at those ratios.</p>
-</div>
-</div>
-<p>The log reports what was actually analysed. On the demonstration data: <strong>229 cases and 396 controls</strong>.</p>
-<hr>
-</section>
-<section id="checking-the-result-before-believing-it" class="level2">
-<h2 class="anchored" data-anchor-id="checking-the-result-before-believing-it">03 - Checking the result before believing it</h2>
-<p><strong>Why.</strong> Before looking at any peak, check whether the test statistics as a whole behave as they should under the null. This is what catches residual structure, cryptic relatedness and batch effects.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/04A_association_binary/03_qq_lambda.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><img src="results/pdac_demo_04A_qq.png" class="img-fluid"></p>
-<p>Points should follow the diagonal, lifting off only in the extreme upper tail where true associations live. A curve that rises above the line along its whole length means inflation affecting every variant, which is a property of the analysis rather than of biology.</p>
-<p>On the demonstration data <strong>λ = 1.028</strong>, and λ₁₀₀₀ = 1.098.</p>
-<div class="callout callout-style-default callout-warning callout-titled" title="Compute lambda correctly">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>Compute lambda correctly
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>lambda = median(qchisq(1 - P, df = 1)) / qchisq(0.5, df = 1)</code></p>
-<p>Compute it this way. During the construction of this very dataset, an earlier version calculated it by sorting test statistics in <code>awk</code>; the code was wrong and reported a convincing inflation signal that did not exist. It cost a day of chasing a problem that was not there.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled" title="Reading lambda in a small study">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Reading lambda in a small study
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Lambda scales with sample size under genuine polygenicity, so it must be read relative to the size of the study. With a few hundred cases it is estimated with considerable uncertainty, and 1.05 can be entirely compatible with a well-controlled analysis. λ₁₀₀₀, rescaled to 1,000 cases and 1,000 controls, is the figure comparable across studies. Note also that inflation and deflation have different causes and different remedies, and lambda alone does not tell you which is operating.</p>
-</div>
-</div>
-<hr>
-</section>
-<section id="the-manhattan-plot" class="level2">
-<h2 class="anchored" data-anchor-id="the-manhattan-plot">04 - The Manhattan plot</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/04A_association_binary/04_manhattan.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><img src="results/pdac_demo_04A_manhattan.png" class="img-fluid"></p>
-<p>One peak. Everything else is flat.</p>
-<p>If you have followed a tutorial built on a well-powered common-disease cohort, you have seen a dozen peaks and you may read this plot as a failed analysis. It is not. The phenotype here was simulated from a <strong>single causal locus</strong> at <em>ABO</em> with no polygenic background, so one signal is the correct answer and the flat genome is the true one.</p>
-<p>The deeper point is the one this guide exists to make. At an effective sample size of 580, the smallest odds ratio detectable with 80% power at genome-wide significance is about 2.2 even for a common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it was conducted. The scan is sound; it is simply not powered, and those are different things.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="The two thresholds">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>The two thresholds
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>5 × 10⁻⁸</strong> is approximately a Bonferroni correction for one million independent tests in European-ancestry data. It is somewhat conservative for a single ancestry and anticonservative for trans-ancestry analyses, where LD blocks are shorter.</p>
-<p><strong>1 × 10⁻⁵</strong> is the conventional suggestive line: <strong>8 variants</strong> here. These are not findings and must never be presented as such. But in a rare cancer, discarding them entirely also discards the most plausible candidates for the next consortium round. Report them transparently, flagged as requiring replication, next to the power curve that explains why the study could not resolve them.</p>
-</div>
-</div>
-<hr>
-</section>
-<section id="the-top-locus-and-what-its-effect-size-is-worth" class="level2">
-<h2 class="anchored" data-anchor-id="the-top-locus-and-what-its-effect-size-is-worth">05 - The top locus, and what its effect size is worth</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/04A_association_binary/05_summary.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Regional view</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Lead variant</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p><img src="results/pdac_demo_04A_regional.png" class="img-fluid"></p>
-<p>This plot is what tells you whether a peak is real. A genuine association appears as a cluster: the lead variant surrounded by correlated neighbours with progressively weaker signal, because linkage disequilibrium carries the signal to them. A single isolated point with nothing around it is usually a genotyping artefact and should be checked in the cluster plots before it is believed.</p>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><code>example_data/</code> holds three Final Reports and an array manifest, generated from <code>pdac_demo</code> by <code>scripts/00_make_example_raw_data.R</code> with the project seed 2026.</p>
+<p>They are synthetic for a reason that this guide takes seriously: a real Final Report contains the genome-wide genotypes of an identifiable person, and a manufacturer’s manifest is not ours to redistribute. Everything on this page therefore runs on data we are entitled to publish, exactly like every other section.</p>
+<p>The artefacts injected into them were calibrated on a real Illumina GSAMD-24v3 report, so the numbers behave as they do in practice. Where a measurement from that real file is quoted below, it is quoted as a measurement; the file itself is not reproduced.</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Injected</th>
+<th>Amount</th>
+</tr>
+</thead>
 <tbody>
 <tr class="odd">
-<td>Variant</td>
-<td>9:133249045:A:G, at <em>ABO</em> (9q34.2)</td>
+<td>Variants, samples</td>
+<td>8,000 across 3 samples</td>
 </tr>
 <tr class="even">
-<td>Effect allele</td>
-<td>G, frequency 0.085</td>
+<td>GenCall distribution</td>
+<td>bimodal, median 0.73, 1.1% below the 0.15 threshold</td>
 </tr>
 <tr class="odd">
-<td>Odds ratio</td>
-<td>3.80 (95% CI 2.43 to 5.95)</td>
+<td>No-calls</td>
+<td>about 1.4%, reported as <code>-</code>, a few with a <code>NaN</code> score</td>
 </tr>
 <tr class="even">
-<td>P</td>
-<td>5.3 × 10⁻⁹</td>
+<td>Indel probes</td>
+<td>7.7%, reported as <code>I</code>/<code>D</code></td>
+</tr>
+<tr class="odd">
+<td>Minus-strand design</td>
+<td>42.6% of variants</td>
+</tr>
+<tr class="even">
+<td>Positional names carrying an older build</td>
+<td>25% of variants, 104 also on the wrong chromosome</td>
+</tr>
+<tr class="odd">
+<td>Variants absent from the manifest</td>
+<td>6%</td>
+</tr>
+<tr class="even">
+<td>Strand-flipped block in sample 3</td>
+<td>200 variants, to make the merge fail</td>
 </tr>
 </tbody>
 </table>
-<p><em>ABO</em> is the most robustly replicated PDAC susceptibility locus, and it is the locus the phenotype was simulated from. Recovering it is the positive control: it confirms the pipeline works end to end.</p>
 </div>
 </div>
-</div>
-<div class="callout callout-style-default callout-important callout-titled" title="The effect size is wrong, and knowing by how much is the lesson">
+<hr>
+<section id="choosing-an-array" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-an-array">Choosing an array</h2>
+<p>Before any file exists, someone chooses a platform. The intuition is that a bigger array is a better array. The evidence says otherwise.</p>
+<p>Verlouw and colleagues compared 28 arrays, 10 from Affymetrix and 18 from Illumina, on content, coverage, imputation quality and clinically relevant genes <mark>doi:10.1038/s41431-021-00917-7</mark>. Their central finding is that genome-wide coverage correlates strongly with the number of variants on the array but <strong>does not correlate with imputation quality</strong>, which is what actually determines whether the array is usable for a GWAS. After imputation, essentially every GWAS-oriented array covers more than 90% of known GWAS loci well. Their recommendation is to stop using coverage as a selection criterion.</p>
+<p>What should drive the choice instead:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Consideration</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Additional content</td>
+<td>Pharmacogenetic star alleles, HLA tag variants, ACMG actionable genes. This is where arrays genuinely differ</td>
+</tr>
+<tr class="even">
+<td>Ancestry of the study</td>
+<td>Coverage ranges from 2% to 84% in Europeans but only 2% to 40% in Africans. An array designed on European haplotypes tags other populations less well</td>
+</tr>
+<tr class="odd">
+<td>Compatibility with what you already have</td>
+<td>Consecutive arrays from the same manufacturer overlap surprisingly little</td>
+</tr>
+<tr class="even">
+<td>Cost per sample</td>
+<td>A denser array means fewer samples for the same budget, and in a rare cancer sample size is the binding constraint</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled" title="Why this is a rare-trait decision, not a technical one">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>The effect size is wrong, and knowing by how much is the lesson
+<span class="screen-reader-only">Important</span>Why this is a rare-trait decision, not a technical one
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The simulated odds ratio at this variant is <strong>2.40</strong>. The analysis recovered <strong>3.80</strong>, with a confidence interval whose lower bound, 2.43, sits just above the truth. The estimate is inflated by roughly 58%.</p>
-<p>This is the <strong>winner’s curse</strong>. When an effect size is read from the same underpowered scan that discovered it, only upward fluctuations cross the significance threshold, so surviving estimates are systematically too large. What is unusual here is that the truth is known, so the bias can be measured instead of merely anticipated.</p>
-<p>In a real study the same distortion operates invisibly. Effect estimates from a discovery scan should not be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study without correction. Where replication data exist, take effect sizes from the replication or the combined analysis.</p>
+<p>For a common disease with 50,000 cases available, array choice is a minor optimisation. For a rare cancer it interacts with the thing you cannot buy: cases. Spending the budget on a denser array means genotyping fewer people, and the power calculation in Section 7 of the manuscript shows that at these sample sizes power is dominated by the number of cases, not by marker density. The cheap, current, GWAS-oriented array is almost always the right answer.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="what-comes-off-the-machine" class="level2">
+<h2 class="anchored" data-anchor-id="what-comes-off-the-machine">01 - What comes off the machine</h2>
+<p><strong>Why.</strong> Almost every expensive error, wrong strand, wrong build, wrong allele coding, silently low-quality calls, is visible in the raw export and invisible afterwards.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01A_study_design/01_inspect_final_report.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>An Illumina array is scanned, the intensities are clustered by the calling software, and the result is exported as a <strong>Final Report</strong>: one row per variant per sample, with the two called alleles and a confidence score. Affymetrix platforms produce the equivalent from <code>.CEL</code> files with different column names and the same logic.</p>
+<p>Three things in the header must be recorded now, because recovering them later is painful: the array manifest name, the calling software version, and the number of variants and samples the file claims.</p>
+<p><img src="results/pdac_demo_01A_gc_distribution.png" class="img-fluid"></p>
+<p><strong>The GenCall score.</strong> Every call carries a confidence between 0 and 1. Illumina’s guidance is that calls below about 0.15 are failures. Note what that means: a low-confidence call is <em>not</em> missing in the file. It looks like any other genotype unless you check. In this excerpt the median is 0.72 and 1.4% of calls fall below the threshold.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="A finding worth pausing on">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A finding worth pausing on
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the full report this excerpt came from, the variants named by rs number have a median GenCall of 0.720 and 1.2% failures. The variants named by position, which are the array’s custom content, mostly copy-number and gene-tiling probes, have a median of 0.441 and 4.5% failures.</p>
+<p>The custom content on an array performs measurably worse than the standard backbone. If your analysis depends on that content, check it separately rather than trusting an overall call rate that the backbone dominates.</p>
+</div>
+</div>
+<section id="who-called-the-genotypes-and-with-what" class="level3">
+<h3 class="anchored" data-anchor-id="who-called-the-genotypes-and-with-what">Who called the genotypes, and with what</h3>
+<p>Array and genome build are not the whole of provenance. <strong>The calling software is part of it</strong>, because the same scanner output analysed by different software gives different genotypes.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Platform</th>
+<th>Calling software</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Illumina Infinium</td>
+<td>GenomeStudio</td>
+<td>Final Report, <code>.csv</code></td>
+</tr>
+<tr class="even">
+<td>Illumina Infinium</td>
+<td><a href="https://www.illumina.com/products/by-type/informatics-products/microarray-software/dragen-array.html">DRAGEN Array</a>, local or cloud, the current path</td>
+<td>genotypes, CNV, PGx star alleles, from <code>.idat</code></td>
+</tr>
+<tr class="odd">
+<td>Affymetrix / Thermo Fisher</td>
+<td>Axiom Analysis Suite, APT</td>
+<td>calls from <code>.CEL</code></td>
+</tr>
+<tr class="even">
+<td>Affymetrix 5.0 / 6.0, legacy</td>
+<td><a href="https://www.broadinstitute.org/birdsuite/birdsuite-faq">Birdseed and Birdsuite</a> (Broad Institute)</td>
+<td>calls, plus copy-number-aware genotypes</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled" title="Two consequences that reach all the way to your association test">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Two consequences that reach all the way to your association test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>The caller changes the genotypes.</strong> On the same <code>.CEL</code> files, Birdseed and Birdsuite produce identical calls outside copy-number variable regions and <em>different</em> calls inside them. Birdsuite is copy-number aware and can emit genotypes such as <code>A/-</code> or <code>-/-</code> for a variant sitting in a deletion; Birdseed either miscalls those or leaves them uncalled. This matters concretely for anyone receiving legacy consortium data: PLINK’s biallelic model has no way to represent a hemizygous call, so converting Birdsuite output to <code>.bed</code> silently discards exactly the information that made it better. Record which caller and which version produced your genotypes, and keep the original output.</p>
+<p><strong>The plate is baked into the calls.</strong> Cluster-based callers need many samples at once. Birdsuite is documented as requiring roughly one chemistry plate at a time, about 96 samples and no fewer than 20 to 40, with the explicit warning that running several plates together introduces batch effects the authors describe as unresolvable.</p>
+<p>This is where batch effects are actually created: not during analysis, but during calling, before the dataset exists. It is also why samples added to a study later cannot simply be appended. They were clustered separately, so they carry a systematic difference from the original set. For a rare cancer whose cohort accrues over a decade, this is the normal situation, not the exception, and it is the reason recruitment centre and genotyping batch belong in the covariate file from the very beginning.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="from-final-report-to-plink-using-the-manifest" class="level2">
+<h2 class="anchored" data-anchor-id="from-final-report-to-plink-using-the-manifest">02 - From Final Report to PLINK, using the manifest</h2>
+<div class="callout callout-style-default callout-important callout-titled" title="You need the array manifest, and it must be the right one">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>You need the array manifest, and it must be the right one
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A Final Report names variants and gives their alleles. It does <strong>not</strong> contain coordinates, the genome build, or the design strand. All three come from the <strong>manifest</strong>: the <code>.csv</code> file the manufacturer distributes for each array product, free of charge.</p>
+<p>Get the manifest for exactly the product and version named on the <code>Content</code> line of your report header, and keep it with the raw data. This tutorial does not ship a manifest: it is the manufacturer’s file, and the one you need is the one matching <em>your</em> array, not ours.</p>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/01A_study_design/02_report_to_lgen.R <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        example_data/example_final_report.csv <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        /path/to/GSA-24v3-0_A2.csv <span class="dt">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        0.15</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Before converting anything, the script runs five checks. They exist because every one of them caught a real error while this section was being written.</p>
+<p><strong>1. Product.</strong> Compares the <code>Content</code> line of the report with <code>Descriptor File Name</code> in the manifest. On real data this is the check that fails most often, and it failed while this section was being written: the report came from <code>GSAMD-24v3-0-EA</code>, the Global Screening Array with the multi-disease drop-in and 730,059 variants, while the manifest to hand described <code>GSA-24v3-0_A2</code>, the base product with 654,027 loci. Same family, different array, and 6% of variants unmappable as a result.</p>
+<p><strong>2. Size.</strong> Loci in the manifest against variants in the report.</p>
+<p><strong>3. Name matching.</strong> How many report identifiers are found: <strong>7,520 of 8,000, 94.0%</strong> here, the remainder being the variants deliberately left out of the manifest. The script also tests whether stripping a <code>GSA-</code> prefix improves the match, because some manifests prefix their identifiers while reports do not, and a merge on exact names then fails for every rs-numbered variant without a single error message. That happened too. Below 90% the script warns.</p>
+<p><strong>4. Genome build.</strong> Taken from the manifest’s <code>GenomeBuild</code> column: 38 for all matched variants here. Note that the same array has an A1 manifest on GRCh37 and an A2 manifest on GRCh38. Choosing the wrong one shifts every coordinate.</p>
+<p><strong>5. A diagnostic worth running once.</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Variant names are not coordinates">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Variant names are not coordinates
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Some array identifiers look like positions, for instance <code>1:103380393</code>. It is tempting to parse them instead of using the manifest. Measured on the example data:</p>
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td>Variants with a positional name</td>
+<td>1,860</td>
+</tr>
+<tr class="even">
+<td>Name position <strong>equals</strong> the manifest coordinate</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Name position <strong>differs</strong></td>
+<td>1,860</td>
+</tr>
+<tr class="even">
+<td>Chromosome also differs</td>
+<td>97</td>
+</tr>
+</tbody>
+</table>
+<p>The offsets here are 384 to 543 kb, the size of a build shift. On the real array this was measured directly: of 5,745 positionally named variants, only 776 agreed with the manifest coordinate and 4,969 differed, because the names carry GRCh37 positions while the A2 manifest is GRCh38. Coordinates read from names would be wrong for the great majority of variants and would look entirely plausible. Nothing downstream would complain.</p>
+</div>
+</div>
+<section id="what-the-conversion-does" class="level3">
+<h3 class="anchored" data-anchor-id="what-the-conversion-does">What the conversion does</h3>
+<p><strong>Strand.</strong> The manifest gives the design alleles as <code>[A/G]</code> on the design strand, and <code>RefStrand</code> says whether that is the plus strand of the reference. In the example data <strong>3,194 of 7,520 variants, 42.5%, are on the minus strand</strong> and must be complemented before they can be compared with plus-strand genotypes; the real array measured 43%. Skip this and you get the wrong reference allele for nearly half the array, silently.</p>
+<p><strong>Quality.</strong> Calls below the GenCall threshold are written as missing rather than deleted, so the loss stays visible as missingness for Section 1B to find. The threshold is an argument, and the count goes in the log.</p>
+<p><strong>Three things hide in the allele columns.</strong> This is the one that surprised us:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>In the report</th>
+<th>Count in sample DEMO001</th>
+<th>Treatment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>A</code> <code>C</code> <code>G</code> <code>T</code></td>
+<td>7,292</td>
+<td>kept</td>
+</tr>
+<tr class="even">
+<td><code>-</code></td>
+<td>102</td>
+<td>no-call, written as missing</td>
+</tr>
+<tr class="odd">
+<td><code>I</code> or <code>D</code></td>
+<td>606 (7.6%)</td>
+<td><strong>indel</strong>, dropped, and counted</td>
+</tr>
+</tbody>
+</table>
+<p>The array carries insertion and deletion probes. A filter written as “keep only A, C, G, T”, which is the natural thing to write, discards them along with the no-calls, and nothing says so. Dropping indels is a defensible choice, since PLINK’s biallelic model represents them poorly and most GWAS analyse SNPs only. Doing it without knowing is not.</p>
+<p>The per-sample log records all of it:</p>
+<pre><code> sample calls no_call indel failed_gc unmapped written
+DEMO001  8000     102   606        86      480    6793
+DEMO002  8000     112   601       109      480    6759
+DEMO003  8000     113   607       114      480    6757</code></pre>
+<hr>
+</section>
+</section>
+<section id="to-binary-merged-and-repaired" class="level2">
+<h2 class="anchored" data-anchor-id="to-binary-merged-and-repaired">03 - To binary, merged and repaired</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01A_study_design/03_lgen_to_binary.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Each sample is converted independently, then samples are added to the merge <strong>one at a time</strong>. That order matters in practice: Final Reports usually arrive one file per sample and genotyping runs arrive months apart, so a new run is added by converting it and merging it in rather than reprocessing everything. Merging incrementally is slower than a single <code>--merge-list</code>, but when a conflict appears you know exactly which sample caused it.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="What a merge conflict means, and what to do about it">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What a merge conflict means, and what to do about it
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>On the example data the run reports:</p>
+<pre><code>  base: DEMO001
+  DEMO002: merged cleanly
+  DEMO003: merge conflict on 142 variants
+    resolved by flipping 142 variants in DEMO003: it was a strand difference</code></pre>
+<p>A variant that shows three or more alleles once two samples are put together does not exist biologically. It means the same variant was coded differently in the two files, and the usual cause is a strand difference.</p>
+<p>The tempting response is to exclude the offending variants, and it is the wrong one: it hides the problem and leaves the rest of the dataset built on the same mistake. The right response is to flip the strand of the sample that conflicts and retry. If the conflict survives the flip, the samples were genuinely converted against different references, and that has to be fixed upstream rather than patched here.</p>
+<p>Note also why flipping <em>every</em> sample is wrong: it resolves this conflict and creates others. Only the sample that disagrees should be changed, which is why the merge is done one sample at a time.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled" title="The repair almost nobody mentions">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The repair almost nobody mentions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A variant that is monomorphic among the samples in hand shows only one allele, so PLINK writes <code>0</code> in the other allele column of the <code>.bim</code>. That zero is not missing data, it is an <strong>unobserved</strong> allele, and it breaks later merges, strand checks and imputation.</p>
+<p>In the example, across three samples, <strong>1,546 of 6,938 variants</strong> carry such a zero: the fewer samples you have, the more variants look monomorphic, and with a single sample it would be most of them. The manifest knows what the second allele should be, so the script fills it in: take the observed allele, look up the design pair, write the other one. <strong>All 1,546 are repaired.</strong></p>
+<p>Without this step the dataset looks fine and cannot be combined with anything.</p>
+</div>
+</div>
+<p><strong>Why binary.</strong> A <code>.ped</code> stores roughly four bytes per genotype; a <code>.bed</code> packs four genotypes into one byte. On chromosome 22 of the demonstration dataset the text export is 36 MB against 1.5 MB for the PLINK 2 native format.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>.bed</code></td>
+<td>the genotypes, packed binary, not human-readable</td>
+</tr>
+<tr class="even">
+<td><code>.bim</code></td>
+<td>one row per variant: chromosome, ID, genetic distance, position, allele 1, allele 2</td>
+</tr>
+<tr class="odd">
+<td><code>.fam</code></td>
+<td>one row per sample: family ID, individual ID, father, mother, sex, phenotype</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled" title="The formats you will meet">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The formats you will meet
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Format</th>
+<th>Files</th>
+<th>Where it appears</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Final Report</td>
+<td><code>.csv</code></td>
+<td>Illumina calling output</td>
+</tr>
+<tr class="even">
+<td>CEL / AxiomGT</td>
+<td><code>.CEL</code>, <code>.txt</code></td>
+<td>Affymetrix calling output</td>
+</tr>
+<tr class="odd">
+<td>Manifest</td>
+<td><code>.csv</code>, <code>.bpm</code></td>
+<td>coordinates, alleles, strand, build</td>
+</tr>
+<tr class="even">
+<td>PLINK long</td>
+<td><code>.lgen .map .fam</code></td>
+<td>conversion bridge only</td>
+</tr>
+<tr class="odd">
+<td>PLINK text</td>
+<td><code>.ped .map</code></td>
+<td>inspection, legacy tools</td>
+</tr>
+<tr class="even">
+<td>PLINK 1 binary</td>
+<td><code>.bed .bim .fam</code></td>
+<td>the working standard</td>
+</tr>
+<tr class="odd">
+<td>PLINK 2 native</td>
+<td><code>.pgen .pvar .psam</code></td>
+<td>faster, supports dosages</td>
+</tr>
+<tr class="even">
+<td>VCF</td>
+<td><code>.vcf</code> / <code>.vcf.gz</code></td>
+<td>imputation servers, sharing, sequencing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+<section id="pre-flight-checks" class="level2">
+<h2 class="anchored" data-anchor-id="pre-flight-checks">04 - Pre-flight checks</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01A_study_design/04_preflight_and_formats.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Four checks, each cheap now and expensive later. On the converted example, and on the demonstration dataset for comparison:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Check</th>
+<th>Converted example</th>
+<th>Demo dataset</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Variants</td>
+<td>6,938</td>
+<td>430,000</td>
+</tr>
+<tr class="even">
+<td>Unplaced</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Duplicated positions</td>
+<td>0</td>
+<td>22</td>
+</tr>
+<tr class="even">
+<td>Duplicated identifiers</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Strand-ambiguous (A/T, C/G)</td>
+<td>82</td>
+<td>2,430</td>
+</tr>
+</tbody>
+</table>
+<p>The converted example is clean on the first three because the manifest supplied every coordinate and the synthetic array carries one probe per position. Real arrays do not: they place several probes at one coordinate when tiling a gene for copy-number calling, and a real GSA report measured 255 duplicated positions in 6,677 variants. Run the check on your own data rather than assuming.</p>
+<p><strong>Strand-ambiguous variants</strong> cannot be oriented by comparing alleles, because A complements T and C complements G. They are the classic source of sign errors when combining studies, and Section 5 shows what that costs.</p>
+<p><strong>Genome build</strong> is recorded nowhere in a <code>.bim</code>. A GRCh37 dataset analysed as GRCh38 gives coordinates wrong by megabases, and nothing complains. Everything in this guide is GRCh38 with identifiers in <code>chr:pos:ref:alt</code> form.</p>
+<p>Note that even the curated demonstration dataset carries 22 duplicated positions and 2,430 ambiguous variants. Clean data are not the same as unchecked data.</p>
+<hr>
+</section>
+<section id="the-problem-that-defines-rare-cancer-consortia" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-that-defines-rare-cancer-consortia">The problem that defines rare-cancer consortia</h2>
+<p>A cohort assembled over fifteen years across a dozen centres was not genotyped on one platform. It cannot have been: the arrays used in 2010 are not sold today, and consecutive arrays from one manufacturer overlap less than you would expect.</p>
+<p>The obvious response is to impute everything to a common set of variants and analyse the result. <strong>This is wrong, and the way it fails is silent.</strong></p>
+<p>Johnson and colleagues measured it, using among others the PanScan pancreatic cancer data <mark>doi:10.1007/s00439-013-1266-7, PMID:23334152</mark>. Assigning case and control labels arbitrarily between two groups of healthy people genotyped on different arrays, and imputing from the <strong>union</strong> of their genotyped variants, produced:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Arrays compared</th>
+<th>Spurious associations</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Illumina 1M vs 550v3</td>
+<td>0.20% of variants, about 2,000 false positives per million</td>
+</tr>
+<tr class="even">
+<td>Illumina 550v1 vs 550v3 (nearly identical)</td>
+<td>0.07%</td>
+</tr>
+<tr class="odd">
+<td>Illumina 1M vs Affymetrix 6.0</td>
+<td>0.53–0.63%, about 5,000–6,000 per million</td>
+</tr>
+</tbody>
+</table>
+<p>There were no true associations to find. Adjusting for array with principal components failed. Post-imputation filtering, even at the extreme threshold of R² ≥ 0.98, did not remove the bias.</p>
+<p>The correction is simple and counterintuitive: impute from the <strong>intersection</strong> of variants genotyped on all arrays, not the union. Using less information eliminates the bias entirely, and imputation quality holds up well even when only about 30% of the original variants remain.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="What this means for your study">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>What this means for your study
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Establish at the design stage which platforms your cohort spans, and plan to either impute from the intersection or impute each platform batch separately and meta-analyse (Section 5). This is not a detail to settle during analysis: it determines how quality control and imputation are organised.</p>
+<p>And note what a 0.5% false-positive rate means at the scale of a rare-cancer GWAS. With a few hundred cases you expect at most one real signal. Several thousand artefacts per million imputed variants do not merely add noise; they can be the only thing in your Manhattan plot.</p>
 </div>
 </div>
 <hr>
@@ -646,16 +1009,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="key-decisions-on-this-page" class="level2">
 <h2 class="anchored" data-anchor-id="key-decisions-on-this-page">Key decisions on this page</h2>
 <ul>
-<li>Additive model versus alternatives, and the covariate set.</li>
-<li>Firth fallback versus a saddlepoint-corrected whole-genome regression, chosen on imbalance and relatedness rather than habit.</li>
-<li>The interpretation of λ relative to sample size, and which of inflation’s several causes is operating.</li>
-<li>The significance thresholds, and the explicit status assigned to suggestive results.</li>
-<li>Whether an effect estimate is fit to be reused downstream, or whether the winner’s curse makes it fit only for reporting.</li>
+<li>Which array, judged on additional content and on the ancestry of the study rather than on marker count, and weighed against how many samples the budget then allows.</li>
+<li>Whether to accept the genotyping facility’s calling and quality thresholds or repeat them, and which caller and version produced the genotypes. On legacy Affymetrix data, whether the calls came from Birdseed or from the copy-number-aware Birdsuite changes what is in the file.</li>
+<li>Whether samples added later were called together with the original set or separately. If separately, batch is a covariate you must record, not an afterthought.</li>
+<li>The GenCall threshold, and whether failed calls are set to missing or deleted. Set to missing.</li>
+<li>Whether the manifest matches the product in the report header, not merely the array family, and which build it declares. If not, stop and get the right one.</li>
+<li>Whether indels are analysed or dropped, decided and counted rather than filtered away by a condition written for SNPs.</li>
+<li>If the cohort spans platforms: intersection-based imputation, or batch-wise imputation with meta-analysis. Decide before quality control, not after.</li>
 </ul>
-</section>
-<section id="what-comes-next" class="level2">
-<h2 class="anchored" data-anchor-id="what-comes-next">What comes next</h2>
-<p>A single underpowered cohort is where most rare-cancer studies start, not where they end. The result above is a legitimate contribution to a meta-analysis that will eventually have power, and producing it correctly, with full summary statistics and documented decisions, is what makes that contribution usable.</p>
+<p>Next: <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html">Genotyping quality control</a>.</p>
 
 
 </section>
@@ -1076,13 +1438,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../../sections/02_population_stratification/02_population_stratification.html" class="pagination-link" aria-label="Population stratification">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Population stratification</span>
+      <a href="../../getting_started.html" class="pagination-link" aria-label="Before you start: setup">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Before you start: setup</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../sections/05_meta_analysis/05_meta_analysis.html" class="pagination-link" aria-label="Meta-analysis">
-        <span class="nav-page-text">Meta-analysis</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" class="pagination-link" aria-label="Genotyping quality control">
+        <span class="nav-page-text">Genotyping quality control</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -1091,4 +1453,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/04A_association_binary/04A_association_binary.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/01A_study_design/01A_study_design.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
