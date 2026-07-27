@@ -162,3 +162,59 @@ dev.off()
 cat("Written to", out_dir, ":\n")
 cat("  Figure2_qc_trajectory.png\n  Figure3_population_structure.png\n  Figure4_association_and_power.png\n")
 cat("\nlambda =", sprintf("%.4f", lam), " lambda for 80% power =", sprintf("%.2f", lam80), "\n")
+
+# ==============================================================================
+# Figure 5: fine mapping at ABO, and what ancestral diversity resolves
+# ==============================================================================
+fe <- read.delim("results/finemap/pdac_demo_06_pp_eur.tsv", stringsAsFactors = FALSE)
+fm <- read.delim("results/finemap/pdac_demo_06_pp_meta.tsv", stringsAsFactors = FALSE)
+TRUTH <- "9:133249045:A:G"
+in_cs <- function(v) v == TRUE | v == "TRUE"
+
+png(file.path(out_dir, "Figure5_fine_mapping.png"),
+    width = 2400, height = 2000, res = 300)
+layout(matrix(c(1, 1, 2, 3, 4, 4), 3, 2, byrow = TRUE), heights = c(1, 1, 0.95))
+par(mar = c(4, 4.6, 2, 1), mgp = c(2.6, 0.7, 0))
+
+# a: regional association
+ce <- ifelse(in_cs(fe$in_cs), orange, grey)
+plot(fe$POS / 1e6, -log10(fe$P), pch = 19, cex = 0.8, col = ce,
+     xlab = "Position on chromosome 9 (Mb)", ylab = expression(-log[10](italic(P))))
+abline(h = -log10(5e-8), col = orange, lty = 2)
+tr <- fe[fe$ID == TRUTH, ]
+points(tr$POS / 1e6, -log10(tr$P), pch = 5, cex = 2, lwd = 2)
+legend("topleft", bty = "n", cex = 0.7, pch = c(19, 19, 5), col = c(orange, grey, "black"),
+       legend = c("95% credible set", "outside the set", "simulated causal variant"))
+mtext("a", 3, 0.3, adj = 0, font = 2, cex = 1.1)
+
+# b: posterior in the European set
+plot(fe$POS / 1e6, fe$PP, type = "h", lwd = 2, col = ce, ylim = c(0, 1),
+     xlab = "Position (Mb)", ylab = "Posterior probability")
+points(tr$POS / 1e6, tr$PP, pch = 5, cex = 1.8, lwd = 2)
+mtext("b", 3, 0.3, adj = 0, font = 2, cex = 1.1)
+mtext(sprintf("European set: %d variants", sum(in_cs(fe$in_cs))), 3, -1.2, cex = 0.65)
+
+# c: posterior in the combined strata
+cm <- ifelse(in_cs(fm$in_cs), green, grey)
+plot(fm$POS / 1e6, fm$PP, type = "h", lwd = 2, col = cm, ylim = c(0, 1),
+     xlab = "Position (Mb)", ylab = "Posterior probability")
+trm <- fm[fm$ID == TRUTH, ]
+points(trm$POS / 1e6, trm$PP, pch = 5, cex = 1.8, lwd = 2)
+mtext("c", 3, 0.3, adj = 0, font = 2, cex = 1.1)
+mtext(sprintf("three strata: %d variant", sum(in_cs(fm$in_cs))), 3, -1.2, cex = 0.65)
+
+# d: how many variants are needed to reach 95%
+par(mar = c(4.2, 4.6, 2, 1))
+plot(cumsum(sort(fe$PP, decreasing = TRUE)), type = "s", lwd = 2, col = orange,
+     xlim = c(0, 70), ylim = c(0, 1),
+     xlab = "Variants, ranked by posterior probability",
+     ylab = "Cumulative posterior probability")
+lines(cumsum(sort(fm$PP, decreasing = TRUE)), type = "s", lwd = 2, col = green)
+abline(h = 0.95, col = "grey50", lty = 3)
+legend("bottomright", bty = "n", cex = 0.75, lwd = 2, col = c(orange, green),
+       legend = c(sprintf("European set, %d variants to 95%%", sum(in_cs(fe$in_cs))),
+                  sprintf("three strata, %d variant to 95%%", sum(in_cs(fm$in_cs)))))
+mtext("d", 3, 0.3, adj = 0, font = 2, cex = 1.1)
+dev.off()
+
+cat("  Figure5_fine_mapping.png\n")

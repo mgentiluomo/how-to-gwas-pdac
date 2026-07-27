@@ -38,6 +38,9 @@ website:
       - section: "Ancestry and structure"
         contents:
           - sections/02_population_stratification/02_population_stratification.qmd
+      - section: "What the data can support"
+        contents:
+          - sections/03B_statistical_power/03B_statistical_power.qmd
       - section: "Association testing"
         contents:
           - sections/04A_association_binary/04A_association_binary.qmd
