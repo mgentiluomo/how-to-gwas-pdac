@@ -5,8 +5,9 @@ project:
 website:
   title: "How to carry out a GWAS"
   description: >-
-    A step-by-step annotated guide to genome-wide association studies,
-    using pancreatic cancer as a case study. TRANSPAN COST Action (CA21116), WG1.
+    A decision-focused, reproducible guide to genome-wide association studies of
+    rare and complex traits, using pancreatic cancer as a worked example.
+    TRANSPAN COST Action (CA21116), WG1.
   repo-url: https://github.com/mgentiluomo/how-to-gwas-pdac
   repo-actions: [edit, issue]
   page-navigation: true

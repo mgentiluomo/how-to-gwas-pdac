@@ -1,45 +1,49 @@
 ---
 title: "How to carry out a Genome-Wide Association Study"
-subtitle: "A step-by-step annotated guide using pancreatic cancer as a case study"
+subtitle: "A decision-focused, reproducible guide using pancreatic cancer as a worked example"
 ---
 
 ::: {.callout-note title="About this guide"}
 This is the companion website to the methodology manuscript developed within the
-**TRANSPAN COST Action (CA21116), Working Group 1**, targeted at *XXXX Journal*. It pairs annotated **PLINK 2** and **R** code with a fully open,
-reproducible demo dataset, and is written for graduate students and clinicians **without** a
-bioinformatics background.
+**TRANSPAN COST Action (CA21116), Working Group 1**, submitted to *Human Genomics*. It pairs
+annotated **PLINK 2** and **R** code with a fully open, reproducible demo dataset, and is written
+for master's students, clinicians and early-career researchers **without** a bioinformatics
+background.
 :::
 
 ## What is a GWAS?
 
 A genome-wide association study (GWAS) tests the statistical **association** between
-**genetic variants** — typically single-nucleotide polymorphisms (SNPs) — and a **trait**
+**genetic variants**, typically single-nucleotide polymorphisms (SNPs), and a **trait**
 across the entire genome, in order to identify genetic factors that contribute to complex
 traits and diseases.
 
 ## Why pancreatic cancer?
 
 Pancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide:
-a **relativelly rare, multifactorial cancer/trait** with a poorly characterised genetic component. Single-centre
-studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule
-rather than the exception. Teaching GWAS under these realistically difficult conditions makes
-the methodological decisions more transparent than a large, well-powered textbook example would.
+a **relatively rare, multifactorial cancer** with a poorly characterised genetic component.
+Single-centre studies are underpowered, and international consortia, such as PanScan, PanC4 and
+PANDoRA, are the rule rather than the exception. Teaching GWAS under these realistically difficult
+conditions makes the methodological decisions more transparent than a large, well-powered textbook
+example would: a correctly executed pipeline does not, on its own, guarantee a genome-wide
+significant result, and this guide is built to show why.
 
-Should we add dbgap accession numbers and say something like "we use the a simulated demo dataset, it is possible to access real data, which is available at dbgap under accession number XXXXXX"?
+## Who this guide is for
+
+The tutorial is written for two kinds of reader:
+
+- **Beginners**, with little or no previous experience of GWAS, bioinformatics or the command
+  line. Every command is given in full, together with the output you should expect to see.
+- **Intermediate and advanced users**, who already work with genetic data and want a transparent,
+  reproducible teaching workflow in which each decision is visible rather than buried in a
+  wrapper.
 
 ## How to use this guide
 
 Every analysis step is shown as a real command you can run yourself on the open demo dataset, so
 you can reproduce the entire workflow from raw genotypes to final results.
 
-👉 **Start here:** [Before you start — setup and your first PLINK command](getting_started.qmd)
-
-## Target Groups
-
-This tutorial is designed for two main groups:
-
-- **Beginners** who have little or no previous experience with GWAS, bioinformatics, or command-line analysis.
-- **Intermediate and advanced users** who already have some experience with bioinformatics or GWAS and want a transparent, reproducible teaching workflow.
+👉 **Start here:** [Before you start, setup and your first PLINK command](getting_started.qmd)
 
 ::: {.callout-tip title="No coding experience?"}
 You do **not** need to know how to program. Every command is given in full, with an explanation
@@ -47,6 +51,11 @@ of what it does and what the output should look like. If you can copy, paste and
 you can follow this guide.
 :::
 
-The structure is intentionally step by step. Some tasks are split across more than one script, even when they could technically be merged into a single script, because the goal is to make each decision visible and easier to learn.
+The structure is intentionally step by step. Some tasks are split across more than one script even
+where they could be merged into a single command, because the purpose is to make each decision
+visible and to let you see what each filter actually removed.
 
-For the same reason, this tutorial is not designed as a high-performance computing workflow or as a template for large-scale parallel processing. If you are working with large datasets, use an appropriate HPC environment and distribute jobs according to your institution's computing guidelines.
+For the same reason, this is not a high-performance computing workflow and it is not a template
+for large-scale parallel processing. If you are working with a full consortium dataset, run the
+same steps in an appropriate computing environment and distribute jobs according to your
+institution's guidelines.
