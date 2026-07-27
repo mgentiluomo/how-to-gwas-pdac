@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Combine ancestry strata into one result, and read what the strata disagree about">
 
-<title>Meta-analysis – How to carry out a GWAS</title>
+<title>project_state – How to carry out a GWAS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,68 +20,31 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" rel="next">
-<link href="../../sections/04A_association_binary/04A_association_binary.html" rel="prev">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -111,37 +73,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -315,7 +248,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/05_meta_analysis/05_meta_analysis.html">Combining studies</a></li><li class="breadcrumb-item"><a href="../../sections/05_meta_analysis/05_meta_analysis.html">Meta-analysis</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -329,7 +262,7 @@ window.Quarto = {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="../../index.html" class="sidebar-logo-link">
+      <a href="./index.html" class="sidebar-logo-link">
       </a>
       <div class="sidebar-tools-main">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -344,7 +277,7 @@ window.Quarto = {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
@@ -359,7 +292,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../getting_started.html" class="sidebar-item-text sidebar-link">
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Before you start: setup</span></a>
   </div>
 </li>
@@ -376,7 +309,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
+  <a href="./sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Genotyping technologies and file formats</span></a>
   </div>
 </li>
@@ -393,7 +326,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
+  <a href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Genotyping quality control</span></a>
   </div>
 </li>
@@ -410,7 +343,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
+  <a href="./sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Population stratification</span></a>
   </div>
 </li>
@@ -427,7 +360,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
+  <a href="./sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Association testing: case-control</span></a>
   </div>
 </li>
@@ -435,16 +368,16 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false">
  <span class="menu-text">Combining studies</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/05_meta_analysis/05_meta_analysis.html" class="sidebar-item-text sidebar-link active">
+  <a href="./sections/05_meta_analysis/05_meta_analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Meta-analysis</span></a>
   </div>
 </li>
@@ -461,7 +394,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" class="sidebar-item-text sidebar-link">
+  <a href="./sections/06_finemapping_annotation/06_finemapping_annotation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Fine mapping</span></a>
   </div>
 </li>
@@ -477,280 +410,505 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#analysing-each-stratum-separately" id="toc-analysing-each-stratum-separately" class="nav-link active" data-scroll-target="#analysing-each-stratum-separately">01 - Analysing each stratum separately</a></li>
-  <li><a href="#harmonisation-where-the-errors-actually-are" id="toc-harmonisation-where-the-errors-actually-are" class="nav-link" data-scroll-target="#harmonisation-where-the-errors-actually-are">02 - Harmonisation, where the errors actually are</a></li>
-  <li><a href="#combining-the-strata" id="toc-combining-the-strata" class="nav-link" data-scroll-target="#combining-the-strata">03 - Combining the strata</a>
+  <li><a href="#project-state" id="toc-project-state" class="nav-link active" data-scroll-target="#project-state">Project state</a>
   <ul class="collapse">
-  <li><a href="#the-result" id="toc-the-result" class="nav-link" data-scroll-target="#the-result">The result</a></li>
+  <li><a href="#what-this-project-is" id="toc-what-this-project-is" class="nav-link" data-scroll-target="#what-this-project-is">1. What this project is</a></li>
+  <li><a href="#decisions-taken" id="toc-decisions-taken" class="nav-link" data-scroll-target="#decisions-taken">2. Decisions taken</a></li>
+  <li><a href="#key-numbers-and-the-script-that-produces-each" id="toc-key-numbers-and-the-script-that-produces-each" class="nav-link" data-scroll-target="#key-numbers-and-the-script-that-produces-each">3. Key numbers, and the script that produces each</a>
+  <ul class="collapse">
+  <li><a href="#quality-control-sections01b_genotyping_qcscripts" id="toc-quality-control-sections01b_genotyping_qcscripts" class="nav-link" data-scroll-target="#quality-control-sections01b_genotyping_qcscripts">Quality control, <code>sections/01B_genotyping_qc/scripts/</code></a></li>
+  <li><a href="#ancestry-and-analysis-set-sections02_population_stratificationscripts" id="toc-ancestry-and-analysis-set-sections02_population_stratificationscripts" class="nav-link" data-scroll-target="#ancestry-and-analysis-set-sections02_population_stratificationscripts">Ancestry and analysis set, <code>sections/02_population_stratification/scripts/</code></a></li>
+  <li><a href="#association-sections04a_association_binaryscripts" id="toc-association-sections04a_association_binaryscripts" class="nav-link" data-scroll-target="#association-sections04a_association_binaryscripts">Association, <code>sections/04A_association_binary/scripts/</code></a></li>
+  <li><a href="#meta-analysis-sections05_meta_analysisscripts" id="toc-meta-analysis-sections05_meta_analysisscripts" class="nav-link" data-scroll-target="#meta-analysis-sections05_meta_analysisscripts">Meta-analysis, <code>sections/05_meta_analysis/scripts/</code></a></li>
+  <li><a href="#raw-data-handling-sections01a_study_designscripts" id="toc-raw-data-handling-sections01a_study_designscripts" class="nav-link" data-scroll-target="#raw-data-handling-sections01a_study_designscripts">Raw data handling, <code>sections/01A_study_design/scripts/</code></a></li>
+  <li><a href="#fine-mapping-sections06_finemapping_annotationscripts" id="toc-fine-mapping-sections06_finemapping_annotationscripts" class="nav-link" data-scroll-target="#fine-mapping-sections06_finemapping_annotationscripts">Fine mapping, <code>sections/06_finemapping_annotation/scripts/</code></a></li>
   </ul></li>
-  <li><a href="#reading-the-disagreement" id="toc-reading-the-disagreement" class="nav-link" data-scroll-target="#reading-the-disagreement">04 - Reading the disagreement</a></li>
-  <li><a href="#key-decisions-on-this-page" id="toc-key-decisions-on-this-page" class="nav-link" data-scroll-target="#key-decisions-on-this-page">Key decisions on this page</a></li>
-  <li><a href="#the-pitfalls-checklist" id="toc-the-pitfalls-checklist" class="nav-link" data-scroll-target="#the-pitfalls-checklist">The pitfalls checklist</a></li>
+  <li><a href="#verified-references" id="toc-verified-references" class="nav-link" data-scroll-target="#verified-references">4. Verified references</a></li>
+  <li><a href="#state-of-the-deliverables" id="toc-state-of-the-deliverables" class="nav-link" data-scroll-target="#state-of-the-deliverables">5. State of the deliverables</a>
+  <ul class="collapse">
+  <li><a href="#tutorial-six-sections-of-twelve" id="toc-tutorial-six-sections-of-twelve" class="nav-link" data-scroll-target="#tutorial-six-sections-of-twelve">Tutorial: six sections of twelve</a></li>
+  <li><a href="#manuscript" id="toc-manuscript" class="nav-link" data-scroll-target="#manuscript">Manuscript</a></li>
+  <li><a href="#open-items" id="toc-open-items" class="nav-link" data-scroll-target="#open-items">Open items</a></li>
+  </ul></li>
+  <li><a href="#practical-notes" id="toc-practical-notes" class="nav-link" data-scroll-target="#practical-notes">6. Practical notes</a></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/05_meta_analysis/05_meta_analysis.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/PROJECT_STATE.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/05_meta_analysis/05_meta_analysis.html">Combining studies</a></li><li class="breadcrumb-item"><a href="../../sections/05_meta_analysis/05_meta_analysis.html">Meta-analysis</a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title">Meta-analysis</h1>
-</div>
-
-<div>
-  <div class="description">
-    Combine ancestry strata into one result, and read what the strata disagree about
-  </div>
-</div>
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>A single cohort of a few hundred cases cannot find a variant with an odds ratio of 1.2. That is not a failure of analysis, it is arithmetic, and Section 4A showed it: one signal, and only because the demonstration data were built with an implausibly strong one.</p>
-<p>Meta-analysis is how the field gets round this. Studies that are individually underpowered combine their summary statistics, and the combined evidence reaches a threshold that none of them could reach alone. For rare cancers it is not an optional extra at the end of the pipeline; it is the reason a single-cohort analysis is worth doing at all.</p>
-<p>This page demonstrates it on the three ancestry groups of the demonstration dataset, analysed separately and then combined.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/gwas_tutorial/</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> demo_data/</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> scripts/05_meta_analysis/</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> results/meta/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-warning callout-titled" title="What this demonstration is, and what it is not">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>What this demonstration is, and what it is not
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The three strata here are ancestry groups <strong>within one genotype file</strong>, not independently recruited and independently genotyped cohorts. They share a variant set, an allele coding, a genome build and a single simulated phenotype model, and no individual appears twice.</p>
-<p>That makes the demonstration clean, and in one respect misleadingly so: the harmonisation problems that consume most of the effort in a real meta-analysis cannot arise here. Step 02 runs all of the checks in full anyway, precisely because a script that assumes agreement will never find the disagreement. Where a check passes trivially, the page says so.</p>
-<p>What the demonstration does show honestly is the statistical machinery: inverse-variance weighting, heterogeneity, fixed versus random effects, and the size of the gain.</p>
-</div>
-</div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Before you start">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Before you start
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Finish <a href="../../sections/04A_association_binary/04A_association_binary.html">Association testing</a>. You need <code>results/qc/pdac_demo_08_filt</code> and the demonstration phenotype and covariate files.</p>
-</div>
-</div>
+<section id="project-state" class="level1">
+<h1>Project state</h1>
+<p>The working record of this project: what has been decided, what the numbers are and which script produces each of them, what has been verified, and what remains. It is kept in the repository so that it survives interruptions, so that a co-author can pick up the thread without reconstructing it, and because a methodology paper about reproducibility should be able to account for its own.</p>
+<p>Last updated: 27 July 2026.</p>
 <hr>
-<section id="analysing-each-stratum-separately" class="level2">
-<h2 class="anchored" data-anchor-id="analysing-each-stratum-separately">01 - Analysing each stratum separately</h2>
-<p><strong>Why not simply pool everyone into one regression?</strong> Because that assumes each variant has the same effect in every group, and that principal components can absorb the frequency differences between them. Neither is safe. Causal-allele frequencies and linkage disequilibrium differ between populations, so a marker can tag a causal variant well in one group and poorly in another. Stratifying makes no such assumption, and it makes the differences visible and testable instead of hiding them inside one pooled estimate.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/05_meta_analysis/01_stratified_gwas.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Each stratum gets its own LD pruning, its own principal components and its own association test.</p>
+<section id="what-this-project-is" class="level2">
+<h2 class="anchored" data-anchor-id="what-this-project-is">1. What this project is</h2>
+<p>A methodology manuscript for <em>Human Genomics</em> and its companion tutorial website, developed within the TRANSPAN COST Action (CA21116), Working Group 1.</p>
+<p><strong>Title.</strong> How to carry out a genome-wide association study of a rare and complex trait: a decision-focused, reproducible guide using pancreatic ductal adenocarcinoma as a worked example.</p>
+<p><strong>The argument.</strong> GWAS methodology for rare, genetically complex traits requires explicit decisions at every step, not the defaults designed for large, well-powered common-disease studies. The manuscript supplies the reasoning; the tutorial supplies the commands; the demonstration dataset makes both verifiable.</p>
+<p><strong>Editorial principle.</strong> The manuscript narrative carries the considerations specific to rare and complex traits, meaning why a choice is appropriate, when an analysis is legitimate and whether a signal can be interpreted. Generic instruction belongs in the tutorial. These are not interchangeable and should not be mixed.</p>
+<p><strong>Writing conventions.</strong> UK English. Punctuation limited to the full stop, comma, semicolon and colon. The word “framework” is not used. References are provisional as <code>[DOI:...]</code> or <code>[PMID:...]</code>, highlighted yellow, and converted to Vancouver at submission.</p>
+<hr>
+</section>
+<section id="decisions-taken" class="level2">
+<h2 class="anchored" data-anchor-id="decisions-taken">2. Decisions taken</h2>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Stratum</th>
-<th>Individuals</th>
-<th>Cases</th>
-<th>Controls</th>
-<th>Effective N</th>
+<th>Decision</th>
+<th>Resolution</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>European</td>
-<td>625</td>
-<td>229</td>
-<td>396</td>
-<td>580.4</td>
+<td>Canonical quality control</td>
+<td>The nine-step pipeline, merged from <code>murat_v1</code>. The earlier five-filter <code>qc.qmd</code> is superseded and removed.</td>
 </tr>
 <tr class="even">
-<td>African</td>
-<td>295</td>
-<td>142</td>
-<td>153</td>
-<td>294.6</td>
+<td>Demonstration data</td>
+<td>Everything runs on <code>pdac_demo</code> or on material generated from it. No real participant genotypes are distributed, anywhere.</td>
 </tr>
 <tr class="odd">
-<td>East Asian</td>
-<td>319</td>
-<td>141</td>
-<td>178</td>
-<td>314.7</td>
+<td>Array manifest</td>
+<td>Not redistributed. Section 1A requires the reader to supply the manifest matching their own product, and verifies the match before converting.</td>
 </tr>
 <tr class="even">
-<td><strong>Combined</strong></td>
-<td><strong>1,239</strong></td>
-<td><strong>512</strong></td>
-<td><strong>727</strong></td>
-<td><strong>1,189.7</strong></td>
+<td>Repository</td>
+<td><code>mgentiluomo/how-to-gwas-pdac</code>, public, single source of truth. <code>GWAS_training_session</code> remains separate; two pieces of it were adapted.</td>
+</tr>
+<tr class="odd">
+<td>Site build</td>
+<td>Quarto, published to <code>gh-pages</code> with <code>quarto publish</code>. <code>_quarto.yml</code> restricts rendering to <code>.qmd</code> and <code>.md</code>, so section scripts are never executed as documents.</td>
+</tr>
+<tr class="even">
+<td>Association testing</td>
+<td>Autosomes only. The simulated chromosome X exists for the sex check and carries no phenotype signal.</td>
+</tr>
+<tr class="odd">
+<td>GenCall filtering</td>
+<td>Applied at conversion, threshold as a parameter, failures written as missing rather than deleted, counts logged.</td>
+</tr>
+<tr class="even">
+<td>Indels</td>
+<td>Dropped, deliberately and counted, not filtered away by a condition written for SNPs.</td>
+</tr>
+<tr class="odd">
+<td>Fine mapping method</td>
+<td>Single causal variant approximate Bayes factor, written out in full, with the assumption stated and multi-signal methods signposted.</td>
 </tr>
 </tbody>
 </table>
-<p>Notice the African stratum. It has fewer than half the individuals of the European one, but because its case-control ratio is nearly balanced it contributes an effective sample size of 295 against 580: proportionally far more per participant. Effective sample size, not headline count, is what a meta-analysis is really combining.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Five components, not ten">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Five components, not ten
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Section 4A used ten principal components in the European stratum. Here every stratum uses five, because estimating ten components in fewer than 320 individuals spends parameters the data cannot support, and because the strata must be treated identically for their results to be comparable.</p>
-<p>This gives a free stability check, one of the three the guide recommends. In the European stratum, the lead variant’s P value is 5.31 × 10⁻⁹ with ten components and 5.41 × 10⁻⁹ with five. The choice does not matter here, and now we know that rather than assuming it.</p>
-</div>
-</div>
 <hr>
 </section>
-<section id="harmonisation-where-the-errors-actually-are" class="level2">
-<h2 class="anchored" data-anchor-id="harmonisation-where-the-errors-actually-are">02 - Harmonisation, where the errors actually are</h2>
-<p><strong>Why.</strong> This step does no statistics. It exists because the commonest failures in meta-analysis are bookkeeping failures, and they are silent: the numbers still combine, the plot still looks plausible, and the effect points the wrong way.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/05_meta_analysis/02_harmonise.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="callout callout-style-default callout-important callout-titled" title="The demonstration found a real one">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>The demonstration found a real one
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Comparing the effect allele across strata, the script had to flip the sign of the effect estimate for <strong>32,829</strong> variants in the African stratum and <strong>30,878</strong> in the East Asian one. Roughly one variant in nine.</p>
-<p>These strata came from <em>the same genotype file</em>. The cause is that PLINK 2 reports the effect allele as the minor allele <strong>in the sample being analysed</strong>, and which allele is minor changes between populations. At <code>1:817341:A:G</code>, G has frequency 0.16 in the European stratum and is the minor allele; in the African stratum G reaches 0.70, so A becomes minor and the reported effect refers to the other allele.</p>
-<p>Combining those numbers without aligning them would have cancelled real signal and manufactured false signal, and nothing in the output would have looked wrong. If this can happen within a single file, it will certainly happen across cohorts genotyped in different laboratories a decade apart. <strong>Always align on an explicitly named effect allele, never on column position or on the assumption that two files agree.</strong></p>
-</div>
-</div>
-<p>The other three checks the script performs:</p>
-<p><strong>Strand ambiguity.</strong> At A/T and C/G variants the effect allele cannot be resolved by comparing alleles, because A complements T and C complements G. Here 1,833 variants (0.6%) are ambiguous, 339 of them with frequency between 0.4 and 0.6, where frequency cannot resolve them either. They are flagged. Many consortia simply exclude ambiguous variants in that frequency band.</p>
-<p><strong>Effect-size scale.</strong> A log odds ratio, an odds ratio and a linear-model beta cannot be averaged together. Confirm what each contributing study reported, in writing, before combining anything.</p>
-<p><strong>Sample overlap.</strong> If the same individuals appear in two contributing studies the estimates are correlated, the fixed-effect standard error is too small, and significance is inflated. This cannot be detected from summary statistics; it has to come from the study descriptions.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Fewer variants than you started with">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Fewer variants than you started with
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The European analysis tested 392,331 variants. Only <strong>296,678</strong> are present in all three strata, because a variant that is monomorphic in one population cannot be tested there. A real meta-analysis usually keeps such variants, combining each across whatever studies carry it and reporting the study count per variant. This demonstration takes the simpler route of using the intersection, which is why the meta-analysis has fewer variants than the single-stratum scan.</p>
-</div>
-</div>
-<hr>
-</section>
-<section id="combining-the-strata" class="level2">
-<h2 class="anchored" data-anchor-id="combining-the-strata">03 - Combining the strata</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/05_meta_analysis/03_meta_analysis.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><strong>Fixed effects.</strong> Each stratum is weighted by its precision, <code>w = 1/SE²</code>:</p>
-<p><span class="math display">\[\beta_{\text{meta}} = \frac{\sum w_i \beta_i}{\sum w_i}, \qquad \text{SE}_{\text{meta}} = \sqrt{\frac{1}{\sum w_i}}\]</span></p>
-<p>This is inverse-variance weighting, what METAL and GWAMA do. The arithmetic is written out in the script so that the reader can see it rather than trust it.</p>
-<p><strong>Heterogeneity.</strong> Cochran’s Q asks whether the strata differ by more than sampling error would produce; I² expresses the same information as a percentage of total variation.</p>
-<p><strong>Random effects.</strong> Allows the true effect to differ between strata, estimating the between-study variance by DerSimonian-Laird and widening the interval. Reported alongside the fixed-effect result, not instead of it, because the comparison is what tells you whether the model choice changes the conclusion.</p>
-<section id="the-result" class="level3">
-<h3 class="anchored" data-anchor-id="the-result">The result</h3>
+<section id="key-numbers-and-the-script-that-produces-each" class="level2">
+<h2 class="anchored" data-anchor-id="key-numbers-and-the-script-that-produces-each">3. Key numbers, and the script that produces each</h2>
+<p>Every figure below is reproducible from the released data and the committed scripts.</p>
+<section id="quality-control-sections01b_genotyping_qcscripts" class="level3">
+<h3 class="anchored" data-anchor-id="quality-control-sections01b_genotyping_qcscripts">Quality control, <code>sections/01B_genotyping_qc/scripts/</code></h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Entering</td>
+<td>1,461 samples, 430,000 variants</td>
+</tr>
+<tr class="even">
+<td>Sample call rate <code>--mind 0.02</code></td>
+<td>25 removed</td>
+</tr>
+<tr class="odd">
+<td>Sex check</td>
+<td>4 removed</td>
+</tr>
+<tr class="even">
+<td>Heterozygosity, F ± 3 SD</td>
+<td>2 removed</td>
+</tr>
+<tr class="odd">
+<td>Variant call rate <code>--geno 0.05</code></td>
+<td>8,480 removed</td>
+</tr>
+<tr class="even">
+<td>Hardy-Weinberg in controls, <code>1e-6</code></td>
+<td>14,573 removed</td>
+</tr>
+<tr class="odd">
+<td>Relatedness, KING &gt; 0.1875, phenotype-aware</td>
+<td>191 removed, 154 controls and 37 cases</td>
+</tr>
+<tr class="even">
+<td>MAF <code>0.01</code></td>
+<td>5,038 removed</td>
+</tr>
+<tr class="odd">
+<td>Retained</td>
+<td>1,239 samples, 401,909 variants; 84.8% and 93.5%</td>
+</tr>
+</tbody>
+</table>
+<p>Independently reproduced on a separate machine with a separately compiled PLINK 2, returning identical counts at every step.</p>
+</section>
+<section id="ancestry-and-analysis-set-sections02_population_stratificationscripts" class="level3">
+<h3 class="anchored" data-anchor-id="ancestry-and-analysis-set-sections02_population_stratificationscripts">Ancestry and analysis set, <code>sections/02_population_stratification/scripts/</code></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>After LD pruning</td>
+<td>221,352 of 401,909 variants</td>
+</tr>
+<tr class="even">
+<td>Variance explained, PC1 / PC2 / PC3</td>
+<td>47.0% / 38.1% / 3.7%</td>
+</tr>
+<tr class="odd">
+<td>Composition after QC</td>
+<td>625 EUR, 319 EAS, 295 AFR</td>
+</tr>
+<tr class="even">
+<td>European analysis set</td>
+<td>229 cases, 396 controls; effective N 580.4</td>
+</tr>
+<tr class="odd">
+<td>Variance explained within EUR, PC1 / PC2</td>
+<td>23.9% / 11.8%</td>
+</tr>
+<tr class="even">
+<td>Stability check</td>
+<td>lead variant P 5.31 × 10⁻⁹ with ten components, 5.41 × 10⁻⁹ with five</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="association-sections04a_association_binaryscripts" class="level3">
+<h3 class="anchored" data-anchor-id="association-sections04a_association_binaryscripts">Association, <code>sections/04A_association_binary/scripts/</code></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Autosomal variants tested</td>
+<td>396,396; 392,331 with a valid P</td>
+</tr>
+<tr class="even">
+<td>Firth fallback invoked</td>
+<td>2,221 variants</td>
+</tr>
+<tr class="odd">
+<td>Genomic inflation</td>
+<td>λ = 1.028, λ₁₀₀₀ = 1.098</td>
+</tr>
+<tr class="even">
+<td>P &lt; 5 × 10⁻⁸</td>
+<td>1 variant</td>
+</tr>
+<tr class="odd">
+<td>P &lt; 1 × 10⁻⁵</td>
+<td>8 variants</td>
+</tr>
+<tr class="even">
+<td>Lead variant</td>
+<td><code>9:133249045:A:G</code>, OR 3.80 (95% CI 2.43–5.95), P 5.3 × 10⁻⁹</td>
+</tr>
+<tr class="odd">
+<td>Simulated truth at that variant</td>
+<td>OR 2.40; the estimate is inflated by about 58%, the winner’s curse</td>
+</tr>
+<tr class="even">
+<td>Power at that variant, European set</td>
+<td>approximately 10%; detection in an underpowered scan is itself a selection event</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="meta-analysis-sections05_meta_analysisscripts" class="level3">
+<h3 class="anchored" data-anchor-id="meta-analysis-sections05_meta_analysisscripts">Meta-analysis, <code>sections/05_meta_analysis/scripts/</code></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Strata</td>
+<td>EUR 229/396, AFR 142/153, EAS 141/178</td>
+</tr>
+<tr class="even">
+<td>Effective N, combined</td>
+<td>1,189.7 against 580.4</td>
+</tr>
+<tr class="odd">
+<td>Effect-allele flips required</td>
+<td>63,707, within a single genotype file</td>
+</tr>
+<tr class="even">
+<td>Strand-ambiguous variants</td>
+<td>1,833 (0.6%), 339 unresolvable by frequency</td>
+</tr>
+<tr class="odd">
+<td>Variants present in all three strata</td>
+<td>296,678 of 392,331</td>
+</tr>
+<tr class="even">
+<td>λ per stratum / meta</td>
+<td>1.022, 0.991, 1.013 / 1.003</td>
+</tr>
+<tr class="odd">
+<td>Lead variant</td>
+<td>P 2.4 × 10⁻²², OR 3.74 (2.87–4.87), I² = 0%, P het 0.44</td>
+</tr>
+<tr class="even">
+<td>Heterogeneity at LD proxies</td>
+<td>up to I² = 79%; one variant falls from P 1.3 × 10⁻⁹ to 0.0035 under random effects</td>
+</tr>
+<tr class="odd">
+<td>Power at the causal variant, combined</td>
+<td>approximately 69%</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="raw-data-handling-sections01a_study_designscripts" class="level3">
+<h3 class="anchored" data-anchor-id="raw-data-handling-sections01a_study_designscripts">Raw data handling, <code>sections/01A_study_design/scripts/</code></h3>
+<p>Measured on synthetic data generated from <code>pdac_demo</code>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Manifest match</td>
+<td>7,520 of 8,000 (94.0%)</td>
+</tr>
+<tr class="even">
+<td>Positional names agreeing with the manifest coordinate</td>
+<td>0 of 1,860; 97 also differ in chromosome</td>
+</tr>
+<tr class="odd">
+<td>Minus-strand design</td>
+<td>3,194 of 7,520 (42.5%)</td>
+</tr>
+<tr class="even">
+<td>Merge</td>
+<td>DEMO002 clean; DEMO003 conflicts on 142 variants, resolved by flipping</td>
+</tr>
+<tr class="odd">
+<td>Unobserved alleles repaired from the manifest</td>
+<td>1,546 of 1,546</td>
+</tr>
+</tbody>
+</table>
+<p>Measured on a real Illumina GSAMD-24v3 report, quoted but not distributed:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>GenCall by marker type</td>
+<td>rs-named 0.720 median, 1.2% failures; position-named custom content 0.441 median, 4.5% failures</td>
+</tr>
+<tr class="even">
+<td>Variants with positional names</td>
+<td>12,192 of 730,059 (1.7%)</td>
+</tr>
+<tr class="odd">
+<td>Positional names agreeing with the manifest</td>
+<td>776 of 5,745; the rest differ by 384–543 kb</td>
+</tr>
+<tr class="even">
+<td>Minus-strand design</td>
+<td>43%</td>
+</tr>
+<tr class="odd">
+<td>Indel probes</td>
+<td>7.7%</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="fine-mapping-sections06_finemapping_annotationscripts" class="level3">
+<h3 class="anchored" data-anchor-id="fine-mapping-sections06_finemapping_annotationscripts">Fine mapping, <code>sections/06_finemapping_annotation/scripts/</code></h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Region</td>
+<td>chr9:132.9–133.6 Mb, 198 variants</td>
+</tr>
+<tr class="even">
+<td>European set, credible set</td>
+<td>55 variants; top variant PP 0.51, the true causal variant, ranked first</td>
+</tr>
+<tr class="odd">
+<td>Three strata combined, credible set</td>
+<td><strong>1 variant</strong>; PP 0.99, the true causal variant</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="verified-references" class="level2">
+<h2 class="anchored" data-anchor-id="verified-references">4. Verified references</h2>
+<p>Checked against the publisher record. Others in the manuscript remain to be verified.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
-<th></th>
-<th>European alone</th>
-<th>Meta-analysis</th>
+<th>Reference</th>
+<th>Identifier</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Lead variant P</td>
-<td>5.4 × 10⁻⁹</td>
-<td><strong>2.4 × 10⁻²²</strong></td>
+<td>Verlouw JAM, Clemens E, et al.&nbsp;A comparison of genotyping arrays. <em>Eur J Hum Genet</em> 2021;29:1611–1624</td>
+<td>doi:10.1038/s41431-021-00917-7</td>
 </tr>
 <tr class="even">
-<td>Genome-wide significant</td>
-<td>1</td>
-<td>3</td>
+<td>Johnson EO, Hancock DB, et al.&nbsp;Imputation across genotyping arrays for GWAS. <em>Hum Genet</em> 2013;132:509–522</td>
+<td>doi:10.1007/s00439-013-1266-7, PMID:23334152</td>
 </tr>
 <tr class="odd">
-<td>Suggestive (P &lt; 1 × 10⁻⁵)</td>
-<td>8</td>
-<td>11</td>
+<td>Klein AP, Wolpin BM, et al.&nbsp;Genome-wide meta-analysis identifies five new susceptibility loci for pancreatic cancer. <em>Nat Commun</em> 2018</td>
+<td>PMID:29422604, GWAS Catalog GCST005434</td>
 </tr>
 <tr class="even">
-<td>λ</td>
-<td>1.022</td>
-<td>1.003</td>
+<td>Martin AR, Kanai M, et al.&nbsp;Clinical use of current polygenic risk scores may exacerbate health disparities. <em>Nat Genet</em> 2019;51:584–591</td>
+<td>doi:10.1038/s41588-019-0379-x</td>
 </tr>
 </tbody>
 </table>
-<p>Thirteen orders of magnitude at the causal variant, from roughly doubling the effective sample size. That is the whole argument of this guide in one line: the single-cohort analysis was sound but nearly uninformative, and it became informative by being combined.</p>
-<p><img src="results/pdac_demo_05_manhattan.png" class="img-fluid"></p>
-<p><img src="results/pdac_demo_05_gain.png" class="img-fluid"></p>
-<p>Each point is a variant, its European P value against its meta-analysis P value. Most sit near the diagonal; the causal variant is far above it. Points <em>below</em> the diagonal are variants where the additional strata argued against the European result, which is equally informative.</p>
+<p><strong>Corrections made.</strong> A DOI supplied for Martin 2019 pointed to the 2021 publisher correction rather than the article. Two references in an earlier AI-generated bibliography were found not to exist and were removed. Verify before citing.</p>
+<p><strong>Linked but not cited.</strong> Illumina DRAGEN Array and the Broad Institute Birdsuite FAQ are product and project pages, linked in the tutorial and not entered in the reference list.</p>
 <hr>
 </section>
+<section id="state-of-the-deliverables" class="level2">
+<h2 class="anchored" data-anchor-id="state-of-the-deliverables">5. State of the deliverables</h2>
+<section id="tutorial-six-sections-of-twelve" class="level3">
+<h3 class="anchored" data-anchor-id="tutorial-six-sections-of-twelve">Tutorial: six sections of twelve</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Section</th>
+<th>State</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1A Genotyping technologies and file formats</td>
+<td>complete</td>
+</tr>
+<tr class="even">
+<td>1B Quality control</td>
+<td>complete</td>
+</tr>
+<tr class="odd">
+<td>2 Population stratification</td>
+<td>complete</td>
+</tr>
+<tr class="even">
+<td>4A Association testing</td>
+<td>complete</td>
+</tr>
+<tr class="odd">
+<td>5 Meta-analysis</td>
+<td>complete</td>
+</tr>
+<tr class="even">
+<td>6 Fine mapping</td>
+<td>complete</td>
+</tr>
+<tr class="odd">
+<td>0 Study design</td>
+<td>not started, narrative only</td>
+</tr>
+<tr class="even">
+<td>3 Imputation</td>
+<td>not started, partly demonstrable</td>
+</tr>
+<tr class="odd">
+<td>4B Survival GWAS</td>
+<td>not started, demonstrable, the dataset has <code>survival.txt</code></td>
+</tr>
+<tr class="even">
+<td>4C Software comparison</td>
+<td>not started, partly demonstrable</td>
+</tr>
+<tr class="odd">
+<td>6.5 Functional annotation</td>
+<td>not started, narrative only</td>
+</tr>
+<tr class="even">
+<td>7 Reporting and FAIR</td>
+<td>not started, partly demonstrable</td>
+</tr>
+<tr class="odd">
+<td>Statistical power</td>
+<td>proposed, all numbers available</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="reading-the-disagreement" class="level2">
-<h2 class="anchored" data-anchor-id="reading-the-disagreement">04 - Reading the disagreement</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/05_meta_analysis/04_meta_plots.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><img src="results/pdac_demo_05_forest.png" class="img-fluid"></p>
-<p>The lead variant, stratum by stratum. The odds ratios are 3.78 in Europeans, 3.07 in Africans and 4.76 in East Asians, with a combined estimate of 3.74 and confidence intervals that overlap heavily. I² = 0%, heterogeneity P = 0.44: the strata agree, and the fixed-effect model is appropriate.</p>
-<p>The dashed green line marks the true simulated odds ratio, 2.40. Every stratum overestimates it, and so does the meta-analysis. This is the winner’s curse from Section 4A, and meta-analysis does not cure it: combining biased discovery estimates gives a more precise biased estimate. The remedy is replication in data not used for discovery, not more of the same data.</p>
-<div class="callout callout-style-default callout-important callout-titled" title="Where heterogeneity comes from, and what it means">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Where heterogeneity comes from, and what it means
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><img src="results/pdac_demo_05_heterogeneity.png" class="img-fluid"></p>
-<p>Look at the pattern rather than the peak. The causal variant, the open diamond, has I² = 0: it behaves identically in all three populations, because it <em>is</em> the cause and its effect does not depend on ancestry.</p>
-<p>Its correlated neighbours do not. At <code>9:133256264</code> I² reaches 79% and the heterogeneity P value is 0.009. Under fixed effects that variant looks genome-wide significant at 1.3 × 10⁻⁹; under random effects its P value collapses to 0.0035.</p>
-<p>Nothing is wrong with the data. Those variants are not causal, they merely tag the causal variant through linkage disequilibrium, and LD structure differs between populations, so how well they tag it differs too. <strong>Strong heterogeneity at a proxy with none at the lead is a signature of a shared causal variant seen through different LD</strong>, and it is a reason to fine-map per ancestry rather than pooled (Section 6).</p>
-<p>Across all 296,678 variants, 4.4% have a heterogeneity P below 0.05, against the 5% expected by chance alone. Genome-wide there is no excess: the heterogeneity is concentrated exactly where the signal is.</p>
-</div>
-</div>
-<hr>
+<section id="manuscript" class="level3">
+<h3 class="anchored" data-anchor-id="manuscript">Manuscript</h3>
+<p>At version 6. No numeric placeholders remain. Outstanding: Figure 1, the workflow diagram; Figure 5, fine mapping, now producible from Section 6; the Zenodo DOI, authors’ contributions and acknowledgements; conversion of references to Vancouver; verification of the DOIs supplied for the power section.</p>
+<p>Figures 2, 3 and 4 are produced by <code>docs/make_manuscript_figures.R</code> from committed results.</p>
 </section>
-<section id="key-decisions-on-this-page" class="level2">
-<h2 class="anchored" data-anchor-id="key-decisions-on-this-page">Key decisions on this page</h2>
+<section id="open-items" class="level3">
+<h3 class="anchored" data-anchor-id="open-items">Open items</h3>
 <ul>
-<li>Stratify and combine, or pool with covariates. Stratify whenever each group can support its own analysis, and always when the groups are different ancestries.</li>
-<li>Fixed or random effects. Report both. Where they disagree, the disagreement is the finding.</li>
-<li>Which variants to carry: the intersection across studies, or every variant with the number of contributing studies recorded. The second is better practice and needs a per-variant study count in the output.</li>
-<li>How to treat strand-ambiguous variants: flag, or exclude in the ambiguous frequency band.</li>
-<li>Whether contributing studies share individuals. Establish this from the study descriptions before running anything; it cannot be recovered afterwards.</li>
+<li>Whether WSL2 remains a hard requirement for Windows readers. Raised with Murat Güler, unresolved. It affects who can follow the guide at all.</li>
+<li><code>env/software_versions.md</code> is still a template and Section 7 of the manuscript commits the project to reporting exact versions.</li>
+<li>Repository weight: one 5.9 MB illustration video and two regenerable relatedness tables of 4.5 and 3.6 MB.</li>
+<li>The GWAS Catalog association file for GCST005434, needed for the replication lookup in Section 7 of the tutorial.</li>
+<li>The manuscript states in Results that the trans-ancestry credible set was not smaller than the single-ancestry set. Section 6 measures the opposite, 55 variants against 1. The Results text needs updating to match.</li>
 </ul>
+<hr>
 </section>
-<section id="the-pitfalls-checklist" class="level2">
-<h2 class="anchored" data-anchor-id="the-pitfalls-checklist">The pitfalls checklist</h2>
-<ol type="1">
-<li><strong>Effect allele.</strong> Align explicitly, by allele name. This demonstration needed 63,707 sign flips within a single genotype file.</li>
-<li><strong>Strand.</strong> A/T and C/G variants near 50% frequency cannot be resolved. Flag or drop them.</li>
-<li><strong>Scale.</strong> Log odds ratio, odds ratio and linear beta are not interchangeable.</li>
-<li><strong>Overlap.</strong> Shared individuals inflate significance and are invisible in summary statistics.</li>
-<li><strong>Build.</strong> Confirm every study is on the same genome build before matching by position.</li>
-<li><strong>Weights.</strong> Weight by precision, not by participant count.</li>
-<li><strong>Heterogeneity.</strong> Report it per variant. Do not average away a difference that is telling you something.</li>
-</ol>
-<p>Fine mapping, the next step, takes the credible set at this locus and asks which of the correlated variants is the causal one. The heterogeneity pattern above is already the first piece of evidence: the variant with no heterogeneity is the one behaving like a cause.</p>
+</section>
+<section id="practical-notes" class="level2">
+<h2 class="anchored" data-anchor-id="practical-notes">6. Practical notes</h2>
+<ul>
+<li>The demonstration data are not in git. Fetch with <code>bash demo_dataset/download_data.sh</code> or from the release tag <code>v0.1-data</code>.</li>
+<li>Work outside OneDrive. Synchronisation corrupts <code>.git</code> directories.</li>
+<li>All random steps use seed 2026.</li>
+<li>A pull request is merged only when GitHub shows the label <strong>Merged</strong>. Opening one is not enough, and a fast-forward <code>git merge</code> locally does not update the remote branch.</li>
+<li>Quarto renders only <code>.qmd</code> and <code>.md</code> by configuration. Scripts placed in section folders are ignored, which is deliberate.</li>
+</ul>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -1167,21 +1325,9 @@ window.Quarto = {
     }
   });
   </script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
-      <a href="../../sections/04A_association_binary/04A_association_binary.html" class="pagination-link" aria-label="Association testing: case-control">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Association testing: case-control</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" class="pagination-link" aria-label="Fine mapping">
-        <span class="nav-page-text">Fine mapping</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
 </div> <!-- /content -->
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/05_meta_analysis/05_meta_analysis.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/PROJECT_STATE.md" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
