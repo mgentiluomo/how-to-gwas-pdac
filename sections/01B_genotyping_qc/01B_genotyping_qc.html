@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Clean the demo genotype data before population structure and association testing">
+
+<title>Genotyping quality control – How to carry out a GWAS</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../getting_started.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html">Quality control</a></li><li class="breadcrumb-item"><a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html">Genotyping quality control</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+      <a href="../../index.html" class="sidebar-logo-link">
+      </a>
+      <div class="sidebar-tools-main">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Before you start</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Before you start: setup</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Quality control</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Genotyping quality control</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#what-qc-does" id="toc-what-qc-does" class="nav-link active" data-scroll-target="#what-qc-does">What QC Does</a></li>
+  <li><a href="#run-the-qc-pipeline" id="toc-run-the-qc-pipeline" class="nav-link" data-scroll-target="#run-the-qc-pipeline">Run the QC Pipeline</a></li>
+  <li><a href="#initial-qc-statistics" id="toc-initial-qc-statistics" class="nav-link" data-scroll-target="#initial-qc-statistics">01 - Initial QC Statistics</a></li>
+  <li><a href="#sample-call-rate" id="toc-sample-call-rate" class="nav-link" data-scroll-target="#sample-call-rate">02 - Sample Call Rate</a></li>
+  <li><a href="#sex-check" id="toc-sex-check" class="nav-link" data-scroll-target="#sex-check">03 - Sex Check</a></li>
+  <li><a href="#heterozygosity-outliers" id="toc-heterozygosity-outliers" class="nav-link" data-scroll-target="#heterozygosity-outliers">04 - Heterozygosity Outliers</a></li>
+  <li><a href="#variant-call-rate" id="toc-variant-call-rate" class="nav-link" data-scroll-target="#variant-call-rate">05 - Variant Call Rate</a></li>
+  <li><a href="#hardy-weinberg-equilibrium" id="toc-hardy-weinberg-equilibrium" class="nav-link" data-scroll-target="#hardy-weinberg-equilibrium">06 - Hardy-Weinberg Equilibrium</a></li>
+  <li><a href="#relatedness" id="toc-relatedness" class="nav-link" data-scroll-target="#relatedness">07 - Relatedness</a>
+  <ul class="collapse">
+  <li><a href="#king-pi_hat-and-thresholds" id="toc-king-pi_hat-and-thresholds" class="nav-link" data-scroll-target="#king-pi_hat-and-thresholds">KING, PI_HAT, and Thresholds</a></li>
+  <li><a href="#rare-cancer-pruning-rule" id="toc-rare-cancer-pruning-rule" class="nav-link" data-scroll-target="#rare-cancer-pruning-rule">Rare-Cancer Pruning Rule</a></li>
+  </ul></li>
+  <li><a href="#minor-allele-frequency" id="toc-minor-allele-frequency" class="nav-link" data-scroll-target="#minor-allele-frequency">08 - Minor Allele Frequency</a></li>
+  <li><a href="#qc-summary-report" id="toc-qc-summary-report" class="nav-link" data-scroll-target="#qc-summary-report">09 - QC Summary Report</a>
+  <ul class="collapse">
+  <li><a href="#methods-notes-and-interpretation" id="toc-methods-notes-and-interpretation" class="nav-link" data-scroll-target="#methods-notes-and-interpretation">Methods Notes and Interpretation</a></li>
+  <li><a href="#example-report-preview" id="toc-example-report-preview" class="nav-link" data-scroll-target="#example-report-preview">Example Report Preview</a></li>
+  </ul></li>
+  <li><a href="#pdac-specific-notes" id="toc-pdac-specific-notes" class="nav-link" data-scroll-target="#pdac-specific-notes">PDAC-Specific Notes</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/01B_genotyping_qc/01B_genotyping_qc.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html">Quality control</a></li><li class="breadcrumb-item"><a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html">Genotyping quality control</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Genotyping quality control</h1>
+</div>
+
+<div>
+  <div class="description">
+    Clean the demo genotype data before population structure and association testing
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Real genotype data is never perfect. Some samples have too many missing calls, some variants are poorly measured, sex labels can be wrong, and related individuals can break the independence assumption used by standard GWAS tests. <strong>Quality control (QC)</strong> removes or flags these problems before any association analysis.</p>
+<p>This page is the canonical QC tutorial for the website. The source scripts live in <code>sections/01B_genotyping_qc/scripts/</code>, but learners run the copied scripts from their tutorial working folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">~/gwas_tutorial/</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> demo_data/</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> scripts/01B_genotyping_qc/</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> results/qc/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Before you start">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Before you start
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Finish <a href="../../getting_started.html">Before you start</a> first. You should have:</p>
+<ul>
+<li><code>demo_data/pdac_demo.bed</code></li>
+<li><code>demo_data/pdac_demo.bim</code></li>
+<li><code>demo_data/pdac_demo.fam</code></li>
+<li><code>demo_data/phenotype.txt</code></li>
+<li>working <code>plink2</code>, <code>plink</code>, and <code>Rscript</code> commands</li>
+</ul>
+<p>All commands below are run from the project root, for example <code>~/gwas_tutorial</code>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="About the example figures and tables">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>About the example figures and tables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The commands write your local results to <code>results/qc/</code>. The figures and tables displayed on this web page are example outputs from this repository folder:</p>
+<pre class="text"><code>sections/01B_genotyping_qc/results/</code></pre>
+<p>Your own numbers may differ if you change thresholds, use a different random seed, or run the workflow on another dataset.</p>
+</div>
+</div>
+<section id="what-qc-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-qc-does">What QC Does</h2>
+<p>The demo QC pipeline is intentionally stepwise. Each script runs one check, writes output to <code>results/qc/</code>, and prints the next command to run.</p>
+<pre class="text"><code>Raw demo genotypes: demo_data/pdac_demo.bed/.bim/.fam
+    |
+    | 01 Initial QC statistics
+    | 02 Sample call rate
+    | 03 Sex check
+    | 04 Heterozygosity outliers
+    | 05 Variant call rate
+    | 06 Hardy-Weinberg equilibrium
+    | 07 Relatedness
+    | 08 Minor allele frequency
+    | 09 QC summary report
+    v
+Clean genotypes: results/qc/pdac_demo_08_filt.bed/.bim/.fam</code></pre>
+<div class="callout callout-style-default callout-note callout-titled" title="Why one step at a time?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why one step at a time?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For teaching, we do not hide the QC decisions inside one long command. Running one step at a time lets you see how many samples or variants each filter removes. That is how you catch mistakes early.</p>
+</div>
+</div>
+</section>
+<section id="run-the-qc-pipeline" class="level2">
+<h2 class="anchored" data-anchor-id="run-the-qc-pipeline">Run the QC Pipeline</h2>
+</section>
+<section id="initial-qc-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="initial-qc-statistics">01 - Initial QC Statistics</h2>
+<p><strong>Why.</strong> Before removing anything, measure the dataset. This step creates baseline allele frequency, heterozygosity, sample missingness, and variant missingness summaries.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/01_initial_qc_stats.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_01_qc.afreq
+results/qc/pdac_demo_01_qc.het
+results/qc/pdac_demo_01_qc.smiss
+results/qc/pdac_demo_01_qc.vmiss
+results/qc/pdac_demo_01_qc_variant_density_by_chromosome.tsv
+results/qc/pdac_demo_01_qc_variant_density_by_chromosome.png
+results/qc/pdac_demo_01_qc_sample_missingness_histogram.png
+results/qc/pdac_demo_01_qc_variant_missingness_histogram.png
+results/qc/pdac_demo_01_qc_allele_frequency_distribution.png
+results/qc/pdac_demo_01_qc_heterozygote_rate_distribution.png
+results/qc/pdac_demo_01_qc_sample_missingness_vs_heterozygosity.png</code></pre>
+<p><strong>How to read the outputs.</strong></p>
+<ul>
+<li><code>*.smiss</code>: one row per sample; <code>F_MISS</code> is the proportion of missing genotypes.</li>
+<li><code>*.vmiss</code>: one row per variant; <code>F_MISS</code> is the proportion of samples missing that variant.</li>
+<li><code>*.afreq</code>: allele frequencies; useful for checking rare and common variant content.</li>
+<li><code>*.het</code>: per-sample heterozygosity and inbreeding coefficient information.</li>
+</ul>
+<p>Example Step 01 plots:</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Variant Density</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Missingness</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Allele Frequency</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false" href="">Heterozygosity</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><img src="results/pdac_demo_01_qc_variant_density_by_chromosome.png" class="img-fluid" alt="Bar plot of variant density by chromosome."></p>
+<p>This plot checks whether variants are spread across the genome in a plausible way. Large missing chromosomes or strong chromosome-specific gaps would suggest a data preparation problem.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img src="results/pdac_demo_01_qc_sample_missingness_histogram.png" class="img-fluid" alt="Histogram of sample missingness."></p>
+</div><div class="column" style="width:50%;">
+<p><img src="results/pdac_demo_01_qc_variant_missingness_histogram.png" class="img-fluid" alt="Histogram of variant missingness."></p>
+</div>
+</div>
+<p>Most samples and variants should have low missingness. The sample call-rate filter in Step 02 and variant call-rate filter in Step 05 act on these distributions.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p><img src="results/pdac_demo_01_qc_allele_frequency_distribution.png" class="img-fluid" alt="Histogram of alternate allele frequencies."></p>
+<p>This plot shows how many variants are rare, low-frequency, or common. In a rare-cancer study we avoid an aggressive MAF threshold because low-frequency variants may still be informative.</p>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img src="results/pdac_demo_01_qc_heterozygote_rate_distribution.png" class="img-fluid" alt="Distribution of heterozygote rates."></p>
+</div><div class="column" style="width:50%;">
+<p><img src="results/pdac_demo_01_qc_sample_missingness_vs_heterozygosity.png" class="img-fluid" alt="Scatter plot of sample missingness against heterozygosity rate."></p>
+</div>
+</div>
+<p>The scatter plot is a quick contamination check: samples with both unusual missingness and unusual heterozygosity deserve attention before downstream analysis.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sample-call-rate" class="level2">
+<h2 class="anchored" data-anchor-id="sample-call-rate">02 - Sample Call Rate</h2>
+<p><strong>Why.</strong> Samples with too many missing genotypes often reflect poor DNA quality, lab failure, or platform problems. In a rare cancer GWAS, every sample is valuable, but very low-quality samples can harm the entire analysis.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/02_sample_callrate.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This applies:</p>
+<pre class="text"><code>--mind 0.02</code></pre>
+<p><code>--mind 0.02</code> removes samples with more than 2% missing genotypes. In the demo run this removed <strong>25 samples</strong>, leaving <strong>1,436 samples</strong>.</p>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_02_samples_callrate.mindrem.id
+results/qc/pdac_demo_02_samples_keep.txt
+results/qc/pdac_demo_02_filt.bed
+results/qc/pdac_demo_02_filt.bim
+results/qc/pdac_demo_02_filt.fam</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled" title="What to inspect">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What to inspect
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Open <code>pdac_demo_02_samples_callrate.mindrem.id</code> if you want to see which samples failed. In real data, also check whether removed samples are disproportionately cases, controls, or one contributing cohort.</p>
+</div>
+</div>
+</section>
+<section id="sex-check" class="level2">
+<h2 class="anchored" data-anchor-id="sex-check">03 - Sex Check</h2>
+<p><strong>Why.</strong> The genetic data on chromosome X should broadly agree with the recorded sex. A mismatch can indicate a sample swap, data entry error, or contamination.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/03_sex_check.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The script writes:</p>
+<pre class="text"><code>results/qc/pdac_demo_03_sexcheck.sexcheck
+results/qc/pdac_demo_03_sexcheck_discordant.txt
+results/qc/pdac_demo_03_filt.bed
+results/qc/pdac_demo_03_filt.bim
+results/qc/pdac_demo_03_filt.fam</code></pre>
+<p>In the demo run, this step removed <strong>4 samples</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Why this matters in a tutorial">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why this matters in a tutorial
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Sex check is not only a biology check. It is also a sample identity check. A sex mismatch may be the first visible sign that labels, sample IDs, or genotype files were mixed.</p>
+</div>
+</div>
+</section>
+<section id="heterozygosity-outliers" class="level2">
+<h2 class="anchored" data-anchor-id="heterozygosity-outliers">04 - Heterozygosity Outliers</h2>
+<p><strong>Why.</strong> Extremely high or low heterozygosity can signal contamination, inbreeding, ancestry outliers, or technical artifacts. This step uses autosomal heterozygosity and removes samples outside a standard deviation-based threshold.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/04_heterozygosity.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_04_het.het
+results/qc/pdac_demo_04_het_outliers.txt
+results/qc/pdac_demo_04_het_outliers.pdf
+results/qc/pdac_demo_04_filt.bed
+results/qc/pdac_demo_04_filt.bim
+results/qc/pdac_demo_04_filt.fam</code></pre>
+<p>In the demo run, this step removed <strong>2 samples</strong>.</p>
+<p>The baseline heterozygosity distribution from Step 01 is shown again here because it is the plot that motivates this filter:</p>
+<p><img src="results/pdac_demo_01_qc_heterozygote_rate_distribution.png" class="img-fluid" alt="Distribution of heterozygote rates used to motivate heterozygosity outlier filtering."></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="For rare cancer studies">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>For rare cancer studies
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Do not remove a case just because it is visually interesting. Remove it because it clearly fails a documented QC rule. In the final report, keep the threshold and number removed.</p>
+</div>
+</div>
+</section>
+<section id="variant-call-rate" class="level2">
+<h2 class="anchored" data-anchor-id="variant-call-rate">05 - Variant Call Rate</h2>
+<p><strong>Why.</strong> Variants missing in many samples are unreliable. Missingness can reflect poor probe performance, batch effects, or genotype calling problems.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/05_variant_callrate.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This applies:</p>
+<pre class="text"><code>--geno 0.05</code></pre>
+<p><code>--geno 0.05</code> removes variants missing in more than 5% of samples. In the demo run this removed <strong>8,480 variants</strong>, leaving <strong>421,520 variants</strong>.</p>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_05_filt.bed
+results/qc/pdac_demo_05_filt.bim
+results/qc/pdac_demo_05_filt.fam</code></pre>
+<p>The Step 01 variant missingness plot shows why this filter exists:</p>
+<p><img src="results/pdac_demo_01_qc_variant_missingness_histogram.png" class="img-fluid" alt="Histogram of per-variant missingness."></p>
+</section>
+<section id="hardy-weinberg-equilibrium" class="level2">
+<h2 class="anchored" data-anchor-id="hardy-weinberg-equilibrium">06 - Hardy-Weinberg Equilibrium</h2>
+<p><strong>Why.</strong> Strong Hardy-Weinberg equilibrium (HWE) deviations in controls often indicate genotyping errors. In a case/control GWAS, controls are the safer group for this filter because true disease variants may deviate in cases.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/06_hardy_weinberg.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This uses <code>demo_data/phenotype.txt</code> to identify controls, then removes variants with control-only HWE p-value below <code>1e-6</code>.</p>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_06_controls.txt
+results/qc/pdac_demo_06_hwe.hardy
+results/qc/pdac_demo_06_hwe_pvalue_distribution.png
+results/qc/pdac_demo_06_hwe_exclude.txt
+results/qc/pdac_demo_06_filt.bed
+results/qc/pdac_demo_06_filt.bim
+results/qc/pdac_demo_06_filt.fam</code></pre>
+<p>In the demo run this step removed <strong>14,573 variants</strong>, leaving <strong>406,947 variants</strong>.</p>
+<p><img src="results/pdac_demo_06_hwe_pvalue_distribution.png" class="img-fluid" alt="Histogram of minus log10 Hardy-Weinberg p-values."></p>
+<div class="callout callout-style-default callout-warning callout-titled" title="Do HWE in controls">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Do HWE in controls
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For disease GWAS, avoid filtering on HWE calculated in all samples if cases are included. A real disease association can create deviation in cases. This tutorial therefore performs the HWE filter using controls.</p>
+</div>
+</div>
+</section>
+<section id="relatedness" class="level2">
+<h2 class="anchored" data-anchor-id="relatedness">07 - Relatedness</h2>
+<p><strong>Why.</strong> Standard GWAS regression assumes unrelated individuals. Related pairs can inflate test statistics if they are not removed or modelled.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/07_relatedness.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This step uses the phenotype file to protect rare cancer cases during pruning:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Required columns</th>
+<th>Coding</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>demo_data/phenotype.txt</code></td>
+<td><code>FID IID PHENO</code></td>
+<td><code>1 = control</code>, <code>2 = case</code></td>
+</tr>
+</tbody>
+</table>
+<p>The first two columns must match the family ID and individual ID in the <code>.fam</code> file. A header line is allowed.</p>
+<section id="king-pi_hat-and-thresholds" class="level3">
+<h3 class="anchored" data-anchor-id="king-pi_hat-and-thresholds">KING, PI_HAT, and Thresholds</h3>
+<p>This step uses LD-pruned variants and KING kinship to find duplicate/twin or first-degree related samples. It also runs the older PLINK 1.9 <code>--genome</code> command to report <code>PI_HAT</code>, which many GWAS QC tutorials use for identity-by-descent checks.</p>
+<p><code>PI_HAT</code> and KING kinship are related but not the same scale. In ideal outbred pedigrees, <code>PI_HAT</code> is roughly twice KING kinship, but real data will not match perfectly. This tutorial reports both and uses KING for the final pruning list.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Pair type</th>
+<th style="text-align: right;">Degree</th>
+<th style="text-align: right;">Approx. <code>PI_HAT</code> / relationship coefficient</th>
+<th style="text-align: right;">Approx. KING kinship</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Unrelated</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Parent-offspring</td>
+<td style="text-align: right;">1st</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td>Full siblings</td>
+<td style="text-align: right;">1st</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td>Half-siblings</td>
+<td style="text-align: right;">2nd</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="odd">
+<td>Grandparent-grandchild</td>
+<td style="text-align: right;">2nd</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="even">
+<td>Uncle/aunt-niece/nephew</td>
+<td style="text-align: right;">2nd</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.125</td>
+</tr>
+<tr class="odd">
+<td>First cousins</td>
+<td style="text-align: right;">3rd</td>
+<td style="text-align: right;">0.125</td>
+<td style="text-align: right;">0.0625</td>
+</tr>
+<tr class="even">
+<td>Identical twins or duplicate DNA sample</td>
+<td style="text-align: right;">-</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.5</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>0.1875</code> KING cutoff sits between the expected first-degree value (<code>0.25</code>) and second-degree value (<code>0.125</code>):</p>
+<pre class="text"><code>(0.25 + 0.125) / 2 = 0.1875</code></pre>
+<p>That means pairs above <code>0.1875</code> are treated as duplicate/twin or first-degree-or-closer for pruning. Some tutorials use the nearby geometric-mean cutoff instead:</p>
+<pre class="text"><code>sqrt(0.25 * 0.125) = 0.177</code></pre>
+<p>Both cutoffs try to separate first-degree-or-closer pairs from more distant relatives. Here we use <code>0.1875</code> because it is common in GWAS QC scripts and easy to explain.</p>
+</section>
+<section id="rare-cancer-pruning-rule" class="level3">
+<h3 class="anchored" data-anchor-id="rare-cancer-pruning-rule">Rare-Cancer Pruning Rule</h3>
+<p>Because this is a rare-cancer tutorial, the final pruning list is <strong>phenotype-aware</strong>:</p>
+<ul>
+<li>If a related pair above <code>0.1875</code> contains one case and one control, keep the case and remove the control.</li>
+<li>If both samples have the same phenotype, remove one sample to break the relationship.</li>
+<li>If a sample appears in many related pairs, removing that sample may resolve multiple pairs at once.</li>
+</ul>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_07_related_pairs.kin0
+results/qc/pdac_demo_07_king_cutoff.king.cutoff.in.id
+results/qc/pdac_demo_07_king_cutoff.king.cutoff.out.id
+results/qc/pdac_demo_07_ibd_pi_hat.genome
+results/qc/pdac_demo_07_ibd_pi_hat_annotated.tsv
+results/qc/pdac_demo_07_ibd_pi_hat_summary.tsv
+results/qc/pdac_demo_07_related_pairs_annotated.tsv
+results/qc/pdac_demo_07_relatedness_summary.tsv
+results/qc/pdac_demo_07_king_vs_pihat_comparison.tsv
+results/qc/pdac_demo_07_king_vs_pihat_summary.tsv
+results/qc/pdac_demo_07_pruning_components.tsv
+results/qc/pdac_demo_07_relatedness_pruning_diagnostics.tsv
+results/qc/pdac_demo_07_removal_decisions.tsv
+results/qc/pdac_demo_07_removal_summary.tsv
+results/qc/pdac_demo_07_removal_phenotype_counts.tsv
+results/qc/pdac_demo_07_removal_list.txt
+results/qc/pdac_demo_07_filt.bed
+results/qc/pdac_demo_07_filt.bim
+results/qc/pdac_demo_07_filt.fam</code></pre>
+<p>Example relatedness summary:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Relationship category</th>
+<th style="text-align: right;">Pairs</th>
+<th style="text-align: right;">Unique samples</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Duplicate or twin</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>First degree</td>
+<td style="text-align: right;">284</td>
+<td style="text-align: right;">448</td>
+</tr>
+<tr class="odd">
+<td>Second degree</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td>Third degree</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td>No third-degree-or-closer pair</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">964</td>
+</tr>
+<tr class="even">
+<td>Total samples before relatedness filter</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">1,430</td>
+</tr>
+</tbody>
+</table>
+<p>Example pruning diagnostics:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Samples before relatedness filter</td>
+<td style="text-align: right;">1,430</td>
+</tr>
+<tr class="even">
+<td>KING pruning pairs &gt; 0.1875</td>
+<td style="text-align: right;">284</td>
+</tr>
+<tr class="odd">
+<td>Unique samples in KING pruning pairs</td>
+<td style="text-align: right;">448</td>
+</tr>
+<tr class="even">
+<td>Relatedness components</td>
+<td style="text-align: right;">164</td>
+</tr>
+<tr class="odd">
+<td>Largest component samples</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>PLINK2 <code>--king-cutoff</code> removed samples</td>
+<td style="text-align: right;">167</td>
+</tr>
+<tr class="odd">
+<td>Phenotype-aware removed samples</td>
+<td style="text-align: right;">191</td>
+</tr>
+<tr class="even">
+<td>Phenotype-aware removed percent</td>
+<td style="text-align: right;">13.4</td>
+</tr>
+<tr class="odd">
+<td>Controls removed</td>
+<td style="text-align: right;">154</td>
+</tr>
+<tr class="even">
+<td>Cases removed</td>
+<td style="text-align: right;">37</td>
+</tr>
+</tbody>
+</table>
+<p>Example KING vs PI_HAT summary:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Total pairs in either report</td>
+<td style="text-align: right;">55,337</td>
+</tr>
+<tr class="even">
+<td>Pairs reported by both</td>
+<td style="text-align: right;">298</td>
+</tr>
+<tr class="odd">
+<td>Same category</td>
+<td style="text-align: right;">294</td>
+</tr>
+<tr class="even">
+<td>Different category, check values</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td>Reported by KING only</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Reported by PI_HAT only</td>
+<td style="text-align: right;">55,039</td>
+</tr>
+<tr class="odd">
+<td>Pruning pairs</td>
+<td style="text-align: right;">284</td>
+</tr>
+<tr class="even">
+<td>Pruning pairs with PI_HAT</td>
+<td style="text-align: right;">284</td>
+</tr>
+<tr class="odd">
+<td>Mean absolute <code>PI_HAT - 2 * KING</code></td>
+<td style="text-align: right;">0.025632</td>
+</tr>
+<tr class="even">
+<td>Maximum absolute <code>PI_HAT - 2 * KING</code></td>
+<td style="text-align: right;">0.126513</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-warning callout-titled" title="Review large relatedness loss">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Review large relatedness loss
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the demo run, phenotype-aware pruning removed <strong>191 samples</strong>. That is a substantial sample loss. If a real cohort loses many samples at this step, inspect <code>pdac_demo_07_pruning_components.tsv</code>, <code>pdac_demo_07_relatedness_pruning_diagnostics.tsv</code>, and <code>pdac_demo_07_removal_decisions.tsv</code> before continuing.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="minor-allele-frequency" class="level2">
+<h2 class="anchored" data-anchor-id="minor-allele-frequency">08 - Minor Allele Frequency</h2>
+<p><strong>Why.</strong> Very rare variants can be unstable in small studies. For PDAC we keep the threshold low (<code>--maf 0.01</code>) because rare and low-frequency variants may be important in rare cancers.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/08_maf_filter.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The cleaned dataset is:</p>
+<pre class="text"><code>results/qc/pdac_demo_08_filt.bed
+results/qc/pdac_demo_08_filt.bim
+results/qc/pdac_demo_08_filt.fam
+results/qc/pdac_demo_08_afreq.afreq</code></pre>
+<p>In the demo run this step removed <strong>5,038 variants</strong>, leaving <strong>401,909 variants</strong> and <strong>1,239 samples</strong>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Why not use MAF 5%?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why not use MAF 5%?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Many standard GWAS workflows use <code>--maf 0.05</code>. That is often reasonable for common-variant GWAS, but rare cancer studies have fewer cases and may be especially interested in low-frequency effects. This tutorial uses <code>--maf 0.01</code> as a teaching example of a less aggressive threshold.</p>
+</div>
+</div>
+</section>
+<section id="qc-summary-report" class="level2">
+<h2 class="anchored" data-anchor-id="qc-summary-report">09 - QC Summary Report</h2>
+<p><strong>Why.</strong> A reproducible GWAS needs a record of every threshold and how many samples or variants were removed at each step. This final step creates one combined PDF report with the count table, QC plots, relatedness diagnostics, and interpretation notes.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/09_qc_summary.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Main outputs:</p>
+<pre class="text"><code>results/qc/pdac_demo_09_qc_counts.tsv
+results/qc/pdac_demo_09_qc_summary.txt
+results/qc/pdac_demo_09_qc_report.pdf</code></pre>
+<p>The generated report combines the same checks shown on this page into one review file:</p>
+<ul>
+<li>executive summary and index</li>
+<li>final sample and variant count table</li>
+<li>sample and variant retention plots</li>
+<li>initial QC distributions</li>
+<li>HWE, heterozygosity, and allele-frequency checks</li>
+<li>relatedness and phenotype-aware pruning diagnostics</li>
+<li>method notes for downstream interpretation</li>
+</ul>
+<section id="methods-notes-and-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="methods-notes-and-interpretation">Methods Notes and Interpretation</h3>
+<p>The report also summarizes the QC rules in a methods-friendly table. This is useful when you later write the Methods section of a manuscript or need to explain exactly why a sample or variant was removed.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Level</th>
+<th>Check</th>
+<th>Threshold</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sample</td>
+<td>Sample call rate</td>
+<td><code>--mind 0.02</code></td>
+<td>Remove samples with more than 2% missing genotypes.</td>
+</tr>
+<tr class="even">
+<td>Sample</td>
+<td>Sex check</td>
+<td>X chromosome F statistic</td>
+<td>Detect sex discordance, swaps, or metadata errors.</td>
+</tr>
+<tr class="odd">
+<td>Sample</td>
+<td>Heterozygosity</td>
+<td>Autosomal <code>F +/- 3 SD</code></td>
+<td>Remove strong contamination or heterozygosity outliers.</td>
+</tr>
+<tr class="even">
+<td>Sample</td>
+<td>Relatedness</td>
+<td>KING kinship <code>&gt; 0.1875</code></td>
+<td>Remove duplicate/twin or first-degree-or-closer related samples.</td>
+</tr>
+<tr class="odd">
+<td>Sample</td>
+<td>Relatedness pruning strategy</td>
+<td>Phenotype-aware</td>
+<td>Prefer removing controls over cases in related case-control pairs.</td>
+</tr>
+<tr class="even">
+<td>Variant</td>
+<td>Variant call rate</td>
+<td><code>--geno 0.05</code></td>
+<td>Remove variants missing in more than 5% of samples.</td>
+</tr>
+<tr class="odd">
+<td>Variant</td>
+<td>Hardy-Weinberg equilibrium</td>
+<td><code>--hwe 1e-6</code> in controls</td>
+<td>Remove variants with strong control-only HWE deviation.</td>
+</tr>
+<tr class="even">
+<td>Variant</td>
+<td>Minor allele frequency</td>
+<td><code>--maf 0.01</code></td>
+<td>Keep variants with MAF at least 1%; less aggressive for rare cancer.</td>
+</tr>
+</tbody>
+</table>
+<p>The main interpretation points are:</p>
+<ul>
+<li><strong>Rare cancer setting:</strong> cases are precious, so sample-level exclusions should be documented.</li>
+<li><strong>Relatedness:</strong> KING is used for final pruning, while PI_HAT is reported for comparison with older QC workflows.</li>
+<li><strong>Phenotype-aware pruning:</strong> when possible, related case-control pairs are resolved by removing the control.</li>
+<li><strong>Large relatedness loss:</strong> inspect relatedness components and removal decisions before continuing.</li>
+<li><strong>Final QC-pass data:</strong> the Step 08 dataset is the input for ancestry checks, PCA, and association testing.</li>
+</ul>
+</section>
+<section id="example-report-preview" class="level3">
+<h3 class="anchored" data-anchor-id="example-report-preview">Example Report Preview</h3>
+<p>The example report is a PDF. Some preview browsers automatically download PDFs if they are embedded directly in the page, so the report is shown here as a launch panel instead.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Example Step 09 QC report">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Example Step 09 QC report
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>File:</strong> <code>sections/01B_genotyping_qc/results/pdac_demo_09_qc_report.pdf</code></p>
+<p>The report includes the final count table, retention plots, initial QC distributions, HWE and MAF checks, relatedness diagnostics, and method notes.</p>
+</div>
+</div>
+<div id="qc-report-preview" style="border: 1px solid #d0d7de; border-radius: 6px; padding: 0.75rem; background: #f8fafc;">
+  <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.75rem;">
+    <button type="button" onclick="
+        const panel = document.getElementById('qc-report-preview');
+        const frame = panel.querySelector('iframe');
+        frame.src = frame.dataset.src;
+        frame.style.display = 'block';
+        this.style.display = 'none';
+      " style="border: 1px solid #2b6cb0; background: #2b6cb0; color: white; padding: 0.45rem 0.75rem; border-radius: 4px; cursor: pointer;">
+      Show report preview
+    </button>
+    <a href="results/pdac_demo_09_qc_report.pdf" target="_blank" rel="noopener" style="font-weight: 600;">
+      Open report in a new tab
+    </a>
+  </div>
+  <iframe data-src="results/pdac_demo_09_qc_report.pdf" title="Example Step 09 QC report PDF" width="100%" height="760" style="display: none; border: 1px solid #d0d7de; border-radius: 6px; background: white;" allowfullscreen="">
+  </iframe>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="What should you do with the report?">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>What should you do with the report?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Keep the report with your analysis outputs. It is a compact record of what happened to the data before PCA and association testing, and it gives you the numbers needed for a Methods section.</p>
+</div>
+</div>
+<p>The demo run used in this page ended with:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th style="text-align: right;">Samples</th>
+<th style="text-align: right;">Variants</th>
+<th style="text-align: right;">Samples lost</th>
+<th style="text-align: right;">Variants lost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Raw data</td>
+<td style="text-align: right;">1,461</td>
+<td style="text-align: right;">430,000</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Initial stats</td>
+<td style="text-align: right;">1,461</td>
+<td style="text-align: right;">430,000</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Sample call rate</td>
+<td style="text-align: right;">1,436</td>
+<td style="text-align: right;">430,000</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Sex check</td>
+<td style="text-align: right;">1,432</td>
+<td style="text-align: right;">430,000</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Heterozygosity</td>
+<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">430,000</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Variant call rate</td>
+<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">421,520</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8,480</td>
+</tr>
+<tr class="odd">
+<td>Hardy-Weinberg</td>
+<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">406,947</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14,573</td>
+</tr>
+<tr class="even">
+<td>Relatedness</td>
+<td style="text-align: right;">1,239</td>
+<td style="text-align: right;">406,947</td>
+<td style="text-align: right;">191</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>MAF filter</td>
+<td style="text-align: right;">1,239</td>
+<td style="text-align: right;">401,909</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5,038</td>
+</tr>
+</tbody>
+</table>
+<p>Final retention in the demo run was <strong>84.8% of samples</strong> and <strong>93.5% of variants</strong>.</p>
+</section>
+</section>
+<section id="pdac-specific-notes" class="level2">
+<h2 class="anchored" data-anchor-id="pdac-specific-notes">PDAC-Specific Notes</h2>
+<p>Pancreatic cancer GWAS is a rare-cancer setting. That changes how we think about QC:</p>
+<ul>
+<li>Removing a case costs power, so sample-level filters should be justified and documented.</li>
+<li>Relatedness pruning should preserve cases when a related case-control pair can be resolved by removing the control.</li>
+<li>Overly aggressive MAF filtering can discard low-frequency signal.</li>
+<li>Population stratification is especially important in multi-consortium analyses.</li>
+<li>If many related samples are real family structure, consider relatedness-aware association methods downstream.</li>
+</ul>
+<p>The final QC-pass dataset is the starting point for population stratification and PCA.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li>Purcell S, Neale B, Todd-Brown K, Thomas L, Ferreira MAR, Bender D, Maller J, Sklar P, de Bakker PIW, Daly MJ, Sham PC. <a href="https://pubmed.ncbi.nlm.nih.gov/17701901/">PLINK: a tool set for whole-genome association and population-based linkage analyses</a>. <em>American Journal of Human Genetics</em>. 2007;81(3):559-575. PMID: 17701901.</li>
+<li>Chang CC, Chow CC, Tellier LCAM, Vattikuti S, Purcell SM, Lee JJ. <a href="https://doi.org/10.1186/s13742-015-0047-8">Second-generation PLINK: rising to the challenge of larger and richer datasets</a>. <em>GigaScience</em>. 2015;4:7. This is the main citation for PLINK 1.9 and the second-generation PLINK codebase.</li>
+<li>Cog-Genomics. <a href="https://www.cog-genomics.org/plink/2.0/">PLINK 2.0 documentation</a>. Software documentation for the PLINK 2 commands used in this tutorial.</li>
+<li>Manichaikul A, Mychaleckyj JC, Rich SS, Daly K, Sale M, Chen WM. <a href="https://pubmed.ncbi.nlm.nih.gov/20926424/">Robust relationship inference in genome-wide association studies</a>. <em>Bioinformatics</em>. 2010;26(22):2867-2873. PMID: 20926424. This is the KING relatedness method used for kinship-based pruning.</li>
+<li>Wigginton JE, Cutler DJ, Abecasis GR. <a href="https://pubmed.ncbi.nlm.nih.gov/15789306/">A note on exact tests of Hardy-Weinberg equilibrium</a>. <em>American Journal of Human Genetics</em>. 2005;76(5):887-893. PMID: 15789306.</li>
+<li><a href="https://www.medrxiv.org/content/10.1101/2024.02.07.24301951v2">A reassessment of Hardy-Weinberg equilibrium filtering in large sample genomic studies</a>. <em>medRxiv</em>. 2024. Preprint supporting careful interpretation of HWE filtering thresholds in large genomic studies.</li>
+</ul>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/mgentiluomo\.github\.io\/how-to-gwas-pdac\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../getting_started.html" class="pagination-link" aria-label="Before you start: setup">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Before you start: setup</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/01B_genotyping_qc/01B_genotyping_qc.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

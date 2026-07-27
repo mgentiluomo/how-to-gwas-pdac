@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Get your computer ready to run the GWAS pipeline">
 
-<title>Before you start: setup and your first PLINK command – How to carry out a GWAS</title>
+<title>Before you start: setup – How to carry out a GWAS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./qc.html" rel="next">
+<link href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" rel="next">
 <link href="./index.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -285,7 +286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./getting_started.html">Before you start</a></li><li class="breadcrumb-item"><a href="./getting_started.html">Before you start: setup and your first PLINK command</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./getting_started.html">Before you start</a></li><li class="breadcrumb-item"><a href="./getting_started.html">Before you start: setup</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -330,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./getting_started.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Before you start: setup and your first PLINK command</span></a>
+ <span class="menu-text">Before you start: setup</span></a>
   </div>
 </li>
       </ul>
@@ -338,7 +339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
- <span class="menu-text">Cleaning the data</span></a>
+ <span class="menu-text">Quality control</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -346,8 +347,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cleaning your data: quality control</span></a>
+  <a href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genotyping quality control</span></a>
   </div>
 </li>
       </ul>
@@ -363,19 +364,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#sec-terminal" id="toc-sec-terminal" class="nav-link active" data-scroll-target="#sec-terminal">A note on the command line</a></li>
-  <li><a href="#sec-download" id="toc-sec-download" class="nav-link" data-scroll-target="#sec-download">Step 1 — Download the demo dataset</a>
-  <ul class="collapse">
-  <li><a href="#check-the-files-arrived" id="toc-check-the-files-arrived" class="nav-link" data-scroll-target="#check-the-files-arrived">Check the files arrived</a></li>
-  </ul></li>
-  <li><a href="#sec-plink" id="toc-sec-plink" class="nav-link" data-scroll-target="#sec-plink">Step 2 — Install PLINK 2</a></li>
-  <li><a href="#sec-version" id="toc-sec-version" class="nav-link" data-scroll-target="#sec-version">Step 3 — Check that PLINK runs</a></li>
-  <li><a href="#sec-freq" id="toc-sec-freq" class="nav-link" data-scroll-target="#sec-freq">Step 4 — Your first command: allele frequencies with <code>--freq</code></a></li>
-  <li><a href="#sec-check" id="toc-sec-check" class="nav-link" data-scroll-target="#sec-check">Step 5 — Did it work? Look at the result</a>
-  <ul class="collapse">
-  <li><a href="#optional-read-it-in-r" id="toc-optional-read-it-in-r" class="nav-link" data-scroll-target="#optional-read-it-in-r">Optional: read it in R</a></li>
-  </ul></li>
+  <li><a href="#sec-os-setup" id="toc-sec-os-setup" class="nav-link" data-scroll-target="#sec-os-setup">Step 0 — Prepare your operating system</a></li>
+  <li><a href="#sec-project-folder" id="toc-sec-project-folder" class="nav-link" data-scroll-target="#sec-project-folder">Step 1 — Create your project folder</a></li>
+  <li><a href="#sec-directories" id="toc-sec-directories" class="nav-link" data-scroll-target="#sec-directories">Step 2 — Create the directory structure</a></li>
+  <li><a href="#sec-scripts" id="toc-sec-scripts" class="nav-link" data-scroll-target="#sec-scripts">Step 3 — Download the GWAS scripts</a></li>
+  <li><a href="#sec-data" id="toc-sec-data" class="nav-link" data-scroll-target="#sec-data">Step 4 — Download the demo dataset</a></li>
+  <li><a href="#sec-install" id="toc-sec-install" class="nav-link" data-scroll-target="#sec-install">Step 5 — Install dependencies</a></li>
+  <li><a href="#sec-first-run" id="toc-sec-first-run" class="nav-link" data-scroll-target="#sec-first-run">Step 6 — Test tools and scripts</a></li>
   <li><a href="#sec-troubleshooting" id="toc-sec-troubleshooting" class="nav-link" data-scroll-target="#sec-troubleshooting">Troubleshooting</a></li>
-  <li><a href="#whats-next" id="toc-whats-next" class="nav-link" data-scroll-target="#whats-next">What’s next</a></li>
+  <li><a href="#additional-resources" id="toc-additional-resources" class="nav-link" data-scroll-target="#additional-resources">Additional Resources</a></li>
+  <li><a href="#sec-next" id="toc-sec-next" class="nav-link" data-scroll-target="#sec-next">What’s next</a></li>
+  <li><a href="#these-sections-will-be-linked-here-as-they-are-added." id="toc-these-sections-will-be-linked-here-as-they-are-added." class="nav-link" data-scroll-target="#these-sections-will-be-linked-here-as-they-are-added."><em>(These sections will be linked here as they are added.)</em></a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/getting_started.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -383,11 +382,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./getting_started.html">Before you start</a></li><li class="breadcrumb-item"><a href="./getting_started.html">Before you start: setup and your first PLINK command</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./getting_started.html">Before you start</a></li><li class="breadcrumb-item"><a href="./getting_started.html">Before you start: setup</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Before you start: setup and your first PLINK command</h1>
+<h1 class="title">Before you start: setup</h1>
 </div>
 
+<div>
+  <div class="description">
+    Get your computer ready to run the GWAS pipeline
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -402,7 +406,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This page gets your computer ready and walks you through your <strong>very first command</strong>. By the end you will have downloaded the demo dataset, installed PLINK, and run a quick test that confirms everything works — computing allele frequencies with <code>--freq</code>.</p>
+<p>This page gets your computer ready and walks you through your <strong>first GWAS QC command</strong>. By the end you will have: - Set up a portable project folder - Downloaded the demo dataset<br>
+- Installed the required tools (currently PLINK2, PLINK1.9, METAL, REGENIE, and R) - Run your first test script that confirms everything works</p>
 <div class="callout callout-style-default callout-note callout-titled" title="What you will need">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -414,345 +419,642 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li>A computer running <strong>Windows, macOS or Linux</strong></li>
-<li>The <strong>demo dataset</strong> (download in Step 1)</li>
-<li><strong>PLINK 2</strong> (download in Step 2)</li>
-<li><em>Recommended:</em> <strong>R</strong> and <strong>RStudio</strong>, to run the analysis and plotting steps later in the guide</li>
+<li>A computer running <strong>Windows (with WSL2), macOS, or Linux</strong></li>
+<li><strong>30-45 minutes</strong> to complete all setting steps</li>
+<li><strong>Internet access</strong> to download tools and data</li>
+<li><strong>optional</strong> Admin rights to install software (or ask your IT team for help)</li>
 </ul>
-<p>You do <strong>not</strong> need any programming experience. Every command is given in full.</p>
+<p>You do <strong>not</strong> need any programming experience. Every command is provided in full with alternatives and troubleshooting information.</p>
 </div>
 </div>
 <section id="sec-terminal" class="level2">
 <h2 class="anchored" data-anchor-id="sec-terminal">A note on the command line</h2>
-<p>Most steps in this guide are typed into a <strong>terminal</strong> (also called a “command line” or “console”) — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.</p>
+<p>Most steps in this guide are typed into a <strong>SHELL</strong> (also called a “command line” or “console”) — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.</p>
 <ul>
-<li><strong>Windows:</strong> open the <em>Command Prompt</em> (search for <code>cmd</code>) or <em>PowerShell</em>.</li>
-<li><strong>macOS:</strong> open the <em>Terminal</em> app (in <em>Applications → Utilities</em>).</li>
-<li><strong>Linux:</strong> open your <em>Terminal</em>.</li>
+<li><strong>Windows:</strong> You must use <strong>WSL2 terminal</strong> (see Step 0). WSL2 gives you Linux inside Windows.</li>
+<li><strong>macOS:</strong> Open the <em>Terminal</em> app (in <em>Applications → Utilities</em>).</li>
+<li><strong>Linux:</strong> Open your <em>Terminal</em>.</li>
 <li><strong>Inside RStudio:</strong> there is a <em>Terminal</em> tab next to the <em>Console</em> tab — you can use that too.</li>
 </ul>
-<p>Throughout the guide, lines you type into the terminal look like this:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You copy the command, paste it into your terminal, and press <kbd>Enter</kbd>. That’s it.</p>
+<p>Let’s practice using the terminal before we dive into the pipeline.</p>
+<p>Throughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.</p>
+<p>Please click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press <kbd>Enter</kbd> to run them. Don’t worry if you don’t understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Windows/Linux, or <kbd>Cmd</kbd> + <kbd>V</kbd> on macOS.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Welcome to the GWAS tutorial."</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"1) Where am I?"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"2) What is in this folder?"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"3) Make a practice folder."</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> gwas_practice</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"4) Make a tiny practice file."</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"GWAS practice line 1: samples"</span> <span class="op">&gt;</span> gwas_practice/hello.txt</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"GWAS practice line 2: variants"</span> <span class="op">&gt;&gt;</span> gwas_practice/hello.txt</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"GWAS practice line 3: quality control"</span> <span class="op">&gt;&gt;</span> gwas_practice/hello.txt</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"5) Print the whole file with cat."</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> gwas_practice/hello.txt</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"6) Print the first two lines with head."</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 2 gwas_practice/hello.txt</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"7) Print the last two lines with tail."</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 2 gwas_practice/hello.txt</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"8) Show the file with less."</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> <span class="at">-F</span> <span class="at">-X</span> gwas_practice/hello.txt</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"9) Remove the practice file and folder."</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> gwas_practice/hello.txt</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdir</span> gwas_practice</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Done. You just used pwd, ls, mkdir, cat, head, tail, less, rm, and rmdir."</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The commands you just ran do the following:</p>
+<ul>
+<li><code>echo</code> prints the text to the terminal. You can also use it to write text into files with <code>&gt;</code> (create, overwrite) and <code>&gt;&gt;</code> (append, add end of file).</li>
+<li><code>pwd</code> prints your current folder.</li>
+<li><code>ls</code> lists files in the current folder.</li>
+<li><code>mkdir</code> creates folders. The -p argument allows you to create parent folders if they don’t exist.</li>
+<li><code>cat</code> prints a whole file.</li>
+<li><code>head</code> and <code>tail</code> show the beginning and end of a file.</li>
+<li><code>less</code> opens a file for reading. You need to press <code>q</code>to exit from reading mode. push up and down arrows to scroll. Here we use <code>less -F -X</code>, so this tiny file is shown and the command returns automatically.</li>
+<li><code>rm</code> removes a file.</li>
+<li><code>rmdir</code> removes an empty folder.</li>
+</ul>
+<p>In this exercise, <code>rm</code> only removes the practice file you just created, and <code>rmdir</code> removes the empty practice folder. This is a safe way to practice removing files without accidentally deleting important data. There is also <code>#rm -rf</code>, which can remove folders and files recursively and without asking questions. The <code>#</code> prefix indicates this is a commented-out command. Please be <strong>very careful</strong> with this command it will permanently delete data.</p>
+<p>If you want to learn more about these commands, you can check their manual pages by typing <code>man &lt;command&gt;</code> (for example, <code>man ls</code>) in the terminal.</p>
+<p>If you have any issues with these commands, don’t worry. This is just a practice block to get you familiar with the terminal. Basic Bash knowledge <strong>is not required</strong>, but it will help you feel more comfortable as you move through the pipeline. There are many online materials available; here is one <a href="https://datacarpentry.github.io/shell-genomics/">recommendation</a>.</p>
+<p><strong>If you do not know how to open the terminal, just follow the next instructions (Step 0) carefully and ask for help if you get stuck.</strong></p>
 <hr>
 </section>
-<section id="sec-download" class="level2">
-<h2 class="anchored" data-anchor-id="sec-download">Step 1 — Download the demo dataset</h2>
-<p>The demo dataset is called <strong><code>pdac_demo</code></strong>. Like all PLINK datasets, it is made of <strong>three files that always travel together</strong> and must stay in the same folder:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 75%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>File</th>
-<th>What it contains</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>pdac_demo.bed</code></td>
-<td>the genotypes (the actual genetic data, in compact binary form)</td>
-</tr>
-<tr class="even">
-<td><code>pdac_demo.bim</code></td>
-<td>the list of variants (one row per SNP: chromosome, position, alleles)</td>
-</tr>
-<tr class="odd">
-<td><code>pdac_demo.fam</code></td>
-<td>the list of individuals (one row per person: ID, sex, case/control status)</td>
-</tr>
-</tbody>
-</table>
-<div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Important
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Never rename or move just one of the three files. PLINK always looks for all three together using the shared name (<code>pdac_demo</code>).</p>
-</div>
-</div>
-<p>You can download them in either of two ways.</p>
+<section id="sec-os-setup" class="level2">
+<h2 class="anchored" data-anchor-id="sec-os-setup">Step 0 — Prepare your operating system</h2>
+<p>Before you begin, set up your OS environment.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Point and click (easiest)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">In R / RStudio</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Command line</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Windows: Install WSL2 (Required)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">macOS and Linux</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>Open the release page and download the three files, or click each link directly:</p>
-<ul>
-<li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed"><code>pdac_demo.bed</code></a> — the genotypes (≈150 MB)</li>
-<li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim"><code>pdac_demo.bim</code></a> — the list of variants</li>
-<li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam"><code>pdac_demo.fam</code></a> — the list of individuals</li>
-</ul>
-<p>Then move all three files into your working folder. (Full release page: <a href="https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data" class="uri">https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data</a>)</p>
-<blockquote class="blockquote">
-<p><strong>Windows tip:</strong> make sure the browser did not add a hidden <code>.txt</code> at the end (e.g.&nbsp;<code>pdac_demo.fam.txt</code>). The names must be exactly <code>pdac_demo.bed</code>, <code>.bim</code>, <code>.fam</code>.</p>
-</blockquote>
+<p><strong>WSL2</strong> (Windows Subsystem for Linux) gives you a Linux environment inside Windows. The GWAS pipeline uses bash scripts, so WSL2 is required.</p>
+<p><strong>Part A: Install WSL2</strong></p>
+<ol type="1">
+<li><p>Open <strong>PowerShell as Administrator</strong> (right-click and select “Run as administrator”)</p></li>
+<li><p>Run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wsl <span class="op">--</span>install</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Restart your computer when prompted</p></li>
+</ol>
+<p><strong>Part B: Open WSL2 Terminal</strong></p>
+<ol type="1">
+<li>After restart, open <strong>Windows Terminal</strong> (search for it in the Start menu)</li>
+<li>Click the dropdown arrow and select <strong>Ubuntu</strong></li>
+<li>You should see a bash prompt like <code>user@computer:~$</code></li>
+</ol>
+<p><strong>Part C: Install Basic Tools</strong></p>
+<p>In the WSL2 bash terminal, run:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install git curl wget unzip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>✅ <strong>WSL2 is now ready. From here on, all commands use this bash terminal.</strong></p>
+<p>For help troubleshooting WSL2, see <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a>.</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>Run this in the RStudio <em>Console</em> — it downloads the three files straight into your folder, the same way on Windows, macOS and Linux:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>base <span class="ot">&lt;-</span> <span class="st">"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"pdac_demo.bed"</span>, <span class="st">"pdac_demo.bim"</span>, <span class="st">"pdac_demo.fam"</span>)) {</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(<span class="fu">paste0</span>(base, f), <span class="at">destfile =</span> f, <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">"pdac_demo"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># macOS / Linux</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> pdac_demo.bed pdac_demo.bim pdac_demo.fam<span class="kw">;</span> <span class="cf">do</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="ex">curl</span> <span class="at">-L</span> <span class="at">-O</span> <span class="st">"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/</span><span class="va">$f</span><span class="st">"</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode powershell code-with-copy"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Windows PowerShell</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="va">$base</span> <span class="op">=</span> <span class="st">"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/"</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">foreach</span> <span class="op">(</span><span class="va">$f</span> <span class="kw">in</span> <span class="st">"pdac_demo.bed"</span><span class="op">,</span><span class="st">"pdac_demo.bim"</span><span class="op">,</span><span class="st">"pdac_demo.fam"</span><span class="op">)</span> <span class="op">{</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Invoke-WebRequest</span> <span class="op">-</span>Uri <span class="st">"</span><span class="va">$base$f</span><span class="st">"</span> <span class="op">-</span>OutFile <span class="va">$f</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Your system already has bash. No setup needed for Step 0.</p>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled" title="Pick one working folder and stay in it">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Pick one working folder and stay in it
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Create a single folder for this tutorial — for example <code>gwas_tutorial</code> — and put the three data files there. Do all your work inside it. This avoids almost every “file not found” problem beginners run into.</p>
-</div>
-</div>
-<section id="check-the-files-arrived" class="level3">
-<h3 class="anchored" data-anchor-id="check-the-files-arrived">Check the files arrived</h3>
-<p>In your terminal, move into the folder and list its contents:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path/to/gwas_tutorial      <span class="co"># replace with the real path to your folder</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> pdac_demo.<span class="pp">*</span>      <span class="co"># on Windows Command Prompt use: dir pdac_demo.*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You should see exactly three files: <code>.bed</code>, <code>.bim</code> and <code>.fam</code>.</p>
 <hr>
 </section>
-</section>
-<section id="sec-plink" class="level2">
-<h2 class="anchored" data-anchor-id="sec-plink">Step 2 — Install PLINK 2</h2>
-<p><strong>PLINK</strong> is the workhorse program for genotype data. We use <strong>PLINK 2</strong> (the command is <code>plink2</code>). It is a single program file — there is <strong>no installer</strong>: you download it, unzip it, and you are done.</p>
-<ol type="1">
-<li>Go to the official download page: <a href="https://www.cog-genomics.org/plink/2.0/" class="uri">https://www.cog-genomics.org/plink/2.0/</a></li>
-<li>Download the build for your operating system (Linux / macOS / Windows).</li>
-<li><strong>Unzip</strong> it. Inside you will find the program file: <code>plink2</code> (macOS/Linux) or <code>plink2.exe</code> (Windows).</li>
-</ol>
-<div class="callout callout-style-default callout-tip callout-titled" title="The simplest setup">
+<section id="sec-project-folder" class="level2">
+<h2 class="anchored" data-anchor-id="sec-project-folder">Step 1 — Create your project folder</h2>
+<p>Choose any location on your computer and create a folder named <code>gwas_tutorial</code>. This will be your <strong>working folder</strong> for the entire pipeline.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">DIR</span><span class="op">=</span><span class="st">"</span><span class="va">$HOME</span><span class="st">/gwas_tutorial"</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"</span><span class="va">$DIR</span><span class="st">"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$DIR</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Tip">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>The simplest setup
+<span class="screen-reader-only">Tip</span>Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Put the <code>plink2</code> (or <code>plink2.exe</code>) file <strong>in the same folder as your data</strong> (<code>gwas_tutorial</code>). Then you can run it as <code>./plink2</code> (macOS/Linux) or <code>plink2</code> (Windows) without worrying about installation paths. More advanced users can instead add PLINK to their system <code>PATH</code>.</p>
+<p>You can place this folder anywhere: Desktop, Documents, custom path — it doesn’t matter. Everything is portable because we use relative paths. <code>DIR</code> is a variable that holds the path to your project folder. <code>$HOME</code> means “home directory”, so this creates the folder in your home directory. You can also create it on other drives or directories by changing the <code>DIR</code> variable, for example <code>DIR="/your/desired/directory"</code>.</p>
 </div>
 </div>
+<hr>
+</section>
+<section id="sec-directories" class="level2">
+<h2 class="anchored" data-anchor-id="sec-directories">Step 2 — Create the directory structure</h2>
+<p>Create the folder structure that keeps scripts, data, and tools organized.</p>
+<p>First let’s check the project folder created successfully:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">[</span> <span class="ot">-d</span> <span class="st">"</span><span class="va">$DIR</span><span class="st">"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span> <span class="st">"✓ Project folder created successfully: </span><span class="va">$DIR</span><span class="st">"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span> <span class="st">"[NEXT] Stay in this folder for the next commands."</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%s\n\n"</span> <span class="st">"Scripts, data, tools, and results will be stored here."</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span> <span class="st">"✗ Failed to create project folder: </span><span class="va">$DIR</span><span class="st">"</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="bu">printf</span> <span class="st">"%b\n"</span> <span class="st">"[Go to previous step] and make sure the command to create the folder ran successfully."</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="bu">exit</span> 1</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the folder was created successfully, you should see a message like:</p>
+<p><code>✓ Project folder created successfully: /home/user/gwas_tutorial  [NEXT] Stay in this folder for the next commands. Scripts, data, tools, and results will be stored here.</code></p>
+<p>If you see an error message instead, please go back to the previous step and make sure the command to create the folder ran successfully.</p>
+<p>Next, create the subfolders for scripts, data, tools, and results. You can do this with one command or create them manually.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">macOS / Linux</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Windows</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Automated (Easiest)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Manual with mkdir</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<p>If you placed <code>plink2</code> in your working folder, you call it with <code>./plink2</code>. The first time on macOS you may need to allow it to run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x plink2          <span class="co"># make the file executable</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./plink2</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Download and run the setup script:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the automated setup script</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh <span class="at">-o</span> init_project.sh</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Make it executable</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x init_project.sh</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run it</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> init_project.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This creates all folders automatically.</p>
+<p>If <code>curl</code> is not available on your system, use <code>wget</code> instead:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh <span class="at">-O</span> init_project.sh</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x init_project.sh</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> init_project.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>Open <em>Command Prompt</em>, move to your folder, and call it as <code>plink2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> path<span class="dt">\t</span>o<span class="dt">\g</span>was_tutorial</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span><span class="dt">\p</span>link2 <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Create folders manually:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create all needed folders</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="dt">\</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    scripts <span class="dt">\</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    scripts/dev <span class="dt">\</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    demo_data <span class="dt">\</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    tools/bin <span class="dt">\</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    data_processed <span class="dt">\</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    results/<span class="dt">{qc</span><span class="op">,</span><span class="dt">pop_structure</span><span class="op">,</span><span class="dt">imputation</span><span class="op">,</span><span class="dt">association</span><span class="op">,</span><span class="dt">finemapping</span><span class="op">,</span><span class="dt">meta_analysis}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-note callout-titled" title="`plink2` vs `./plink2`">
+<p>After Step 3, your folder will look like this:</p>
+<pre><code>gwas_tutorial/
+├── scripts/
+│   ├── dev/                         # Utility scripts
+│   │   ├── download_demo_data.sh
+│   │   ├── tools_setup.sh
+│   │   ├── test.sh
+│   │   ├── init_project.sh
+│   │   ├── section_manifest.txt
+│   │   └── script_manifest.txt
+│   ├── 01B_genotyping_qc/           # QC scripts
+│   │   ├── 01_initial_qc_stats.sh
+│   │   ├── 02_sample_callrate.sh
+│   │   └── ...09_qc_summary.sh
+│   ├── 02_population_stratification/
+│   ├── 03_imputation/
+│   └── ...other sections...
+├── demo_data/                       # Demo dataset (Step 4)
+├── tools/bin/                       # Tools (eg PLINK, Step 5)
+├── data_processed/                  # Processed output files
+└── results/                         # Results organized by workflow
+    └── qc/                          # QC output files</code></pre>
+<div class="callout callout-style-default callout-tip callout-titled" title="Setup helper pages">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span><code>plink2</code> vs <code>./plink2</code>
+<span class="screen-reader-only">Tip</span>Setup helper pages
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For the rest of this guide we write the command simply as <code>plink2</code>. On macOS/Linux, if PLINK is in your current folder rather than installed system-wide, type <code>./plink2</code> instead. Everything after the program name is identical.</p>
+<p>For a compact project-folder overview, see <a href="./docs/helpers/SETUP_PROJECT_STRUCTURE.html">Setup Project Structure</a>. If you are on Windows/WSL2, keep <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a> nearby for path and terminal troubleshooting.</p>
 </div>
 </div>
 <hr>
 </section>
-<section id="sec-version" class="level2">
-<h2 class="anchored" data-anchor-id="sec-version">Step 3 — Check that PLINK runs</h2>
-<p>Before doing anything with the data, confirm PLINK starts at all:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span><span class="dt">\p</span>link2 <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You should see a single line with the version and build date, similar to:</p>
-<pre><code>PLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)</code></pre>
-<p>If you see a version line, PLINK works. If instead you get an error like <code>command not found</code> or <code>'plink2' is not recognized</code>, jump to <a href="#sec-troubleshooting">Troubleshooting</a> below.</p>
-<hr>
-</section>
-<section id="sec-freq" class="level2">
-<h2 class="anchored" data-anchor-id="sec-freq">Step 4 — Your first command: allele frequencies with <code>--freq</code></h2>
-<p>Now the real test. We ask PLINK to read the demo dataset and compute the <strong>allele frequency</strong> of every variant — that is, how common each allele is across the sample. This is the simplest possible operation that touches the actual genotypes, so it is a perfect “does everything work?” check.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span><span class="dt">\p</span>link2 <span class="at">--bfile</span> pdac_demo <span class="at">--freq</span> <span class="at">--out</span> pdac_demo_freq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Let’s read that command piece by piece:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 40%">
-<col style="width: 60%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Part</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>plink2</code></td>
-<td>run the PLINK 2 program</td>
-</tr>
-<tr class="even">
-<td><code>--bfile pdac_demo</code></td>
-<td>load the dataset whose three files share this name (<code>.bed</code>/<code>.bim</code>/<code>.fam</code>)</td>
-</tr>
-<tr class="odd">
-<td><code>--freq</code></td>
-<td>compute the allele frequencies</td>
-</tr>
-<tr class="even">
-<td><code>--out pdac_demo_freq</code></td>
-<td>name the output files with this prefix</td>
-</tr>
-</tbody>
-</table>
-<p><span class="codetag">CODE 0-01: first PLINK run — allele frequencies — see /getting_started/</span></p>
-<p>When it finishes, PLINK prints a short log to the screen and creates a new file: <strong><code>pdac_demo_freq.afreq</code></strong>. The on-screen log ends with something like:</p>
-<pre><code>... 
-430000 variants loaded from pdac_demo.bim.
-1461 samples (712 females, 749 males; ...) loaded from pdac_demo.fam.
---freq: Allele frequencies written to pdac_demo_freq.afreq .</code></pre>
-<p>If you see a line saying the allele frequencies were <strong>written</strong>, the test has passed: PLINK can read your data and compute on it. 🎉</p>
-<hr>
-</section>
-<section id="sec-check" class="level2">
-<h2 class="anchored" data-anchor-id="sec-check">Step 5 — Did it work? Look at the result</h2>
-<p>Open the first few lines of the output file to see what PLINK produced:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> pdac_demo_freq.afreq    <span class="co"># on Windows use: more pdac_demo_freq.afreq</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>You should see a table with one row per variant, like this:</p>
-<pre><code>#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT
-1       1:752566:G:A      G    A    0.831621    2922
-1       1:776546:A:C      A    C    0.142847    2922
-1       1:832918:T:C      T    C    0.067419    2922
-1       1:842013:T:G      T    G    0.219370    2922
-...</code></pre>
-<p>What the columns mean:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 47%">
-<col style="width: 52%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Column</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><code>#CHROM</code></td>
-<td>chromosome</td>
-</tr>
-<tr class="even">
-<td><code>ID</code></td>
-<td>the variant’s identifier</td>
-</tr>
-<tr class="odd">
-<td><code>REF</code> / <code>ALT</code></td>
-<td>the reference and alternate alleles</td>
-</tr>
-<tr class="even">
-<td><code>ALT_FREQS</code></td>
-<td>frequency of the <strong>ALT</strong> allele (a number between 0 and 1)</td>
-</tr>
-<tr class="odd">
-<td><code>OBS_CT</code></td>
-<td>number of observed alleles (≈ 2 × number of genotyped individuals)</td>
-</tr>
-</tbody>
-</table>
-<p>That <code>ALT_FREQS</code> column is the answer to our test: <strong>PLINK computed a frequency for every variant.</strong></p>
-<section id="optional-read-it-in-r" class="level3">
-<h3 class="anchored" data-anchor-id="optional-read-it-in-r">Optional: read it in R</h3>
-<p>If you have R/RStudio set up, you can load the same file and take a quick look. This also introduces the pattern we use throughout the guide — PLINK produces a table, R reads and summarises it:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read the allele-frequency table PLINK just wrote</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>freq <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"pdac_demo_freq.afreq"</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">comment.char =</span> <span class="st">""</span>, <span class="at">sep =</span> <span class="st">"</span><span class="sc">\t</span><span class="st">"</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># how many variants, and the first rows</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(freq)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(freq)</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>freq<span class="sc">$</span>MAF <span class="ot">&lt;-</span> <span class="fu">pmin</span>(freq<span class="sc">$</span>ALT_FREQS, <span class="dv">1</span> <span class="sc">-</span> freq<span class="sc">$</span>ALT_FREQS)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># a quick picture of the frequency spectrum</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(freq<span class="sc">$</span>MAF, <span class="at">breaks =</span> <span class="dv">50</span>,</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Minor allele frequency distribution"</span>,</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"MAF"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>A typical genotyping array shows many common variants and a tail of rarer ones, so the histogram leans toward the lower MAF values. If R prints a number of variants and draws a histogram, your R setup works too — and you are ready for the analysis sections.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Why we don't re-run PLINK every time the website is built">
+<section id="sec-scripts" class="level2">
+<h2 class="anchored" data-anchor-id="sec-scripts">Step 3 — Download the GWAS scripts</h2>
+<p>Clone the GitHub repo to get all the GWAS pipeline scripts organized by section:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clone the repo</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/mgentiluomo/how-to-gwas-pdac.git</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy utility/dev scripts</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> scripts/dev</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> how-to-gwas-pdac/scripts/dev <span class="at">-maxdepth</span> 1 <span class="at">-type</span> f <span class="at">-exec</span> cp {} scripts/dev/ <span class="dt">\;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Start fresh manifest files for the setup test</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">:</span> <span class="op">&gt;</span> scripts/dev/section_manifest.txt</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="bu">:</span> <span class="op">&gt;</span> scripts/dev/script_manifest.txt</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Copy section scripts directly into section folders</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> section_dir <span class="kw">in</span> how-to-gwas-pdac/sections/<span class="pp">*</span>/<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="va">section</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">"</span><span class="va">$section_dir</span><span class="st">"</span><span class="va">)</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="bu">[</span> <span class="ot">-d</span> <span class="st">"</span><span class="va">$section_dir</span><span class="st">/scripts"</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mkdir</span> <span class="at">-p</span> <span class="st">"scripts/</span><span class="va">$section</span><span class="st">"</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">"scripts/</span><span class="va">$section</span><span class="st">"</span> <span class="op">&gt;&gt;</span> scripts/dev/section_manifest.txt</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">find</span> <span class="st">"</span><span class="va">$section_dir</span><span class="st">/scripts"</span> <span class="at">-maxdepth</span> 1 <span class="at">-type</span> f <span class="at">-exec</span> cp {} <span class="st">"scripts/</span><span class="va">$section</span><span class="st">/"</span> <span class="dt">\;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">find</span> <span class="st">"scripts/</span><span class="va">$section</span><span class="st">"</span> <span class="at">-maxdepth</span> 1 <span class="at">-type</span> f <span class="kw">|</span> <span class="fu">sort</span> <span class="op">&gt;&gt;</span> scripts/dev/script_manifest.txt</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Add utility/dev scripts to the script manifest</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> scripts/dev <span class="at">-maxdepth</span> 1 <span class="at">-type</span> f <span class="at">-name</span> <span class="st">"*.sh"</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="op">&gt;&gt;</span> scripts/dev/script_manifest.txt</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span> <span class="at">-u</span> scripts/dev/section_manifest.txt <span class="at">-o</span> scripts/dev/section_manifest.txt</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span> <span class="at">-u</span> scripts/dev/script_manifest.txt <span class="at">-o</span> scripts/dev/script_manifest.txt</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Optional cleanup: delete only the temporary cloned copy after scripts are copied</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-r</span> how-to-gwas-pdac</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Tip">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Why we don’t re-run PLINK every time the website is built
+<span class="screen-reader-only">Tip</span>Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Real GWAS commands (especially on full datasets) can be slow and run on a dedicated server. In this guide, PLINK commands are shown for <strong>you</strong> to run on your own machine; the website does not re-execute them. Lightweight R steps (a plot, a small table) are run once and cached, so the site stays fast and reproducible.</p>
+<p>If you see <code>rm: remove write-protected regular file 'how-to-gwas-pdac/.git/objects/pack/pack-XXX.rev'?</code>, type <code>y</code> and press <kbd>Enter</kbd> to confirm deletion. This is normal because the cloned repo is write-protected.</p>
+</div>
+</div>
+<p>Verify the scripts downloaded:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check which section folders were copied</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> scripts/dev/section_manifest.txt</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the currently available QC scripts</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> scripts/01B_genotyping_qc/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>At this stage, the section list should include <code>scripts/01B_genotyping_qc</code>, and you should see <code>01_initial_qc_stats.sh</code> through <code>09_qc_summary.sh</code>.</p>
+<p>And utility scripts:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> scripts/dev/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You should see: <code>download_demo_data.sh</code>, <code>tools_setup.sh</code>, <code>test.sh</code>, <code>init_project.sh</code>, plus <code>section_manifest.txt</code> and <code>script_manifest.txt</code>.</p>
+<hr>
+</section>
+<section id="sec-data" class="level2">
+<h2 class="anchored" data-anchor-id="sec-data">Step 4 — Download the demo dataset</h2>
+<p>Download the 7 demo dataset files (~164 MB total) to your <code>demo_data/</code> folder.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Automated (Easiest)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Manual with wget</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>Run the download script from your project:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/download_demo_data.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This downloads all 7 files automatically and verifies them. It uses <code>curl</code>, which is already available on most macOS and Linux systems.</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>Download files individually. If your system has <code>curl</code> but not <code>wget</code>, use the automated script instead.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gwas_tutorial  <span class="co"># Make sure you're in your project folder</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Download all 7 files</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed <span class="at">-O</span> demo_data/pdac_demo.bed</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim <span class="at">-O</span> demo_data/pdac_demo.bim</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam <span class="at">-O</span> demo_data/pdac_demo.fam</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/phenotype.txt <span class="at">-O</span> demo_data/phenotype.txt</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/covariates.txt <span class="at">-O</span> demo_data/covariates.txt</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/survival.txt <span class="at">-O</span> demo_data/survival.txt</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/sample_ancestry.tsv <span class="at">-O</span> demo_data/sample_ancestry.tsv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Verify the files downloaded:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-lh</span> demo_data/</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You should see all 7 files.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="File Integrity Check">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>File Integrity Check
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The download script automatically verifies the SHA256 hash of each file to ensure they were downloaded correctly. You should see messages like:</p>
+<pre><code>✓ OK: pdac_demo.bed
+✓ OK: pdac_demo.bim
+...
+✓ All files verified successfully! (7/7)</code></pre>
+<p>If any file fails verification, the script will tell you which one and suggest re-downloading it. This built-in verification ensures your data is safe and ready for analysis.</p>
 </div>
 </div>
 <hr>
 </section>
+<section id="sec-install" class="level2">
+<h2 class="anchored" data-anchor-id="sec-install">Step 5 — Install dependencies</h2>
+<p>Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Automated (Recommended)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Manual</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Confirm tools</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-4" role="tab" aria-controls="tabset-4-4" aria-selected="false" href="">Troubleshooting</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<p>Before starting the install, check that you are in the project folder and that the basic download tools are visible:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> <span class="st">"</span><span class="va">$HOME</span><span class="st">/gwas_tutorial"</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">pwd</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> scripts/dev/tools_setup.sh</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> curl <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"curl is missing"</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> wget <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"wget is missing"</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> git <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"git is missing"</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> unzip <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"unzip is missing"</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> tar <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"tar is missing"</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> bzip2 <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"bzip2 is missing"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span> <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"R is not installed yet"</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-I</span> https://github.com <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"Internet connection check failed"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the internet check fails inside WSL but works in Windows, see <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a> for managed-network and proxy troubleshooting.</p>
+<p>Run the setup script from your project:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/tools_setup.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This script will: - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon) - Check whether R is available and try to install it if it is missing - Download the correct PLINK2 and PLINK1.9 binaries from official sources - Download the official precompiled METAL binary for Linux/WSL or macOS - Install micromamba into <code>tools/micromamba/</code> - Install REGENIE into a micromamba environment named <code>regenie_env</code> - Extract and organize command-line tools in <code>tools/plink2/</code>, <code>tools/plink1.9/</code>, <code>tools/metal/</code>, <code>tools/micromamba/</code>, and <code>tools/regenie/</code> - Create symlinks in <code>tools/bin/</code> for easy access - Update your PATH so you can run <code>plink2</code>, <code>plink</code>, <code>metal</code>, and <code>regenie</code> from anywhere - Write <code>scripts/dev/tool_manifest.tsv</code>, which lists the tools checked by <code>test.sh</code> - Check for basic helper tools such as <code>wget</code>, <code>unzip</code>, <code>tar</code>, and <code>bzip2</code></p>
+<p>When finished, you’ll see:</p>
+<pre><code>Detected: OS=Linux, Architecture=x86_64_avx2
+  ✓ R found
+  ✓ PLINK2: PLINK v2.00a5 (64-bit build)
+  ✓ PLINK1.9: PLINK v1.90b7.2
+  ✓ METAL
+  ✓ REGENIE: regenie v...</code></pre>
+<p>REGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under <code>tools/micromamba-root/</code>, so users do not need an existing conda installation.</p>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p>The automated setup is recommended. Use this manual route only if you cannot use the setup script or need to inspect each tool installation step.</p>
+<section id="install-r" class="level4">
+<h4 class="anchored" data-anchor-id="install-r">1. Install R</h4>
+<p>R is used later for QC plots and summary tables.</p>
+<p>On WSL/Linux:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base r-base-dev</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On macOS with Homebrew:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install r</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="download-plink2" class="level4">
+<h4 class="anchored" data-anchor-id="download-plink2">2. Download PLINK2</h4>
+<p>Visit: <a href="https://www.cog-genomics.org/plink/2.0/" class="uri">https://www.cog-genomics.org/plink/2.0/</a></p>
+<p>Choose the build for your system: - <strong>Linux (Intel, AVX2):</strong> <code>plink2_linux_avx2_*.zip</code> - <strong>Linux (AMD, AVX2):</strong> <code>plink2_linux_amd_avx2_*.zip</code> - <strong>Linux (64-bit, no AVX2):</strong> <code>plink2_linux_x86_64_*.zip</code> - <strong>macOS (Intel, AVX2):</strong> <code>plink2_mac_avx2_*.zip</code> - <strong>macOS (Intel, no AVX2):</strong> <code>plink2_mac_*.zip</code> - <strong>macOS (Apple Silicon):</strong> <code>plink2_mac_arm64_*.zip</code></p>
+<p>Extract and move to your tools folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/plink2</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tools/plink2</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Download your platform's ZIP file here</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> plink2_<span class="pp">*</span>.zip</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="download-plink1.9" class="level4">
+<h4 class="anchored" data-anchor-id="download-plink1.9">3. Download PLINK1.9</h4>
+<p>Visit: <a href="https://www.cog-genomics.org/plink/1.9/" class="uri">https://www.cog-genomics.org/plink/1.9/</a></p>
+<p>Choose the build for your system: - <strong>Linux (64-bit):</strong> <code>plink_linux_x86_64_*.zip</code> - <strong>macOS:</strong> <code>plink_mac_*.zip</code></p>
+<p>Extract and move to your tools folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/plink1.9</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tools/plink1.9</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Download your platform's ZIP file here</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span> plink_<span class="pp">*</span>.zip</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="download-metal" class="level4">
+<h4 class="anchored" data-anchor-id="download-metal">4. Download METAL</h4>
+<p>Visit: <a href="https://csg.sph.umich.edu/abecasis/Metal/download/" class="uri">https://csg.sph.umich.edu/abecasis/Metal/download/</a></p>
+<p>Choose the precompiled binary for your system: - <strong>Linux/WSL:</strong> <code>Linux-metal.tar.gz</code> - <strong>macOS:</strong> <code>Darwin-metal.tar.gz</code></p>
+<p>Extract it in your tools folder:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/metal</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tools/metal</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the Linux/WSL or macOS archive here</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzf</span> <span class="pp">*</span>-metal.tar.gz</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> . <span class="at">-type</span> f <span class="dt">\(</span> <span class="at">-name</span> <span class="st">"metal"</span> <span class="at">-o</span> <span class="at">-name</span> <span class="st">"METAL"</span> <span class="dt">\)</span> <span class="at">-exec</span> chmod +x {} <span class="dt">\;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="install-micromamba-and-regenie" class="level4">
+<h4 class="anchored" data-anchor-id="install-micromamba-and-regenie">5. Install micromamba and REGENIE</h4>
+<p>The automated setup installs micromamba for you. If you are doing this manually, first download micromamba.</p>
+<p>For Linux/WSL x86_64:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/micromamba</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tools/micromamba</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-Ls</span> https://micro.mamba.pm/api/micromamba/linux-64/latest <span class="kw">|</span> <span class="fu">tar</span> <span class="at">-xvj</span> bin/micromamba</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For macOS Apple Silicon:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/micromamba</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> tools/micromamba</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-Ls</span> https://micro.mamba.pm/api/micromamba/osx-arm64/latest <span class="kw">|</span> <span class="fu">tar</span> <span class="at">-xvj</span> bin/micromamba</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ../..</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For macOS Intel, replace <code>osx-arm64</code> with <code>osx-64</code>.</p>
+<p>Then create the REGENIE environment:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">MAMBA_ROOT_PREFIX</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="bu">pwd</span><span class="va">)</span><span class="st">/tools/micromamba-root"</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">tools/micromamba/bin/micromamba</span> create <span class="at">-y</span> <span class="at">-n</span> regenie_env <span class="at">-c</span> conda-forge <span class="at">-c</span> bioconda regenie</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then create a small wrapper so REGENIE works like the other tutorial tools:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/regenie</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> tools/regenie/regenie <span class="op">&lt;&lt;'EOF'</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="st">#!/usr/bin/env bash</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="st">export MAMBA_ROOT_PREFIX="$(cd "$(dirname "${BASH_SOURCE[0]}")/../micromamba-root" &amp;&amp; pwd)"</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="st">MICROMAMBA="$(cd "$(dirname "${BASH_SOURCE[0]}")/../micromamba/bin" &amp;&amp; pwd)/micromamba"</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="st">exec "$MICROMAMBA" run -n regenie_env regenie "$@"</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x tools/regenie/regenie</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="create-symbolic-links" class="level4">
+<h4 class="anchored" data-anchor-id="create-symbolic-links">6. Create symbolic links</h4>
+<p>Create convenient shortcuts in <code>tools/bin/</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> tools/bin</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-s</span> ../plink2/plink2 tools/bin/plink2</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-s</span> ../plink1.9/plink tools/bin/plink</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="va">METAL_BIN</span><span class="op">=</span><span class="va">$(</span><span class="fu">find</span> tools/metal <span class="at">-type</span> f <span class="dt">\(</span> <span class="at">-name</span> <span class="st">"metal"</span> <span class="at">-o</span> <span class="at">-name</span> <span class="st">"METAL"</span> <span class="dt">\)</span> <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 1<span class="va">)</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-s</span> <span class="st">"../../</span><span class="va">$METAL_BIN</span><span class="st">"</span> tools/bin/metal</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ln</span> <span class="at">-s</span> ../regenie/regenie tools/bin/regenie</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="update-path" class="level4">
+<h4 class="anchored" data-anchor-id="update-path">7. Update PATH</h4>
+<p>Add the tools folder to your PATH:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="bu">cd</span> tools/bin <span class="kw">&amp;&amp;</span> <span class="bu">pwd</span><span class="va">)</span><span class="st">:</span><span class="va">$PATH</span><span class="st">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To make this permanent on Linux/WSL, add it to <code>~/.bashrc</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On macOS, the default shell is usually zsh, so use <code>~/.zshrc</code> instead:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then reload your shell. Use the file you edited:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For macOS zsh:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<p>The tool list used by the setup test is saved here:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb35"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> scripts/dev/tool_manifest.tsv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You can also check the project-local tool links directly. These commands use <code>./tools/bin/...</code>, so they work even if your PATH has not reloaded yet:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb36"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> tools/bin/</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./tools/bin/plink2</span> <span class="at">--version</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="ex">./tools/bin/plink</span> <span class="at">--version</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-x</span> ./tools/bin/metal <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"METAL executable found: ./tools/bin/metal"</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./tools/bin/regenie</span> <span class="at">--version</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="tabset-4-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-4-tab">
+<p>Most installation problems are caused by the shell not being in the right folder, internet/proxy access, an unfinished <code>apt-get</code> process, or R not being available yet. Start with the message printed in your terminal and match it to one of the cases below.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Error or symptom</th>
+<th>What it usually means</th>
+<th>What to try</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>scripts/dev/tools_setup.sh: No such file or directory</code></td>
+<td>You are not in the project folder, or Step 3 did not copy the scripts</td>
+<td>Run <code>cd "$HOME/gwas_tutorial"</code> and <code>ls scripts/dev/</code></td>
+</tr>
+<tr class="even">
+<td><code>curl</code>, <code>wget</code>, or micromamba cannot connect</td>
+<td>WSL or your terminal cannot reach the internet</td>
+<td>Test <code>curl -I https://github.com</code>; WSL users on managed networks should check <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a></td>
+</tr>
+<tr class="odd">
+<td><code>Could not get lock /var/lib/apt/lists/lock</code></td>
+<td>Another <code>apt-get</code> process is running</td>
+<td>Wait, or inspect the process with <code>ps -fp &lt;PID&gt;</code> shown in the error</td>
+</tr>
+<tr class="even">
+<td><code>Unable to locate package r-base</code></td>
+<td>Package lists are stale, <code>universe</code> is disabled, or the Ubuntu release is unusual</td>
+<td>See the R commands in the Manual tab; for persistent problems, use an Ubuntu LTS WSL release</td>
+</tr>
+<tr class="odd">
+<td><code>404: command not found</code> after running a downloaded script</td>
+<td>A GitHub 404 page was saved instead of a script</td>
+<td>Delete the file and repeat the current download command from this guide</td>
+</tr>
+<tr class="even">
+<td><code>plink</code>, <code>plink2</code>, <code>metal</code>, or <code>regenie</code>: command not found</td>
+<td>Tools were not installed or <code>tools/bin</code> is not on PATH</td>
+<td>Run <code>bash scripts/dev/tools_setup.sh</code> again, then check <code>ls tools/bin/</code></td>
+</tr>
+<tr class="odd">
+<td>REGENIE or micromamba fails during environment creation</td>
+<td>Usually a network, proxy, or conda-channel access problem</td>
+<td>Confirm <code>curl -I https://github.com</code> works and retry <code>bash scripts/dev/tools_setup.sh</code></td>
+</tr>
+</tbody>
+</table>
+<p>If automatic R installation fails because Ubuntu cannot find <code>r-base</code>, enable the <code>universe</code> repository and refresh the package list:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb37"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> software-properties-common</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> add-apt-repository <span class="at">-y</span> universe</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install <span class="at">-y</span> r-base r-base-dev</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Then run the tool setup again:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb38"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/tools_setup.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<hr>
+</section>
+<section id="sec-first-run" class="level2">
+<h2 class="anchored" data-anchor-id="sec-first-run">Step 6 — Test tools and scripts</h2>
+<p>Run the test script to verify everything is installed and working:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb39"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/test.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This script will: 1. Check the project folders 2. Check the demo dataset files 3. Check that every copied script listed in <code>scripts/dev/script_manifest.txt</code> exists 4. Check every required tool listed in <code>scripts/dev/tool_manifest.tsv</code> 5. Print the next command to run</p>
+<p>When it finishes, you should see output like:</p>
+<pre><code>✓ Initial test done! Folders, scripts, data, and required tools are working.
+Next command to run the QC pipeline:
+  bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh</code></pre>
+<p>If you see this message, <strong>everything is working!</strong> You can now go to Quality Control (Section 1B) and run your first QC command.</p>
+<hr>
 </section>
 <section id="sec-troubleshooting" class="level2">
 <h2 class="anchored" data-anchor-id="sec-troubleshooting">Troubleshooting</h2>
-<div class="callout callout-style-default callout-warning callout-titled" title="`command not found` / `'plink2' is not recognized`">
+<div class="callout callout-style-default callout-warning callout-titled" title="`git: command not found`">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span><code>git: command not found</code>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Git is not installed on your system.</p>
+<p><strong>Solution (Windows WSL2):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb41"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Solution (macOS):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb42"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Solution (Linux):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb43"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install git</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="`wget: command not found`">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span><code>command not found</code> / <code>'plink2' is not recognized</code>
+<span class="screen-reader-only">Warning</span><code>wget: command not found</code>
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The terminal cannot find the PLINK program. Either you are not in the folder where <code>plink2</code> lives, or it is not on your <code>PATH</code>.</p>
-<ul>
-<li>Make sure you have <code>cd</code>-ed into your working folder.</li>
-<li>On macOS/Linux, call it as <code>./plink2</code> (note the <code>./</code>).</li>
-<li>Check the file is really there: <code>ls plink2</code> (macOS/Linux) or <code>dir plink2.exe</code> (Windows).</li>
-</ul>
+<p>wget is not installed.</p>
+<p><strong>Solution (Windows WSL2 / Linux):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb44"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install wget</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Solution (macOS):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb45"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install wget</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="`plink`, `plink2`, `metal`, or `regenie`: command not found">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span><code>plink</code>, <code>plink2</code>, <code>metal</code>, or <code>regenie</code>: command not found
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>One of the installed tools is not found in your PATH.</p>
+<p><strong>Solution 1: Run the setup script again</strong></p>
+<p>The automated script should have configured PATH:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb46"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/tools_setup.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Solution 2: Manually add to PATH</strong></p>
+<p>If the script completed but PATH isn’t set, manually add it:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb47"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check if tools exist</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> tools/bin/plink</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> tools/bin/plink2</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> tools/bin/metal</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> tools/bin/regenie</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to current session</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">"</span><span class="va">$(</span><span class="bu">cd</span> tools/bin <span class="kw">&amp;&amp;</span> <span class="bu">pwd</span><span class="va">)</span><span class="st">:</span><span class="va">$PATH</span><span class="st">"</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--version</span></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="ex">plink2</span> <span class="at">--version</span></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a><span class="bu">command</span> <span class="at">-v</span> metal <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"metal is on PATH"</span></span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a><span class="ex">regenie</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To make this permanent on Linux/WSL:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb48"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>On macOS zsh, use <code>~/.zshrc</code> instead:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb49"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PATH="$HOME/gwas_tutorial/tools/bin:$PATH"'</span> <span class="op">&gt;&gt;</span> ~/.zshrc</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.zshrc</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>Solution 3: Use full path</strong></p>
+<p>If PATH setup is tricky, use the full path directly:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb50"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="ex">./tools/bin/plink2</span> <span class="at">--version</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./tools/bin/plink</span> <span class="at">--version</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="bu">test</span> <span class="at">-x</span> ./tools/bin/metal <span class="kw">&amp;&amp;</span> <span class="bu">echo</span> <span class="st">"metal is available"</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="ex">./tools/bin/regenie</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
 <div class="callout callout-style-default callout-warning callout-titled" title="`Error: Failed to open pdac_demo.bed`">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -761,43 +1063,80 @@ Important
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>PLINK cannot find the data files.</p>
-<ul>
-<li>Confirm all <strong>three</strong> files (<code>.bed</code>, <code>.bim</code>, <code>.fam</code>) are in the current folder and share the exact name <code>pdac_demo</code>.</li>
-<li>Confirm you typed the name <strong>without</strong> an extension after <code>--bfile</code> (PLINK adds <code>.bed</code>/<code>.bim</code>/<code>.fam</code> itself).</li>
-<li>Check you are in the right folder with <code>pwd</code> (macOS/Linux) or <code>cd</code> with no arguments (Windows).</li>
-</ul>
+<p>PLINK cannot find the demo dataset.</p>
+<p><strong>Solution:</strong> Make sure all demo files were downloaded:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb51"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> demo_data/pdac_demo.<span class="pp">*</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>You should see <code>.bed</code>, <code>.bim</code>, and <code>.fam</code> files. If any are missing, re-run Step 4:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb52"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/download_demo_data.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-warning callout-titled" title="macOS: &quot;plink2 cannot be opened because the developer cannot be verified&quot;">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout callout-style-default callout-warning callout-titled" title="`Permission denied` when running a script">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Warning</span>macOS: “plink2 cannot be opened because the developer cannot be verified”
+<span class="screen-reader-only">Warning</span><code>Permission denied</code> when running a script
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>This is macOS Gatekeeper. Either right-click the <code>plink2</code> file → <em>Open</em> once to allow it, or run <code>xattr -d com.apple.quarantine plink2</code> in the terminal, then try again.</p>
+<p>The script file doesn’t have execute permissions.</p>
+<p><strong>Solution:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb53"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">find</span> scripts <span class="at">-type</span> f <span class="at">-name</span> <span class="st">"*.sh"</span> <span class="at">-exec</span> chmod +x {} <span class="dt">\;</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/01_initial_qc_stats.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
+<div class="callout callout-style-default callout-warning callout-titled" title="Script not found or can't find data files">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Script not found or can’t find data files
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>You’re in the wrong directory or files are missing.</p>
+<p><strong>Solution:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb54"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make sure you're in your project folder</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/gwas_tutorial</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check files exist</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> scripts/01B_genotyping_qc/</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> demo_data/</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Then run the first QC script</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/01B_genotyping_qc/01_initial_qc_stats.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+</section>
+<section id="additional-resources" class="level2">
+<h2 class="anchored" data-anchor-id="additional-resources">Additional Resources</h2>
+<ul>
+<li><strong><a href="./docs/helpers/SETUP_PROJECT_STRUCTURE.html">Setup Project Structure</a></strong> — Detailed setup guide</li>
+<li><strong><a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a></strong> — WSL2 troubleshooting</li>
+</ul>
 <hr>
 </section>
-<section id="whats-next" class="level2">
-<h2 class="anchored" data-anchor-id="whats-next">What’s next</h2>
-<p>You now have a working setup and have confirmed PLINK can read the demo data. The next sections of the guide build directly on this:</p>
+<section id="sec-next" class="level2">
+<h2 class="anchored" data-anchor-id="sec-next">What’s next</h2>
+<p>You now have a working GWAS pipeline setup and have confirmed the tools runs successfully. Continue with the QC and other steps:</p>
 <ul>
 <li><strong>Quality control (Section 1B)</strong> — cleaning the raw genotypes before any analysis.</li>
 <li><strong>Population stratification (Section 2)</strong> — detecting and correcting for ancestry.</li>
 </ul>
-<p><em>(These sections will be linked here as they are added.)</em></p>
+</section>
+<section id="these-sections-will-be-linked-here-as-they-are-added." class="level2">
+<h2 class="anchored" data-anchor-id="these-sections-will-be-linked-here-as-they-are-added."><em>(These sections will be linked here as they are added.)</em></h2>
 
 
 </section>
@@ -1223,8 +1562,8 @@ Important
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./qc.html" class="pagination-link" aria-label="Cleaning your data: quality control">
-        <span class="nav-page-text">Cleaning your data: quality control</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" class="pagination-link" aria-label="Genotyping quality control">
+        <span class="nav-page-text">Genotyping quality control</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -1,179 +1,248 @@
 [
   {
-    "objectID": "qc.html",
-    "href": "qc.html",
-    "title": "Cleaning your data: quality control",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html",
+    "title": "Genotyping quality control",
     "section": "",
-    "text": "Real genotype data is never perfect: some variants are poorly measured, some samples have too much missing data, and a few errors always slip in. Quality control (QC) removes these problems before any analysis, so that later results are trustworthy.\nIn this section you will apply a few standard filters, one at a time. After each one you will look at a number in the log file to confirm it worked — so you always know you are on track.\nEvery PLINK command writes a .log file (named after whatever you put in --out). That log is where you check your work — it is plain text, and you can open it with head, cat, or any text editor.",
+    "text": "Real genotype data is never perfect. Some samples have too many missing calls, some variants are poorly measured, sex labels can be wrong, and related individuals can break the independence assumption used by standard GWAS tests. Quality control (QC) removes or flags these problems before any association analysis.\nThis page is the canonical QC tutorial for the website. The source scripts live in sections/01B_genotyping_qc/scripts/, but learners run the copied scripts from their tutorial working folder:",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "qc.html#sec-geno",
-    "href": "qc.html#sec-geno",
-    "title": "Cleaning your data: quality control",
-    "section": "Step 1 — Remove poorly genotyped variants",
-    "text": "Step 1 — Remove poorly genotyped variants\nWhy. Some variants failed to be measured in many individuals (a low “call rate”). A variant missing in too many people is unreliable, so we drop it. The --geno filter removes variants missing in more than a chosen fraction of samples (here, 2%).\nRun this:\nplink2 --bfile pdac_gwas_demo_full --geno 0.02 --make-bed --out qc_step1\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step1.log and look for this line:\n--geno: 8480 variants removed due to missing genotype data.\nIf you see 8480 variants removed, you did it right — those are exactly the poorly genotyped variants built into the demo data.",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#what-qc-does",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#what-qc-does",
+    "title": "Genotyping quality control",
+    "section": "What QC Does",
+    "text": "What QC Does\nThe demo QC pipeline is intentionally stepwise. Each script runs one check, writes output to results/qc/, and prints the next command to run.\nRaw demo genotypes: demo_data/pdac_demo.bed/.bim/.fam\n    |\n    | 01 Initial QC statistics\n    | 02 Sample call rate\n    | 03 Sex check\n    | 04 Heterozygosity outliers\n    | 05 Variant call rate\n    | 06 Hardy-Weinberg equilibrium\n    | 07 Relatedness\n    | 08 Minor allele frequency\n    | 09 QC summary report\n    v\nClean genotypes: results/qc/pdac_demo_08_filt.bed/.bim/.fam\n\n\n\n\n\n\nNoteWhy one step at a time?\n\n\n\nFor teaching, we do not hide the QC decisions inside one long command. Running one step at a time lets you see how many samples or variants each filter removes. That is how you catch mistakes early.",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "qc.html#sec-mind",
-    "href": "qc.html#sec-mind",
-    "title": "Cleaning your data: quality control",
-    "section": "Step 2 — Remove poorly genotyped samples",
-    "text": "Step 2 — Remove poorly genotyped samples\nWhy. The same problem can affect individuals: some samples have too much missing data across all their variants, which usually signals a low-quality sample. The --mind filter removes individuals missing more than a chosen fraction of their genotypes.\nRun this (note we now start from the cleaned file qc_step1):\nplink2 --bfile qc_step1 --mind 0.02 --make-bed --out qc_step2\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step2.log and look for:\n--mind: 25 samples removed due to missing genotype data.\n25 samples removed means success — those are the low-quality samples deliberately added to the demo data.",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#run-the-qc-pipeline",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#run-the-qc-pipeline",
+    "title": "Genotyping quality control",
+    "section": "Run the QC Pipeline",
+    "text": "Run the QC Pipeline",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "qc.html#sec-maf",
-    "href": "qc.html#sec-maf",
-    "title": "Cleaning your data: quality control",
-    "section": "Step 3 — Remove rare variants by minor allele frequency (MAF)",
-    "text": "Step 3 — Remove rare variants by minor allele frequency (MAF)\nWhy. Very rare variants (carried by only a handful of people) give unstable, unreliable association results in a study of this size. We remove variants whose minor allele frequency is below a threshold — here 1% (--maf 0.01).\nRun this:\nplink2 --bfile qc_step2 --maf 0.015 --make-bed --out qc_step3\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step3.log and look for a line like:\n&lt;NNN&gt; variants removed due to allele frequency threshold(s)\n  (--maf/--max-maf/--mac/--max-mac).\nYou should see roughly [NNN] variants removed. (Exact number to be locked in from one real run — see note at the bottom.)",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#initial-qc-statistics",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#initial-qc-statistics",
+    "title": "Genotyping quality control",
+    "section": "01 - Initial QC Statistics",
+    "text": "01 - Initial QC Statistics\nWhy. Before removing anything, measure the dataset. This step creates baseline allele frequency, heterozygosity, sample missingness, and variant missingness summaries.\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\nMain outputs:\nresults/qc/pdac_demo_01_qc.afreq\nresults/qc/pdac_demo_01_qc.het\nresults/qc/pdac_demo_01_qc.smiss\nresults/qc/pdac_demo_01_qc.vmiss\nresults/qc/pdac_demo_01_qc_variant_density_by_chromosome.tsv\nresults/qc/pdac_demo_01_qc_variant_density_by_chromosome.png\nresults/qc/pdac_demo_01_qc_sample_missingness_histogram.png\nresults/qc/pdac_demo_01_qc_variant_missingness_histogram.png\nresults/qc/pdac_demo_01_qc_allele_frequency_distribution.png\nresults/qc/pdac_demo_01_qc_heterozygote_rate_distribution.png\nresults/qc/pdac_demo_01_qc_sample_missingness_vs_heterozygosity.png\nHow to read the outputs.\n\n*.smiss: one row per sample; F_MISS is the proportion of missing genotypes.\n*.vmiss: one row per variant; F_MISS is the proportion of samples missing that variant.\n*.afreq: allele frequencies; useful for checking rare and common variant content.\n*.het: per-sample heterozygosity and inbreeding coefficient information.\n\nExample Step 01 plots:\n\nVariant DensityMissingnessAllele FrequencyHeterozygosity\n\n\n\nThis plot checks whether variants are spread across the genome in a plausible way. Large missing chromosomes or strong chromosome-specific gaps would suggest a data preparation problem.\n\n\n\n\n\n\n\n\n\nMost samples and variants should have low missingness. The sample call-rate filter in Step 02 and variant call-rate filter in Step 05 act on these distributions.\n\n\n\nThis plot shows how many variants are rare, low-frequency, or common. In a rare-cancer study we avoid an aggressive MAF threshold because low-frequency variants may still be informative.\n\n\n\n\n\n\n\n\n\nThe scatter plot is a quick contamination check: samples with both unusual missingness and unusual heterozygosity deserve attention before downstream analysis.",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "qc.html#sec-hwe",
-    "href": "qc.html#sec-hwe",
-    "title": "Cleaning your data: quality control",
-    "section": "Step 4 — Remove variants failing Hardy–Weinberg equilibrium",
-    "text": "Step 4 — Remove variants failing Hardy–Weinberg equilibrium\nWhy. A strong departure from Hardy–Weinberg equilibrium (the expected balance of genotypes in a population) often points to a genotyping error rather than real biology. We remove variants whose departure is extreme (--hwe with a strict p-value cutoff).\nRun this:\nplink2 --bfile qc_step3 --hwe 1e-6 --make-bed --out qc_step4\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nOpen qc_step4.log and look for:\n--hwe: &lt;NNN&gt; variants removed due to Hardy-Weinberg exact test p-value threshold.\nYou should see about [NNN] variants removed. (Exact number to be locked in from one real run.)",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#sample-call-rate",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#sample-call-rate",
+    "title": "Genotyping quality control",
+    "section": "02 - Sample Call Rate",
+    "text": "02 - Sample Call Rate\nWhy. Samples with too many missing genotypes often reflect poor DNA quality, lab failure, or platform problems. In a rare cancer GWAS, every sample is valuable, but very low-quality samples can harm the entire analysis.\nbash scripts/01B_genotyping_qc/02_sample_callrate.sh\nThis applies:\n--mind 0.02\n--mind 0.02 removes samples with more than 2% missing genotypes. In the demo run this removed 25 samples, leaving 1,436 samples.\nMain outputs:\nresults/qc/pdac_demo_02_samples_callrate.mindrem.id\nresults/qc/pdac_demo_02_samples_keep.txt\nresults/qc/pdac_demo_02_filt.bed\nresults/qc/pdac_demo_02_filt.bim\nresults/qc/pdac_demo_02_filt.fam\n\n\n\n\n\n\nTipWhat to inspect\n\n\n\nOpen pdac_demo_02_samples_callrate.mindrem.id if you want to see which samples failed. In real data, also check whether removed samples are disproportionately cases, controls, or one contributing cohort.",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "qc.html#sec-sexcheck",
-    "href": "qc.html#sec-sexcheck",
-    "title": "Cleaning your data: quality control",
-    "section": "Step 5 — Check that recorded sex matches the genetic data",
-    "text": "Step 5 — Check that recorded sex matches the genetic data\nWhy. A useful sanity check is whether each person’s recorded sex matches the sex inferred from their X chromosome. A mismatch usually means a sample mix-up. This check reports problems rather than removing data automatically.\nRun this:\nplink --bfile qc_step4 --check-sex --out qc_sexcheck\n\n\n\n\n\n\nTip✅ Check your work\n\n\n\nCount the flagged samples in the result:\ngrep PROBLEM qc_sexcheck.sexcheck\nYou should find 4 samples flagged as PROBLEM — exactly the four sex discordances built into the demo data. In a real study you would investigate and usually remove these.",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#sex-check",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#sex-check",
+    "title": "Genotyping quality control",
+    "section": "03 - Sex Check",
+    "text": "03 - Sex Check\nWhy. The genetic data on chromosome X should broadly agree with the recorded sex. A mismatch can indicate a sample swap, data entry error, or contamination.\nbash scripts/01B_genotyping_qc/03_sex_check.sh\nThe script writes:\nresults/qc/pdac_demo_03_sexcheck.sexcheck\nresults/qc/pdac_demo_03_sexcheck_discordant.txt\nresults/qc/pdac_demo_03_filt.bed\nresults/qc/pdac_demo_03_filt.bim\nresults/qc/pdac_demo_03_filt.fam\nIn the demo run, this step removed 4 samples.\n\n\n\n\n\n\nNoteWhy this matters in a tutorial\n\n\n\nSex check is not only a biology check. It is also a sample identity check. A sex mismatch may be the first visible sign that labels, sample IDs, or genotype files were mixed.",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "qc.html#putting-it-together",
-    "href": "qc.html#putting-it-together",
-    "title": "Cleaning your data: quality control",
-    "section": "Putting it together",
-    "text": "Putting it together\nOnce you understand each filter, you can apply them in a single command:\nplink2 --bfile pdac_gwas_demo_full \\\n       --geno 0.02 --mind 0.02 --maf 0.01 --hwe 1e-6 \\\n       --make-bed --out pdac_gwas_demo_qc\nThe result, pdac_gwas_demo_qc, is your cleaned dataset — the starting point for the next sections.\n\n\n\n\n\n\nNoteWhy we filter one step at a time first\n\n\n\nRunning the filters separately lets you see how many variants or samples each one removes — which is how you catch a problem early. The order can slightly change the final counts, so for reproducible results always report the exact commands and thresholds you used.\n\n\n\n\n\n\n\n\n\nImportantA note on the exact numbers\n\n\n\nThe counts above for call rate (8,480 variants), sample missingness (25 samples), and sex check (4 samples) are the artefacts deliberately built into the demo dataset, so they are the targets to confirm. The MAF and HWE removal counts depend on the exact thresholds and on filter order, so they are shown as placeholders. Run the pipeline once on the demo data and the precise numbers will appear in the logs — drop them in here (or share the .log) and the check boxes can state the exact figures.",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#heterozygosity-outliers",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#heterozygosity-outliers",
+    "title": "Genotyping quality control",
+    "section": "04 - Heterozygosity Outliers",
+    "text": "04 - Heterozygosity Outliers\nWhy. Extremely high or low heterozygosity can signal contamination, inbreeding, ancestry outliers, or technical artifacts. This step uses autosomal heterozygosity and removes samples outside a standard deviation-based threshold.\nbash scripts/01B_genotyping_qc/04_heterozygosity.sh\nMain outputs:\nresults/qc/pdac_demo_04_het.het\nresults/qc/pdac_demo_04_het_outliers.txt\nresults/qc/pdac_demo_04_het_outliers.pdf\nresults/qc/pdac_demo_04_filt.bed\nresults/qc/pdac_demo_04_filt.bim\nresults/qc/pdac_demo_04_filt.fam\nIn the demo run, this step removed 2 samples.\nThe baseline heterozygosity distribution from Step 01 is shown again here because it is the plot that motivates this filter:\n\n\n\n\n\n\n\nTipFor rare cancer studies\n\n\n\nDo not remove a case just because it is visually interesting. Remove it because it clearly fails a documented QC rule. In the final report, keep the threshold and number removed.",
     "crumbs": [
-      "Cleaning the data",
-      "Cleaning your data: quality control"
+      "Quality control",
+      "Genotyping quality control"
     ]
   },
   {
-    "objectID": "getting_started.html",
-    "href": "getting_started.html",
-    "title": "Before you start: setup and your first PLINK command",
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#variant-call-rate",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#variant-call-rate",
+    "title": "Genotyping quality control",
+    "section": "05 - Variant Call Rate",
+    "text": "05 - Variant Call Rate\nWhy. Variants missing in many samples are unreliable. Missingness can reflect poor probe performance, batch effects, or genotype calling problems.\nbash scripts/01B_genotyping_qc/05_variant_callrate.sh\nThis applies:\n--geno 0.05\n--geno 0.05 removes variants missing in more than 5% of samples. In the demo run this removed 8,480 variants, leaving 421,520 variants.\nMain outputs:\nresults/qc/pdac_demo_05_filt.bed\nresults/qc/pdac_demo_05_filt.bim\nresults/qc/pdac_demo_05_filt.fam\nThe Step 01 variant missingness plot shows why this filter exists:",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#hardy-weinberg-equilibrium",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#hardy-weinberg-equilibrium",
+    "title": "Genotyping quality control",
+    "section": "06 - Hardy-Weinberg Equilibrium",
+    "text": "06 - Hardy-Weinberg Equilibrium\nWhy. Strong Hardy-Weinberg equilibrium (HWE) deviations in controls often indicate genotyping errors. In a case/control GWAS, controls are the safer group for this filter because true disease variants may deviate in cases.\nbash scripts/01B_genotyping_qc/06_hardy_weinberg.sh\nThis uses demo_data/phenotype.txt to identify controls, then removes variants with control-only HWE p-value below 1e-6.\nMain outputs:\nresults/qc/pdac_demo_06_controls.txt\nresults/qc/pdac_demo_06_hwe.hardy\nresults/qc/pdac_demo_06_hwe_pvalue_distribution.png\nresults/qc/pdac_demo_06_hwe_exclude.txt\nresults/qc/pdac_demo_06_filt.bed\nresults/qc/pdac_demo_06_filt.bim\nresults/qc/pdac_demo_06_filt.fam\nIn the demo run this step removed 14,573 variants, leaving 406,947 variants.\n\n\n\n\n\n\n\nWarningDo HWE in controls\n\n\n\nFor disease GWAS, avoid filtering on HWE calculated in all samples if cases are included. A real disease association can create deviation in cases. This tutorial therefore performs the HWE filter using controls.",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#relatedness",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#relatedness",
+    "title": "Genotyping quality control",
+    "section": "07 - Relatedness",
+    "text": "07 - Relatedness\nWhy. Standard GWAS regression assumes unrelated individuals. Related pairs can inflate test statistics if they are not removed or modelled.\nbash scripts/01B_genotyping_qc/07_relatedness.sh\nThis step uses the phenotype file to protect rare cancer cases during pruning:\n\n\n\n\n\n\n\n\nFile\nRequired columns\nCoding\n\n\n\n\ndemo_data/phenotype.txt\nFID IID PHENO\n1 = control, 2 = case\n\n\n\nThe first two columns must match the family ID and individual ID in the .fam file. A header line is allowed.\n\nKING, PI_HAT, and Thresholds\nThis step uses LD-pruned variants and KING kinship to find duplicate/twin or first-degree related samples. It also runs the older PLINK 1.9 --genome command to report PI_HAT, which many GWAS QC tutorials use for identity-by-descent checks.\nPI_HAT and KING kinship are related but not the same scale. In ideal outbred pedigrees, PI_HAT is roughly twice KING kinship, but real data will not match perfectly. This tutorial reports both and uses KING for the final pruning list.\n\n\n\n\n\n\n\n\n\nPair type\nDegree\nApprox. PI_HAT / relationship coefficient\nApprox. KING kinship\n\n\n\n\nUnrelated\n-\n0\n0\n\n\nParent-offspring\n1st\n0.5\n0.25\n\n\nFull siblings\n1st\n0.5\n0.25\n\n\nHalf-siblings\n2nd\n0.25\n0.125\n\n\nGrandparent-grandchild\n2nd\n0.25\n0.125\n\n\nUncle/aunt-niece/nephew\n2nd\n0.25\n0.125\n\n\nFirst cousins\n3rd\n0.125\n0.0625\n\n\nIdentical twins or duplicate DNA sample\n-\n1\n0.5\n\n\n\nThe 0.1875 KING cutoff sits between the expected first-degree value (0.25) and second-degree value (0.125):\n(0.25 + 0.125) / 2 = 0.1875\nThat means pairs above 0.1875 are treated as duplicate/twin or first-degree-or-closer for pruning. Some tutorials use the nearby geometric-mean cutoff instead:\nsqrt(0.25 * 0.125) = 0.177\nBoth cutoffs try to separate first-degree-or-closer pairs from more distant relatives. Here we use 0.1875 because it is common in GWAS QC scripts and easy to explain.\n\n\nRare-Cancer Pruning Rule\nBecause this is a rare-cancer tutorial, the final pruning list is phenotype-aware:\n\nIf a related pair above 0.1875 contains one case and one control, keep the case and remove the control.\nIf both samples have the same phenotype, remove one sample to break the relationship.\nIf a sample appears in many related pairs, removing that sample may resolve multiple pairs at once.\n\nMain outputs:\nresults/qc/pdac_demo_07_related_pairs.kin0\nresults/qc/pdac_demo_07_king_cutoff.king.cutoff.in.id\nresults/qc/pdac_demo_07_king_cutoff.king.cutoff.out.id\nresults/qc/pdac_demo_07_ibd_pi_hat.genome\nresults/qc/pdac_demo_07_ibd_pi_hat_annotated.tsv\nresults/qc/pdac_demo_07_ibd_pi_hat_summary.tsv\nresults/qc/pdac_demo_07_related_pairs_annotated.tsv\nresults/qc/pdac_demo_07_relatedness_summary.tsv\nresults/qc/pdac_demo_07_king_vs_pihat_comparison.tsv\nresults/qc/pdac_demo_07_king_vs_pihat_summary.tsv\nresults/qc/pdac_demo_07_pruning_components.tsv\nresults/qc/pdac_demo_07_relatedness_pruning_diagnostics.tsv\nresults/qc/pdac_demo_07_removal_decisions.tsv\nresults/qc/pdac_demo_07_removal_summary.tsv\nresults/qc/pdac_demo_07_removal_phenotype_counts.tsv\nresults/qc/pdac_demo_07_removal_list.txt\nresults/qc/pdac_demo_07_filt.bed\nresults/qc/pdac_demo_07_filt.bim\nresults/qc/pdac_demo_07_filt.fam\nExample relatedness summary:\n\n\n\nRelationship category\nPairs\nUnique samples\n\n\n\n\nDuplicate or twin\n0\n0\n\n\nFirst degree\n284\n448\n\n\nSecond degree\n4\n8\n\n\nThird degree\n10\n20\n\n\nNo third-degree-or-closer pair\nNA\n964\n\n\nTotal samples before relatedness filter\nNA\n1,430\n\n\n\nExample pruning diagnostics:\n\n\n\nMetric\nValue\n\n\n\n\nSamples before relatedness filter\n1,430\n\n\nKING pruning pairs &gt; 0.1875\n284\n\n\nUnique samples in KING pruning pairs\n448\n\n\nRelatedness components\n164\n\n\nLargest component samples\n6\n\n\nPLINK2 --king-cutoff removed samples\n167\n\n\nPhenotype-aware removed samples\n191\n\n\nPhenotype-aware removed percent\n13.4\n\n\nControls removed\n154\n\n\nCases removed\n37\n\n\n\nExample KING vs PI_HAT summary:\n\n\n\nMetric\nValue\n\n\n\n\nTotal pairs in either report\n55,337\n\n\nPairs reported by both\n298\n\n\nSame category\n294\n\n\nDifferent category, check values\n4\n\n\nReported by KING only\n0\n\n\nReported by PI_HAT only\n55,039\n\n\nPruning pairs\n284\n\n\nPruning pairs with PI_HAT\n284\n\n\nMean absolute PI_HAT - 2 * KING\n0.025632\n\n\nMaximum absolute PI_HAT - 2 * KING\n0.126513\n\n\n\n\n\n\n\n\n\nWarningReview large relatedness loss\n\n\n\nIn the demo run, phenotype-aware pruning removed 191 samples. That is a substantial sample loss. If a real cohort loses many samples at this step, inspect pdac_demo_07_pruning_components.tsv, pdac_demo_07_relatedness_pruning_diagnostics.tsv, and pdac_demo_07_removal_decisions.tsv before continuing.",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#minor-allele-frequency",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#minor-allele-frequency",
+    "title": "Genotyping quality control",
+    "section": "08 - Minor Allele Frequency",
+    "text": "08 - Minor Allele Frequency\nWhy. Very rare variants can be unstable in small studies. For PDAC we keep the threshold low (--maf 0.01) because rare and low-frequency variants may be important in rare cancers.\nbash scripts/01B_genotyping_qc/08_maf_filter.sh\nThe cleaned dataset is:\nresults/qc/pdac_demo_08_filt.bed\nresults/qc/pdac_demo_08_filt.bim\nresults/qc/pdac_demo_08_filt.fam\nresults/qc/pdac_demo_08_afreq.afreq\nIn the demo run this step removed 5,038 variants, leaving 401,909 variants and 1,239 samples.\n\n\n\n\n\n\nNoteWhy not use MAF 5%?\n\n\n\nMany standard GWAS workflows use --maf 0.05. That is often reasonable for common-variant GWAS, but rare cancer studies have fewer cases and may be especially interested in low-frequency effects. This tutorial uses --maf 0.01 as a teaching example of a less aggressive threshold.",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#qc-summary-report",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#qc-summary-report",
+    "title": "Genotyping quality control",
+    "section": "09 - QC Summary Report",
+    "text": "09 - QC Summary Report\nWhy. A reproducible GWAS needs a record of every threshold and how many samples or variants were removed at each step. This final step creates one combined PDF report with the count table, QC plots, relatedness diagnostics, and interpretation notes.\nbash scripts/01B_genotyping_qc/09_qc_summary.sh\nMain outputs:\nresults/qc/pdac_demo_09_qc_counts.tsv\nresults/qc/pdac_demo_09_qc_summary.txt\nresults/qc/pdac_demo_09_qc_report.pdf\nThe generated report combines the same checks shown on this page into one review file:\n\nexecutive summary and index\nfinal sample and variant count table\nsample and variant retention plots\ninitial QC distributions\nHWE, heterozygosity, and allele-frequency checks\nrelatedness and phenotype-aware pruning diagnostics\nmethod notes for downstream interpretation\n\n\nMethods Notes and Interpretation\nThe report also summarizes the QC rules in a methods-friendly table. This is useful when you later write the Methods section of a manuscript or need to explain exactly why a sample or variant was removed.\n\n\n\n\n\n\n\n\n\nLevel\nCheck\nThreshold\nInterpretation\n\n\n\n\nSample\nSample call rate\n--mind 0.02\nRemove samples with more than 2% missing genotypes.\n\n\nSample\nSex check\nX chromosome F statistic\nDetect sex discordance, swaps, or metadata errors.\n\n\nSample\nHeterozygosity\nAutosomal F +/- 3 SD\nRemove strong contamination or heterozygosity outliers.\n\n\nSample\nRelatedness\nKING kinship &gt; 0.1875\nRemove duplicate/twin or first-degree-or-closer related samples.\n\n\nSample\nRelatedness pruning strategy\nPhenotype-aware\nPrefer removing controls over cases in related case-control pairs.\n\n\nVariant\nVariant call rate\n--geno 0.05\nRemove variants missing in more than 5% of samples.\n\n\nVariant\nHardy-Weinberg equilibrium\n--hwe 1e-6 in controls\nRemove variants with strong control-only HWE deviation.\n\n\nVariant\nMinor allele frequency\n--maf 0.01\nKeep variants with MAF at least 1%; less aggressive for rare cancer.\n\n\n\nThe main interpretation points are:\n\nRare cancer setting: cases are precious, so sample-level exclusions should be documented.\nRelatedness: KING is used for final pruning, while PI_HAT is reported for comparison with older QC workflows.\nPhenotype-aware pruning: when possible, related case-control pairs are resolved by removing the control.\nLarge relatedness loss: inspect relatedness components and removal decisions before continuing.\nFinal QC-pass data: the Step 08 dataset is the input for ancestry checks, PCA, and association testing.\n\n\n\nExample Report Preview\nThe example report is a PDF. Some preview browsers automatically download PDFs if they are embedded directly in the page, so the report is shown here as a launch panel instead.\n\n\n\n\n\n\nNoteExample Step 09 QC report\n\n\n\nFile: sections/01B_genotyping_qc/results/pdac_demo_09_qc_report.pdf\nThe report includes the final count table, retention plots, initial QC distributions, HWE and MAF checks, relatedness diagnostics, and method notes.\n\n\n\n  \n    \n      Show report preview\n    \n    \n      Open report in a new tab\n    \n  \n  \n  \n\n\n\n\n\n\n\nTipWhat should you do with the report?\n\n\n\nKeep the report with your analysis outputs. It is a compact record of what happened to the data before PCA and association testing, and it gives you the numbers needed for a Methods section.\n\n\nThe demo run used in this page ended with:\n\n\n\nStage\nSamples\nVariants\nSamples lost\nVariants lost\n\n\n\n\nRaw data\n1,461\n430,000\n0\n0\n\n\nInitial stats\n1,461\n430,000\n0\n0\n\n\nSample call rate\n1,436\n430,000\n25\n0\n\n\nSex check\n1,432\n430,000\n4\n0\n\n\nHeterozygosity\n1,430\n430,000\n2\n0\n\n\nVariant call rate\n1,430\n421,520\n0\n8,480\n\n\nHardy-Weinberg\n1,430\n406,947\n0\n14,573\n\n\nRelatedness\n1,239\n406,947\n191\n0\n\n\nMAF filter\n1,239\n401,909\n0\n5,038\n\n\n\nFinal retention in the demo run was 84.8% of samples and 93.5% of variants.",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#pdac-specific-notes",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#pdac-specific-notes",
+    "title": "Genotyping quality control",
+    "section": "PDAC-Specific Notes",
+    "text": "PDAC-Specific Notes\nPancreatic cancer GWAS is a rare-cancer setting. That changes how we think about QC:\n\nRemoving a case costs power, so sample-level filters should be justified and documented.\nRelatedness pruning should preserve cases when a related case-control pair can be resolved by removing the control.\nOverly aggressive MAF filtering can discard low-frequency signal.\nPopulation stratification is especially important in multi-consortium analyses.\nIf many related samples are real family structure, consider relatedness-aware association methods downstream.\n\nThe final QC-pass dataset is the starting point for population stratification and PCA.",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "sections/01B_genotyping_qc/01B_genotyping_qc.html#references",
+    "href": "sections/01B_genotyping_qc/01B_genotyping_qc.html#references",
+    "title": "Genotyping quality control",
+    "section": "References",
+    "text": "References\n\nPurcell S, Neale B, Todd-Brown K, Thomas L, Ferreira MAR, Bender D, Maller J, Sklar P, de Bakker PIW, Daly MJ, Sham PC. PLINK: a tool set for whole-genome association and population-based linkage analyses. American Journal of Human Genetics. 2007;81(3):559-575. PMID: 17701901.\nChang CC, Chow CC, Tellier LCAM, Vattikuti S, Purcell SM, Lee JJ. Second-generation PLINK: rising to the challenge of larger and richer datasets. GigaScience. 2015;4:7. This is the main citation for PLINK 1.9 and the second-generation PLINK codebase.\nCog-Genomics. PLINK 2.0 documentation. Software documentation for the PLINK 2 commands used in this tutorial.\nManichaikul A, Mychaleckyj JC, Rich SS, Daly K, Sale M, Chen WM. Robust relationship inference in genome-wide association studies. Bioinformatics. 2010;26(22):2867-2873. PMID: 20926424. This is the KING relatedness method used for kinship-based pruning.\nWigginton JE, Cutler DJ, Abecasis GR. A note on exact tests of Hardy-Weinberg equilibrium. American Journal of Human Genetics. 2005;76(5):887-893. PMID: 15789306.\nA reassessment of Hardy-Weinberg equilibrium filtering in large sample genomic studies. medRxiv. 2024. Preprint supporting careful interpretation of HWE filtering thresholds in large genomic studies.",
+    "crumbs": [
+      "Quality control",
+      "Genotyping quality control"
+    ]
+  },
+  {
+    "objectID": "HARMONIZATION_PLAN.html",
+    "href": "HARMONIZATION_PLAN.html",
+    "title": "Harmonisation plan: one published, manuscript-aligned repository",
     "section": "",
-    "text": "This page gets your computer ready and walks you through your very first command. By the end you will have downloaded the demo dataset, installed PLINK, and run a quick test that confirms everything works — computing allele frequencies with --freq.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "text": "Goal. Everything the group has produced ends up consolidated, harmonised and published in a single place, https://github.com/mgentiluomo/how-to-gwas-pdac, structured to match the manuscript’s Methods sections. This document is the inventory, the record of decisions already taken, and the checklist of what remains.\n\n\n\nQuality control (settled). The nine-step pipeline developed on murat_v1 is the canonical QC of the guide. The five-filter qc.qmd at the repository root is superseded and removed. The pipeline is brought into main through a normal, reviewed pull request rather than a wholesale merge, so that authorship and the review process described in CONTRIBUTING.md are preserved. The manuscript’s Table 2, Table 4 and Results section already report the nine-step numbers, and they match the committed run exactly: 1,461 samples and 430,000 variants at entry, 1,239 samples and 401,909 variants retained.\nSetup and tooling (settled). The automated project setup in scripts/dev/ and the expanded getting_started.qmd replace the manual PLINK download instructions previously on main.\nmgentiluomo/GWAS_training_session (settled). It stays a separate, standalone repository. It is generic, built on a public 1000 Genomes subset rather than on pdac_demo, and it does not carry the didactic design that is the point of this guide. It is not merged in. One piece of it is worth reusing: 00_Intro/Introduction_from_rad_data_to_binary.md, the explanation of how raw array output becomes a PLINK binary dataset, which is what Section 1A needs as a starting point.\n\n\n\n\n\n\n\n\n\n\n\n\n\nManuscript section\nFolder\nSource\nAction\n\n\n\n\n0, Study design and consortium\nsections/00_introduction/\nDaniele Campa’s draft in the manuscript\nTranscribe the narrative, no code\n\n\n1A, Genotyping technologies\nsections/01A_study_design/\nGWAS_training_session/00_Intro/, plus the section leads’ draft\nAdapt the raw-to-PLINK explainer for a non-bioinformatics audience\n\n\n1B, Quality control\nsections/01B_genotyping_qc/\nDone\nMerged from murat_v1\n\n\n2, Population stratification\nsections/02_population_stratification/\nElif Öz’s manuscript draft\nWrite the walkthrough on pdac_demo: LD pruning, PCA, outliers, ancestry inference\n\n\n3, Imputation\nsections/03_imputation/\nPelin Ünal’s manuscript draft\nWrite the walkthrough: VCF preparation, TOPMed server submission, post-imputation filtering\n\n\n4A, Association, binary\nsections/04A_association_binary/\nElif Öz’s manuscript draft\nLogistic regression with Firth fallback, QQ and Manhattan plots, lambda\n\n\n4B, Association, survival\nsections/04B_association_continuous/\nPelin Ünal’s manuscript draft\nREGENIE --t2e walkthrough\n\n\n4C, Software comparison\nsections/04C_association_other/\nMurat Güler, writing plan only\nSame analysis in two tools, side by side\n\n\n5, Meta-analysis\nsections/05_meta_analysis/\nNot yet drafted\nDescribed rather than worked: the demo dataset is a single cohort\n\n\n6, Fine mapping\nsections/06_finemapping_annotation/\nBurçak Otlu’s manuscript draft\nSuSiE-RSS on the ABO locus, credible sets, LD diagnostics\n\n\n6.5, Functional annotation\nsections/06.5_gwas_annotations/\nChiara Corradi’s manuscript draft\nVEP, regulatory overlap, colocalisation\n\n\n7, Reporting and FAIR\nsections/07_reporting_fair/\nManuel Gentiluomo\nSTREGA checklist, summary statistics deposition, Zenodo archiving\n\n\n\nTwo chains have to stay consistent as these are written, because the manuscript quotes numbers from both: the QC-passed dataset feeds Section 2, and the European analysis set defined there, 229 cases and 396 controls, feeds Sections 4A, 6 and 6.5.\n\n\n\n\n\nMerge the QC pull request into main with the blocking review items resolved, then delete the murat_v1 branch. See PR_REVIEW_murat_v1.md.\nApply the alignment commit: README.md, index.qmd, _quarto.yml and this file.\nRun the association step on the QC-passed dataset. This is now the critical path: it produces the genomic inflation factor and the lead variant P value that are the last two numeric placeholders in the manuscript’s Results section, and it is the input to Sections 2, 4A and 6 of the tutorial.\nDraft Section 1A from the training-session explainer, with the section leads.\nDraft Section 2 on pdac_demo, since the ancestry step is what defines the European analysis set every later section depends on.\nUncomment each sidebar block in _quarto.yml as its section acquires real content, and confirm quarto preview renders cleanly before each merge to main.\n\n\n\n\n\nCommitted results are heavy in places: one illustration video of 5.9 MB and two full pairwise relatedness tables of 4.5 MB and 3.6 MB. The tables are regenerable from the scripts.\nenv/software_versions.md is still a template. Section 7 of the manuscript commits us to reporting exact versions, so it should be completed for the locked-in QC run.\nRepository visibility. The repository is currently readable publicly. That is the right end state, but it should be a deliberate choice made now rather than discovered later, since it contains results that are not yet published.\nA mapping between the manuscript’s [CODE 1B-nn] tags and the script filenames should live in each section’s README.md, so a reader of the paper can find the corresponding script."
   },
   {
-    "objectID": "getting_started.html#sec-terminal",
-    "href": "getting_started.html#sec-terminal",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "A note on the command line",
-    "text": "A note on the command line\nMost steps in this guide are typed into a terminal (also called a “command line” or “console”) — a window where you type a command, press Enter, and the program runs.\n\nWindows: open the Command Prompt (search for cmd) or PowerShell.\nmacOS: open the Terminal app (in Applications → Utilities).\nLinux: open your Terminal.\nInside RStudio: there is a Terminal tab next to the Console tab — you can use that too.\n\nThroughout the guide, lines you type into the terminal look like this:\nplink2 --version\nYou copy the command, paste it into your terminal, and press Enter. That’s it.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "HARMONIZATION_PLAN.html#decisions-taken",
+    "href": "HARMONIZATION_PLAN.html#decisions-taken",
+    "title": "Harmonisation plan: one published, manuscript-aligned repository",
+    "section": "",
+    "text": "Quality control (settled). The nine-step pipeline developed on murat_v1 is the canonical QC of the guide. The five-filter qc.qmd at the repository root is superseded and removed. The pipeline is brought into main through a normal, reviewed pull request rather than a wholesale merge, so that authorship and the review process described in CONTRIBUTING.md are preserved. The manuscript’s Table 2, Table 4 and Results section already report the nine-step numbers, and they match the committed run exactly: 1,461 samples and 430,000 variants at entry, 1,239 samples and 401,909 variants retained.\nSetup and tooling (settled). The automated project setup in scripts/dev/ and the expanded getting_started.qmd replace the manual PLINK download instructions previously on main.\nmgentiluomo/GWAS_training_session (settled). It stays a separate, standalone repository. It is generic, built on a public 1000 Genomes subset rather than on pdac_demo, and it does not carry the didactic design that is the point of this guide. It is not merged in. One piece of it is worth reusing: 00_Intro/Introduction_from_rad_data_to_binary.md, the explanation of how raw array output becomes a PLINK binary dataset, which is what Section 1A needs as a starting point."
   },
   {
-    "objectID": "getting_started.html#sec-download",
-    "href": "getting_started.html#sec-download",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "Step 1 — Download the demo dataset",
-    "text": "Step 1 — Download the demo dataset\nThe demo dataset is called pdac_demo. Like all PLINK datasets, it is made of three files that always travel together and must stay in the same folder:\n\n\n\n\n\n\n\nFile\nWhat it contains\n\n\n\n\npdac_demo.bed\nthe genotypes (the actual genetic data, in compact binary form)\n\n\npdac_demo.bim\nthe list of variants (one row per SNP: chromosome, position, alleles)\n\n\npdac_demo.fam\nthe list of individuals (one row per person: ID, sex, case/control status)\n\n\n\n\n\n\n\n\n\nImportant\n\n\n\nNever rename or move just one of the three files. PLINK always looks for all three together using the shared name (pdac_demo).\n\n\nYou can download them in either of two ways.\n\nPoint and click (easiest)In R / RStudioCommand line\n\n\nOpen the release page and download the three files, or click each link directly:\n\npdac_demo.bed — the genotypes (≈150 MB)\npdac_demo.bim — the list of variants\npdac_demo.fam — the list of individuals\n\nThen move all three files into your working folder. (Full release page: https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data)\n\nWindows tip: make sure the browser did not add a hidden .txt at the end (e.g. pdac_demo.fam.txt). The names must be exactly pdac_demo.bed, .bim, .fam.\n\n\n\nRun this in the RStudio Console — it downloads the three files straight into your folder, the same way on Windows, macOS and Linux:\n\nbase &lt;- \"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/\"\nfor (f in c(\"pdac_demo.bed\", \"pdac_demo.bim\", \"pdac_demo.fam\")) {\n  download.file(paste0(base, f), destfile = f, mode = \"wb\")\n}\nlist.files(pattern = \"pdac_demo\")\n\n\n\n# macOS / Linux\nfor f in pdac_demo.bed pdac_demo.bim pdac_demo.fam; do\n  curl -L -O \"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/$f\"\ndone\n# Windows PowerShell\n$base = \"https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/\"\nforeach ($f in \"pdac_demo.bed\",\"pdac_demo.bim\",\"pdac_demo.fam\") {\n  Invoke-WebRequest -Uri \"$base$f\" -OutFile $f\n}\n\n\n\n\n\n\n\n\n\nTipPick one working folder and stay in it\n\n\n\nCreate a single folder for this tutorial — for example gwas_tutorial — and put the three data files there. Do all your work inside it. This avoids almost every “file not found” problem beginners run into.\n\n\n\nCheck the files arrived\nIn your terminal, move into the folder and list its contents:\ncd path/to/gwas_tutorial      # replace with the real path to your folder\nls pdac_demo.*      # on Windows Command Prompt use: dir pdac_demo.*\nYou should see exactly three files: .bed, .bim and .fam.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "HARMONIZATION_PLAN.html#where-each-remaining-sections-content-comes-from",
+    "href": "HARMONIZATION_PLAN.html#where-each-remaining-sections-content-comes-from",
+    "title": "Harmonisation plan: one published, manuscript-aligned repository",
+    "section": "",
+    "text": "Manuscript section\nFolder\nSource\nAction\n\n\n\n\n0, Study design and consortium\nsections/00_introduction/\nDaniele Campa’s draft in the manuscript\nTranscribe the narrative, no code\n\n\n1A, Genotyping technologies\nsections/01A_study_design/\nGWAS_training_session/00_Intro/, plus the section leads’ draft\nAdapt the raw-to-PLINK explainer for a non-bioinformatics audience\n\n\n1B, Quality control\nsections/01B_genotyping_qc/\nDone\nMerged from murat_v1\n\n\n2, Population stratification\nsections/02_population_stratification/\nElif Öz’s manuscript draft\nWrite the walkthrough on pdac_demo: LD pruning, PCA, outliers, ancestry inference\n\n\n3, Imputation\nsections/03_imputation/\nPelin Ünal’s manuscript draft\nWrite the walkthrough: VCF preparation, TOPMed server submission, post-imputation filtering\n\n\n4A, Association, binary\nsections/04A_association_binary/\nElif Öz’s manuscript draft\nLogistic regression with Firth fallback, QQ and Manhattan plots, lambda\n\n\n4B, Association, survival\nsections/04B_association_continuous/\nPelin Ünal’s manuscript draft\nREGENIE --t2e walkthrough\n\n\n4C, Software comparison\nsections/04C_association_other/\nMurat Güler, writing plan only\nSame analysis in two tools, side by side\n\n\n5, Meta-analysis\nsections/05_meta_analysis/\nNot yet drafted\nDescribed rather than worked: the demo dataset is a single cohort\n\n\n6, Fine mapping\nsections/06_finemapping_annotation/\nBurçak Otlu’s manuscript draft\nSuSiE-RSS on the ABO locus, credible sets, LD diagnostics\n\n\n6.5, Functional annotation\nsections/06.5_gwas_annotations/\nChiara Corradi’s manuscript draft\nVEP, regulatory overlap, colocalisation\n\n\n7, Reporting and FAIR\nsections/07_reporting_fair/\nManuel Gentiluomo\nSTREGA checklist, summary statistics deposition, Zenodo archiving\n\n\n\nTwo chains have to stay consistent as these are written, because the manuscript quotes numbers from both: the QC-passed dataset feeds Section 2, and the European analysis set defined there, 229 cases and 396 controls, feeds Sections 4A, 6 and 6.5."
   },
   {
-    "objectID": "getting_started.html#sec-plink",
-    "href": "getting_started.html#sec-plink",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "Step 2 — Install PLINK 2",
-    "text": "Step 2 — Install PLINK 2\nPLINK is the workhorse program for genotype data. We use PLINK 2 (the command is plink2). It is a single program file — there is no installer: you download it, unzip it, and you are done.\n\nGo to the official download page: https://www.cog-genomics.org/plink/2.0/\nDownload the build for your operating system (Linux / macOS / Windows).\nUnzip it. Inside you will find the program file: plink2 (macOS/Linux) or plink2.exe (Windows).\n\n\n\n\n\n\n\nTipThe simplest setup\n\n\n\nPut the plink2 (or plink2.exe) file in the same folder as your data (gwas_tutorial). Then you can run it as ./plink2 (macOS/Linux) or plink2 (Windows) without worrying about installation paths. More advanced users can instead add PLINK to their system PATH.\n\n\n\nmacOS / LinuxWindows\n\n\nIf you placed plink2 in your working folder, you call it with ./plink2. The first time on macOS you may need to allow it to run:\nchmod +x plink2          # make the file executable\n./plink2 --version\n\n\nOpen Command Prompt, move to your folder, and call it as plink2:\ncd path\\to\\gwas_tutorial\n.\\plink2 --version\n\n\n\n\n\n\n\n\n\nNoteplink2 vs ./plink2\n\n\n\nFor the rest of this guide we write the command simply as plink2. On macOS/Linux, if PLINK is in your current folder rather than installed system-wide, type ./plink2 instead. Everything after the program name is identical.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "HARMONIZATION_PLAN.html#order-of-operations",
+    "href": "HARMONIZATION_PLAN.html#order-of-operations",
+    "title": "Harmonisation plan: one published, manuscript-aligned repository",
+    "section": "",
+    "text": "Merge the QC pull request into main with the blocking review items resolved, then delete the murat_v1 branch. See PR_REVIEW_murat_v1.md.\nApply the alignment commit: README.md, index.qmd, _quarto.yml and this file.\nRun the association step on the QC-passed dataset. This is now the critical path: it produces the genomic inflation factor and the lead variant P value that are the last two numeric placeholders in the manuscript’s Results section, and it is the input to Sections 2, 4A and 6 of the tutorial.\nDraft Section 1A from the training-session explainer, with the section leads.\nDraft Section 2 on pdac_demo, since the ancestry step is what defines the European analysis set every later section depends on.\nUncomment each sidebar block in _quarto.yml as its section acquires real content, and confirm quarto preview renders cleanly before each merge to main."
   },
   {
-    "objectID": "getting_started.html#sec-version",
-    "href": "getting_started.html#sec-version",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "Step 3 — Check that PLINK runs",
-    "text": "Step 3 — Check that PLINK runs\nBefore doing anything with the data, confirm PLINK starts at all:\n.\\plink2 --version\nYou should see a single line with the version and build date, similar to:\nPLINK v2.0.0-a.6.9 64-bit (1 Mar 2025)\nIf you see a version line, PLINK works. If instead you get an error like command not found or 'plink2' is not recognized, jump to Troubleshooting below.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "HARMONIZATION_PLAN.html#repository-hygiene-outstanding",
+    "href": "HARMONIZATION_PLAN.html#repository-hygiene-outstanding",
+    "title": "Harmonisation plan: one published, manuscript-aligned repository",
+    "section": "",
+    "text": "Committed results are heavy in places: one illustration video of 5.9 MB and two full pairwise relatedness tables of 4.5 MB and 3.6 MB. The tables are regenerable from the scripts.\nenv/software_versions.md is still a template. Section 7 of the manuscript commits us to reporting exact versions, so it should be completed for the locked-in QC run.\nRepository visibility. The repository is currently readable publicly. That is the right end state, but it should be a deliberate choice made now rather than discovered later, since it contains results that are not yet published.\nA mapping between the manuscript’s [CODE 1B-nn] tags and the script filenames should live in each section’s README.md, so a reader of the paper can find the corresponding script."
   },
   {
-    "objectID": "getting_started.html#sec-freq",
-    "href": "getting_started.html#sec-freq",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "Step 4 — Your first command: allele frequencies with --freq",
-    "text": "Step 4 — Your first command: allele frequencies with --freq\nNow the real test. We ask PLINK to read the demo dataset and compute the allele frequency of every variant — that is, how common each allele is across the sample. This is the simplest possible operation that touches the actual genotypes, so it is a perfect “does everything work?” check.\n.\\plink2 --bfile pdac_demo --freq --out pdac_demo_freq\nLet’s read that command piece by piece:\n\n\n\n\n\n\n\nPart\nMeaning\n\n\n\n\nplink2\nrun the PLINK 2 program\n\n\n--bfile pdac_demo\nload the dataset whose three files share this name (.bed/.bim/.fam)\n\n\n--freq\ncompute the allele frequencies\n\n\n--out pdac_demo_freq\nname the output files with this prefix\n\n\n\nCODE 0-01: first PLINK run — allele frequencies — see /getting_started/\nWhen it finishes, PLINK prints a short log to the screen and creates a new file: pdac_demo_freq.afreq. The on-screen log ends with something like:\n... \n430000 variants loaded from pdac_demo.bim.\n1461 samples (712 females, 749 males; ...) loaded from pdac_demo.fam.\n--freq: Allele frequencies written to pdac_demo_freq.afreq .\nIf you see a line saying the allele frequencies were written, the test has passed: PLINK can read your data and compute on it. 🎉",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "docs/helpers/WSL_SETUP.html",
+    "href": "docs/helpers/WSL_SETUP.html",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "For Windows users: Using Windows Subsystem for Linux (WSL) is strongly recommended for this tutorial. The pipeline uses bash scripts and Linux/macOS command-line tools, which work most consistently inside WSL.\n\n\n\n\n\n\n\n\n\n\nAspect\nWindows CMD/PowerShell\nWSL (Linux)\n\n\n\n\nTool setup\nRequires separate Windows binaries and PATH edits\nTutorial scripts install tools into the project folder\n\n\nBash scripts\nPowerShell emulation (fragile)\nFull bash compatibility\n\n\nFile paths\nWindows-style (backslashes, drive letters)\nUnix-style (forward slashes)\n\n\nPerformance\nSlower for file I/O intensive tasks\nNative Linux speed\n\n\nScripting\nComplex escaping, quoting issues\nStandard shell behavior\n\n\n\nRecommendation: Install WSL2 with Ubuntu, then follow this guide.\n\n\n\n\n\n\nOpen PowerShell as Administrator and run:\nwsl --install\n# or, if you already have WSL1:\nwsl --set-default-version 2\nRestart your computer, then verify:\nwsl --list --verbose\nYou should see Ubuntu (or your chosen distro) with VERSION = 2.\n\n\n\nwsl --install -d Ubuntu\nOr use the Microsoft Store to download Ubuntu 22.04 LTS or later.\n\n\n\nFrom PowerShell or Windows Terminal:\nwsl\nOr click Ubuntu in Windows Terminal tabs.\nThe short video below shows how to open Ubuntu from Windows Terminal:\n\n\nYour browser does not support the video tag. \n\n\n\n\n\nOnce you’re in the WSL terminal, run these commands once to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by bash scripts/dev/tools_setup.sh.\n\n\nsudo apt-get update -y\nsudo apt-get upgrade -y\nNote: The sudo prompt may ask for your password (the one you set during WSL Ubuntu installation).\n\n\n\nsudo apt-get install -y curl wget git unzip tar bzip2\nVerify the basic utilities:\ngit --version\ncurl --version\nwget --version\nR is checked during Step 5 of the main tutorial. If it is missing, bash scripts/dev/tools_setup.sh will try to install it.\n\n\n\n\n\n\n\n\n\n\nWindows\nWSL\n\n\n\n\nC:\\Users\\...\n/home/username/...\n\n\nC:\\ drive\n/mnt/c/\n\n\nS:\\ drive\n/mnt/s/\n\n\nD:\\ drive\n/mnt/d/\n\n\n\n\n\n\nYour repo at S:\\Example is accessible in WSL as:\ncd /mnt/s/Example\nls -la\nYou can return back to your HOME directory with:\ncd $HOME\nls -la\n\n\n\n\n\n\nReason: Some universities, hospitals, and institutes use a network proxy. Windows may already know this proxy, but WSL may not use the Windows setting automatically.\nAsk your local IT team for the proxy address and port. It usually looks like:\nhttp://proxy.example.org:3128/\nReplace the example proxy below with your institution’s real proxy:\nPROXY=\"http://proxy.example.org:3128/\"\nNO_PROXY=\"localhost,127.0.0.1\"\nSet the proxy for the current WSL terminal:\nexport http_proxy=\"$PROXY\"\nexport https_proxy=\"$PROXY\"\nexport ftp_proxy=\"$PROXY\"\nexport HTTP_PROXY=\"$PROXY\"\nexport HTTPS_PROXY=\"$PROXY\"\nexport FTP_PROXY=\"$PROXY\"\nexport no_proxy=\"$NO_PROXY\"\nexport NO_PROXY=\"$NO_PROXY\"\nTest the connection:\ncurl -I https://github.com\nwget --spider https://github.com\nIf this works, make it permanent for future WSL terminals:\ncat &gt;&gt; \"$HOME/.bashrc\" &lt;&lt;'EOF'\n\n# Proxy for WSL network access.\n# Replace this example with your institution's proxy.\nexport http_proxy=\"http://proxy.example.org:3128/\"\nexport https_proxy=\"http://proxy.example.org:3128/\"\nexport ftp_proxy=\"http://proxy.example.org:3128/\"\nexport HTTP_PROXY=\"http://proxy.example.org:3128/\"\nexport HTTPS_PROXY=\"http://proxy.example.org:3128/\"\nexport FTP_PROXY=\"http://proxy.example.org:3128/\"\nexport no_proxy=\"localhost,127.0.0.1\"\nexport NO_PROXY=\"localhost,127.0.0.1\"\nEOF\n\nsource \"$HOME/.bashrc\"\napt-get may need its own proxy setting because it runs with sudo:\nsudo tee /etc/apt/apt.conf.d/95proxy &gt;/dev/null &lt;&lt;EOF\nAcquire::http::Proxy \"$PROXY\";\nAcquire::https::Proxy \"$PROXY\";\nAcquire::ftp::Proxy \"$PROXY\";\nEOF\n\nsudo apt-get update\nGit can also be configured separately:\ngit config --global http.proxy \"$PROXY\"\ngit config --global https.proxy \"$PROXY\"\ngit ls-remote https://github.com/git/git.git HEAD\nIf your proxy requires a username or password, ask your IT team for the recommended WSL setup. Avoid putting passwords into shared scripts or tutorial files.\n\n\n\nSolution: Use /mnt/ prefix for Windows drives:\n# ✗ Wrong\ncd S:\\Github\\how-to-gwas-pdac\n\n# ✓ Correct\ncd /mnt/s/Github/how-to-gwas-pdac\n\n\n\nReason: WSL filesystem performance is slower when accessing Windows drives.\nSolution: Clone the repo inside WSL:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git ~/how-to-gwas-pdac\ncd ~/how-to-gwas-pdac\n\n\n\n\n\n# Check WSL version and distro\nwsl --list --verbose\n\n# Switch default distro\nwsl --set-default &lt;distro-name&gt;\n\n# Enter WSL\nwsl\n\n# Exit WSL\nexit\n\n# Run single WSL command from PowerShell\nwsl bash -c \"cd /mnt/s/Github/how-to-gwas-pdac && ls\"\n\n# Update WSL\nwsl --update\n\n\n\n\n\nFollow Before you start: setup and your first QC pipeline\nReturn to this page if you need help with WSL paths or basic WSL commands.\n\nGood luck!"
   },
   {
-    "objectID": "getting_started.html#sec-check",
-    "href": "getting_started.html#sec-check",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "Step 5 — Did it work? Look at the result",
-    "text": "Step 5 — Did it work? Look at the result\nOpen the first few lines of the output file to see what PLINK produced:\nhead pdac_demo_freq.afreq    # on Windows use: more pdac_demo_freq.afreq\nYou should see a table with one row per variant, like this:\n#CHROM  ID                REF  ALT  ALT_FREQS   OBS_CT\n1       1:752566:G:A      G    A    0.831621    2922\n1       1:776546:A:C      A    C    0.142847    2922\n1       1:832918:T:C      T    C    0.067419    2922\n1       1:842013:T:G      T    G    0.219370    2922\n...\nWhat the columns mean:\n\n\n\n\n\n\n\nColumn\nMeaning\n\n\n\n\n#CHROM\nchromosome\n\n\nID\nthe variant’s identifier\n\n\nREF / ALT\nthe reference and alternate alleles\n\n\nALT_FREQS\nfrequency of the ALT allele (a number between 0 and 1)\n\n\nOBS_CT\nnumber of observed alleles (≈ 2 × number of genotyped individuals)\n\n\n\nThat ALT_FREQS column is the answer to our test: PLINK computed a frequency for every variant.\n\nOptional: read it in R\nIf you have R/RStudio set up, you can load the same file and take a quick look. This also introduces the pattern we use throughout the guide — PLINK produces a table, R reads and summarises it:\n\n# read the allele-frequency table PLINK just wrote\nfreq &lt;- read.table(\"pdac_demo_freq.afreq\",\n                   header = TRUE, comment.char = \"\", sep = \"\\t\",\n                   check.names = FALSE)\n\n# how many variants, and the first rows\nnrow(freq)\nhead(freq)\n\n# minor allele frequency (MAF) = the smaller of ALT_FREQS and 1 - ALT_FREQS\nfreq$MAF &lt;- pmin(freq$ALT_FREQS, 1 - freq$ALT_FREQS)\n\n# a quick picture of the frequency spectrum\nhist(freq$MAF, breaks = 50,\n     main = \"Minor allele frequency distribution\",\n     xlab = \"MAF\")\n\nA typical genotyping array shows many common variants and a tail of rarer ones, so the histogram leans toward the lower MAF values. If R prints a number of variants and draws a histogram, your R setup works too — and you are ready for the analysis sections.\n\n\n\n\n\n\nNoteWhy we don’t re-run PLINK every time the website is built\n\n\n\nReal GWAS commands (especially on full datasets) can be slow and run on a dedicated server. In this guide, PLINK commands are shown for you to run on your own machine; the website does not re-execute them. Lightweight R steps (a plot, a small table) are run once and cached, so the site stays fast and reproducible.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "docs/helpers/WSL_SETUP.html#why-wsl",
+    "href": "docs/helpers/WSL_SETUP.html#why-wsl",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Aspect\nWindows CMD/PowerShell\nWSL (Linux)\n\n\n\n\nTool setup\nRequires separate Windows binaries and PATH edits\nTutorial scripts install tools into the project folder\n\n\nBash scripts\nPowerShell emulation (fragile)\nFull bash compatibility\n\n\nFile paths\nWindows-style (backslashes, drive letters)\nUnix-style (forward slashes)\n\n\nPerformance\nSlower for file I/O intensive tasks\nNative Linux speed\n\n\nScripting\nComplex escaping, quoting issues\nStandard shell behavior\n\n\n\nRecommendation: Install WSL2 with Ubuntu, then follow this guide."
   },
   {
-    "objectID": "getting_started.html#sec-troubleshooting",
-    "href": "getting_started.html#sec-troubleshooting",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "Troubleshooting",
-    "text": "Troubleshooting\n\n\n\n\n\n\nWarningcommand not found / 'plink2' is not recognized\n\n\n\n\n\nThe terminal cannot find the PLINK program. Either you are not in the folder where plink2 lives, or it is not on your PATH.\n\nMake sure you have cd-ed into your working folder.\nOn macOS/Linux, call it as ./plink2 (note the ./).\nCheck the file is really there: ls plink2 (macOS/Linux) or dir plink2.exe (Windows).\n\n\n\n\n\n\n\n\n\n\nWarningError: Failed to open pdac_demo.bed\n\n\n\n\n\nPLINK cannot find the data files.\n\nConfirm all three files (.bed, .bim, .fam) are in the current folder and share the exact name pdac_demo.\nConfirm you typed the name without an extension after --bfile (PLINK adds .bed/.bim/.fam itself).\nCheck you are in the right folder with pwd (macOS/Linux) or cd with no arguments (Windows).\n\n\n\n\n\n\n\n\n\n\nWarningmacOS: “plink2 cannot be opened because the developer cannot be verified”\n\n\n\n\n\nThis is macOS Gatekeeper. Either right-click the plink2 file → Open once to allow it, or run xattr -d com.apple.quarantine plink2 in the terminal, then try again.",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "docs/helpers/WSL_SETUP.html#prerequisites",
+    "href": "docs/helpers/WSL_SETUP.html#prerequisites",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Open PowerShell as Administrator and run:\nwsl --install\n# or, if you already have WSL1:\nwsl --set-default-version 2\nRestart your computer, then verify:\nwsl --list --verbose\nYou should see Ubuntu (or your chosen distro) with VERSION = 2.\n\n\n\nwsl --install -d Ubuntu\nOr use the Microsoft Store to download Ubuntu 22.04 LTS or later.\n\n\n\nFrom PowerShell or Windows Terminal:\nwsl\nOr click Ubuntu in Windows Terminal tabs.\nThe short video below shows how to open Ubuntu from Windows Terminal:\n\n\nYour browser does not support the video tag."
   },
   {
-    "objectID": "getting_started.html#whats-next",
-    "href": "getting_started.html#whats-next",
-    "title": "Before you start: setup and your first PLINK command",
-    "section": "What’s next",
-    "text": "What’s next\nYou now have a working setup and have confirmed PLINK can read the demo data. The next sections of the guide build directly on this:\n\nQuality control (Section 1B) — cleaning the raw genotypes before any analysis.\nPopulation stratification (Section 2) — detecting and correcting for ancestry.\n\n(These sections will be linked here as they are added.)",
-    "crumbs": [
-      "Before you start",
-      "Before you start: setup and your first PLINK command"
-    ]
+    "objectID": "docs/helpers/WSL_SETUP.html#basic-wsl-preparation",
+    "href": "docs/helpers/WSL_SETUP.html#basic-wsl-preparation",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Once you’re in the WSL terminal, run these commands once to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by bash scripts/dev/tools_setup.sh.\n\n\nsudo apt-get update -y\nsudo apt-get upgrade -y\nNote: The sudo prompt may ask for your password (the one you set during WSL Ubuntu installation).\n\n\n\nsudo apt-get install -y curl wget git unzip tar bzip2\nVerify the basic utilities:\ngit --version\ncurl --version\nwget --version\nR is checked during Step 5 of the main tutorial. If it is missing, bash scripts/dev/tools_setup.sh will try to install it."
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#accessing-your-files",
+    "href": "docs/helpers/WSL_SETUP.html#accessing-your-files",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Windows\nWSL\n\n\n\n\nC:\\Users\\...\n/home/username/...\n\n\nC:\\ drive\n/mnt/c/\n\n\nS:\\ drive\n/mnt/s/\n\n\nD:\\ drive\n/mnt/d/\n\n\n\n\n\n\nYour repo at S:\\Example is accessible in WSL as:\ncd /mnt/s/Example\nls -la\nYou can return back to your HOME directory with:\ncd $HOME\nls -la"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#troubleshooting",
+    "href": "docs/helpers/WSL_SETUP.html#troubleshooting",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Reason: Some universities, hospitals, and institutes use a network proxy. Windows may already know this proxy, but WSL may not use the Windows setting automatically.\nAsk your local IT team for the proxy address and port. It usually looks like:\nhttp://proxy.example.org:3128/\nReplace the example proxy below with your institution’s real proxy:\nPROXY=\"http://proxy.example.org:3128/\"\nNO_PROXY=\"localhost,127.0.0.1\"\nSet the proxy for the current WSL terminal:\nexport http_proxy=\"$PROXY\"\nexport https_proxy=\"$PROXY\"\nexport ftp_proxy=\"$PROXY\"\nexport HTTP_PROXY=\"$PROXY\"\nexport HTTPS_PROXY=\"$PROXY\"\nexport FTP_PROXY=\"$PROXY\"\nexport no_proxy=\"$NO_PROXY\"\nexport NO_PROXY=\"$NO_PROXY\"\nTest the connection:\ncurl -I https://github.com\nwget --spider https://github.com\nIf this works, make it permanent for future WSL terminals:\ncat &gt;&gt; \"$HOME/.bashrc\" &lt;&lt;'EOF'\n\n# Proxy for WSL network access.\n# Replace this example with your institution's proxy.\nexport http_proxy=\"http://proxy.example.org:3128/\"\nexport https_proxy=\"http://proxy.example.org:3128/\"\nexport ftp_proxy=\"http://proxy.example.org:3128/\"\nexport HTTP_PROXY=\"http://proxy.example.org:3128/\"\nexport HTTPS_PROXY=\"http://proxy.example.org:3128/\"\nexport FTP_PROXY=\"http://proxy.example.org:3128/\"\nexport no_proxy=\"localhost,127.0.0.1\"\nexport NO_PROXY=\"localhost,127.0.0.1\"\nEOF\n\nsource \"$HOME/.bashrc\"\napt-get may need its own proxy setting because it runs with sudo:\nsudo tee /etc/apt/apt.conf.d/95proxy &gt;/dev/null &lt;&lt;EOF\nAcquire::http::Proxy \"$PROXY\";\nAcquire::https::Proxy \"$PROXY\";\nAcquire::ftp::Proxy \"$PROXY\";\nEOF\n\nsudo apt-get update\nGit can also be configured separately:\ngit config --global http.proxy \"$PROXY\"\ngit config --global https.proxy \"$PROXY\"\ngit ls-remote https://github.com/git/git.git HEAD\nIf your proxy requires a username or password, ask your IT team for the recommended WSL setup. Avoid putting passwords into shared scripts or tutorial files.\n\n\n\nSolution: Use /mnt/ prefix for Windows drives:\n# ✗ Wrong\ncd S:\\Github\\how-to-gwas-pdac\n\n# ✓ Correct\ncd /mnt/s/Github/how-to-gwas-pdac\n\n\n\nReason: WSL filesystem performance is slower when accessing Windows drives.\nSolution: Clone the repo inside WSL:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git ~/how-to-gwas-pdac\ncd ~/how-to-gwas-pdac"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#quick-reference-wsl-commands",
+    "href": "docs/helpers/WSL_SETUP.html#quick-reference-wsl-commands",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "# Check WSL version and distro\nwsl --list --verbose\n\n# Switch default distro\nwsl --set-default &lt;distro-name&gt;\n\n# Enter WSL\nwsl\n\n# Exit WSL\nexit\n\n# Run single WSL command from PowerShell\nwsl bash -c \"cd /mnt/s/Github/how-to-gwas-pdac && ls\"\n\n# Update WSL\nwsl --update"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#next-steps",
+    "href": "docs/helpers/WSL_SETUP.html#next-steps",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Follow Before you start: setup and your first QC pipeline\nReturn to this page if you need help with WSL paths or basic WSL commands.\n\nGood luck!"
   },
   {
     "objectID": "CONTRIBUTING.html",
@@ -225,11 +294,217 @@
     "text": "Open a GitHub Issue for anything that needs group discussion (scope of a section, an overlap between sections, a data question). Use Issues rather than email threads so the decision is visible to everyone and stays with the code."
   },
   {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "This guide helps you set up a flexible, portable project folder that works on any system without hard-coded paths.\n\n\n\nChoose any location on your computer and create a folder named gwas_tutorial:\nWindows (bash in WSL2):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\nmacOS/Linux (bash):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\n\nNote: You can place this folder anywhere. The structure will work from any location because we use relative paths.\n\n\n\n\n\n# Create base directories\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\necho \"✓ Directory structure created\"\ntree -L 2  # (or: find . -type d -not -path '*/\\.*' | sort)\n\n\n\n\nAfter setup, your project looks like this:\ngwas_tutorial/\n│\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   ├── script_manifest.txt\n│   │   └── tool_manifest.tsv\n│   │\n│   ├── 01B_genotyping_qc/           # QC pipeline scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   ├── ... (9 QC scripts total)\n│   │   └── 09_qc_summary.sh\n│   │\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n│\n├── demo_data/                       # Downloaded demo dataset files\n│   ├── pdac_demo.bed\n│   ├── pdac_demo.bim\n│   ├── pdac_demo.fam\n│   ├── phenotype.txt\n│   ├── covariates.txt\n│   ├── survival.txt\n│   └── sample_ancestry.tsv\n│\n├── tools/                           # Local tool installation\n│   ├── bin/                         # Command links used by the tutorial\n│   │   ├── plink\n│   │   ├── plink2\n│   │   ├── metal\n│   │   └── regenie\n│   ├── plink1.9/\n│   ├── plink2/\n│   ├── metal/\n│   ├── micromamba/\n│   ├── micromamba-root/\n│   └── regenie/\n│\n├── data_processed/                  # Processed data outputs\n│   └── (will be populated during QC)\n│\n└── results/                         # Analysis results organized by workflow\n    ├── qc/\n    ├── pop_structure/\n    ├── imputation/\n    ├── association/\n    ├── finemapping/\n    └── meta_analysis/\n\n\n\n\nFollow the main guide at getting_started.qmd which provides automated and manual options for downloading scripts in the correct structure.\nThe current script-copy step is manifest-based. It copies every section that has a scripts/ folder, so future sections can be added without changing the setup test:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\nrm -r how-to-gwas-pdac\nThe automated approach uses:\nbash scripts/dev/init_project.sh    # Creates folder structure\nbash scripts/dev/download_demo_data.sh  # Downloads data + verifies\nbash scripts/dev/tools_setup.sh     # Installs tools and writes tool_manifest.tsv\nbash scripts/dev/test.sh            # Tests everything\nThe manual approach is detailed in getting_started.qmd Step 2-6.\n\n\n\n\nThis structure is fully portable because:\n\nNo hard-coded paths — All paths are relative (e.g., ./scripts/01B_genotyping_qc/)\nManifest-based checks — section_manifest.txt, script_manifest.txt, and tool_manifest.tsv tell the setup test what should exist\nLocal tools — Tools are installed or linked under ./tools/, not system-wide\nWorks anywhere — Folder can be on Desktop, Documents, USB drive, etc.\nEasy backups — Entire folder is self-contained, except for large downloaded files you may choose to regenerate\n\n\n\n\n\n\n\n\n\n\n\n\nFolder\nPurpose\n\n\n\n\nscripts/dev/\nUtility scripts (download, setup, test)\n\n\nscripts/01B_genotyping_qc/\nQC pipeline scripts\n\n\nscripts/&lt;section&gt;/\nSection scripts copied from sections/&lt;section&gt;/scripts/\n\n\ndemo_data/\nDemo dataset (7 files)\n\n\ntools/bin/\nCommand links for PLINK1.9, PLINK2, METAL, REGENIE, and future tools\n\n\ntools/micromamba/\nProject-local micromamba executable\n\n\ntools/micromamba-root/\nProject-local environments such as regenie_env\n\n\ndata_processed/\nIntermediate outputs\n\n\nresults/\nFinal analysis results\n\n\n\n\n\n\n\nTo check your structure is correct:\n# Verify folders exist\nls -la scripts/dev/\nls -la scripts/01B_genotyping_qc/\nls -la demo_data/\nls -la tools/bin/\n\n# Verify manifests\ncat scripts/dev/section_manifest.txt\ncat scripts/dev/script_manifest.txt\ncat scripts/dev/tool_manifest.tsv\n\n# Verify demo data downloaded (after Step 4)\nls -lh demo_data/ | wc -l  # Should show 7 files + header\n\n# Verify tools installed (after Step 5)\nbash scripts/dev/test.sh\n\n\n\n\nOnce your structure is set up, follow the main guide to: 1. Download scripts (Step 3 in getting_started.qmd) 2. Download demo data (Step 4) 3. Install tools (Step 5) 4. Test everything (Step 6) 5. Run your first QC pipeline!"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-1-create-your-project-folder",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-1-create-your-project-folder",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Choose any location on your computer and create a folder named gwas_tutorial:\nWindows (bash in WSL2):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\nmacOS/Linux (bash):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\n\nNote: You can place this folder anywhere. The structure will work from any location because we use relative paths."
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-2-create-the-directory-structure",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-2-create-the-directory-structure",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "# Create base directories\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\necho \"✓ Directory structure created\"\ntree -L 2  # (or: find . -type d -not -path '*/\\.*' | sort)"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#final-structure",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#final-structure",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "After setup, your project looks like this:\ngwas_tutorial/\n│\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   ├── script_manifest.txt\n│   │   └── tool_manifest.tsv\n│   │\n│   ├── 01B_genotyping_qc/           # QC pipeline scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   ├── ... (9 QC scripts total)\n│   │   └── 09_qc_summary.sh\n│   │\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n│\n├── demo_data/                       # Downloaded demo dataset files\n│   ├── pdac_demo.bed\n│   ├── pdac_demo.bim\n│   ├── pdac_demo.fam\n│   ├── phenotype.txt\n│   ├── covariates.txt\n│   ├── survival.txt\n│   └── sample_ancestry.tsv\n│\n├── tools/                           # Local tool installation\n│   ├── bin/                         # Command links used by the tutorial\n│   │   ├── plink\n│   │   ├── plink2\n│   │   ├── metal\n│   │   └── regenie\n│   ├── plink1.9/\n│   ├── plink2/\n│   ├── metal/\n│   ├── micromamba/\n│   ├── micromamba-root/\n│   └── regenie/\n│\n├── data_processed/                  # Processed data outputs\n│   └── (will be populated during QC)\n│\n└── results/                         # Analysis results organized by workflow\n    ├── qc/\n    ├── pop_structure/\n    ├── imputation/\n    ├── association/\n    ├── finemapping/\n    └── meta_analysis/"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-3-get-the-scripts",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-3-get-the-scripts",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Follow the main guide at getting_started.qmd which provides automated and manual options for downloading scripts in the correct structure.\nThe current script-copy step is manifest-based. It copies every section that has a scripts/ folder, so future sections can be added without changing the setup test:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\nrm -r how-to-gwas-pdac\nThe automated approach uses:\nbash scripts/dev/init_project.sh    # Creates folder structure\nbash scripts/dev/download_demo_data.sh  # Downloads data + verifies\nbash scripts/dev/tools_setup.sh     # Installs tools and writes tool_manifest.tsv\nbash scripts/dev/test.sh            # Tests everything\nThe manual approach is detailed in getting_started.qmd Step 2-6."
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#portable-structure-design",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#portable-structure-design",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "This structure is fully portable because:\n\nNo hard-coded paths — All paths are relative (e.g., ./scripts/01B_genotyping_qc/)\nManifest-based checks — section_manifest.txt, script_manifest.txt, and tool_manifest.tsv tell the setup test what should exist\nLocal tools — Tools are installed or linked under ./tools/, not system-wide\nWorks anywhere — Folder can be on Desktop, Documents, USB drive, etc.\nEasy backups — Entire folder is self-contained, except for large downloaded files you may choose to regenerate"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#directory-descriptions",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#directory-descriptions",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Folder\nPurpose\n\n\n\n\nscripts/dev/\nUtility scripts (download, setup, test)\n\n\nscripts/01B_genotyping_qc/\nQC pipeline scripts\n\n\nscripts/&lt;section&gt;/\nSection scripts copied from sections/&lt;section&gt;/scripts/\n\n\ndemo_data/\nDemo dataset (7 files)\n\n\ntools/bin/\nCommand links for PLINK1.9, PLINK2, METAL, REGENIE, and future tools\n\n\ntools/micromamba/\nProject-local micromamba executable\n\n\ntools/micromamba-root/\nProject-local environments such as regenie_env\n\n\ndata_processed/\nIntermediate outputs\n\n\nresults/\nFinal analysis results"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#quick-verification",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#quick-verification",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "To check your structure is correct:\n# Verify folders exist\nls -la scripts/dev/\nls -la scripts/01B_genotyping_qc/\nls -la demo_data/\nls -la tools/bin/\n\n# Verify manifests\ncat scripts/dev/section_manifest.txt\ncat scripts/dev/script_manifest.txt\ncat scripts/dev/tool_manifest.tsv\n\n# Verify demo data downloaded (after Step 4)\nls -lh demo_data/ | wc -l  # Should show 7 files + header\n\n# Verify tools installed (after Step 5)\nbash scripts/dev/test.sh"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#next-steps",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#next-steps",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Once your structure is set up, follow the main guide to: 1. Download scripts (Step 3 in getting_started.qmd) 2. Download demo data (Step 4) 3. Install tools (Step 5) 4. Test everything (Step 6) 5. Run your first QC pipeline!"
+  },
+  {
+    "objectID": "getting_started.html",
+    "href": "getting_started.html",
+    "title": "Before you start: setup",
+    "section": "",
+    "text": "This page gets your computer ready and walks you through your first GWAS QC command. By the end you will have: - Set up a portable project folder - Downloaded the demo dataset\n- Installed the required tools (currently PLINK2, PLINK1.9, METAL, REGENIE, and R) - Run your first test script that confirms everything works",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-terminal",
+    "href": "getting_started.html#sec-terminal",
+    "title": "Before you start: setup",
+    "section": "A note on the command line",
+    "text": "A note on the command line\nMost steps in this guide are typed into a SHELL (also called a “command line” or “console”) — a window where you type a command, press Enter, and the program runs.\n\nWindows: You must use WSL2 terminal (see Step 0). WSL2 gives you Linux inside Windows.\nmacOS: Open the Terminal app (in Applications → Utilities).\nLinux: Open your Terminal.\nInside RStudio: there is a Terminal tab next to the Console tab — you can use that too.\n\nLet’s practice using the terminal before we dive into the pipeline.\nThroughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.\nPlease click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press Enter to run them. Don’t worry if you don’t understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use Ctrl + Shift + V on Windows/Linux, or Cmd + V on macOS.\necho \"Welcome to the GWAS tutorial.\"\necho \"1) Where am I?\"\npwd\n\necho \"2) What is in this folder?\"\nls\n\necho \"3) Make a practice folder.\"\nmkdir -p gwas_practice\n\necho \"4) Make a tiny practice file.\"\necho \"GWAS practice line 1: samples\" &gt; gwas_practice/hello.txt\necho \"GWAS practice line 2: variants\" &gt;&gt; gwas_practice/hello.txt\necho \"GWAS practice line 3: quality control\" &gt;&gt; gwas_practice/hello.txt\n\necho \"5) Print the whole file with cat.\"\ncat gwas_practice/hello.txt\n\necho \"6) Print the first two lines with head.\"\nhead -n 2 gwas_practice/hello.txt\n\necho \"7) Print the last two lines with tail.\"\ntail -n 2 gwas_practice/hello.txt\n\necho \"8) Show the file with less.\"\nless -F -X gwas_practice/hello.txt\n\necho \"9) Remove the practice file and folder.\"\nrm gwas_practice/hello.txt\nrmdir gwas_practice\n\necho \"Done. You just used pwd, ls, mkdir, cat, head, tail, less, rm, and rmdir.\"\nThe commands you just ran do the following:\n\necho prints the text to the terminal. You can also use it to write text into files with &gt; (create, overwrite) and &gt;&gt; (append, add end of file).\npwd prints your current folder.\nls lists files in the current folder.\nmkdir creates folders. The -p argument allows you to create parent folders if they don’t exist.\ncat prints a whole file.\nhead and tail show the beginning and end of a file.\nless opens a file for reading. You need to press qto exit from reading mode. push up and down arrows to scroll. Here we use less -F -X, so this tiny file is shown and the command returns automatically.\nrm removes a file.\nrmdir removes an empty folder.\n\nIn this exercise, rm only removes the practice file you just created, and rmdir removes the empty practice folder. This is a safe way to practice removing files without accidentally deleting important data. There is also #rm -rf, which can remove folders and files recursively and without asking questions. The # prefix indicates this is a commented-out command. Please be very careful with this command it will permanently delete data.\nIf you want to learn more about these commands, you can check their manual pages by typing man &lt;command&gt; (for example, man ls) in the terminal.\nIf you have any issues with these commands, don’t worry. This is just a practice block to get you familiar with the terminal. Basic Bash knowledge is not required, but it will help you feel more comfortable as you move through the pipeline. There are many online materials available; here is one recommendation.\nIf you do not know how to open the terminal, just follow the next instructions (Step 0) carefully and ask for help if you get stuck.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-os-setup",
+    "href": "getting_started.html#sec-os-setup",
+    "title": "Before you start: setup",
+    "section": "Step 0 — Prepare your operating system",
+    "text": "Step 0 — Prepare your operating system\nBefore you begin, set up your OS environment.\n\nWindows: Install WSL2 (Required)macOS and Linux\n\n\nWSL2 (Windows Subsystem for Linux) gives you a Linux environment inside Windows. The GWAS pipeline uses bash scripts, so WSL2 is required.\nPart A: Install WSL2\n\nOpen PowerShell as Administrator (right-click and select “Run as administrator”)\nRun:\nwsl --install\nRestart your computer when prompted\n\nPart B: Open WSL2 Terminal\n\nAfter restart, open Windows Terminal (search for it in the Start menu)\nClick the dropdown arrow and select Ubuntu\nYou should see a bash prompt like user@computer:~$\n\nPart C: Install Basic Tools\nIn the WSL2 bash terminal, run:\nsudo apt-get update\nsudo apt-get install git curl wget unzip\n✅ WSL2 is now ready. From here on, all commands use this bash terminal.\nFor help troubleshooting WSL2, see WSL Setup.\n\n\nYour system already has bash. No setup needed for Step 0.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-project-folder",
+    "href": "getting_started.html#sec-project-folder",
+    "title": "Before you start: setup",
+    "section": "Step 1 — Create your project folder",
+    "text": "Step 1 — Create your project folder\nChoose any location on your computer and create a folder named gwas_tutorial. This will be your working folder for the entire pipeline.\nDIR=\"$HOME/gwas_tutorial\"\nmkdir -p \"$DIR\"\ncd \"$DIR\"\n\n\n\n\n\n\nTipTip\n\n\n\nYou can place this folder anywhere: Desktop, Documents, custom path — it doesn’t matter. Everything is portable because we use relative paths. DIR is a variable that holds the path to your project folder. $HOME means “home directory”, so this creates the folder in your home directory. You can also create it on other drives or directories by changing the DIR variable, for example DIR=\"/your/desired/directory\".",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-directories",
+    "href": "getting_started.html#sec-directories",
+    "title": "Before you start: setup",
+    "section": "Step 2 — Create the directory structure",
+    "text": "Step 2 — Create the directory structure\nCreate the folder structure that keeps scripts, data, and tools organized.\nFirst let’s check the project folder created successfully:\nif [ -d \"$DIR\" ]; then\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"✓ Project folder created successfully: $DIR\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"[NEXT] Stay in this folder for the next commands.\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%s\\n\\n\" \"Scripts, data, tools, and results will be stored here.\"\nelse\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"✗ Failed to create project folder: $DIR\"\n  printf \"%b\\n\"\n  printf \"%b\\n\"\n  printf \"%b\\n\" \"[Go to previous step] and make sure the command to create the folder ran successfully.\"\n  exit 1\nfi\nIf the folder was created successfully, you should see a message like:\n✓ Project folder created successfully: /home/user/gwas_tutorial  [NEXT] Stay in this folder for the next commands. Scripts, data, tools, and results will be stored here.\nIf you see an error message instead, please go back to the previous step and make sure the command to create the folder ran successfully.\nNext, create the subfolders for scripts, data, tools, and results. You can do this with one command or create them manually.\n\nAutomated (Easiest)Manual with mkdir\n\n\nDownload and run the setup script:\n# Download the automated setup script\n\ncurl -L https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -o init_project.sh\n# Make it executable\nchmod +x init_project.sh\n# Run it\nbash init_project.sh\nThis creates all folders automatically.\nIf curl is not available on your system, use wget instead:\nwget https://raw.githubusercontent.com/mgentiluomo/how-to-gwas-pdac/main/scripts/dev/init_project.sh -O init_project.sh\nchmod +x init_project.sh\nbash init_project.sh\n\n\nCreate folders manually:\n# Create all needed folders\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\n\n\nAfter Step 3, your folder will look like this:\ngwas_tutorial/\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   └── script_manifest.txt\n│   ├── 01B_genotyping_qc/           # QC scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   └── ...09_qc_summary.sh\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n├── demo_data/                       # Demo dataset (Step 4)\n├── tools/bin/                       # Tools (eg PLINK, Step 5)\n├── data_processed/                  # Processed output files\n└── results/                         # Results organized by workflow\n    └── qc/                          # QC output files\n\n\n\n\n\n\nTipSetup helper pages\n\n\n\nFor a compact project-folder overview, see Setup Project Structure. If you are on Windows/WSL2, keep WSL Setup nearby for path and terminal troubleshooting.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-scripts",
+    "href": "getting_started.html#sec-scripts",
+    "title": "Before you start: setup",
+    "section": "Step 3 — Download the GWAS scripts",
+    "text": "Step 3 — Download the GWAS scripts\nClone the GitHub repo to get all the GWAS pipeline scripts organized by section:\n# Clone the repo\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\n# Copy utility/dev scripts\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n# Start fresh manifest files for the setup test\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\n# Copy section scripts directly into section folders\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\n# Add utility/dev scripts to the script manifest\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\n\n# Optional cleanup: delete only the temporary cloned copy after scripts are copied\nrm -r how-to-gwas-pdac\n\n\n\n\n\n\nTipTip\n\n\n\nIf you see rm: remove write-protected regular file 'how-to-gwas-pdac/.git/objects/pack/pack-XXX.rev'?, type y and press Enter to confirm deletion. This is normal because the cloned repo is write-protected.\n\n\nVerify the scripts downloaded:\n# Check which section folders were copied\ncat scripts/dev/section_manifest.txt\n\n# Check the currently available QC scripts\nls scripts/01B_genotyping_qc/\nAt this stage, the section list should include scripts/01B_genotyping_qc, and you should see 01_initial_qc_stats.sh through 09_qc_summary.sh.\nAnd utility scripts:\nls scripts/dev/\nYou should see: download_demo_data.sh, tools_setup.sh, test.sh, init_project.sh, plus section_manifest.txt and script_manifest.txt.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-data",
+    "href": "getting_started.html#sec-data",
+    "title": "Before you start: setup",
+    "section": "Step 4 — Download the demo dataset",
+    "text": "Step 4 — Download the demo dataset\nDownload the 7 demo dataset files (~164 MB total) to your demo_data/ folder.\n\nAutomated (Easiest)Manual with wget\n\n\nRun the download script from your project:\nbash scripts/dev/download_demo_data.sh\nThis downloads all 7 files automatically and verifies them. It uses curl, which is already available on most macOS and Linux systems.\n\n\nDownload files individually. If your system has curl but not wget, use the automated script instead.\ncd ~/gwas_tutorial  # Make sure you're in your project folder\n\n# Download all 7 files\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed -O demo_data/pdac_demo.bed\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim -O demo_data/pdac_demo.bim\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam -O demo_data/pdac_demo.fam\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/phenotype.txt -O demo_data/phenotype.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/covariates.txt -O demo_data/covariates.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/survival.txt -O demo_data/survival.txt\nwget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/sample_ancestry.tsv -O demo_data/sample_ancestry.tsv\n\n\n\nVerify the files downloaded:\nls -lh demo_data/\nYou should see all 7 files.\n\n\n\n\n\n\nTipFile Integrity Check\n\n\n\nThe download script automatically verifies the SHA256 hash of each file to ensure they were downloaded correctly. You should see messages like:\n✓ OK: pdac_demo.bed\n✓ OK: pdac_demo.bim\n...\n✓ All files verified successfully! (7/7)\nIf any file fails verification, the script will tell you which one and suggest re-downloading it. This built-in verification ensures your data is safe and ready for analysis.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-install",
+    "href": "getting_started.html#sec-install",
+    "title": "Before you start: setup",
+    "section": "Step 5 — Install dependencies",
+    "text": "Step 5 — Install dependencies\nInstall the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.\n\nAutomated (Recommended)ManualConfirm toolsTroubleshooting\n\n\nBefore starting the install, check that you are in the project folder and that the basic download tools are visible:\ncd \"$HOME/gwas_tutorial\"\npwd\nls scripts/dev/tools_setup.sh\n\ncommand -v curl || echo \"curl is missing\"\ncommand -v wget || echo \"wget is missing\"\ncommand -v git || echo \"git is missing\"\ncommand -v unzip || echo \"unzip is missing\"\ncommand -v tar || echo \"tar is missing\"\ncommand -v bzip2 || echo \"bzip2 is missing\"\n\nR --version || echo \"R is not installed yet\"\ncurl -I https://github.com || echo \"Internet connection check failed\"\nIf the internet check fails inside WSL but works in Windows, see WSL Setup for managed-network and proxy troubleshooting.\nRun the setup script from your project:\nbash scripts/dev/tools_setup.sh\nThis script will: - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon) - Check whether R is available and try to install it if it is missing - Download the correct PLINK2 and PLINK1.9 binaries from official sources - Download the official precompiled METAL binary for Linux/WSL or macOS - Install micromamba into tools/micromamba/ - Install REGENIE into a micromamba environment named regenie_env - Extract and organize command-line tools in tools/plink2/, tools/plink1.9/, tools/metal/, tools/micromamba/, and tools/regenie/ - Create symlinks in tools/bin/ for easy access - Update your PATH so you can run plink2, plink, metal, and regenie from anywhere - Write scripts/dev/tool_manifest.tsv, which lists the tools checked by test.sh - Check for basic helper tools such as wget, unzip, tar, and bzip2\nWhen finished, you’ll see:\nDetected: OS=Linux, Architecture=x86_64_avx2\n  ✓ R found\n  ✓ PLINK2: PLINK v2.00a5 (64-bit build)\n  ✓ PLINK1.9: PLINK v1.90b7.2\n  ✓ METAL\n  ✓ REGENIE: regenie v...\nREGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under tools/micromamba-root/, so users do not need an existing conda installation.\n\n\nThe automated setup is recommended. Use this manual route only if you cannot use the setup script or need to inspect each tool installation step.\n\n1. Install R\nR is used later for QC plots and summary tables.\nOn WSL/Linux:\nsudo apt-get update\nsudo apt-get install -y r-base r-base-dev\nR --version\nOn macOS with Homebrew:\nbrew install r\nR --version\n\n\n2. Download PLINK2\nVisit: https://www.cog-genomics.org/plink/2.0/\nChoose the build for your system: - Linux (Intel, AVX2): plink2_linux_avx2_*.zip - Linux (AMD, AVX2): plink2_linux_amd_avx2_*.zip - Linux (64-bit, no AVX2): plink2_linux_x86_64_*.zip - macOS (Intel, AVX2): plink2_mac_avx2_*.zip - macOS (Intel, no AVX2): plink2_mac_*.zip - macOS (Apple Silicon): plink2_mac_arm64_*.zip\nExtract and move to your tools folder:\nmkdir -p tools/plink2\ncd tools/plink2\n# Download your platform's ZIP file here\nunzip plink2_*.zip\ncd ../..\n\n\n3. Download PLINK1.9\nVisit: https://www.cog-genomics.org/plink/1.9/\nChoose the build for your system: - Linux (64-bit): plink_linux_x86_64_*.zip - macOS: plink_mac_*.zip\nExtract and move to your tools folder:\nmkdir -p tools/plink1.9\ncd tools/plink1.9\n# Download your platform's ZIP file here\nunzip plink_*.zip\ncd ../..\n\n\n4. Download METAL\nVisit: https://csg.sph.umich.edu/abecasis/Metal/download/\nChoose the precompiled binary for your system: - Linux/WSL: Linux-metal.tar.gz - macOS: Darwin-metal.tar.gz\nExtract it in your tools folder:\nmkdir -p tools/metal\ncd tools/metal\n# Download the Linux/WSL or macOS archive here\ntar -xzf *-metal.tar.gz\nfind . -type f \\( -name \"metal\" -o -name \"METAL\" \\) -exec chmod +x {} \\;\ncd ../..\n\n\n5. Install micromamba and REGENIE\nThe automated setup installs micromamba for you. If you are doing this manually, first download micromamba.\nFor Linux/WSL x86_64:\nmkdir -p tools/micromamba\ncd tools/micromamba\ncurl -Ls https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba\ncd ../..\nFor macOS Apple Silicon:\nmkdir -p tools/micromamba\ncd tools/micromamba\ncurl -Ls https://micro.mamba.pm/api/micromamba/osx-arm64/latest | tar -xvj bin/micromamba\ncd ../..\nFor macOS Intel, replace osx-arm64 with osx-64.\nThen create the REGENIE environment:\nexport MAMBA_ROOT_PREFIX=\"$(pwd)/tools/micromamba-root\"\ntools/micromamba/bin/micromamba create -y -n regenie_env -c conda-forge -c bioconda regenie\nThen create a small wrapper so REGENIE works like the other tutorial tools:\nmkdir -p tools/regenie\ncat &gt; tools/regenie/regenie &lt;&lt;'EOF'\n#!/usr/bin/env bash\nexport MAMBA_ROOT_PREFIX=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/../micromamba-root\" && pwd)\"\nMICROMAMBA=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")/../micromamba/bin\" && pwd)/micromamba\"\nexec \"$MICROMAMBA\" run -n regenie_env regenie \"$@\"\nEOF\nchmod +x tools/regenie/regenie\n\n\n6. Create symbolic links\nCreate convenient shortcuts in tools/bin/:\nmkdir -p tools/bin\nln -s ../plink2/plink2 tools/bin/plink2\nln -s ../plink1.9/plink tools/bin/plink\nMETAL_BIN=$(find tools/metal -type f \\( -name \"metal\" -o -name \"METAL\" \\) | head -n 1)\nln -s \"../../$METAL_BIN\" tools/bin/metal\nln -s ../regenie/regenie tools/bin/regenie\n\n\n7. Update PATH\nAdd the tools folder to your PATH:\nexport PATH=\"$(cd tools/bin && pwd):$PATH\"\nTo make this permanent on Linux/WSL, add it to ~/.bashrc:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.bashrc\nOn macOS, the default shell is usually zsh, so use ~/.zshrc instead:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.zshrc\nThen reload your shell. Use the file you edited:\nsource ~/.bashrc\nFor macOS zsh:\nsource ~/.zshrc\n\n\n\nThe tool list used by the setup test is saved here:\ncat scripts/dev/tool_manifest.tsv\nYou can also check the project-local tool links directly. These commands use ./tools/bin/..., so they work even if your PATH has not reloaded yet:\nls -l tools/bin/\n./tools/bin/plink2 --version\n./tools/bin/plink --version\ntest -x ./tools/bin/metal && echo \"METAL executable found: ./tools/bin/metal\"\n./tools/bin/regenie --version\nR --version\n\n\nMost installation problems are caused by the shell not being in the right folder, internet/proxy access, an unfinished apt-get process, or R not being available yet. Start with the message printed in your terminal and match it to one of the cases below.\n\n\n\nError or symptom\nWhat it usually means\nWhat to try\n\n\n\n\nscripts/dev/tools_setup.sh: No such file or directory\nYou are not in the project folder, or Step 3 did not copy the scripts\nRun cd \"$HOME/gwas_tutorial\" and ls scripts/dev/\n\n\ncurl, wget, or micromamba cannot connect\nWSL or your terminal cannot reach the internet\nTest curl -I https://github.com; WSL users on managed networks should check WSL Setup\n\n\nCould not get lock /var/lib/apt/lists/lock\nAnother apt-get process is running\nWait, or inspect the process with ps -fp &lt;PID&gt; shown in the error\n\n\nUnable to locate package r-base\nPackage lists are stale, universe is disabled, or the Ubuntu release is unusual\nSee the R commands in the Manual tab; for persistent problems, use an Ubuntu LTS WSL release\n\n\n404: command not found after running a downloaded script\nA GitHub 404 page was saved instead of a script\nDelete the file and repeat the current download command from this guide\n\n\nplink, plink2, metal, or regenie: command not found\nTools were not installed or tools/bin is not on PATH\nRun bash scripts/dev/tools_setup.sh again, then check ls tools/bin/\n\n\nREGENIE or micromamba fails during environment creation\nUsually a network, proxy, or conda-channel access problem\nConfirm curl -I https://github.com works and retry bash scripts/dev/tools_setup.sh\n\n\n\nIf automatic R installation fails because Ubuntu cannot find r-base, enable the universe repository and refresh the package list:\nsudo apt-get install -y software-properties-common\nsudo add-apt-repository -y universe\nsudo apt-get update\nsudo apt-get install -y r-base r-base-dev\nThen run the tool setup again:\nbash scripts/dev/tools_setup.sh",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-first-run",
+    "href": "getting_started.html#sec-first-run",
+    "title": "Before you start: setup",
+    "section": "Step 6 — Test tools and scripts",
+    "text": "Step 6 — Test tools and scripts\nRun the test script to verify everything is installed and working:\nbash scripts/dev/test.sh\nThis script will: 1. Check the project folders 2. Check the demo dataset files 3. Check that every copied script listed in scripts/dev/script_manifest.txt exists 4. Check every required tool listed in scripts/dev/tool_manifest.tsv 5. Print the next command to run\nWhen it finishes, you should see output like:\n✓ Initial test done! Folders, scripts, data, and required tools are working.\nNext command to run the QC pipeline:\n  bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\nIf you see this message, everything is working! You can now go to Quality Control (Section 1B) and run your first QC command.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-troubleshooting",
+    "href": "getting_started.html#sec-troubleshooting",
+    "title": "Before you start: setup",
+    "section": "Troubleshooting",
+    "text": "Troubleshooting\n\n\n\n\n\n\nWarninggit: command not found\n\n\n\n\n\nGit is not installed on your system.\nSolution (Windows WSL2):\nsudo apt-get update\nsudo apt-get install git\nSolution (macOS):\nbrew install git\nSolution (Linux):\nsudo apt-get install git\n\n\n\n\n\n\n\n\n\nWarningwget: command not found\n\n\n\n\n\nwget is not installed.\nSolution (Windows WSL2 / Linux):\nsudo apt-get install wget\nSolution (macOS):\nbrew install wget\n\n\n\n\n\n\n\n\n\nWarningplink, plink2, metal, or regenie: command not found\n\n\n\n\n\nOne of the installed tools is not found in your PATH.\nSolution 1: Run the setup script again\nThe automated script should have configured PATH:\nbash scripts/dev/tools_setup.sh\nSolution 2: Manually add to PATH\nIf the script completed but PATH isn’t set, manually add it:\n# Check if tools exist\nls tools/bin/plink\nls tools/bin/plink2\nls tools/bin/metal\nls tools/bin/regenie\n\n# Add to current session\nexport PATH=\"$(cd tools/bin && pwd):$PATH\"\n\n# Verify\nplink --version\nplink2 --version\ncommand -v metal && echo \"metal is on PATH\"\nregenie --version\nTo make this permanent on Linux/WSL:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.bashrc\nsource ~/.bashrc\nOn macOS zsh, use ~/.zshrc instead:\necho 'export PATH=\"$HOME/gwas_tutorial/tools/bin:$PATH\"' &gt;&gt; ~/.zshrc\nsource ~/.zshrc\nSolution 3: Use full path\nIf PATH setup is tricky, use the full path directly:\n./tools/bin/plink2 --version\n./tools/bin/plink --version\ntest -x ./tools/bin/metal && echo \"metal is available\"\n./tools/bin/regenie --version\n\n\n\n\n\n\n\n\n\nWarningError: Failed to open pdac_demo.bed\n\n\n\n\n\nPLINK cannot find the demo dataset.\nSolution: Make sure all demo files were downloaded:\nls demo_data/pdac_demo.*\nYou should see .bed, .bim, and .fam files. If any are missing, re-run Step 4:\nbash scripts/dev/download_demo_data.sh\n\n\n\n\n\n\n\n\n\nWarningPermission denied when running a script\n\n\n\n\n\nThe script file doesn’t have execute permissions.\nSolution:\nfind scripts -type f -name \"*.sh\" -exec chmod +x {} \\;\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh\n\n\n\n\n\n\n\n\n\nWarningScript not found or can’t find data files\n\n\n\n\n\nYou’re in the wrong directory or files are missing.\nSolution:\n# Make sure you're in your project folder\ncd ~/gwas_tutorial\n\n# Check files exist\nls scripts/01B_genotyping_qc/\nls demo_data/\n\n# Then run the first QC script\nbash scripts/01B_genotyping_qc/01_initial_qc_stats.sh",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#additional-resources",
+    "href": "getting_started.html#additional-resources",
+    "title": "Before you start: setup",
+    "section": "Additional Resources",
+    "text": "Additional Resources\n\nSetup Project Structure — Detailed setup guide\nWSL Setup — WSL2 troubleshooting",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#sec-next",
+    "href": "getting_started.html#sec-next",
+    "title": "Before you start: setup",
+    "section": "What’s next",
+    "text": "What’s next\nYou now have a working GWAS pipeline setup and have confirmed the tools runs successfully. Continue with the QC and other steps:\n\nQuality control (Section 1B) — cleaning the raw genotypes before any analysis.\nPopulation stratification (Section 2) — detecting and correcting for ancestry.",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
+    "objectID": "getting_started.html#these-sections-will-be-linked-here-as-they-are-added.",
+    "href": "getting_started.html#these-sections-will-be-linked-here-as-they-are-added.",
+    "title": "Before you start: setup",
+    "section": "(These sections will be linked here as they are added.)",
+    "text": "(These sections will be linked here as they are added.)",
+    "crumbs": [
+      "Before you start",
+      "Before you start: setup"
+    ]
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "",
-    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, targeted at XXXX Journal. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for Master’s students and clinicians without a bioinformatics background.",
+    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, submitted to Human Genomics. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers without a bioinformatics background.",
     "crumbs": [
       "Home"
     ]
@@ -239,7 +514,7 @@
     "href": "index.html#what-is-a-gwas",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "What is a GWAS?",
-    "text": "What is a GWAS?\nA genome-wide association study (GWAS) tests the statistical association between genetic variants — typically single-nucleotide polymorphisms (SNPs) — and a trait across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.",
+    "text": "What is a GWAS?\nA genome-wide association study (GWAS) tests the statistical association between genetic variants, typically single-nucleotide polymorphisms (SNPs), and a trait across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.",
     "crumbs": [
       "Home"
     ]
@@ -249,7 +524,17 @@
     "href": "index.html#why-pancreatic-cancer",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "Why pancreatic cancer?",
-    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a relativelly rare, multifactorial cancer/trait with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would.",
+    "text": "Why pancreatic cancer?\nPancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a relatively rare, multifactorial cancer with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia, such as PanScan, PanC4 and PANDoRA, are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would: a correctly executed pipeline does not, on its own, guarantee a genome-wide significant result, and this guide is built to show why.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#who-this-guide-is-for",
+    "href": "index.html#who-this-guide-is-for",
+    "title": "How to carry out a Genome-Wide Association Study",
+    "section": "Who this guide is for",
+    "text": "Who this guide is for\nThe tutorial is written for two kinds of reader:\n\nBeginners, with little or no previous experience of GWAS, bioinformatics or the command line. Every command is given in full, together with the output you should expect to see.\nIntermediate and advanced users, who already work with genetic data and want a transparent, reproducible teaching workflow in which each decision is visible rather than buried in a wrapper.",
     "crumbs": [
       "Home"
     ]
@@ -259,7 +544,7 @@
     "href": "index.html#how-to-use-this-guide",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "How to use this guide",
-    "text": "How to use this guide\nEvery analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.\n👉 Start here: Before you start — setup and your first PLINK command\n\n\n\n\n\n\nTipNo coding experience?\n\n\n\nYou do not need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.",
+    "text": "How to use this guide\nEvery analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.\n👉 Start here: Before you start, setup and your first PLINK command\n\n\n\n\n\n\nTipNo coding experience?\n\n\n\nYou do not need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.\n\n\nThe structure is intentionally step by step. Some tasks are split across more than one script even where they could be merged into a single command, because the purpose is to make each decision visible and to let you see what each filter actually removed.\nFor the same reason, this is not a high-performance computing workflow and it is not a template for large-scale parallel processing. If you are working with a full consortium dataset, run the same steps in an appropriate computing environment and distribute jobs according to your institution’s guidelines.",
     "crumbs": [
       "Home"
     ]

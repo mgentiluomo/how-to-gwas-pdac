@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/qc.html</loc>
-    <lastmod>2026-07-27T10:28:30.191Z</lastmod>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/sections/01B_genotyping_qc/01B_genotyping_qc.html</loc>
+    <lastmod>2026-07-27T10:33:02.726Z</lastmod>
   </url>
   <url>
-    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/getting_started.html</loc>
-    <lastmod>2026-07-27T10:28:30.191Z</lastmod>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/HARMONIZATION_PLAN.html</loc>
+    <lastmod>2026-07-27T10:33:02.706Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/docs/helpers/WSL_SETUP.html</loc>
+    <lastmod>2026-07-27T10:33:02.709Z</lastmod>
   </url>
   <url>
     <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/CONTRIBUTING.html</loc>
     <lastmod>2026-07-27T10:18:14.858Z</lastmod>
   </url>
   <url>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/docs/helpers/SETUP_PROJECT_STRUCTURE.html</loc>
+    <lastmod>2026-07-27T10:33:02.708Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/getting_started.html</loc>
+    <lastmod>2026-07-27T10:33:02.721Z</lastmod>
+  </url>
+  <url>
     <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/index.html</loc>
-    <lastmod>2026-07-27T10:28:30.191Z</lastmod>
+    <lastmod>2026-07-27T10:33:02.722Z</lastmod>
   </url>
 </urlset>

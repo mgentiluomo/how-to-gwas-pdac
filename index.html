@@ -294,7 +294,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./getting_started.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Before you start: setup and your first PLINK command</span></a>
+ <span class="menu-text">Before you start: setup</span></a>
   </div>
 </li>
       </ul>
@@ -302,7 +302,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
- <span class="menu-text">Cleaning the data</span></a>
+ <span class="menu-text">Quality control</span></a>
           <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -310,8 +310,8 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./qc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cleaning your data: quality control</span></a>
+  <a href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Genotyping quality control</span></a>
   </div>
 </li>
       </ul>
@@ -328,6 +328,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#what-is-a-gwas" id="toc-what-is-a-gwas" class="nav-link active" data-scroll-target="#what-is-a-gwas">What is a GWAS?</a></li>
   <li><a href="#why-pancreatic-cancer" id="toc-why-pancreatic-cancer" class="nav-link" data-scroll-target="#why-pancreatic-cancer">Why pancreatic cancer?</a></li>
+  <li><a href="#who-this-guide-is-for" id="toc-who-this-guide-is-for" class="nav-link" data-scroll-target="#who-this-guide-is-for">Who this guide is for</a></li>
   <li><a href="#how-to-use-this-guide" id="toc-how-to-use-this-guide" class="nav-link" data-scroll-target="#how-to-use-this-guide">How to use this guide</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -339,7 +340,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">How to carry out a Genome-Wide Association Study</h1>
-<p class="subtitle lead">A step-by-step annotated guide using pancreatic cancer as a case study</p>
+<p class="subtitle lead">A decision-focused, reproducible guide using pancreatic cancer as a worked example</p>
 </div>
 
 
@@ -366,21 +367,29 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This is the companion website to the methodology manuscript developed within the <strong>TRANSPAN COST Action (CA21116), Working Group 1</strong>, targeted at <em>XXXX Journal</em>. It pairs annotated <strong>PLINK 2</strong> and <strong>R</strong> code with a fully open, reproducible demo dataset, and is written for Master’s students and clinicians <strong>without</strong> a bioinformatics background.</p>
+<p>This is the companion website to the methodology manuscript developed within the <strong>TRANSPAN COST Action (CA21116), Working Group 1</strong>, submitted to <em>Human Genomics</em>. It pairs annotated <strong>PLINK 2</strong> and <strong>R</strong> code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers <strong>without</strong> a bioinformatics background.</p>
 </div>
 </div>
 <section id="what-is-a-gwas" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-a-gwas">What is a GWAS?</h2>
-<p>A genome-wide association study (GWAS) tests the statistical <strong>association</strong> between <strong>genetic variants</strong> — typically single-nucleotide polymorphisms (SNPs) — and a <strong>trait</strong> across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.</p>
+<p>A genome-wide association study (GWAS) tests the statistical <strong>association</strong> between <strong>genetic variants</strong>, typically single-nucleotide polymorphisms (SNPs), and a <strong>trait</strong> across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.</p>
 </section>
 <section id="why-pancreatic-cancer" class="level2">
 <h2 class="anchored" data-anchor-id="why-pancreatic-cancer">Why pancreatic cancer?</h2>
-<p>Pancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a <strong>relativelly rare, multifactorial cancer/trait</strong> with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia (PanScan, PanC4, PANDoRA) are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would.</p>
+<p>Pancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a <strong>relatively rare, multifactorial cancer</strong> with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia, such as PanScan, PanC4 and PANDoRA, are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would: a correctly executed pipeline does not, on its own, guarantee a genome-wide significant result, and this guide is built to show why.</p>
+</section>
+<section id="who-this-guide-is-for" class="level2">
+<h2 class="anchored" data-anchor-id="who-this-guide-is-for">Who this guide is for</h2>
+<p>The tutorial is written for two kinds of reader:</p>
+<ul>
+<li><strong>Beginners</strong>, with little or no previous experience of GWAS, bioinformatics or the command line. Every command is given in full, together with the output you should expect to see.</li>
+<li><strong>Intermediate and advanced users</strong>, who already work with genetic data and want a transparent, reproducible teaching workflow in which each decision is visible rather than buried in a wrapper.</li>
+</ul>
 </section>
 <section id="how-to-use-this-guide" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-use-this-guide">How to use this guide</h2>
 <p>Every analysis step is shown as a real command you can run yourself on the open demo dataset, so you can reproduce the entire workflow from raw genotypes to final results.</p>
-<p>👉 <strong>Start here:</strong> <a href="./getting_started.html">Before you start — setup and your first PLINK command</a></p>
+<p>👉 <strong>Start here:</strong> <a href="./getting_started.html">Before you start, setup and your first PLINK command</a></p>
 <div class="callout callout-style-default callout-tip callout-titled" title="No coding experience?">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -394,6 +403,8 @@ ul.task-list li input[type="checkbox"] {
 <p>You do <strong>not</strong> need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.</p>
 </div>
 </div>
+<p>The structure is intentionally step by step. Some tasks are split across more than one script even where they could be merged into a single command, because the purpose is to make each decision visible and to let you see what each filter actually removed.</p>
+<p>For the same reason, this is not a high-performance computing workflow and it is not a template for large-scale parallel processing. If you are working with a full consortium dataset, run the same steps in an appropriate computing environment and distribute jobs according to your institution’s guidelines.</p>
 
 
 </section>
@@ -816,8 +827,8 @@ ul.task-list li input[type="checkbox"] {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./getting_started.html" class="pagination-link" aria-label="Before you start: setup and your first PLINK command">
-        <span class="nav-page-text">Before you start: setup and your first PLINK command</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./getting_started.html" class="pagination-link" aria-label="Before you start: setup">
+        <span class="nav-page-text">Before you start: setup</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
