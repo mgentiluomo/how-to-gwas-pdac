@@ -1,0 +1,33 @@
+Harmonisation report
+Generated: 2026-07-27 12:53:09
+
+eur   variants with a usable estimate: 392331
+afr   variants with a usable estimate: 345506
+eas   variants with a usable estimate: 316528
+
+Variants present in all 3 strata: 296678
+  (variants tested in only some strata are dropped here for simplicity;
+   a real meta-analysis usually keeps them, meta-analysing each variant
+   across whatever studies carry it, and reports the study count per variant)
+
+Allele checks, against the eur stratum as reference:
+  eur   allele-pair mismatches: 0   effect-allele flips applied: 0
+  afr   allele-pair mismatches: 0   effect-allele flips applied: 32829
+  eas   allele-pair mismatches: 0   effect-allele flips applied: 30878
+
+Strand-ambiguous variants (A/T or C/G): 1833 of 296678 (0.6%)
+  of which frequency is between 0.4 and 0.6, where frequency cannot resolve
+  the strand: 339
+  These are flagged, not removed. Because all strata here come from one
+  genotype file the strand is known to agree; across independently
+  genotyped cohorts, many groups exclude the ambiguous variants outright.
+
+Allele-frequency correlation between strata (Pearson r):
+  eur vs afr: 0.613
+  eur vs eas: 0.645
+  afr vs eas: 0.578
+  Values well below 1 are expected here: these are different continental
+  populations. Between cohorts of the same ancestry, anything below about
+  0.9 would indicate a problem rather than biology.
+
+Harmonised table written: 296678 variants x 3 strata

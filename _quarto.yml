@@ -31,6 +31,9 @@ website:
       - section: "Association testing"
         contents:
           - sections/04A_association_binary/04A_association_binary.qmd
+      - section: "Combining studies"
+        contents:
+          - sections/05_meta_analysis/05_meta_analysis.qmd
       # Manuscript sections will be added here as they are drafted:
       # - section: "Pre-GWAS"
       #   contents:

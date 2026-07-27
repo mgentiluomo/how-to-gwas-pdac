@@ -1,0 +1,30 @@
+Meta-analysis summary
+Generated: 2026-07-27 12:55:15
+
+Variants meta-analysed: 296678
+Strata: eur, afr, eas
+
+Genomic inflation factor
+  eur   lambda = 1.0224
+  afr   lambda = 0.9907
+  eas   lambda = 1.0125
+  meta  lambda = 1.0026
+
+Significance counts
+  P < 5e-8 (fixed effects):  3
+  P < 1e-5 (fixed effects):  11
+  P < 5e-8 (random effects): 2
+
+Lead variant: 9:133249045:A:G
+  meta OR 3.736, SE 0.1356, P 2.386e-22
+  heterogeneity: I2 = 0.0%, Q = 1.66, P_het = 0.437
+  random effects: P = 2.386e-22
+  per stratum:
+    eur   OR 3.778  P 5.413e-09  freq 0.085
+    afr   OR 3.074  P 5.207e-07  freq 0.259
+    eas   OR 4.762  P 1.189e-09  freq 0.178
+
+Heterogeneity across all variants
+  I2 > 50%: 37147 (12.5%)
+  P_het < 0.05: 13032 (4.4%)
+  Under the null, 5% of variants should have P_het < 0.05 by chance.
