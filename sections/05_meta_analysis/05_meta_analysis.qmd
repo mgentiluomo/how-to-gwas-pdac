@@ -60,10 +60,10 @@ Each stratum gets its own LD pruning, its own principal components and its own a
 
 | Stratum | Individuals | Cases | Controls | Effective N |
 |---|---|---|---|---|
-| European | 625 | 229 | 396 | 580.4 |
-| African | 295 | 142 | 153 | 294.6 |
-| East Asian | 319 | 141 | 178 | 314.7 |
-| **Combined** | **1,239** | **512** | **727** | **1,189.7** |
+| European | 611 | 224 | 387 | 567.5 |
+| African | 290 | 139 | 151 | 289.5 |
+| East Asian | 316 | 141 | 175 | 312.3 |
+| **Combined** | **1,217** | **504** | **713** | **1,169.4** |
 
 Notice the African stratum. It has fewer than half the individuals of the European one, but
 because its case-control ratio is nearly balanced it contributes an effective sample size of 295
@@ -76,7 +76,7 @@ because estimating ten components in fewer than 320 individuals spends parameter
 support, and because the strata must be treated identically for their results to be comparable.
 
 This gives a free stability check, one of the three the guide recommends. In the European
-stratum, the lead variant's P value is 5.31 × 10⁻⁹ with ten components and 5.41 × 10⁻⁹ with five.
+stratum, the lead variant's P value is 5.50 × 10⁻⁹ with ten components and 6.72 × 10⁻⁹ with five.
 The choice does not matter here, and now we know that rather than assuming it.
 :::
 
@@ -94,8 +94,8 @@ Rscript scripts/05_meta_analysis/02_harmonise.R
 
 ::: {.callout-important title="The demonstration found a real one"}
 Comparing the effect allele across strata, the script had to flip the sign of the effect estimate
-for **32,829** variants in the African stratum and **30,878** in the East Asian one. Roughly one
-variant in nine.
+for **37,731** variants in the African stratum and **35,822** in the East Asian one. Roughly one
+variant in seven.
 
 These strata came from *the same genotype file*. The cause is that PLINK 2 reports the effect
 allele as the minor allele **in the sample being analysed**, and which allele is minor changes
@@ -113,7 +113,7 @@ assumption that two files agree.**
 The other three checks the script performs:
 
 **Strand ambiguity.** At A/T and C/G variants the effect allele cannot be resolved by comparing
-alleles, because A complements T and C complements G. Here 1,833 variants (0.6%) are ambiguous,
+alleles, because A complements T and C complements G. Here 1,640 variants (0.6%) are ambiguous,
 339 of them with frequency between 0.4 and 0.6, where frequency cannot resolve them either. They
 are flagged. Many consortia simply exclude ambiguous variants in that frequency band.
 
@@ -125,7 +125,7 @@ correlated, the fixed-effect standard error is too small, and significance is in
 cannot be detected from summary statistics; it has to come from the study descriptions.
 
 ::: {.callout-note title="Fewer variants than you started with"}
-The European analysis tested 392,331 variants. Only **296,678** are present in all three strata,
+The European analysis tested 394,627 variants. Only **268,393** are present in all three strata,
 because a variant that is monomorphic in one population cannot be tested there. A real
 meta-analysis usually keeps such variants, combining each across whatever studies carry it and
 reporting the study count per variant. This demonstration takes the simpler route of using the
@@ -157,12 +157,12 @@ changes the conclusion.
 
 ### The result
 
-| | European alone | Meta-analysis |
+| | European stratum, 5 PCs | Meta-analysis |
 |---|---|---|
-| Lead variant P | 5.4 × 10⁻⁹ | **2.4 × 10⁻²²** |
+| Lead variant P | 5.4 × 10⁻⁹ | **6.3 × 10⁻²²** |
 | Genome-wide significant | 1 | 3 |
 | Suggestive (P < 1 × 10⁻⁵) | 8 | 11 |
-| λ | 1.022 | 1.003 |
+| λ | 1.022 | 1.006 |
 
 Thirteen orders of magnitude at the causal variant, from roughly doubling the effective sample
 size. That is the whole argument of this guide in one line: the single-cohort analysis was sound
@@ -186,9 +186,9 @@ Rscript scripts/05_meta_analysis/04_meta_plots.R
 
 ![](results/pdac_demo_05_forest.png)
 
-The lead variant, stratum by stratum. The odds ratios are 3.78 in Europeans, 3.07 in Africans and
-4.76 in East Asians, with a combined estimate of 3.74 and confidence intervals that overlap
-heavily. I² = 0%, heterogeneity P = 0.44: the strata agree, and the fixed-effect model is
+The lead variant, stratum by stratum. The odds ratios are 3.83 in Europeans, 3.14 in Africans and
+4.46 in East Asians, with a combined estimate of 3.71 and confidence intervals that overlap
+heavily. I² = 0%, heterogeneity P = 0.58: the strata agree, and the fixed-effect model is
 appropriate.
 
 The dashed green line marks the true simulated odds ratio, 2.40. Every stratum overestimates it,
@@ -213,7 +213,7 @@ tag it differs too. **Strong heterogeneity at a proxy with none at the lead is a
 shared causal variant seen through different LD**, and it is a reason to fine-map per ancestry
 rather than pooled (Section 6).
 
-Across all 296,678 variants, 4.4% have a heterogeneity P below 0.05, against the 5% expected by
+Across all 268,393 variants, 5.0% have a heterogeneity P below 0.05, against the 5% expected by
 chance alone. Genome-wide there is no excess: the heterogeneity is concentrated exactly where the
 signal is.
 :::
@@ -234,7 +234,7 @@ signal is.
 
 ## The pitfalls checklist
 
-1. **Effect allele.** Align explicitly, by allele name. This demonstration needed 63,707 sign
+1. **Effect allele.** Align explicitly, by allele name. This demonstration needed 73,553 sign
    flips within a single genotype file.
 2. **Strand.** A/T and C/G variants near 50% frequency cannot be resolved. Flag or drop them.
 3. **Scale.** Log odds ratio, odds ratio and linear beta are not interchangeable.

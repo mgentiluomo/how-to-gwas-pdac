@@ -1,10 +1,11 @@
-step_index	step	samples	variants	samples_lost	variants_lost
-0	Raw data	1461	430000	0	0
-1	Initial stats	1461	430000	0	0
-2	Sample call rate	1436	430000	25	0
-3	Sex check	1432	430000	4	0
-4	Heterozygosity	1430	430000	2	0
-5	Variant call rate	1430	421520	0	8480
-6	Hardy-Weinberg	1430	406947	0	14573
-7	Relatedness	1239	406947	191	0
-8	MAF filter	1239	401909	0	5038
+stage	samples	variants	samples_lost	variants_lost
+Raw data	1461	430000	0	0
+Initial statistics	1461	430000	0	0
+Sample call rate	1436	430000	25	0
+Sex check	1432	430000	4	0
+Heterozygosity (within ancestry)	1412	430000	20	0
+Variant call rate	1412	421520	0	8480
+Hardy-Weinberg (pooled, diagnostic)	1412	421520	0	0
+Relatedness	1217	421520	195	0
+MAF	1217	414700	0	6820
+Hardy-Weinberg (within ancestry)	1217	414695	0	5

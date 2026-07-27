@@ -42,7 +42,7 @@ variants in it.
 
 **Choosing the window.** Wide enough to contain the signal and its flanks, narrow enough that
 assuming a single cause is plausible. A few hundred kilobases either side of the lead variant is
-conventional; here 132.9 to 133.6 Mb on chromosome 9, which contains **198 variants**.
+conventional; here 132.9 to 133.6 Mb on chromosome 9, which contains **204 variants**.
 
 That number is worth pausing on. A genotyping array carries a couple of hundred markers in a
 700 kb window, and the resolution of any fine mapping is bounded by what was measured. Imputation
@@ -97,14 +97,14 @@ probability towards rarer variants, and conversely.
 
 | | |
 |---|---|
-| Variants in the region | 198 |
-| Variants in the 95% credible set | **55** |
+| Variants in the region | 204 |
+| Variants in the 95% credible set | **77** |
 | Top variant | `9:133249045:A:G`, posterior probability 0.51 |
 | Simulated causal variant in the set | yes, ranked first |
 
 The method puts the true causal variant at the top, which is reassuring, and then spreads the
-remaining half of the probability across 54 other variants, which is the honest part. A credible
-set of 55 variants is not a shortlist for functional work. It is a statement that at this sample
+remaining half of the probability across 76 other variants, which is the honest part. A credible
+set of 77 variants is not a shortlist for functional work. It is a statement that at this sample
 size the locus cannot be resolved further.
 
 ![](results/pdac_demo_06_regional.png)
@@ -128,7 +128,7 @@ Running the same method on the three-stratum meta-analysis of
 
 | | European set | Three strata combined |
 |---|---|---|
-| Variants in the 95% credible set | 55 | **1** |
+| Variants in the 95% credible set | 77 | **1** |
 | Posterior probability of the top variant | 0.51 | **0.99** |
 | Is it the true causal variant | yes | yes |
 

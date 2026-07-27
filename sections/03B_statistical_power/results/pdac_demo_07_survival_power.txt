@@ -1,23 +1,23 @@
 Power for a time-to-event scan
-Generated: 2026-07-27 16:04:03
+Generated: 2026-07-27 17:40:11
 
 Restricted to the European analysis set.
-  individuals with survival information: 625
-  observed events: 144  (23.0%)
-  censored: 481
+  individuals with survival information: 611
+  observed events: 140  (22.9%)
+  censored: 471
 
-The number that governs power is 144, not 625.
+The number that governs power is 140, not 611.
 
-SMALLEST HAZARD RATIO DETECTABLE AT 80% POWER, WITH 144 EVENTS
-  MAF 0.30: HR 2.25
-  MAF 0.20: HR 2.53
-  MAF 0.10: HR 3.44
-  MAF 0.05: HR 5.48
+SMALLEST HAZARD RATIO DETECTABLE AT 80% POWER, WITH 140 EVENTS
+  MAF 0.30: HR 2.27
+  MAF 0.20: HR 2.56
+  MAF 0.10: HR 3.50
+  MAF 0.05: HR 5.62
 
 POWER AT HAZARD RATIOS OF A REALISTIC SIZE
   HR 1.2 at MAF 0.30:   0.0%
-  HR 1.5 at MAF 0.30:   1.1%
-  HR 2.0 at MAF 0.30:  47.6%
+  HR 1.5 at MAF 0.30:   1.0%
+  HR 2.0 at MAF 0.30:  44.6%
 
 HOW MANY EVENTS WOULD BE NEEDED
   to detect HR 1.3 at MAF 0.30 with 80% power: 1,370 events

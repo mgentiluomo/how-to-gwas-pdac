@@ -8,7 +8,7 @@
 
 This repository is the companion resource for the methodology manuscript submitted to *Human Genomics*, developed within the **TRANSPAN COST Action (CA21116), Working Group 1**. It pairs a narrative on how to design and run a GWAS of a rare, genetically complex trait such as pancreatic cancer with an annotated PLINK 2 and R pipeline, demonstrated on a purpose-built demonstration dataset.
 
-The manuscript explains why each decision is made and when an analysis is or is not legitimate given the data in hand. This repository shows how each step is actually run. Neither replaces the other, they are meant to be read together.
+The manuscript explains why each decision is made and when an analysis is or is not legitimate given the data in hand. This repository shows how each step is actually run. Neither replaces the other; they are intended to be used together.
 
 **Companion website (start here to run the pipeline):** [mgentiluomo.github.io/how-to-gwas-pdac](https://mgentiluomo.github.io/how-to-gwas-pdac/)
 
@@ -35,9 +35,9 @@ This project is under active development ahead of manuscript submission. The set
 | Injected artefacts | 8,480 low-call-rate variants, 25 low-call-rate samples, 4 sex discordances |
 | Causal locus | *ABO* (9q34.2), single locus, no polygenic background |
 | Pre-QC EUR case:control | 254 cases, 508 controls, approximately 1:2 |
-| After QC | 1,239 individuals and 401,909 variants retained, 84.8% and 93.5% |
+| After QC | 1,217 individuals retained (83.3%) and 414,695 variants retained (96.4%) |
 
-Genotypes and phenotypes are not stored in git, see `.gitignore`. Download them with `bash demo_dataset/download_data.sh`, or from the [release page](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data). Full provenance, construction scripts and the didactic rationale for the dataset design are in [`demo_dataset/README.md`](demo_dataset/README.md).
+Genotypes and phenotypes are not stored in git, see `.gitignore`. Download them with `bash scripts/dev/download_demo_data.sh`, or from the [release page](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data). Full provenance, construction scripts and the didactic rationale for the dataset design are in [`demo_dataset/README.md`](demo_dataset/README.md).
 
 This dataset teaches GWAS under realistic, difficult conditions on purpose, it is not an idealised example in which every locus succeeds.
 
@@ -71,7 +71,7 @@ how-to-gwas-pdac/
 | 2 | Population stratification | Elif Öz | `sections/02_population_stratification/` |
 | 3 | Imputation | Pelin Ünal | `sections/03_imputation/` |
 | 4A | Association testing, binary outcome | Elif Öz | `sections/04A_association_binary/` |
-| 4B | Association testing, survival outcome | Pelin Ünal | `sections/04B_association_continuous/` |
+| 4B | Association testing, survival outcome | Pelin Ünal | `sections/04B_association_survival/` |
 | 4C | Association testing, pipeline and software | Murat Güler | `sections/04C_association_other/` |
 | 5 | Meta-analysis | Pelin Ünal | `sections/05_meta_analysis/` |
 | 6 | Fine mapping | Burçak Otlu, Erdi Kılıç | `sections/06_finemapping_annotation/` |
@@ -86,7 +86,7 @@ Code production: Riccardo Farinella and Murat Güler. Final code review and stan
 ```bash
 git clone https://github.com/mgentiluomo/how-to-gwas-pdac.git
 cd how-to-gwas-pdac
-bash demo_dataset/download_data.sh        # fetches pdac_demo into demo_dataset/data/
+bash scripts/dev/download_demo_data.sh        # fetches pdac_demo into demo_data/
 quarto preview                            # live preview of the companion website
 ```
 

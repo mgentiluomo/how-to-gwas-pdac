@@ -53,7 +53,7 @@ leading components describe local genomic architecture instead of ancestry.
 bash scripts/02_population_stratification/01_ld_pruning.sh
 ```
 
-On the demonstration data this keeps **221,352** variants and prunes away **180,557**. Losing
+On the demonstration data this keeps **222,538** variants and prunes away **192,157**. Losing
 almost half is expected: it is redundancy being removed. The pruned set is used for PCA and
 relatedness only, never for association testing.
 
@@ -95,8 +95,8 @@ Three plots, each answering a different question.
 
 ![](results/pdac_demo_02_pca_scree.png)
 
-How many components carry real signal? On the demonstration data PC1 explains 47.0% of the
-variance and PC2 38.1%, then the curve collapses to 3.7% at PC3. That cliff is the signature of
+How many components carry real signal? On the demonstration data PC1 explains 47.9% of the
+variance and PC2 38.2%, then the curve collapses to 3.5% at PC3. That cliff is the signature of
 discrete continental ancestry: two components separate three groups, and everything after is
 noise and fine structure.
 
@@ -145,12 +145,12 @@ On the demonstration data:
 
 | | |
 |---|---|
-| QC-passed total | 1,239 |
-| European | 625 |
-| East Asian | 319 |
-| African | 295 |
-| **Analysis set** | **625: 229 cases, 396 controls** |
-| Effective sample size | 580.4 |
+| QC-passed total | 1,217 |
+| European | 611 |
+| East Asian | 316 |
+| African | 290 |
+| **Analysis set** | **611: 224 cases, 387 controls** |
+| Effective sample size | 567.5 |
 
 The third strategy is the one to prefer whenever it is available, because it neither discards
 data nor assumes that effect sizes transfer between populations with different causal-allele
@@ -159,7 +159,7 @@ strata, which is the situation of most real rare-cancer cohorts, so the analysis
 European subset alone.
 
 ::: {.callout-note title="Effective sample size is the number that matters"}
-4 × cases × controls / (cases + controls) = 580.4, not 625. In an unbalanced design the effective
+4 × cases × controls / (cases + controls) = 567.5, not 611. In an unbalanced design the effective
 figure is what governs power, and it is what should be reported. Section 4A returns to what this
 number does and does not make detectable.
 :::
@@ -190,8 +190,8 @@ bash scripts/02_population_stratification/05_pca_within_eur.sh
 
 ![](results/pdac_demo_02_pca_eur_scree.png)
 
-Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2
-11.8%, and the curve declines gently instead of collapsing, which is what within-population
+Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.8% and PC2
+11.9%, and the curve declines gently instead of collapsing, which is what within-population
 structure looks like: continuous gradients rather than discrete groups.
 
 ::: {.callout-tip title="How many components should you keep?"}

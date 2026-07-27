@@ -62,7 +62,7 @@ Three parts of that command are worth understanding.
 cases are few, or when a genotype almost perfectly separates cases from controls: the estimate
 diverges and the P value cannot be trusted. Firth's penalised likelihood fixes this. The fallback
 form uses ordinary regression by default and switches to Firth only where it is needed. On the
-demonstration data Firth is invoked for **2,221** variants, all of them low-frequency. With a few
+demonstration data Firth is invoked for **2,289** variants, all of them low-frequency. With a few
 hundred cases this is not a refinement, it is a requirement.
 
 **`--covar-name SEX,AGE,PC1...PC10`.** The adjustment set. In a multi-centre study, recruitment
@@ -84,7 +84,7 @@ with biobank controls, a saddlepoint-corrected method is required rather than op
 standard asymptotics fail at those ratios.
 :::
 
-The log reports what was actually analysed. On the demonstration data: **229 cases and 396
+The log reports what was actually analysed. On the demonstration data: **224 cases and 387
 controls**.
 
 ---
@@ -105,7 +105,7 @@ Points should follow the diagonal, lifting off only in the extreme upper tail wh
 associations live. A curve that rises above the line along its whole length means inflation
 affecting every variant, which is a property of the analysis rather than of biology.
 
-On the demonstration data **λ = 1.028**, and λ₁₀₀₀ = 1.098.
+On the demonstration data **λ = 1.028**, and λ₁₀₀₀ = 1.100.
 
 ::: {.callout-warning title="Compute lambda correctly"}
 `lambda = median(qchisq(1 - P, df = 1)) / qchisq(0.5, df = 1)`
@@ -141,8 +141,8 @@ dozen peaks and you may read this plot as a failed analysis. It is not. The phen
 simulated from a **single causal locus** at *ABO* with no polygenic background, so one signal is
 the correct answer and the flat genome is the true one.
 
-The deeper point is the one this guide exists to make. At an effective sample size of 580, the
-smallest odds ratio detectable with 80% power at genome-wide significance is about 2.2 even for a
+The deeper point is the one this guide exists to make. At an effective sample size of 568, the
+smallest odds ratio detectable with 80% power at genome-wide significance is about 2.3 even for a
 common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have
 odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it
 was conducted. The scan is sound; it is simply not powered, and those are different things.
@@ -152,7 +152,7 @@ was conducted. The scan is sound; it is simply not powered, and those are differ
 European-ancestry data. It is somewhat conservative for a single ancestry and anticonservative
 for trans-ancestry analyses, where LD blocks are shorter.
 
-**1 × 10⁻⁵** is the conventional suggestive line: **8 variants** here. These are not findings and
+**1 × 10⁻⁵** is the conventional suggestive line: **7 variants** here. These are not findings and
 must never be presented as such. But in a rare cancer, discarding them entirely also discards the
 most plausible candidates for the next consortium round. Report them transparently, flagged as
 requiring replication, next to the power curve that explains why the study could not resolve
@@ -184,9 +184,9 @@ believed.
 | | |
 |---|---|
 | Variant | 9:133249045:A:G, at *ABO* (9q34.2) |
-| Effect allele | G, frequency 0.085 |
-| Odds ratio | 3.80 (95% CI 2.43 to 5.95) |
-| P | 5.3 × 10⁻⁹ |
+| Effect allele | G, frequency 0.0855 |
+| Odds ratio | 3.90 (95% CI 2.47 to 6.15) |
+| P | 5.5 × 10⁻⁹ |
 
 *ABO* is the most robustly replicated PDAC susceptibility locus, and it is the locus the
 phenotype was simulated from. Recovering it is the positive control: it confirms the pipeline
@@ -195,9 +195,9 @@ works end to end.
 :::
 
 ::: {.callout-important title="The effect size is wrong, and knowing by how much is the lesson"}
-The simulated odds ratio at this variant is **2.40**. The analysis recovered **3.80**, with a
-confidence interval whose lower bound, 2.43, sits just above the truth. The estimate is inflated
-by roughly 58%.
+The simulated odds ratio at this variant is **2.40**. The analysis recovered **3.90**, with a
+confidence interval whose lower bound, 2.47, sits just above the truth. The estimate is inflated
+by roughly 62%.
 
 This is the **winner's curse**. When an effect size is read from the same underpowered scan that
 discovered it, only upward fluctuations cross the significance threshold, so surviving estimates

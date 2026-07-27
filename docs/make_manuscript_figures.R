@@ -29,7 +29,7 @@ qc <- read.delim("sections/01B_genotyping_qc/results/pdac_demo_09_qc_counts.tsv"
                  stringsAsFactors = FALSE)
 qc$label <- c("Raw", "Initial\nstats", "Sample\ncall rate", "Sex\ncheck",
               "Hetero-\nzygosity", "Variant\ncall rate", "Hardy-\nWeinberg",
-              "Related-\nness", "MAF")
+              "Related-\nness", "MAF", "HWE\nwithin\nancestry")
 
 png(file.path(out_dir, "Figure2_qc_trajectory.png"),
     width = 2400, height = 1500, res = 300)

@@ -441,7 +441,7 @@ Example KING vs PI_HAT summary:
 | Maximum absolute `PI_HAT - 2 * KING` | 0.126513 |
 
 ::: {.callout-warning title="Review large relatedness loss"}
-In the demo run, phenotype-aware pruning removed **191 samples**. That is a substantial sample
+In the demo run, phenotype-aware pruning removed **195 samples**. That is a substantial sample
 loss. If a real cohort loses many samples at this step, inspect `pdac_demo_07_pruning_components.tsv`,
 `pdac_demo_07_relatedness_pruning_diagnostics.tsv`, and
 `pdac_demo_07_removal_decisions.tsv` before continuing.
@@ -465,8 +465,8 @@ results/qc/pdac_demo_08_filt.fam
 results/qc/pdac_demo_08_afreq.afreq
 ```
 
-In the demo run this step removed **5,038 variants**, leaving **401,909 variants** and
-**1,239 samples**.
+In the demo run this step removed **6,820 variants**, leaving **414,695 variants** and
+**1,217 samples**.
 
 ::: {.callout-note title="Why not use MAF 5%?"}
 Many standard GWAS workflows use `--maf 0.05`. That is often reasonable for common-variant GWAS,
@@ -585,10 +585,10 @@ The demo run used in this page ended with:
 | Heterozygosity | 1,430 | 430,000 | 2 | 0 |
 | Variant call rate | 1,430 | 421,520 | 0 | 8,480 |
 | Hardy-Weinberg | 1,430 | 406,947 | 0 | 14,573 |
-| Relatedness | 1,239 | 406,947 | 191 | 0 |
-| MAF filter | 1,239 | 401,909 | 0 | 5,038 |
+| Relatedness | 1,217 | 406,947 | 191 | 0 |
+| MAF filter | 1,217 | 414,695 | 0 | 6,820 |
 
-Final retention in the demo run was **84.8% of samples** and **93.5% of variants**.
+Final retention in the demo run was **83.3% of samples** and **96.4% of variants**.
 
 ## PDAC-Specific Notes
 

@@ -53,7 +53,7 @@ An unbalanced study behaves like a smaller balanced one:
 
 $$N_{\text{eff}} = \frac{4 \, N_{\text{cases}} \, N_{\text{controls}}}{N_{\text{cases}} + N_{\text{controls}}}$$
 
-On the demonstration data, 229 cases and 396 controls, **625 people behave like 580**. Past about
+On the demonstration data, 224 cases and 387 controls, **611 people behave like 568**. Past about
 four controls per case the curve flattens, so recruiting a fifth or sixth control adds almost
 nothing. If controls are cheap and cases are not, which is the usual situation in a rare cancer,
 this is where to stop.
@@ -69,14 +69,14 @@ Rscript scripts/03B_statistical_power/01_power_curves.R
 
 ![](results/pdac_demo_07_power_curves.png)
 
-| Minor allele frequency | Analysis set, N_eff 580 | All strata combined, N_eff 1,190 |
+| Minor allele frequency | Analysis set, N_eff 568 | All strata combined, N_eff 1,169 |
 |---|---|---|
-| 0.50 | 2.09 | 1.68 |
-| 0.30 | 2.24 | 1.76 |
-| 0.20 | 2.52 | 1.91 |
-| 0.10 | 3.43 | 2.36 |
-| 0.05 | 5.45 | 3.27 |
-| 0.02 | 13.99 | 6.32 |
+| 0.50 | 2.11 | 1.68 |
+| 0.30 | 2.26 | 1.76 |
+| 0.20 | 2.54 | 1.92 |
+| 0.10 | 3.47 | 2.38 |
+| 0.05 | 5.55 | 3.30 |
+| 0.02 | 14.42 | 6.42 |
 
 Those are the smallest odds ratios detectable with 80% power at *P* < 5 × 10⁻⁸. Read them against
 the effects that actually exist: established cancer susceptibility loci have odds ratios between
@@ -88,8 +88,8 @@ Put as power rather than as a threshold, the same fact is starker:
 |---|---|---|
 | OR 1.2 | 0.0% | 0.0% |
 | OR 1.3 | 0.0% | 0.0% |
-| OR 1.5 | 1.1% | 0.0% |
-| OR 2.0 | 48.4% | 2.8% |
+| OR 1.5 | 1.0% | 0.0% |
+| OR 2.0 | 46.0% | 2.6% |
 
 ::: {.callout-warning title="The result of this study was determined before it was run"}
 A typical cancer susceptibility variant, odds ratio 1.3, had **no chance** of detection here. The
@@ -105,12 +105,12 @@ reporting it as such, with this table alongside, is a contribution rather than a
 ### The one variant that was detectable, and what its detection cost
 
 The demonstration phenotype was simulated from a variant with an odds ratio of 2.40 at a frequency
-of 0.085. Its power in the European analysis set is **9.8%**.
+of 0.0855. Its power in the European analysis set is **9.2%**.
 
 It was detected anyway, at *P* = 5.3 × 10⁻⁹. That is not luck to be celebrated; it is a selection
 event to be reckoned with. In an underpowered scan the variants that cross the threshold are those
 whose estimates happened to fall high, which is exactly why the odds ratio recovered in Section 4A
-is **3.80** and not 2.40, an inflation of 58%.
+is **3.90** and not 2.40, an inflation of 62%.
 
 Power and the winner's curse are two descriptions of one situation. Low power does not only mean
 missing real effects; it means that the effects you do find are overstated, and by an amount that
@@ -118,8 +118,8 @@ grows as power falls. An effect size taken from a discovery scan of this size sh
 carried into risk prediction, into meta-analytic weighting, or into the power calculation for a
 replication study.
 
-Across the three ancestry strata combined the effective sample size rises to 1,190 and power at
-the same variant to **69.3%**. That is the quantitative case for
+Across the three ancestry strata combined the effective sample size rises to 1,169 and power at
+the same variant to **68.0%**. That is the quantitative case for
 [meta-analysis](../05_meta_analysis/05_meta_analysis.qmd), made on this dataset rather than
 asserted.
 
@@ -146,12 +146,12 @@ On the demonstration data, restricted to the European analysis set:
 
 | | |
 |---|---|
-| Individuals with follow up | 625 |
-| Observed events | **144** |
-| Censored | 481 |
+| Individuals with follow up | 611 |
+| Observed events | **140** |
+| Censored | 471 |
 
-**The number that governs power is 144, not 625.** With 144 events, the smallest detectable hazard
-ratio at MAF 0.30 is 2.25, and a hazard ratio of 1.5 has 1.1% power.
+**The number that governs power is 140, not 611.** With 140 events, the smallest detectable hazard
+ratio at MAF 0.30 is 2.27, and a hazard ratio of 1.5 has 1.0% power.
 
 Turning it round gives the number to put in a protocol:
 
