@@ -66,8 +66,8 @@ Each stratum gets its own LD pruning, its own principal components and its own a
 | **Combined** | **1,217** | **504** | **713** | **1,169.4** |
 
 Notice the African stratum. It has fewer than half the individuals of the European one, but
-because its case-control ratio is nearly balanced it contributes an effective sample size of 295
-against 580: proportionally far more per participant. Effective sample size, not headline count,
+because its case-control ratio is nearly balanced it contributes an effective sample size of 290
+against 568: proportionally far more per participant. Effective sample size, not headline count,
 is what a meta-analysis is really combining.
 
 ::: {.callout-note title="Five components, not ten"}

@@ -107,7 +107,7 @@ reporting it as such, with this table alongside, is a contribution rather than a
 The demonstration phenotype was simulated from a variant with an odds ratio of 2.40 at a frequency
 of 0.0855. Its power in the European analysis set is **9.2%**.
 
-It was detected anyway, at *P* = 5.3 × 10⁻⁹. That is not luck to be celebrated; it is a selection
+It was detected anyway, at *P* = 5.5 × 10⁻⁹. That is not luck to be celebrated; it is a selection
 event to be reckoned with. In an underpowered scan the variants that cross the threshold are those
 whose estimates happened to fall high, which is exactly why the odds ratio recovered in Section 4A
 is **3.90** and not 2.40, an inflation of 62%.
