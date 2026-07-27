@@ -1,0 +1,6 @@
+format	files	bytes
+final report	csv	740619
+plink long	lgen+map+fam	1163733
+plink text	ped+map	598530
+plink binary	bed+bim+fam	211463
+genotypes only	bed	6941

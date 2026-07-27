@@ -1,0 +1,9 @@
+GenCall score summary
+File: example_data/DEMO001_final_report.csv
+
+Calls in file:        7998
+Median GC:            0.7301
+Mean GC:              0.6742
+Calls below 0.15:     84 (1.05%)
+Calls below 0.50:     1857 (23.22%)
+Calls below 0.70:     3658 (45.74%)

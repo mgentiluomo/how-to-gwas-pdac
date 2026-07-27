@@ -1,0 +1,4 @@
+sample	calls	no_call	indel	failed_gc	unmapped	written
+DEMO001	8000	102	606	86	480	6793
+DEMO002	8000	112	601	109	480	6759
+DEMO003	8000	113	607	114	480	6757

@@ -1,0 +1,30 @@
+Manifest check
+Generated: 2026-07-27 15:04:19
+
+Report:   /home/claude/gwas/example_data/DEMO001_final_report.csv
+Manifest: example_data/example_manifest.csv
+
+1. PRODUCT
+   report header 'Content':            DEMO-ARRAY-v1_A1.bpm
+   manifest 'Descriptor File Name':    DEMO-ARRAY-v1_A1.bpm
+   identical: yes
+
+2. SIZE
+   variants in this report:  8000
+   loci in the manifest:     7520
+
+3. NAME MATCHING
+   matched as written:       7520 (94.0%)
+   matched after stripping a 'GSA-' prefix from manifest names: 7520
+
+4. GENOME BUILD
+   manifest GenomeBuild: 38 (n=7520)
+
+5. DIAGNOSTIC: names that look like coordinates
+   variants with a positional name: 1860
+   whose name position equals the manifest coordinate: 0
+   whose name position differs:                        1860
+   whose name chromosome differs:                      97
+   Positional names are not coordinates. They typically carry an older
+   build. Always take positions from the manifest.
+

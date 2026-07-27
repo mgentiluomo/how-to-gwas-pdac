@@ -1,6 +1,13 @@
 project:
   type: website
   output-dir: _site
+  # Analysis scripts live beside each section and must never be treated as
+  # documents to render. Without this, Quarto tries to execute them.
+  render:
+    - "*.qmd"
+    - "*.md"
+    - "sections/**/*.qmd"
+    - "docs/**/*.md"
 
 website:
   title: "How to carry out a GWAS"
@@ -22,6 +29,9 @@ website:
       - section: "Before you start"
         contents:
           - getting_started.qmd
+      - section: "Before the data"
+        contents:
+          - sections/01A_study_design/01A_study_design.qmd
       - section: "Quality control"
         contents:
           - sections/01B_genotyping_qc/01B_genotyping_qc.qmd
