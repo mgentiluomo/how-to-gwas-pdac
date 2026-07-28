@@ -1,0 +1,162 @@
+---
+title: "Linkage disequilibrium and what it decides for you"
+subtitle: "Why the resolution of a fine-mapping analysis is set by the population, not by the method"
+---
+
+Every association a GWAS reports is an association with a *region*, not with a
+variant. The scan tests markers, and a marker is informative only because it is
+correlated with whatever is actually causal nearby. That correlation is linkage
+disequilibrium, and it is the reason the method works at all.
+
+It is also the reason the method stops working at a certain point. LD is what
+lets a genotyping array of 400,000 markers stand in for three billion bases; it
+is equally what prevents the resulting signal from being narrowed to one variant.
+The same property does both, and no analysis can have the first without the
+second.
+
+This page is about the second half of that trade, because it is the half that
+tutorials skip. It concerns how the guide's fine-mapping result should be read,
+and it makes a case for ancestral diversity in genetic studies that rests on
+resolution rather than on fairness.
+
+---
+
+## 01 - LD is a property of a population, not of the genome
+
+**Why.** There is no such thing as *the* linkage disequilibrium between two
+variants. There is the LD between them in a particular population, and it can
+differ severalfold between populations at the same pair of sites.
+
+The reason is demographic history. LD is created by drift and destroyed by
+recombination, so the balance between them depends on effective population size.
+A population that has been small has more LD, because its members are closer
+relatives and fewer recombination events separate them; a population that has
+been large has less, because recombination has had more independent
+opportunities to break associations apart
+[doi:10.1534/genetics.114.166454]{.mark}. Bottlenecks and expansions leave
+distinct and long-lasting signatures on the whole LD curve, and those signatures
+persist for hundreds of generations after the demographic event that caused them
+[doi:10.1534/genetics.114.166454]{.mark}.
+
+For human populations, one consequence dominates everything else. African
+populations have the largest ancestral effective size and did not pass through
+the out-of-Africa bottleneck; non-African populations did. LD therefore extends
+further in Europe and East Asia than in Africa, and this has been documented at
+genome scale since the first surveys
+[PMID:11346797]{.mark} [PMID:11967554]{.mark}.
+
+---
+
+## 02 - Measuring it on the demonstration data
+
+**Why.** The statement above is standard and you should not take it on trust
+when you can check it in the dataset you are already using.
+
+```bash
+bash scripts/07_linkage_disequilibrium/01_ld_decay.sh
+```
+
+The script computes pairwise r² among common variants across the *ABO* region,
+separately within each ancestry group, and averages by physical distance.
+
+| Distance between variants | European | African | East Asian |
+|---|---:|---:|---:|
+| 0-10 kb | 0.272 | **0.184** | 0.344 |
+| 10-25 kb | 0.122 | **0.063** | 0.173 |
+| 25-50 kb | 0.047 | **0.022** | 0.089 |
+| 50-100 kb | 0.031 | **0.010** | 0.029 |
+| 100-200 kb | 0.018 | 0.006 | 0.013 |
+
+Read the African column against the other two. At 25 to 50 kb, average r² in the
+African group is less than half the European value and about a quarter of the
+East Asian one. The ordering is the same at every distance, and it is the
+ordering that population history predicts.
+
+::: {.callout-note title="What this is not"}
+This is 288 African individuals at one locus on one array, not a genome-wide
+estimate of LD decay. The magnitudes here should not be quoted as such. What the
+comparison establishes is the *direction and the size of the difference between
+groups measured in the same way on the same variants*, which is the only thing
+the next section needs.
+:::
+
+---
+
+## 03 - The consequence: resolution is set before you choose a method
+
+**Why.** Fine mapping asks which variant in a region is causal. It can only
+distinguish variants that the data distinguish. Two variants in perfect LD carry
+identical information about every phenotype, so no amount of statistical
+sophistication, and no increase in sample size, will ever separate them.
+
+The demonstration dataset makes this concrete. Counting variants in strong LD
+(r² > 0.8) with the causal variant, within each group:
+
+| | European | African | East Asian |
+|---|---:|---:|---:|
+| Variants indistinguishable from the causal one | 11 | **1** | 11 |
+
+This single table explains the fine-mapping result of
+[Fine mapping](../06_finemapping_annotation/06_finemapping_annotation.qmd)
+before any Bayes factor is computed. The European credible set contains eleven
+variants because Europe contains eleven variants that behave identically at this
+locus. The credible set is not eleven wide because the method is weak; it is
+eleven wide because the population is.
+
+In the African group the same locus resolves to a single variant. The causal
+variant is separable there and is not separable in Europe, and that difference
+was fixed tens of thousands of years before anyone collected a sample.
+
+::: {.callout-important title="A small credible set is not a resolved locus"}
+The two statements sound alike and are not. A credible set of eleven variants
+spanning 12 kb looks tidy next to one of seventy-seven spanning 600 kb, and a
+reader may take the tidiness as success. It is not: it is a compact haplotype
+block. Report the span, the number of variants, and the local LD alongside the
+posterior probabilities, so that a reader can tell a resolved locus from a
+region where resolution was never available
+[doi:10.1038/nrg1123]{.mark}.
+:::
+
+---
+
+## 04 - Three practical consequences
+
+**The LD reference must match the ancestry of the analysis.** Summary-statistic
+fine-mapping and conditional analysis both need an LD matrix, and if that matrix
+comes from a population with different LD than the study sample, the method is
+being told correlations that do not hold in the data. This produces credible
+sets that are confidently wrong rather than honestly wide. Where the study is
+multi-ancestry, one reference cannot serve, and per-stratum LD is required.
+
+**Diversity buys resolution, not only equity.** The argument for including
+non-European participants in genetic studies is usually made on grounds of
+fairness, and that argument is sufficient on its own. But it is not the only one.
+The table above shows a locus that is unresolvable in Europe and resolvable in
+Africa, in the same data, with the same method. Shorter LD is more information
+per variant. A study that recruits only Europeans is not merely leaving other
+populations unserved; it is discarding the resolution that would have answered
+its own question [PMID:11037333]{.mark}.
+
+**Trans-ancestry analysis helps when the strata are large enough to be heard.**
+In this demonstration, combining the three groups moves the causal variant to
+first place in the credible set but barely shrinks the set, because the African
+group that could separate the variants contributes 288 people against 608
+Europeans. The mechanism is real and the sample is too small to exploit it. That
+is the honest reading, and it is also the argument for building consortia in
+which non-European strata are large enough to change the answer rather than
+large enough to be mentioned.
+
+---
+
+## Key decisions on this page
+
+- Whether the LD reference panel matches the ancestry of each analysed stratum,
+  and what was done where it could not.
+- Whether reported credible sets are accompanied by their span and by the local
+  LD, so that width can be attributed to the population rather than to the
+  method.
+- Whether the study design treats ancestral diversity as a source of resolution
+  at the analysis stage, or only as a recruitment target.
+
+Next: [Fine mapping](../06_finemapping_annotation/06_finemapping_annotation.qmd),
+where these constraints determine the result.
