@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/docs/helpers/WSL_SETUP.html</loc>
+    <lastmod>2026-07-27T10:33:02.709Z</lastmod>
+  </url>
+  <url>
     <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/CONTRIBUTING.html</loc>
     <lastmod>2026-07-27T10:18:14.858Z</lastmod>
   </url>
@@ -39,5 +43,9 @@
   <url>
     <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/sections/06_finemapping_annotation/06_finemapping_annotation.html</loc>
     <lastmod>2026-07-28T12:44:18.893Z</lastmod>
+  </url>
+  <url>
+    <loc>https://mgentiluomo.github.io/how-to-gwas-pdac/docs/helpers/SETUP_PROJECT_STRUCTURE.html</loc>
+    <lastmod>2026-07-27T10:33:02.708Z</lastmod>
   </url>
 </urlset>

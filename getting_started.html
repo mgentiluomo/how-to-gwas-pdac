@@ -618,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get update</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install git curl wget unzip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>✅ <strong>WSL2 is now ready. From here on, all commands use this bash terminal.</strong></p>
-<p>For help troubleshooting WSL2, see <a href="docs/helpers/WSL_SETUP.md">WSL Setup</a>.</p>
+<p>For help troubleshooting WSL2, see <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a>.</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>macOS includes Bash, although Terminal normally opens with Zsh, and most Linux distributions use Bash by default. Either way the commands in this guide work, and the tutorial scripts are run explicitly with <code>bash</code>. No setup is needed for Step 0.</p>
@@ -738,7 +738,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>For a compact project-folder overview, see <a href="docs/helpers/SETUP_PROJECT_STRUCTURE.md">Setup Project Structure</a>. If you are on Windows/WSL2, keep <a href="docs/helpers/WSL_SETUP.md">WSL Setup</a> nearby for path and terminal troubleshooting.</p>
+<p>For a compact project-folder overview, see <a href="./docs/helpers/SETUP_PROJECT_STRUCTURE.html">Setup Project Structure</a>. If you are on Windows/WSL2, keep <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a> nearby for path and terminal troubleshooting.</p>
 </div>
 </div>
 <hr>
@@ -870,7 +870,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="ex">R</span> <span class="at">--version</span> <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"R is not installed yet"</span></span>
 <span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-I</span> https://github.com <span class="kw">||</span> <span class="bu">echo</span> <span class="st">"Internet connection check failed"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If the internet check fails inside WSL but works in Windows, see <a href="docs/helpers/WSL_SETUP.md">WSL Setup</a> for managed-network and proxy troubleshooting.</p>
+<p>If the internet check fails inside WSL but works in Windows, see <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a> for managed-network and proxy troubleshooting.</p>
 <p>Run the setup script from your project:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/dev/tools_setup.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>This script will: - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon) - Check whether R is available and try to install it if it is missing - Download the correct PLINK2 and PLINK1.9 binaries from official sources - Download the official precompiled METAL binary for Linux/WSL or macOS - Install micromamba into <code>tools/micromamba/</code> - Install REGENIE into a micromamba environment named <code>regenie_env</code> - Extract and organize command-line tools in <code>tools/plink2/</code>, <code>tools/plink1.9/</code>, <code>tools/metal/</code>, <code>tools/micromamba/</code>, and <code>tools/regenie/</code> - Create symlinks in <code>tools/bin/</code> for easy access - Update your PATH so you can run <code>plink2</code>, <code>plink</code>, <code>metal</code>, and <code>regenie</code> from anywhere - Write <code>scripts/dev/tool_manifest.tsv</code>, which lists the tools checked by <code>test.sh</code> - Check for basic helper tools such as <code>wget</code>, <code>unzip</code>, <code>tar</code>, and <code>bzip2</code></p>
@@ -1011,7 +1011,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="even">
 <td><code>curl</code>, <code>wget</code>, or micromamba cannot connect</td>
 <td>WSL or your terminal cannot reach the internet</td>
-<td>Test <code>curl -I https://github.com</code>; WSL users on managed networks should check <a href="docs/helpers/WSL_SETUP.md">WSL Setup</a></td>
+<td>Test <code>curl -I https://github.com</code>; WSL users on managed networks should check <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a></td>
 </tr>
 <tr class="odd">
 <td><code>Could not get lock /var/lib/apt/lists/lock</code></td>
@@ -1225,8 +1225,8 @@ Next command to run the QC pipeline:
 <section id="additional-resources" class="level2">
 <h2 class="anchored" data-anchor-id="additional-resources">Additional Resources</h2>
 <ul>
-<li><strong><a href="docs/helpers/SETUP_PROJECT_STRUCTURE.md">Setup Project Structure</a></strong> — Detailed setup guide</li>
-<li><strong><a href="docs/helpers/WSL_SETUP.md">WSL Setup</a></strong> — WSL2 troubleshooting</li>
+<li><strong><a href="./docs/helpers/SETUP_PROJECT_STRUCTURE.html">Setup Project Structure</a></strong> — Detailed setup guide</li>
+<li><strong><a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a></strong> — WSL2 troubleshooting</li>
 </ul>
 <hr>
 </section>

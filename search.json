@@ -1,5 +1,61 @@
 [
   {
+    "objectID": "docs/helpers/WSL_SETUP.html",
+    "href": "docs/helpers/WSL_SETUP.html",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "For Windows users: Using Windows Subsystem for Linux (WSL) is strongly recommended for this tutorial. The pipeline uses bash scripts and Linux/macOS command-line tools, which work most consistently inside WSL.\n\n\n\n\n\n\n\n\n\n\nAspect\nWindows CMD/PowerShell\nWSL (Linux)\n\n\n\n\nTool setup\nRequires separate Windows binaries and PATH edits\nTutorial scripts install tools into the project folder\n\n\nBash scripts\nPowerShell emulation (fragile)\nFull bash compatibility\n\n\nFile paths\nWindows-style (backslashes, drive letters)\nUnix-style (forward slashes)\n\n\nPerformance\nSlower for file I/O intensive tasks\nNative Linux speed\n\n\nScripting\nComplex escaping, quoting issues\nStandard shell behavior\n\n\n\nRecommendation: Install WSL2 with Ubuntu, then follow this guide.\n\n\n\n\n\n\nOpen PowerShell as Administrator and run:\nwsl --install\n# or, if you already have WSL1:\nwsl --set-default-version 2\nRestart your computer, then verify:\nwsl --list --verbose\nYou should see Ubuntu (or your chosen distro) with VERSION = 2.\n\n\n\nwsl --install -d Ubuntu\nOr use the Microsoft Store to download Ubuntu 22.04 LTS or later.\n\n\n\nFrom PowerShell or Windows Terminal:\nwsl\nOr click Ubuntu in Windows Terminal tabs.\nThe short video below shows how to open Ubuntu from Windows Terminal:\n\n\nYour browser does not support the video tag. \n\n\n\n\n\nOnce you’re in the WSL terminal, run these commands once to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by bash scripts/dev/tools_setup.sh.\n\n\nsudo apt-get update -y\nsudo apt-get upgrade -y\nNote: The sudo prompt may ask for your password (the one you set during WSL Ubuntu installation).\n\n\n\nsudo apt-get install -y curl wget git unzip tar bzip2\nVerify the basic utilities:\ngit --version\ncurl --version\nwget --version\nR is checked during Step 5 of the main tutorial. If it is missing, bash scripts/dev/tools_setup.sh will try to install it.\n\n\n\n\n\n\n\n\n\n\nWindows\nWSL\n\n\n\n\nC:\\Users\\...\n/home/username/...\n\n\nC:\\ drive\n/mnt/c/\n\n\nS:\\ drive\n/mnt/s/\n\n\nD:\\ drive\n/mnt/d/\n\n\n\n\n\n\nYour repo at S:\\Example is accessible in WSL as:\ncd /mnt/s/Example\nls -la\nYou can return back to your HOME directory with:\ncd $HOME\nls -la\n\n\n\n\n\n\nReason: Some universities, hospitals, and institutes use a network proxy. Windows may already know this proxy, but WSL may not use the Windows setting automatically.\nAsk your local IT team for the proxy address and port. It usually looks like:\nhttp://proxy.example.org:3128/\nReplace the example proxy below with your institution’s real proxy:\nPROXY=\"http://proxy.example.org:3128/\"\nNO_PROXY=\"localhost,127.0.0.1\"\nSet the proxy for the current WSL terminal:\nexport http_proxy=\"$PROXY\"\nexport https_proxy=\"$PROXY\"\nexport ftp_proxy=\"$PROXY\"\nexport HTTP_PROXY=\"$PROXY\"\nexport HTTPS_PROXY=\"$PROXY\"\nexport FTP_PROXY=\"$PROXY\"\nexport no_proxy=\"$NO_PROXY\"\nexport NO_PROXY=\"$NO_PROXY\"\nTest the connection:\ncurl -I https://github.com\nwget --spider https://github.com\nIf this works, make it permanent for future WSL terminals:\ncat &gt;&gt; \"$HOME/.bashrc\" &lt;&lt;'EOF'\n\n# Proxy for WSL network access.\n# Replace this example with your institution's proxy.\nexport http_proxy=\"http://proxy.example.org:3128/\"\nexport https_proxy=\"http://proxy.example.org:3128/\"\nexport ftp_proxy=\"http://proxy.example.org:3128/\"\nexport HTTP_PROXY=\"http://proxy.example.org:3128/\"\nexport HTTPS_PROXY=\"http://proxy.example.org:3128/\"\nexport FTP_PROXY=\"http://proxy.example.org:3128/\"\nexport no_proxy=\"localhost,127.0.0.1\"\nexport NO_PROXY=\"localhost,127.0.0.1\"\nEOF\n\nsource \"$HOME/.bashrc\"\napt-get may need its own proxy setting because it runs with sudo:\nsudo tee /etc/apt/apt.conf.d/95proxy &gt;/dev/null &lt;&lt;EOF\nAcquire::http::Proxy \"$PROXY\";\nAcquire::https::Proxy \"$PROXY\";\nAcquire::ftp::Proxy \"$PROXY\";\nEOF\n\nsudo apt-get update\nGit can also be configured separately:\ngit config --global http.proxy \"$PROXY\"\ngit config --global https.proxy \"$PROXY\"\ngit ls-remote https://github.com/git/git.git HEAD\nIf your proxy requires a username or password, ask your IT team for the recommended WSL setup. Avoid putting passwords into shared scripts or tutorial files.\n\n\n\nSolution: Use /mnt/ prefix for Windows drives:\n# ✗ Wrong\ncd S:\\Github\\how-to-gwas-pdac\n\n# ✓ Correct\ncd /mnt/s/Github/how-to-gwas-pdac\n\n\n\nReason: WSL filesystem performance is slower when accessing Windows drives.\nSolution: Clone the repo inside WSL:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git ~/how-to-gwas-pdac\ncd ~/how-to-gwas-pdac\n\n\n\n\n\n# Check WSL version and distro\nwsl --list --verbose\n\n# Switch default distro\nwsl --set-default &lt;distro-name&gt;\n\n# Enter WSL\nwsl\n\n# Exit WSL\nexit\n\n# Run single WSL command from PowerShell\nwsl bash -c \"cd /mnt/s/Github/how-to-gwas-pdac && ls\"\n\n# Update WSL\nwsl --update\n\n\n\n\n\nFollow Before you start: setup and your first QC pipeline\nReturn to this page if you need help with WSL paths or basic WSL commands.\n\nGood luck!"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#why-wsl",
+    "href": "docs/helpers/WSL_SETUP.html#why-wsl",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Aspect\nWindows CMD/PowerShell\nWSL (Linux)\n\n\n\n\nTool setup\nRequires separate Windows binaries and PATH edits\nTutorial scripts install tools into the project folder\n\n\nBash scripts\nPowerShell emulation (fragile)\nFull bash compatibility\n\n\nFile paths\nWindows-style (backslashes, drive letters)\nUnix-style (forward slashes)\n\n\nPerformance\nSlower for file I/O intensive tasks\nNative Linux speed\n\n\nScripting\nComplex escaping, quoting issues\nStandard shell behavior\n\n\n\nRecommendation: Install WSL2 with Ubuntu, then follow this guide."
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#prerequisites",
+    "href": "docs/helpers/WSL_SETUP.html#prerequisites",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Open PowerShell as Administrator and run:\nwsl --install\n# or, if you already have WSL1:\nwsl --set-default-version 2\nRestart your computer, then verify:\nwsl --list --verbose\nYou should see Ubuntu (or your chosen distro) with VERSION = 2.\n\n\n\nwsl --install -d Ubuntu\nOr use the Microsoft Store to download Ubuntu 22.04 LTS or later.\n\n\n\nFrom PowerShell or Windows Terminal:\nwsl\nOr click Ubuntu in Windows Terminal tabs.\nThe short video below shows how to open Ubuntu from Windows Terminal:\n\n\nYour browser does not support the video tag."
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#basic-wsl-preparation",
+    "href": "docs/helpers/WSL_SETUP.html#basic-wsl-preparation",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Once you’re in the WSL terminal, run these commands once to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by bash scripts/dev/tools_setup.sh.\n\n\nsudo apt-get update -y\nsudo apt-get upgrade -y\nNote: The sudo prompt may ask for your password (the one you set during WSL Ubuntu installation).\n\n\n\nsudo apt-get install -y curl wget git unzip tar bzip2\nVerify the basic utilities:\ngit --version\ncurl --version\nwget --version\nR is checked during Step 5 of the main tutorial. If it is missing, bash scripts/dev/tools_setup.sh will try to install it."
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#accessing-your-files",
+    "href": "docs/helpers/WSL_SETUP.html#accessing-your-files",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Windows\nWSL\n\n\n\n\nC:\\Users\\...\n/home/username/...\n\n\nC:\\ drive\n/mnt/c/\n\n\nS:\\ drive\n/mnt/s/\n\n\nD:\\ drive\n/mnt/d/\n\n\n\n\n\n\nYour repo at S:\\Example is accessible in WSL as:\ncd /mnt/s/Example\nls -la\nYou can return back to your HOME directory with:\ncd $HOME\nls -la"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#troubleshooting",
+    "href": "docs/helpers/WSL_SETUP.html#troubleshooting",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Reason: Some universities, hospitals, and institutes use a network proxy. Windows may already know this proxy, but WSL may not use the Windows setting automatically.\nAsk your local IT team for the proxy address and port. It usually looks like:\nhttp://proxy.example.org:3128/\nReplace the example proxy below with your institution’s real proxy:\nPROXY=\"http://proxy.example.org:3128/\"\nNO_PROXY=\"localhost,127.0.0.1\"\nSet the proxy for the current WSL terminal:\nexport http_proxy=\"$PROXY\"\nexport https_proxy=\"$PROXY\"\nexport ftp_proxy=\"$PROXY\"\nexport HTTP_PROXY=\"$PROXY\"\nexport HTTPS_PROXY=\"$PROXY\"\nexport FTP_PROXY=\"$PROXY\"\nexport no_proxy=\"$NO_PROXY\"\nexport NO_PROXY=\"$NO_PROXY\"\nTest the connection:\ncurl -I https://github.com\nwget --spider https://github.com\nIf this works, make it permanent for future WSL terminals:\ncat &gt;&gt; \"$HOME/.bashrc\" &lt;&lt;'EOF'\n\n# Proxy for WSL network access.\n# Replace this example with your institution's proxy.\nexport http_proxy=\"http://proxy.example.org:3128/\"\nexport https_proxy=\"http://proxy.example.org:3128/\"\nexport ftp_proxy=\"http://proxy.example.org:3128/\"\nexport HTTP_PROXY=\"http://proxy.example.org:3128/\"\nexport HTTPS_PROXY=\"http://proxy.example.org:3128/\"\nexport FTP_PROXY=\"http://proxy.example.org:3128/\"\nexport no_proxy=\"localhost,127.0.0.1\"\nexport NO_PROXY=\"localhost,127.0.0.1\"\nEOF\n\nsource \"$HOME/.bashrc\"\napt-get may need its own proxy setting because it runs with sudo:\nsudo tee /etc/apt/apt.conf.d/95proxy &gt;/dev/null &lt;&lt;EOF\nAcquire::http::Proxy \"$PROXY\";\nAcquire::https::Proxy \"$PROXY\";\nAcquire::ftp::Proxy \"$PROXY\";\nEOF\n\nsudo apt-get update\nGit can also be configured separately:\ngit config --global http.proxy \"$PROXY\"\ngit config --global https.proxy \"$PROXY\"\ngit ls-remote https://github.com/git/git.git HEAD\nIf your proxy requires a username or password, ask your IT team for the recommended WSL setup. Avoid putting passwords into shared scripts or tutorial files.\n\n\n\nSolution: Use /mnt/ prefix for Windows drives:\n# ✗ Wrong\ncd S:\\Github\\how-to-gwas-pdac\n\n# ✓ Correct\ncd /mnt/s/Github/how-to-gwas-pdac\n\n\n\nReason: WSL filesystem performance is slower when accessing Windows drives.\nSolution: Clone the repo inside WSL:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git ~/how-to-gwas-pdac\ncd ~/how-to-gwas-pdac"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#quick-reference-wsl-commands",
+    "href": "docs/helpers/WSL_SETUP.html#quick-reference-wsl-commands",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "# Check WSL version and distro\nwsl --list --verbose\n\n# Switch default distro\nwsl --set-default &lt;distro-name&gt;\n\n# Enter WSL\nwsl\n\n# Exit WSL\nexit\n\n# Run single WSL command from PowerShell\nwsl bash -c \"cd /mnt/s/Github/how-to-gwas-pdac && ls\"\n\n# Update WSL\nwsl --update"
+  },
+  {
+    "objectID": "docs/helpers/WSL_SETUP.html#next-steps",
+    "href": "docs/helpers/WSL_SETUP.html#next-steps",
+    "title": "WSL Setup for PDAC GWAS Tutorial",
+    "section": "",
+    "text": "Follow Before you start: setup and your first QC pipeline\nReturn to this page if you need help with WSL paths or basic WSL commands.\n\nGood luck!"
+  },
+  {
     "objectID": "CONTRIBUTING.html",
     "href": "CONTRIBUTING.html",
     "title": "Contributing",
@@ -867,5 +923,68 @@
       "From signal to variant",
       "Fine mapping"
     ]
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "This guide helps you set up a flexible, portable project folder that works on any system without hard-coded paths.\n\n\n\nChoose any location on your computer and create a folder named gwas_tutorial:\nWindows (bash in WSL2):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\nmacOS/Linux (bash):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\n\nNote: You can place this folder anywhere. The structure will work from any location because we use relative paths.\n\n\n\n\n\n# Create base directories\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\necho \"✓ Directory structure created\"\ntree -L 2  # (or: find . -type d -not -path '*/\\.*' | sort)\n\n\n\n\nAfter setup, your project looks like this:\ngwas_tutorial/\n│\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   ├── script_manifest.txt\n│   │   └── tool_manifest.tsv\n│   │\n│   ├── 01B_genotyping_qc/           # QC pipeline scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   ├── ... (9 QC scripts total)\n│   │   └── 09_qc_summary.sh\n│   │\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n│\n├── demo_data/                       # Downloaded demo dataset files\n│   ├── pdac_demo.bed\n│   ├── pdac_demo.bim\n│   ├── pdac_demo.fam\n│   ├── phenotype.txt\n│   ├── covariates.txt\n│   ├── survival.txt\n│   └── sample_ancestry.tsv\n│\n├── tools/                           # Local tool installation\n│   ├── bin/                         # Command links used by the tutorial\n│   │   ├── plink\n│   │   ├── plink2\n│   │   ├── metal\n│   │   └── regenie\n│   ├── plink1.9/\n│   ├── plink2/\n│   ├── metal/\n│   ├── micromamba/\n│   ├── micromamba-root/\n│   └── regenie/\n│\n├── data_processed/                  # Processed data outputs\n│   └── (will be populated during QC)\n│\n└── results/                         # Analysis results organized by workflow\n    ├── qc/\n    ├── pop_structure/\n    ├── imputation/\n    ├── association/\n    ├── finemapping/\n    └── meta_analysis/\n\n\n\n\nFollow the main guide at getting_started.qmd which provides automated and manual options for downloading scripts in the correct structure.\nThe current script-copy step is manifest-based. It copies every section that has a scripts/ folder, so future sections can be added without changing the setup test:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\nrm -r how-to-gwas-pdac\nThe automated approach uses:\nbash scripts/dev/init_project.sh    # Creates folder structure\nbash scripts/dev/download_demo_data.sh  # Downloads data + verifies\nbash scripts/dev/tools_setup.sh     # Installs tools and writes tool_manifest.tsv\nbash scripts/dev/test.sh            # Tests everything\nThe manual approach is detailed in getting_started.qmd Step 2-6.\n\n\n\n\nThis structure is fully portable because:\n\nNo hard-coded paths — All paths are relative (e.g., ./scripts/01B_genotyping_qc/)\nManifest-based checks — section_manifest.txt, script_manifest.txt, and tool_manifest.tsv tell the setup test what should exist\nLocal tools — Tools are installed or linked under ./tools/, not system-wide\nWorks anywhere — Folder can be on Desktop, Documents, USB drive, etc.\nEasy backups — Entire folder is self-contained, except for large downloaded files you may choose to regenerate\n\n\n\n\n\n\n\n\n\n\n\n\nFolder\nPurpose\n\n\n\n\nscripts/dev/\nUtility scripts (download, setup, test)\n\n\nscripts/01B_genotyping_qc/\nQC pipeline scripts\n\n\nscripts/&lt;section&gt;/\nSection scripts copied from sections/&lt;section&gt;/scripts/\n\n\ndemo_data/\nDemo dataset (7 files)\n\n\ntools/bin/\nCommand links for PLINK1.9, PLINK2, METAL, REGENIE, and future tools\n\n\ntools/micromamba/\nProject-local micromamba executable\n\n\ntools/micromamba-root/\nProject-local environments such as regenie_env\n\n\ndata_processed/\nIntermediate outputs\n\n\nresults/\nFinal analysis results\n\n\n\n\n\n\n\nTo check your structure is correct:\n# Verify folders exist\nls -la scripts/dev/\nls -la scripts/01B_genotyping_qc/\nls -la demo_data/\nls -la tools/bin/\n\n# Verify manifests\ncat scripts/dev/section_manifest.txt\ncat scripts/dev/script_manifest.txt\ncat scripts/dev/tool_manifest.tsv\n\n# Verify demo data downloaded (after Step 4)\nls -lh demo_data/ | wc -l  # Should show 7 files + header\n\n# Verify tools installed (after Step 5)\nbash scripts/dev/test.sh\n\n\n\n\nOnce your structure is set up, follow the main guide to: 1. Download scripts (Step 3 in getting_started.qmd) 2. Download demo data (Step 4) 3. Install tools (Step 5) 4. Test everything (Step 6) 5. Run your first QC pipeline!"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-1-create-your-project-folder",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-1-create-your-project-folder",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Choose any location on your computer and create a folder named gwas_tutorial:\nWindows (bash in WSL2):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\nmacOS/Linux (bash):\nmkdir -p ~/gwas_tutorial\ncd ~/gwas_tutorial\n\nNote: You can place this folder anywhere. The structure will work from any location because we use relative paths."
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-2-create-the-directory-structure",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-2-create-the-directory-structure",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "# Create base directories\nmkdir -p \\\n    scripts \\\n    scripts/dev \\\n    demo_data \\\n    tools/bin \\\n    data_processed \\\n    results/{qc,pop_structure,imputation,association,finemapping,meta_analysis}\n\necho \"✓ Directory structure created\"\ntree -L 2  # (or: find . -type d -not -path '*/\\.*' | sort)"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#final-structure",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#final-structure",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "After setup, your project looks like this:\ngwas_tutorial/\n│\n├── scripts/\n│   ├── dev/                         # Utility scripts\n│   │   ├── download_demo_data.sh\n│   │   ├── tools_setup.sh\n│   │   ├── test.sh\n│   │   ├── init_project.sh\n│   │   ├── section_manifest.txt\n│   │   ├── script_manifest.txt\n│   │   └── tool_manifest.tsv\n│   │\n│   ├── 01B_genotyping_qc/           # QC pipeline scripts\n│   │   ├── 01_initial_qc_stats.sh\n│   │   ├── 02_sample_callrate.sh\n│   │   ├── ... (9 QC scripts total)\n│   │   └── 09_qc_summary.sh\n│   │\n│   ├── 02_population_stratification/\n│   ├── 03_imputation/\n│   └── ...other sections...\n│\n├── demo_data/                       # Downloaded demo dataset files\n│   ├── pdac_demo.bed\n│   ├── pdac_demo.bim\n│   ├── pdac_demo.fam\n│   ├── phenotype.txt\n│   ├── covariates.txt\n│   ├── survival.txt\n│   └── sample_ancestry.tsv\n│\n├── tools/                           # Local tool installation\n│   ├── bin/                         # Command links used by the tutorial\n│   │   ├── plink\n│   │   ├── plink2\n│   │   ├── metal\n│   │   └── regenie\n│   ├── plink1.9/\n│   ├── plink2/\n│   ├── metal/\n│   ├── micromamba/\n│   ├── micromamba-root/\n│   └── regenie/\n│\n├── data_processed/                  # Processed data outputs\n│   └── (will be populated during QC)\n│\n└── results/                         # Analysis results organized by workflow\n    ├── qc/\n    ├── pop_structure/\n    ├── imputation/\n    ├── association/\n    ├── finemapping/\n    └── meta_analysis/"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-3-get-the-scripts",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#step-3-get-the-scripts",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Follow the main guide at getting_started.qmd which provides automated and manual options for downloading scripts in the correct structure.\nThe current script-copy step is manifest-based. It copies every section that has a scripts/ folder, so future sections can be added without changing the setup test:\ngit clone https://github.com/mgentiluomo/how-to-gwas-pdac.git\n\nmkdir -p scripts/dev\nfind how-to-gwas-pdac/scripts/dev -maxdepth 1 -type f -exec cp {} scripts/dev/ \\;\n\n: &gt; scripts/dev/section_manifest.txt\n: &gt; scripts/dev/script_manifest.txt\n\nfor section_dir in how-to-gwas-pdac/sections/*/; do\n  section=$(basename \"$section_dir\")\n  if [ -d \"$section_dir/scripts\" ]; then\n    mkdir -p \"scripts/$section\"\n    echo \"scripts/$section\" &gt;&gt; scripts/dev/section_manifest.txt\n    find \"$section_dir/scripts\" -maxdepth 1 -type f -exec cp {} \"scripts/$section/\" \\;\n    find \"scripts/$section\" -maxdepth 1 -type f | sort &gt;&gt; scripts/dev/script_manifest.txt\n  fi\ndone\n\nfind scripts/dev -maxdepth 1 -type f -name \"*.sh\" | sort &gt;&gt; scripts/dev/script_manifest.txt\nsort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt\nsort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt\nrm -r how-to-gwas-pdac\nThe automated approach uses:\nbash scripts/dev/init_project.sh    # Creates folder structure\nbash scripts/dev/download_demo_data.sh  # Downloads data + verifies\nbash scripts/dev/tools_setup.sh     # Installs tools and writes tool_manifest.tsv\nbash scripts/dev/test.sh            # Tests everything\nThe manual approach is detailed in getting_started.qmd Step 2-6."
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#portable-structure-design",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#portable-structure-design",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "This structure is fully portable because:\n\nNo hard-coded paths — All paths are relative (e.g., ./scripts/01B_genotyping_qc/)\nManifest-based checks — section_manifest.txt, script_manifest.txt, and tool_manifest.tsv tell the setup test what should exist\nLocal tools — Tools are installed or linked under ./tools/, not system-wide\nWorks anywhere — Folder can be on Desktop, Documents, USB drive, etc.\nEasy backups — Entire folder is self-contained, except for large downloaded files you may choose to regenerate"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#directory-descriptions",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#directory-descriptions",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Folder\nPurpose\n\n\n\n\nscripts/dev/\nUtility scripts (download, setup, test)\n\n\nscripts/01B_genotyping_qc/\nQC pipeline scripts\n\n\nscripts/&lt;section&gt;/\nSection scripts copied from sections/&lt;section&gt;/scripts/\n\n\ndemo_data/\nDemo dataset (7 files)\n\n\ntools/bin/\nCommand links for PLINK1.9, PLINK2, METAL, REGENIE, and future tools\n\n\ntools/micromamba/\nProject-local micromamba executable\n\n\ntools/micromamba-root/\nProject-local environments such as regenie_env\n\n\ndata_processed/\nIntermediate outputs\n\n\nresults/\nFinal analysis results"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#quick-verification",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#quick-verification",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "To check your structure is correct:\n# Verify folders exist\nls -la scripts/dev/\nls -la scripts/01B_genotyping_qc/\nls -la demo_data/\nls -la tools/bin/\n\n# Verify manifests\ncat scripts/dev/section_manifest.txt\ncat scripts/dev/script_manifest.txt\ncat scripts/dev/tool_manifest.tsv\n\n# Verify demo data downloaded (after Step 4)\nls -lh demo_data/ | wc -l  # Should show 7 files + header\n\n# Verify tools installed (after Step 5)\nbash scripts/dev/test.sh"
+  },
+  {
+    "objectID": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#next-steps",
+    "href": "docs/helpers/SETUP_PROJECT_STRUCTURE.html#next-steps",
+    "title": "Setting Up Your PDAC GWAS Project Structure",
+    "section": "",
+    "text": "Once your structure is set up, follow the main guide to: 1. Download scripts (Step 3 in getting_started.qmd) 2. Download demo data (Step 4) 3. Install tools (Step 5) 4. Test everything (Step 6) 5. Run your first QC pipeline!"
   }
 ]
