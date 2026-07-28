@@ -1,7 +1,6 @@
 # Section 0 — Introduction / overview
 
 **Lead:** Daniele Campa
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 
 
 ## What goes in this folder

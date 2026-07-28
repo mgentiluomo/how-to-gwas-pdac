@@ -1,7 +1,6 @@
 # Section 4C — Association testing (other)
 
 **Lead:** Murat Güler
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 
 
 ## What goes in this folder

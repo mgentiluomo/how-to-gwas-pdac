@@ -1,7 +1,6 @@
 # Section 3 — Imputation
 
 **Lead:** Pelin Ünal
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 
 
 ## What goes in this folder

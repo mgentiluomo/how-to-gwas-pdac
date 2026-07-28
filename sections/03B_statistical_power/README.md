@@ -1,7 +1,6 @@
 # Statistical power
 
 **Lead:** Riccardo Farinella
-**Status:** ☐ not started ☐ in draft ☑ ready for review ☐ harmonised
 
 What the analysis set can and cannot detect, computed before the association test.
 Placed between population stratification and association testing because that is

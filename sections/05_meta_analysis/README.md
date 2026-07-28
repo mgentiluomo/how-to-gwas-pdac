@@ -1,7 +1,6 @@
 # Section 5 — Meta-analysis
 
 **Lead:** Pelin Ünal
-**Status:** ☐ not started ☐ in draft ☑ ready for review ☐ harmonised
 
 Ancestry-stratified association testing, harmonisation of summary statistics, and
 fixed- and random-effects meta-analysis with heterogeneity.
@@ -34,7 +33,7 @@ assumes agreement will never detect disagreement.
 | | |
 |---|---|
 | Strata | EUR 229/396, AFR 142/153, EAS 141/178 |
-| Effective N, combined | 1,189.7 against 580.4 for Europeans alone |
+| Effective N, combined | 1,169.4 against 567.5 for Europeans alone |
 | Effect-allele flips required | 32,829 AFR, 30,878 EAS — within one genotype file |
 | Strand-ambiguous variants | 1,833 (0.6%), 339 in the unresolvable frequency band |
 | Variants in all three strata | 296,678 of 392,331 |

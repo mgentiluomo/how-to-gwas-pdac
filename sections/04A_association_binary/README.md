@@ -1,7 +1,6 @@
 # Section 4A — Association testing (binary outcome)
 
 **Lead:** Elif Öz
-**Status:** ☐ not started ☐ in draft ☑ ready for review ☐ harmonised
 
 Single-variant case-control association testing on the European analysis set defined
 in Section 2, with the diagnostics needed before any result is interpreted.

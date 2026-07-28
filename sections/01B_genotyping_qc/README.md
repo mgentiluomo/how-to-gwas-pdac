@@ -1,7 +1,6 @@
 # Section 1B - Genotyping QC
 
 **Lead:** Murat Güler
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 
 ## Website page
 

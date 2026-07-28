@@ -1,7 +1,6 @@
 # Section 7 — Reporting, replication & FAIR data
 
 **Lead:** Manuel Gentiluomo
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 
 
 ## What goes in this folder

@@ -1,7 +1,6 @@
 # Section 6.5 — GWAS annotations
 
 **Lead:** Chiara Corradi
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 $\n> Target length ≈ 800 words of narrative (excluding code and references).
 
 ## What goes in this folder

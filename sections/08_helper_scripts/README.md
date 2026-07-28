@@ -1,7 +1,6 @@
 # Section 8 — Helper scripts
 
 **Lead:** add by Murat
-**Status:** ☐ not started ☐ in draft ☐ ready for review ☐ harmonised
 
 
 ## What goes in this folder

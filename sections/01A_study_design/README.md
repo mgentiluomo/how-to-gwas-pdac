@@ -1,7 +1,6 @@
 # Section 1A — Genotyping technologies and file formats
 
 **Lead:** Bogdan Ungureanu, Anca Riza Costache
-**Status:** ☐ not started ☐ in draft ☑ ready for review ☐ harmonised
 
 From raw array output to an analysable PLINK dataset: what a Final Report contains,
 how it is converted, which checks to run before anything else, and why a cohort

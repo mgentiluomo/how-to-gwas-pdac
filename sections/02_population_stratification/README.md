@@ -1,7 +1,6 @@
 # Section 2 — Population stratification
 
 **Lead:** Elif Öz
-**Status:** ☐ not started ☐ in draft ☑ ready for review ☐ harmonised
 
 Ancestry structure in the QC-passed data, definition of the analysis set, and the
 principal components used as covariates in Section 4A.

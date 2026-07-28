@@ -1,7 +1,6 @@
 # Section 6 — Fine mapping
 
 **Lead:** Burçak Otlu, Erdi Kılıç
-**Status:** ☐ not started ☐ in draft ☑ ready for review ☐ harmonised
 
 From an association peak to a credible set of candidate causal variants, with the
 resolution scored against a known truth.
