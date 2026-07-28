@@ -12,7 +12,7 @@ This page gets your computer ready and walks you through your **first GWAS QC co
 
 ::: {.callout-note title="What you will need"}
 - A computer running **Windows (with WSL2), macOS, or Linux**
-- **30-45 minutes** to complete all setting steps
+- **30-45 minutes** to complete all setup steps
 - **Internet access** to download tools and data
 - **optional** Admin rights to install software (or ask your IT team for help)
 
@@ -30,8 +30,9 @@ Most steps in this guide are typed into a **SHELL** (also called a "command line
 
 Let's practice using the terminal before we dive into the pipeline.
 
-Throughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice
-block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.
+Throughout the guide, commands that you type into the terminal are shown in blocks like the one
+below. Try the following short exercise. It creates a tiny throwaway folder and file, looks at it
+in a few different ways, then removes it.
 
  Please click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press <kbd>Enter</kbd> to run them. Don't worry if you don't understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Windows/Linux, or <kbd>Cmd</kbd> + <kbd>V</kbd> on macOS.
 
@@ -124,7 +125,10 @@ Before you begin, set up your OS environment.
 
 1. After restart, open **Windows Terminal** (search for it in the Start menu)
 2. Click the dropdown arrow and select **Ubuntu**
-3. You should see a bash prompt like `user@computer:~$`
+3. **The first time only**, Ubuntu asks you to create a username and a password. These are for
+   Linux and are unrelated to your Windows account. Choose anything you like, and note that the
+   password is invisible as you type it, which is normal, not a frozen terminal.
+4. You should see a bash prompt like `user@computer:~$`
 
 **Part C: Install Basic Tools**
 
@@ -140,7 +144,9 @@ For help troubleshooting WSL2, see [WSL Setup](docs/helpers/WSL_SETUP.md).
 
 ### macOS and Linux
 
-Your system already has bash. No setup needed for Step 0.
+macOS includes Bash, although Terminal normally opens with Zsh, and most Linux distributions use
+Bash by default. Either way the commands in this guide work, and the tutorial scripts are run
+explicitly with `bash`. No setup is needed for Step 0.
 
 :::
 

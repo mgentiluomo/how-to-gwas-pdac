@@ -40,8 +40,10 @@ The tutorial is written for two kinds of reader:
 
 ## How to use this guide
 
-Every analysis step is shown as a real command you can run yourself on the open demo dataset, so
-you can reproduce the entire workflow from raw genotypes to final results.
+Every analysis step is shown as a real command you can run yourself on the open demo dataset. The
+sections released so far take you from raw genotypes through quality control, population
+structure, association testing, meta-analysis and fine mapping; the remaining steps are added as
+each is completed.
 
 👉 **Start here:** [Before you start, setup and your first PLINK command](getting_started.qmd)
 

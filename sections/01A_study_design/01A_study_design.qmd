@@ -39,7 +39,7 @@ it is quoted as a measurement; the file itself is not reproduced.
 | Injected | Amount |
 |---|---|
 | Variants, samples | 8,000 across 3 samples |
-| GenCall distribution | bimodal, median 0.73, 1.1% below the 0.15 threshold |
+| GenCall distribution | bimodal, median 0.72, 1.1% below the 0.15 threshold |
 | No-calls | about 1.4%, reported as `-`, a few with a `NaN` score |
 | Indel probes | 7.7%, reported as `I`/`D` |
 | Minus-strand design | 42.6% of variants |
@@ -68,7 +68,7 @@ What should drive the choice instead:
 | Consideration | Why it matters |
 |---|---|
 | Additional content | Pharmacogenetic star alleles, HLA tag variants, ACMG actionable genes. This is where arrays genuinely differ |
-| Ancestry of the study | Coverage ranges from 2% to 84% in Europeans but only 2% to 40% in Africans. An array designed on European haplotypes tags other populations less well |
+| Ancestry of the study | An array designed largely on European haplotypes tags other populations less well on the directly genotyped backbone, and arrays differ in whether they carry population-specific content. This is a question about content, not about the coverage figure |
 | Compatibility with what you already have | Consecutive arrays from the same manufacturer overlap surprisingly little |
 | Cost per sample | A denser array means fewer samples for the same budget, and in a rare cancer sample size is the binding constraint |
 
@@ -105,7 +105,8 @@ file claims.
 **The GenCall score.** Every call carries a confidence between 0 and 1. Illumina's guidance is
 that calls below about 0.15 are failures. Note what that means: a low-confidence call is *not*
 missing in the file. It looks like any other genotype unless you check. In this excerpt the
-median is 0.72 and 1.4% of calls fall below the threshold.
+median is 0.72 and 1.1% of calls fall below the threshold. A further 1.3% are reported as missing
+outright: the two are different failures, and the per-sample log below counts them separately.
 
 ::: {.callout-note title="A finding worth pausing on"}
 In the full report this excerpt came from, the variants named by rs number have a median GenCall
@@ -207,6 +208,9 @@ them instead of using the manifest. Measured on the example data:
 | Name position **equals** the manifest coordinate | 0 |
 | Name position **differs** | 1,860 |
 | Chromosome also differs | 97 |
+
+These counts run on the 7,520 variants matched to the manifest, not on all 8,000, which is why
+they sit slightly below the 25% and the 104 that were injected.
 
 The offsets here are 384 to 543 kb, the size of a build shift. On the real array this was measured
 directly: of 5,745 positionally named variants, only 776 agreed with the manifest coordinate and
