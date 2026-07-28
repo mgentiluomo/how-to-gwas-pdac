@@ -25,7 +25,7 @@ exists to be interpreted.
 | | |
 |---|---|
 | Analysis set | 224 cases, 387 controls; 611 people behaving like 568 |
-| All strata combined | effective N 1,189.7 |
+| All strata combined | effective N 1,169.4 |
 | Smallest detectable OR at MAF 0.30 | 2.24 in the analysis set, 1.76 combined |
 | Power at OR 1.3, MAF 0.30 | 0.0% |
 | Power at OR 1.5, MAF 0.30 | 1.1% |
