@@ -1,0 +1,193 @@
+---
+title: "Campione del formato a schede"
+---
+
+<!-- ============================================================
+     ESEMPIO 1 - Strato PLINK
+     La chiamata a PLINK e' identica nelle due schede. Cambia solo
+     l'orchestrazione e l'ispezione. Nessun rischio sui numeri.
+     ============================================================ -->
+
+## 05 - Variant call rate
+
+::: {.callout-note title="In breve" collapse="false"}
+Rimuove le varianti misurate in troppo pochi campioni. Soglia `--geno 0.05`,
+cioe' call rate sotto il 95%. Sul demo escono **8.480 varianti**.
+Il perche' della soglia e il suo effetto sulla potenza sono spiegati sopra.
+:::
+
+::: {.panel-tabset}
+
+### R
+
+```r
+# --- Step 05: variant call rate ------------------------------------------
+# PLINK fa il lavoro; R lo lancia e legge il risultato.
+# Reimplementare il filtro in R darebbe numeri leggermente diversi,
+# quindi non si fa: si chiama lo strumento che ha prodotto i numeri
+# pubblicati.
+
+in_pfx  <- "results/qc/pdac_demo_04_filt"
+out_pfx <- "results/qc/pdac_demo_05_filt"
+
+system2("plink2", c(
+  "--bfile", in_pfx,
+  "--geno",  "0.05",        # scarta varianti con >5% di genotipi mancanti
+  "--make-bed",
+  "--out",   out_pfx
+))
+
+# Quante ne sono uscite? La risposta e' nel log, non a schermo.
+log_lines <- readLines(paste0(out_pfx, ".log"))
+grep("variants removed due to missing genotype data", log_lines, value = TRUE)
+#> "8480 variants removed due to missing genotype data."
+
+# Controllo: quante restano
+length(readLines(paste0(out_pfx, ".bim")))
+#> 421520
+```
+
+### Python
+
+```python
+# --- Step 05: variant call rate ------------------------------------------
+# Stessa identica chiamata a PLINK. Cambia solo chi la lancia.
+import subprocess, re
+from pathlib import Path
+
+in_pfx  = "results/qc/pdac_demo_04_filt"
+out_pfx = "results/qc/pdac_demo_05_filt"
+
+subprocess.run([
+    "plink2",
+    "--bfile", in_pfx,
+    "--geno",  "0.05",       # scarta varianti con >5% di genotipi mancanti
+    "--make-bed",
+    "--out",   out_pfx,
+], check=True)
+
+# Quante ne sono uscite? La risposta e' nel log, non a schermo.
+log = Path(f"{out_pfx}.log").read_text()
+print([l for l in log.splitlines()
+       if "variants removed due to missing genotype data" in l])
+#> ['8480 variants removed due to missing genotype data.']
+
+# Controllo: quante restano
+print(sum(1 for _ in open(f"{out_pfx}.bim")))
+#> 421520
+```
+
+:::
+
+::: {.callout-tip title="Come verificare" collapse="true"}
+Il numero da confermare e' **8.480**. Se ne vedi un altro, l'input non e'
+quello giusto: lo step 05 gira su `pdac_demo_04_filt`, cioe' dopo la rimozione
+degli outlier di eterozigosita.
+:::
+
+---
+
+<!-- ============================================================
+     ESEMPIO 2 - Strato analitico
+     Qui il twin e' reale: stesso calcolo, due lingue, stesso risultato.
+     Verificato: 204 varianti, credible set 77, top PP 0.508.
+     ============================================================ -->
+
+## 02 - Credible set per approximate Bayes factor
+
+::: {.callout-note title="In breve" collapse="false"}
+Converte ogni variante della regione in una probabilita' posteriore di essere
+quella causale, e prende le piu' alte finche' la somma raggiunge il 95%.
+Prior sulla scala log-odds: varianza `W = 0.04`.
+Sul demo il credible set europeo contiene **77 varianti**.
+Il significato del prior e i limiti del modello a singolo causale sono
+discussi sopra.
+:::
+
+::: {.panel-tabset}
+
+### R
+
+```r
+# --- ABF di Wakefield -----------------------------------------------------
+W        <- 0.04          # varianza del prior sul log-odds
+COVERAGE <- 0.95
+REGION   <- c(132900000, 133600000)
+
+g <- read.table("results/assoc/pdac_demo_04A_gwas.PHENO.glm.logistic.hybrid",
+                header = TRUE, comment.char = "", check.names = FALSE)
+names(g)[1] <- "CHROM"
+
+g <- g[g$TEST == "ADD" & g$CHROM == 9 &
+       g$POS >= REGION[1] & g$POS <= REGION[2], ]
+
+g$BETA <- log(as.numeric(g$OR))
+g$SE   <- as.numeric(g$`LOG(OR)_SE`)
+g <- g[is.finite(g$BETA) & is.finite(g$SE) & g$SE > 0, ]
+
+# r e' la quota di varianza spiegata dal prior; log_abf e' il Bayes factor
+# approssimato di Wakefield, in scala logaritmica per stabilita' numerica.
+r       <- W / (W + g$SE^2)
+log_abf <- 0.5 * (log1p(-r) + r * g$BETA^2 / g$SE^2)
+
+# Normalizzazione: sottrarre il massimo prima di esponenziare evita overflow.
+pp   <- exp(log_abf - max(log_abf))
+g$PP <- pp / sum(pp)
+
+# Credible set: ordina per PP e prendi finche' la cumulata raggiunge 0.95
+o   <- order(g$PP, decreasing = TRUE)
+cum <- cumsum(g$PP[o])
+k   <- sum(cum < COVERAGE) + 1
+cs  <- g$ID[o][seq_len(k)]
+
+cat(sprintf("regione: %d varianti | credible set: %d | top %s PP %.3f\n",
+            nrow(g), length(cs), g$ID[o][1], g$PP[o][1]))
+#> regione: 204 varianti | credible set: 77 | top 9:133249045:A:G PP 0.508
+```
+
+### Python
+
+```python
+# --- ABF di Wakefield -----------------------------------------------------
+import numpy as np, pandas as pd
+
+W, COVERAGE = 0.04, 0.95        # varianza del prior sul log-odds
+LO, HI = 132_900_000, 133_600_000
+
+g = pd.read_csv("results/assoc/pdac_demo_04A_gwas.PHENO.glm.logistic.hybrid",
+                sep="\t").rename(columns={"#CHROM": "CHROM"})
+
+g = g[(g.TEST == "ADD") & (g.CHROM.astype(str) == "9")]
+g = g[g.POS.between(LO, HI)].copy()
+
+g["BETA"] = np.log(pd.to_numeric(g["OR"], errors="coerce"))
+g["SE"]   = pd.to_numeric(g["LOG(OR)_SE"], errors="coerce")
+g = g[np.isfinite(g.BETA) & np.isfinite(g.SE) & (g.SE > 0)]
+
+# r e' la quota di varianza spiegata dal prior; log_abf e' il Bayes factor
+# approssimato di Wakefield, in scala logaritmica per stabilita' numerica.
+r       = W / (W + g.SE**2)
+log_abf = 0.5 * (np.log1p(-r) + r * g.BETA**2 / g.SE**2)
+
+# Normalizzazione: sottrarre il massimo prima di esponenziare evita overflow.
+pp = np.exp(log_abf - log_abf.max())
+g["PP"] = pp / pp.sum()
+
+# Credible set: ordina per PP e prendi finche' la cumulata raggiunge 0.95
+d = g.sort_values("PP", ascending=False)
+k = int((d.PP.cumsum() < COVERAGE).sum()) + 1
+cs = d.ID.iloc[:k]
+
+print(f"regione: {len(g)} varianti | credible set: {len(cs)} | "
+      f"top {d.ID.iloc[0]} PP {d.PP.iloc[0]:.3f}")
+#> regione: 204 varianti | credible set: 77 | top 9:133249045:A:G PP 0.508
+```
+
+:::
+
+::: {.callout-tip title="Come verificare" collapse="true"}
+Le due versioni devono dare **77** e **PP 0,508**. Se differiscono, il
+colpevole e' quasi sempre la lettura del file: la prima colonna si chiama
+`#CHROM` e va rinominata, altrimenti il filtro sul cromosoma non aggancia
+nulla e la regione risulta vuota.
+:::

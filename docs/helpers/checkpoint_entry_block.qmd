@@ -1,0 +1,164 @@
+---
+title: "Blocco Start here, da mettere in cima a ogni sezione che accetta un checkpoint"
+---
+
+<!-- ===========================================================================
+     Da incollare subito sotto il titolo della sezione, prima del primo step.
+     Cambia solo il contenuto di `expected` e il testo della prima riga.
+     Il codice R e' identico ovunque: una funzione, tre argomenti.
+     =========================================================================== -->
+
+::: {.callout-important title="Start here, or continue from the previous section" collapse="false"}
+
+You can arrive at this section in two ways.
+
+**Continuing from [Genotyping quality control](../01B_genotyping_qc/01B_genotyping_qc.qmd).**
+Everything you need is already in `results/`. Skip to Step 01.
+
+**Starting here.** Download the genotype checkpoint from the
+[release page](https://github.com/mgentiluomo/how-to-gwas-pdac/releases) into
+`checkpoints/`, then run the check below. It takes a few seconds and it is not
+optional: it is what tells you that your files came from the same pipeline that
+produced the figures on this page.
+
+:::
+
+## Before you start: check your entry point
+
+```{r}
+#| eval: false
+
+# ---------------------------------------------------------------------------
+# Entry check.
+#
+# A checkpoint is an opaque binary. If it came from an older version of the
+# pipeline, nothing in it will look wrong, and every number you compute from
+# here on will quietly fail to match the pages. This function is the only
+# defence, so run it.
+#
+# It compares what you have against the manifest shipped with the bundle, and
+# then prints the counts this section expects.
+# ---------------------------------------------------------------------------
+
+check_entry <- function(dir = "checkpoints", expected = list()) {
+
+  man_path <- file.path(dir, "MANIFEST.tsv")
+  if (!file.exists(man_path))
+    stop("No MANIFEST.tsv in ", dir,
+         ". Download the whole bundle, not individual files.")
+
+  man <- read.delim(man_path, stringsAsFactors = FALSE)
+
+  # Checksums are taken on decompressed content, so a different gzip version
+  # on your machine cannot make a good file look bad.
+  content_md5 <- function(f) {
+    if (grepl("\\.gz$", f)) {
+      con <- gzfile(f, "rb")
+      raw_bytes <- readBin(con, "raw", file.size(f) * 20)
+      close(con)
+      tmp <- tempfile(); writeBin(raw_bytes, tmp)
+      on.exit(unlink(tmp), add = TRUE)
+      tools::md5sum(tmp)[[1]]
+    } else {
+      tools::md5sum(f)[[1]]
+    }
+  }
+
+  ok <- TRUE
+  for (i in seq_len(nrow(man))) {
+    f <- file.path(dir, man$file[i])
+    if (!file.exists(f)) { message("  MISSING  ", man$file[i]); ok <- FALSE; next }
+    if (identical(unname(content_md5(f)), man$content_md5[i])) {
+      message("  ok       ", man$file[i])
+    } else {
+      message("  MISMATCH ", man$file[i]); ok <- FALSE
+    }
+  }
+
+  if (!ok)
+    stop("The bundle does not match its manifest. Download it again; do not ",
+         "continue, because the numbers on this page will not reproduce.")
+
+  # Second, independent check: the counts this section is written around.
+  message("")
+  for (nm in names(expected)) {
+    got <- expected[[nm]]$got()
+    want <- expected[[nm]]$want
+    flag <- if (identical(got, want)) "ok" else "DIFFERS"
+    message(sprintf("  %-8s %-34s %s (expected %s)", flag, nm, got, want))
+    if (!identical(got, want)) ok <- FALSE
+  }
+
+  if (!ok)
+    stop("Your checkpoint is internally consistent but comes from a different ",
+         "version of the pipeline than this page describes.")
+
+  message("\nEntry check passed. Continue to Step 01.")
+  invisible(TRUE)
+}
+
+
+# --- what THIS section expects ---------------------------------------------
+# Only this block changes from one section to another.
+
+check_entry(
+  dir = "checkpoints",
+  expected = list(
+    "samples after QC"  = list(want = 1217L,
+                               got  = function() length(readLines("checkpoints/pdac_demo_qc.fam"))),
+    "variants after QC" = list(want = 414695L,
+                               got  = function() length(readLines("checkpoints/pdac_demo_qc.bim")))
+  )
+)
+```
+
+```
+#> ok       pdac_demo_qc.bed
+#> ok       pdac_demo_qc.bim
+#> ok       pdac_demo_qc.fam
+#> ...
+#>
+#> ok       samples after QC                   1217 (expected 1217)
+#> ok       variants after QC                  414695 (expected 414695)
+#>
+#> Entry check passed. Continue to Step 01.
+```
+
+---
+
+## Valori attesi per ciascuna sezione
+
+Da sostituire nel blocco `expected` a seconda della pagina.
+
+**Sezione 2, population stratification** e **Sezione 03B, statistical power**
+
+```r
+"samples after QC"  = list(want = 1217L,   got = function() length(readLines("checkpoints/pdac_demo_qc.fam"))),
+"variants after QC" = list(want = 414695L, got = function() length(readLines("checkpoints/pdac_demo_qc.bim")))
+```
+
+**Sezione 4A, association testing** — serve anche il set di analisi
+
+```r
+"samples after QC"     = list(want = 1217L,   got = function() length(readLines("checkpoints/pdac_demo_qc.fam"))),
+"variants after QC"    = list(want = 414695L, got = function() length(readLines("checkpoints/pdac_demo_qc.bim"))),
+"European analysis set"= list(want = 611L,    got = function() length(readLines("checkpoints/pdac_demo_eur_keep.txt")))
+```
+
+**Sezioni 5 e 6, meta-analisi e fine mapping** — nessun genotipo
+
+```r
+"variants with a P value" = list(
+   want = 405020L,
+   got  = function() {
+     d <- read.delim(gzfile("checkpoints/pdac_demo_gwas_eur.tsv.gz"), check.names = FALSE)
+     sum(d$TEST == "ADD" & is.finite(as.numeric(d$P)))
+   })
+```
+
+::: {.callout-note title="Perche' due controlli e non uno"}
+Il checksum dice che il file e' arrivato integro. I conteggi dicono che e' il
+file **giusto**: un bundle di una versione precedente della pipeline supera il
+primo controllo e fallisce il secondo, ed e' esattamente il caso che rovina il
+lavoro di chi entra a meta' strada senza accorgersene.
+:::
