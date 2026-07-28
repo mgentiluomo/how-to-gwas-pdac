@@ -11,7 +11,8 @@ project:
     # Working documents and sections not yet ready for publication. Without
     # these exclusions Quarto renders them as reachable pages even though they
     # are absent from the sidebar.
-    - "!docs/helpers/**"
+    - "!docs/helpers/checkpoint_entry_block.qmd"
+    - "!docs/helpers/code_tab_format_sample.qmd"
     - "!sections/07_linkage_disequilibrium/**"
 
 website:
