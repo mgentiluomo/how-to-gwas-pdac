@@ -1,222 +1,193 @@
 # Project state
 
-The working record of this project: what has been decided, what the numbers are and
-which script produces each of them, what has been verified, and what remains. It is
-kept in the repository so that it survives interruptions, so that a co-author can pick
-up the thread without reconstructing it, and because a methodology paper about
-reproducibility should be able to account for its own.
-
-Last updated: 27 July 2026.
+Last updated 28 July 2026. This file is the single place where the current state
+of the project is written down. It is deliberately blunt about what is finished,
+what is half-done, and what is known to be wrong, because the alternative is that
+someone opens the repository and cannot tell.
 
 ---
 
-## 1. What this project is
+## The short version
 
-A methodology manuscript for *Human Genomics* and its companion tutorial website,
-developed within the TRANSPAN COST Action (CA21116), Working Group 1.
+The repository is currently in a **fork**. Two mutually inconsistent versions of
+the demonstration data exist, and only one of them is published.
 
-**Title.** How to carry out a genome-wide association study of a rare and complex
-trait: a decision-focused, reproducible guide using pancreatic ductal adenocarcinoma
-as a worked example.
+| | Published site and manuscript | New dataset, not yet published |
+|---|---|---|
+| Samples after QC | 1,217 | 1,214 |
+| Variants after QC | 414,695 | 414,415 |
+| European analysis set | 224 cases / 387 controls | 219 / 390 |
+| Causal variants | one, at MAF 0.086 | two, at MAF 0.377 and 0.489 |
+| Generative odds ratio | documented 2.40, **actually ~3.4** | 2.60 and 1.50, **verified** |
+| ABO credible set | 77 in EUR, 1 in meta | 11 in EUR, 9 in meta |
 
-**The argument.** GWAS methodology for rare, genetically complex traits requires
-explicit decisions at every step, not the defaults designed for large, well-powered
-common-disease studies. The manuscript supplies the reasoning; the tutorial supplies
-the commands; the demonstration dataset makes both verifiable.
+Everything currently on <https://mgentiluomo.github.io/how-to-gwas-pdac/> and in
+manuscript v9.1 describes the left column and is internally consistent. The right
+column exists as a validated simulation script and a completed pipeline run held
+outside the repository, plus one section already committed here but kept out of
+the sidebar.
 
-**Editorial principle.** The manuscript narrative carries the considerations specific
-to rare and complex traits, meaning why a choice is appropriate, when an analysis is
-legitimate and whether a signal can be interpreted. Generic instruction belongs in the
-tutorial. These are not interchangeable and should not be mixed.
-
-**Writing conventions.** UK English. Punctuation limited to the full stop, comma,
-semicolon and colon. The word "framework" is not used. References are provisional as
-`[DOI:...]` or `[PMID:...]`, highlighted yellow, and converted to Vancouver at
-submission.
-
----
-
-## 2. Decisions taken
-
-| Decision | Resolution |
-|---|---|
-| Canonical quality control | The nine-step pipeline, merged from `murat_v1`. The earlier five-filter `qc.qmd` is superseded and removed. |
-| Demonstration data | Everything runs on `pdac_demo` or on material generated from it. No real participant genotypes are distributed, anywhere. |
-| Array manifest | Not redistributed. Section 1A requires the reader to supply the manifest matching their own product, and verifies the match before converting. |
-| Repository | `mgentiluomo/how-to-gwas-pdac`, public, single source of truth. `GWAS_training_session` remains separate; two pieces of it were adapted. |
-| Site build | Quarto, published to `gh-pages` with `quarto publish`. `_quarto.yml` restricts rendering to `.qmd` and `.md`, so section scripts are never executed as documents. |
-| Association testing | Autosomes only. The simulated chromosome X exists for the sex check and carries no phenotype signal. |
-| GenCall filtering | Applied at conversion, threshold as a parameter, failures written as missing rather than deleted, counts logged. |
-| Indels | Dropped, deliberately and counted, not filtered away by a condition written for SNPs. |
-| Fine mapping method | Single causal variant approximate Bayes factor, written out in full, with the assumption stated and multi-signal methods signposted. |
+**Do not publish anything from the right column until the whole chain is
+converted, or the site will describe two datasets at once.**
 
 ---
 
-## 3. Key numbers, and the script that produces each
+## Why the dataset is being replaced
 
-Every figure below is reproducible from the released data and the committed scripts.
+The demonstration dataset documented a causal odds ratio of 2.40 at *ABO*. It
+does not contain one. Estimated from the two ancestry strata that were never used
+for discovery, and therefore free of selection bias, the effect is **3.65 (95% CI
+2.63 to 5.09)**; a model-free 2x2 allelic table gives 3.37, and the estimate is
+unchanged with or without covariate adjustment, so non-collapsibility does not
+explain it. The value 2.40 lies outside the confidence interval of every
+unbiased estimate.
 
-### Quality control, `sections/01B_genotyping_qc/scripts/`
+The most likely cause is that the effect was specified on a liability scale and
+estimated on the log-odds scale. The ratio of the two on the log scale is about
+1.36, which is the usual probit-to-logit conversion factor and matches what is
+observed. The original simulation script is not in the repository, so this cannot
+be confirmed from the code.
 
-| | |
-|---|---|
-| Entering | 1,461 samples, 430,000 variants |
-| Sample call rate `--mind 0.02` | 25 removed |
-| Sex check | 4 removed |
-| Heterozygosity, F ± 3 SD | 2 removed |
-| Variant call rate `--geno 0.05` | 8,480 removed |
-| Hardy-Weinberg in controls, `1e-6` | 14,573 removed |
-| Relatedness, KING > 0.1875, phenotype-aware | 191 removed, 154 controls and 37 cases |
-| MAF `0.01` | 5,038 removed |
-| Retained | 1,239 samples, 401,909 variants; 84.8% and 93.5% |
+**What it invalidated.** The manuscript reported a winner's curse of 62%,
+measured as 3.90 against a supposed truth of 2.40. Against the real effect the
+selection bias is about 7%. The power section reported 9.2% power at the causal
+variant; at the true effect it is roughly 74%. The claim that the locus was
+"detected despite being underpowered" was therefore wrong: detection was
+expected.
 
-Independently reproduced on a separate machine with a separately compiled PLINK 2,
-returning identical counts at every step.
+**How it was found.** It was not found by internal review. It was raised by an
+external model asked to act as a hostile referee, and confirmed by direct
+measurement. The failure was accepting a number from the dataset documentation
+without ever comparing it against an estimate from the data it described.
 
-### Ancestry and analysis set, `sections/02_population_stratification/scripts/`
-
-| | |
-|---|---|
-| After LD pruning | 221,352 of 401,909 variants |
-| Variance explained, PC1 / PC2 / PC3 | 47.0% / 38.1% / 3.7% |
-| Composition after QC | 625 EUR, 319 EAS, 295 AFR |
-| European analysis set | 229 cases, 396 controls; effective N 580.4 |
-| Variance explained within EUR, PC1 / PC2 | 23.9% / 11.8% |
-| Stability check | lead variant P 5.31 × 10⁻⁹ with ten components, 5.41 × 10⁻⁹ with five |
-
-### Association, `sections/04A_association_binary/scripts/`
-
-| | |
-|---|---|
-| Autosomal variants tested | 396,396; 392,331 with a valid P |
-| Firth fallback invoked | 2,221 variants |
-| Genomic inflation | λ = 1.028, λ₁₀₀₀ = 1.098 |
-| P < 5 × 10⁻⁸ | 1 variant |
-| P < 1 × 10⁻⁵ | 8 variants |
-| Lead variant | `9:133249045:A:G`, OR 3.80 (95% CI 2.43–5.95), P 5.3 × 10⁻⁹ |
-| Simulated truth at that variant | OR 2.40; the estimate is inflated by about 58%, the winner's curse |
-| Power at that variant, European set | approximately 10%; detection in an underpowered scan is itself a selection event |
-
-### Meta-analysis, `sections/05_meta_analysis/scripts/`
-
-| | |
-|---|---|
-| Strata | EUR 229/396, AFR 142/153, EAS 141/178 |
-| Effective N, combined | 1,189.7 against 580.4 |
-| Effect-allele flips required | 63,707, within a single genotype file |
-| Strand-ambiguous variants | 1,833 (0.6%), 339 unresolvable by frequency |
-| Variants present in all three strata | 296,678 of 392,331 |
-| λ per stratum / meta | 1.022, 0.991, 1.013 / 1.003 |
-| Lead variant | P 2.4 × 10⁻²², OR 3.74 (2.87–4.87), I² = 0%, P het 0.44 |
-| Heterogeneity at LD proxies | up to I² = 79%; one variant falls from P 1.3 × 10⁻⁹ to 0.0035 under random effects |
-| Power at the causal variant, combined | approximately 69% |
-
-### Raw data handling, `sections/01A_study_design/scripts/`
-
-Measured on synthetic data generated from `pdac_demo`:
-
-| | |
-|---|---|
-| Manifest match | 7,520 of 8,000 (94.0%) |
-| Positional names agreeing with the manifest coordinate | 0 of 1,860; 97 also differ in chromosome |
-| Minus-strand design | 3,194 of 7,520 (42.5%) |
-| Merge | DEMO002 clean; DEMO003 conflicts on 142 variants, resolved by flipping |
-| Unobserved alleles repaired from the manifest | 1,546 of 1,546 |
-
-Measured on a real Illumina GSAMD-24v3 report, quoted but not distributed:
-
-| | |
-|---|---|
-| GenCall by marker type | rs-named 0.720 median, 1.2% failures; position-named custom content 0.441 median, 4.5% failures |
-| Variants with positional names | 12,192 of 730,059 (1.7%) |
-| Positional names agreeing with the manifest | 776 of 5,745; the rest differ by 384–543 kb |
-| Minus-strand design | 43% |
-| Indel probes | 7.7% |
-
-### Fine mapping, `sections/06_finemapping_annotation/scripts/`
-
-| | |
-|---|---|
-| Region | chr9:132.9–133.6 Mb, 198 variants |
-| European set, credible set | 55 variants; top variant PP 0.51, the true causal variant, ranked first |
-| Three strata combined, credible set | **1 variant**; PP 0.99, the true causal variant |
+**The rule this produces**, which belongs in Table 1 and in the reporting
+section: *when a simulated dataset is used as ground truth, verify that the
+analysis recovers the generative parameter before treating it as truth.*
 
 ---
 
-## 4. Verified references
+## What was decided today
 
-Checked against the publisher record. Others in the manuscript remain to be verified.
+**Hardy-Weinberg and heterozygosity are computed within ancestry.** Both tests
+assume a single randomly mating population. On the pooled cohort, HWE excluded
+14,378 variants where the within-ancestry test finds five; heterozygosity found
+two outliers where the within-ancestry calculation finds twenty. The two filters
+fail in opposite directions and neither failure is visible in the final counts.
+The pooled HWE test is retained before ancestry assignment as a diagnostic that
+excludes nothing; the exclusion happens after the split.
 
-| Reference | Identifier |
-|---|---|
-| Verlouw JAM, Clemens E, et al. A comparison of genotyping arrays. *Eur J Hum Genet* 2021;29:1611–1624 | doi:10.1038/s41431-021-00917-7 |
-| Johnson EO, Hancock DB, et al. Imputation across genotyping arrays for GWAS. *Hum Genet* 2013;132:509–522 | doi:10.1007/s00439-013-1266-7, PMID:23334152 |
-| Klein AP, Wolpin BM, et al. Genome-wide meta-analysis identifies five new susceptibility loci for pancreatic cancer. *Nat Commun* 2018 | PMID:29422604, GWAS Catalog GCST005434 |
-| Martin AR, Kanai M, et al. Clinical use of current polygenic risk scores may exacerbate health disparities. *Nat Genet* 2019;51:584–591 | doi:10.1038/s41588-019-0379-x |
+This was verified quantitatively, not merely argued. Across 415,520 variants,
+F_ST between the three groups predicts the observed HWE statistic with a
+correlation of 0.85 and a regression slope of 0.94, and explains 69.6% of its
+variance. Of 282,000 variants with F_ST below 0.05, eight are expected to fail.
+The Wahlund effect accounts for the exclusions. **This verification is not yet in
+the manuscript and should be added: it converts the most attackable claim in
+Section 4 into the best documented one.**
 
-**Corrections made.** A DOI supplied for Martin 2019 pointed to the 2021 publisher
-correction rather than the article. Two references in an earlier AI-generated
-bibliography were found not to exist and were removed. Verify before citing.
+**The new dataset has two causal variants**, so that the guide can show a true
+positive recovered and a true positive missed with the truth known for both:
 
-**Linked but not cited.** Illumina DRAGEN Array and the Broad Institute Birdsuite FAQ
-are product and project pages, linked in the tutorial and not entered in the reference
-list.
+- `9:133273682:A:T`, *ABO* 9q34.2, MAF 0.377, generative OR **2.60**. Detected,
+  *P* = 4.6e-9, estimated OR 2.33. About 99% probability of detection by design;
+  2.30 was tried first and gave 91%, and the first draw fell in the missing 9%.
+  The design parameter was raised, not the seed, because selecting a seed on
+  significance is conditioning on significance.
+- `5:1286401:C:A`, TERT/CLPTM1L 5p15.33, MAF 0.489, generative OR **1.50**. Not
+  detected in Europeans (*P* = 0.15); reaches *P* = 0.03 when the three strata
+  are combined, which is the meta-analysis argument made on a known true effect.
 
----
+**The simulation validates itself.** It re-estimates every generative parameter
+with the model the tutorial uses and refuses to write the dataset if any estimate
+is inconsistent with its target. Survival is now defined for cases only, as time
+from diagnosis, with staggered recruitment giving 22% censoring instead of the
+previous 99.8% event rate. Sex and age effects use literature values (OR 1.30 for
+male sex, 1.50 per decade).
 
-## 5. State of the deliverables
-
-### Tutorial: six sections of twelve
-
-| Section | State |
-|---|---|
-| 1A Genotyping technologies and file formats | complete |
-| 1B Quality control | complete |
-| 2 Population stratification | complete |
-| 4A Association testing | complete |
-| 5 Meta-analysis | complete |
-| 6 Fine mapping | complete |
-| 0 Study design | not started, narrative only |
-| 3 Imputation | not started, partly demonstrable |
-| 4B Survival GWAS | not started, demonstrable, the dataset has `survival.txt` |
-| 4C Software comparison | not started, partly demonstrable |
-| 6.5 Functional annotation | not started, narrative only |
-| 7 Reporting and FAIR | not started, partly demonstrable |
-| Statistical power | proposed, all numbers available |
-
-### Manuscript
-
-At version 6. No numeric placeholders remain. Outstanding: Figure 1, the workflow
-diagram; Figure 5, fine mapping, now producible from Section 6; the Zenodo DOI,
-authors' contributions and acknowledgements; conversion of references to Vancouver;
-verification of the DOIs supplied for the power section.
-
-Figures 2, 3 and 4 are produced by `docs/make_manuscript_figures.R` from committed
-results.
-
-### Open items
-
-- Whether WSL2 remains a hard requirement for Windows readers. Raised with Murat
-  Güler, unresolved. It affects who can follow the guide at all.
-- `env/software_versions.md` is still a template and Section 7 of the manuscript
-  commits the project to reporting exact versions.
-- Repository weight: one 5.9 MB illustration video and two regenerable relatedness
-  tables of 4.5 and 3.6 MB.
-- The GWAS Catalog association file for GCST005434, needed for the replication lookup
-  in Section 7 of the tutorial.
-- The manuscript states in Results that the trans-ancestry credible set was not
-  smaller than the single-ancestry set. Section 6 measures the opposite, 55 variants
-  against 1. The Results text needs updating to match.
+**The fine-mapping result changed and is being reported honestly.** With a common
+causal variant the European credible set is already narrow, 11 variants over
+12 kb, and the meta-analysis reduces it only to 9. What the meta-analysis does is
+move the causal variant from third place to first. The dramatic collapse from 77
+to 1 was a property of the old, rarer causal variant and is not reproducible with
+a common one. Choosing a causal variant to recover that result would be selecting
+an ingredient of the experiment on the basis of how the experiment comes out.
 
 ---
 
-## 6. Practical notes
+## New content written today
 
-- The demonstration data are not in git. Fetch with `bash demo_dataset/download_data.sh`
-  or from the release tag `v0.1-data`.
-- Work outside OneDrive. Synchronisation corrupts `.git` directories.
-- All random steps use seed 2026.
-- A pull request is merged only when GitHub shows the label **Merged**. Opening one is
-  not enough, and a fast-forward `git merge` locally does not update the remote branch.
-- Quarto renders only `.qmd` and `.md` by configuration. Scripts placed in section
-  folders are ignored, which is deliberate.
+**`sections/07_linkage_disequilibrium/`** — committed, deliberately **not** in
+`_quarto.yml`, because it carries the new dataset's numbers. It measures LD decay
+per ancestry in the ABO region and shows that 11 variants are indistinguishable
+from the causal one in Europeans against 1 in Africans, which is why the credible
+set is the width it is. It argues that ancestral diversity buys resolution and
+not only equity. References verified: Rogers 2014 (doi:10.1534/genetics.114.166454),
+Reich 2001 (PMID:11346797), Ardlie 2002 (PMID:11967554), Wall & Pritchard 2003
+(doi:10.1038/nrg1123), Chapman & Thompson 2001 (PMID:11037333).
+
+**`scripts/dev/make_checkpoints.sh`** and **`docs/helpers/checkpoint_entry_block.qmd`** —
+the checkpoint generator and the two-part entry check. Checksums prove integrity;
+expected counts prove provenance. Deliberately not claimed: that re-running the
+pipeline reproduces the same bytes. It does not, and for the eigenvector files it
+cannot, because eigenvector sign is arbitrary.
+
+**`docs/helpers/code_tab_format_sample.qmd`** — the agreed format for R and
+Python code tabs: PLINK steps call PLINK identically in both tabs, only the
+analysis layer is genuinely twinned.
+
+---
+
+## Releases
+
+| Tag | Contents | Status |
+|---|---|---|
+| `v0.1-data` | pdac_demo genotypes, phenotype, covariates, survival | **Will be superseded.** The phenotype, covariates and survival files change with the new simulation; the genotypes do not |
+| `v0.2-checkpoints` | summary-statistics bundle, 8 files + manifest | Published and verified end to end. **Will need regenerating** for the same reason |
+
+Pages must link to an explicit tag, never to `latest`, so that a page and the
+data it was written against move together.
+
+---
+
+## What remains
+
+**To convert the fork** (a full day, comparable to today):
+
+1. Publish the new phenotype files under a new data tag.
+2. Regenerate figures, result files and the seven existing pages.
+3. Add the LD section to `_quarto.yml`.
+4. Update the manuscript: the new numbers, the corrected winner's curse, the
+   Wahlund verification, and the honest fine-mapping result.
+5. Regenerate the checkpoint bundle under a new tag.
+
+**Independent of the fork:**
+
+- Section 6.5, functional annotation. Needs five minutes of VEP on the credible
+  set; supplies the annotation that Table 3 requires, that table having been
+  deleted from the manuscript for lack of it.
+- Sections 0, 3, 4B, 4C and 7 of the tutorial, currently described in the
+  manuscript but not demonstrated.
+- The R and Python code tabs across the existing pages.
+- A limitation the manuscript does not yet state: the demonstration has three
+  cleanly separated continental groups, so within-ancestry filtering is easy. In
+  a real, predominantly European PDAC cohort with continuous gradients and
+  admixed individuals, the central recommendation of Section 4 is much harder to
+  apply. RUTH is mentioned in passing but the easy case is not admitted.
+
+**Deadline.** Acceptance is required by mid-October 2026 for the COST Action
+budget. The fork conversion and the missing sections do not both fit comfortably
+before submission.
+
+---
+
+## Standing practices
+
+- References are verified before citation. Two fabricated entries were caught in
+  an AI-generated bibliography early in the project; the 2.40 error is the same
+  failure applied to a number instead of a citation.
+- Numbers in the manuscript, the site and the released files must agree. Check by
+  scanning for the old values, not by trusting that an edit was applied.
+- Work outside OneDrive. Synchronisation corrupts `.git`.
+- Windows PowerShell mangles non-ASCII characters pasted into the console. Put
+  replacements involving them in a `.ps1` file instead.
+- Repository files use CRLF. Multi-line string matching must normalise line
+  endings or it silently fails.
