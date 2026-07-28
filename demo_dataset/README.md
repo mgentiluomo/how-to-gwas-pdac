@@ -59,19 +59,45 @@ are mirrored on Zenodo (DOI to be added on publication).
 
 ## Simulated phenotype design
 
-- Liability-threshold model with a **single causal locus in the ABO region**
-  (9q34.2) — the most robust and most-replicated PDAC risk locus
-  (Amundadottir et al. 2009; Rizzato et al. 2013).
-- The effect size is reinforced for detectability in this small demonstration
-  sample; its direction matches the literature (risk allele). This is declared
-  openly: the dataset is built so that **one strong, well-known signal emerges
-  cleanly**, which is the realistic picture for a rare, complex disease where a
-  single robust locus rises above the noise.
+- **Single causal locus in the ABO region** (9q34.2), the most robust and
+  most-replicated PDAC risk locus (Amundadottir et al. 2009; Rizzato et al.
+  2013), with no polygenic background.
+- The effect is deliberately larger than the true ABO effect on pancreatic
+  cancer, which is near 1.2. Without that amplification no locus would be
+  detectable at this sample size and the guide would have nothing to
+  demonstrate downstream. The direction matches the literature.
+- **Important caveat on the effect size.** The phenotype was generated under a
+  liability-threshold model, while the analysis estimates an odds ratio on the
+  log-odds scale. The two scales differ by a factor of roughly 1.3 to 1.8, so
+  the odds ratio observed in the released data is not the parameter specified
+  during construction. Estimated from the two ancestry strata that were not
+  used for discovery, and therefore free of selection bias, the per-allele
+  odds ratio in the released realisation is approximately 3.65 (95% CI 2.63 to
+  5.09). Use that figure, not any generative value, when scoring an analysis
+  of this dataset against a known truth. A replacement simulation on the
+  log-odds scale, which validates itself by re-estimating the parameters it
+  generated, is in preparation.
 - Covariates: sex (slightly higher male risk) and age (cases older).
-- The intended workflow analyses the **EUR subset only** (non-EUR individuals
-  are removed during QC/PCA, Section 2). Among EUR, case:control ≈ 1:2
-  (254 cases / 508 controls). On that analysis set, λ_GC ≈ 1.01 with a
-  genome-wide-significant ABO signal (P ≈ 2 × 10⁻¹⁰).
+- The intended workflow analyses the **EUR subset only**. Before quality
+  control the European group contains 254 cases and 508 controls; after it,
+  the analysis set is **224 cases and 387 controls**, an effective sample
+  size of 568.
+
+## Expected results from the canonical run
+
+| Quantity | Value |
+|---|---|
+| Samples after quality control | 1,217 |
+| Variants after quality control | 414,695 |
+| European analysis set | 224 cases, 387 controls |
+| Genomic inflation factor | 1.028 (lambda1000 = 1.10) |
+| Genome-wide significant loci | 1, at ABO |
+| Lead variant | 9:133249045:A:G |
+| P at the lead variant | 5.5e-9 |
+| Odds ratio at the lead variant | 3.90 (95% CI 2.47 to 6.15) |
+
+If your numbers differ, check that you are using the release tag the guide
+links to rather than the most recent one.
 
 ## How the dataset was built (reproducibility)
 

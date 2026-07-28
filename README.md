@@ -16,13 +16,32 @@ The manuscript explains why each decision is made and when an analysis is or is 
 
 ## Status
 
-This project is under active development ahead of manuscript submission. The setup guide and the quality control pipeline are complete and runnable end to end on the demonstration dataset. The remaining sections exist as scaffolding, one folder per manuscript section with a lead author assigned, and are filled in as each contributor's draft is ready. See [`HARMONIZATION_PLAN.md`](HARMONIZATION_PLAN.md) for what remains and where each section's content comes from.
+Seven stages are published as executable worked analyses, each with annotated
+scripts and committed results from a single canonical run. The remaining stages
+of the workflow are covered in the manuscript narrative but are not yet worked
+on the demonstration data, and are listed here as not built rather than as
+forthcoming, so that what is available is never overstated.
 
-| Page | Status |
+| Stage | Status |
 |---|---|
-| `getting_started.qmd`, setup and first PLINK command | Complete, with automated project and tool setup |
-| `sections/01B_genotyping_qc/`, quality control | Complete: nine steps, annotated scripts, one locked-in run with committed results |
-| `sections/*`, remaining manuscript sections | Scaffolding only: narrative and scripts pending per section lead, see table below |
+| Setup and first PLINK command | Published, with automated project and tool setup |
+| Study design and genotyping technologies | Published, narrative |
+| Genotyping quality control | Published: nine steps, annotated scripts, committed results |
+| Ancestry and population structure | Published, with scripts and results |
+| Statistical power | Published, with scripts and results |
+| Association testing, binary outcome | Published, with scripts and results |
+| Meta-analysis across ancestry strata | Published, with scripts and results |
+| Fine mapping | Published, with scripts and results |
+| Imputation | Not built |
+| Association testing, time-to-event outcome | Not built |
+| Association software comparison | Not built |
+| Functional annotation | Not built |
+| Reporting, replication and FAIR data | Not built |
+
+All figures on the site and in the manuscript come from one canonical run of
+the published pipeline. Where a number appears in more than one place it is the
+same number; if you find one that is not, it is a defect and an issue is
+welcome.
 
 ## The demonstration dataset
 
@@ -47,7 +66,6 @@ This dataset teaches GWAS under realistic, difficult conditions on purpose, it i
 how-to-gwas-pdac/
 ├── README.md                you are here
 ├── CONTRIBUTING.md          workflow for contributors, branches, PRs, review
-├── HARMONIZATION_PLAN.md    what still has to come in, and from where
 ├── LICENSE                  MIT for code, manuscript text CC-BY-4.0
 ├── index.qmd                companion website home page
 ├── getting_started.qmd      setup, project structure, tool install, first command
