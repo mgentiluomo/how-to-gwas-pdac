@@ -8,6 +8,11 @@ project:
     - "CONTRIBUTING.md"
     - "sections/**/*.qmd"
     - "docs/**/*.md"
+    # Working documents and sections not yet ready for publication. Without
+    # these exclusions Quarto renders them as reachable pages even though they
+    # are absent from the sidebar.
+    - "!docs/helpers/**"
+    - "!sections/07_linkage_disequilibrium/**"
 
 website:
   title: "How to carry out a GWAS"
