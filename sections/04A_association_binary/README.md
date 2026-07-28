@@ -26,13 +26,13 @@ in Section 2, with the diagnostics needed before any result is interpreted.
 
 | | |
 |---|---|
-| Analysis set | 229 cases, 396 controls |
+| Analysis set | 224 cases, 387 controls |
 | Variants tested | 396,396 autosomal; 392,331 with a valid P |
 | Firth fallback invoked | 2,221 variants |
 | Genomic inflation | λ = 1.028, λ₁₀₀₀ = 1.098 |
 | P < 5 × 10⁻⁸ | 1 variant |
 | P < 1 × 10⁻⁵ | 8 variants |
-| Lead variant | 9:133249045:A:G (*ABO*), OR 3.80 (95% CI 2.43–5.95), P = 5.3 × 10⁻⁹ |
+| Lead variant | 9:133249045:A:G (*ABO*), OR 3.90 (95% CI 2.47–6.15), P = 5.5 × 10⁻⁹ |
 | Simulated truth at that variant | OR 2.40 — the recovered estimate is inflated by ~58%, the winner's curse |
 
 ## Conventions

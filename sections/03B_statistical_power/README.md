@@ -25,7 +25,7 @@ exists to be interpreted.
 
 | | |
 |---|---|
-| Analysis set | 229 cases, 396 controls; 625 people behaving like 580 |
+| Analysis set | 224 cases, 387 controls; 611 people behaving like 568 |
 | All strata combined | effective N 1,189.7 |
 | Smallest detectable OR at MAF 0.30 | 2.24 in the analysis set, 1.76 combined |
 | Power at OR 1.3, MAF 0.30 | 0.0% |
@@ -42,7 +42,7 @@ It shows that the shape of the result was fixed before the analysis ran: a typic
 cancer susceptibility variant, odds ratio 1.3, had no chance of detection at this
 size. It also makes the mechanical link between low power and the winner's curse:
 the causal variant had 9.8% power, was detected anyway, and its odds ratio came out
-at 3.80 against a simulated 2.40. Detection in an underpowered scan is a selection
+at 3.90. Detection in an underpowered scan is a selection
 event, and the inflation follows from it.
 
 ## Conventions

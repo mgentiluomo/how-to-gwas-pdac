@@ -34,15 +34,15 @@ where it demonstrably is.
 
 | | |
 |---|---|
-| Region | chr9:132.9–133.6 Mb, 198 variants |
+| Region | chr9:132.9–133.6 Mb, 204 variants |
 | Prior variance on the log odds ratio | W = 0.04; coverage 95% |
-| European set, credible set size | 55 variants |
+| European set, credible set size | 77 variants |
 | European set, top variant | `9:133249045:A:G`, posterior probability 0.51, ranked first |
 | Three strata combined, credible set size | **1 variant** |
 | Three strata combined, top variant | `9:133249045:A:G`, posterior probability 0.99 |
 | Scored against the simulated truth | the causal variant is recovered in both, and uniquely identified only after combining ancestries |
 
-The collapse from 55 variants to one is the section's central result. It is not a
+The collapse from 77 variants to one is the section's central result. It is not a
 power effect: linkage disequilibrium differs between populations, so variants that
 cannot be distinguished within one ancestry are distinguished by disagreement between
 ancestries. It is the mirror image of the heterogeneity pattern reported in Section 5,

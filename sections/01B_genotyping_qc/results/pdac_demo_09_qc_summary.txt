@@ -22,8 +22,8 @@ Step                          Samples    Variants   Samples lost   Variants lost
 Final dataset: 1239 samples and 401909 variants
 Total sample loss: 222 (15.2%)
 Total variant loss: 28091 (6.5%)
-Sample retention: 84.8%
-Variant retention: 93.5%
+Sample retention: 83.3%
+Variant retention: 96.4%
 
 QC Thresholds Applied
 ---------------------

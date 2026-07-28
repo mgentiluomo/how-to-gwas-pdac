@@ -38,4 +38,4 @@ THE SIMULATED CAUSAL VARIANT
   It was detected nonetheless, which is not luck to celebrate but a
   selection event to reckon with: in an underpowered scan the variants that
   cross the threshold are those whose estimates happened to fall high. That
-  is why the odds ratio recovered in Section 4A is 3.80 and not 2.40.
+  is why the odds ratio recovered in Section 4A is 3.90 rather than the generative value.

@@ -137,7 +137,8 @@ if (have_meta)
 w("  It was detected nonetheless, which is not luck to celebrate but a")
 w("  selection event to reckon with: in an underpowered scan the variants that")
 w("  cross the threshold are those whose estimates happened to fall high. That")
-w("  is why the odds ratio recovered in Section 4A is 3.80 and not 2.40.")
+w("  is why the odds ratio recovered in Section 4A is 3.90 rather than the")
+w("  generative value.")
 close(con)
 
 # --- figure ------------------------------------------------------------------
