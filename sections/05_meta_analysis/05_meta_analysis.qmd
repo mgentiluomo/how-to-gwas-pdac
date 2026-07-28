@@ -203,9 +203,9 @@ Look at the pattern rather than the peak. The causal variant, the open diamond, 
 behaves identically in all three populations, because it *is* the cause and its effect does not
 depend on ancestry.
 
-Its correlated neighbours do not. At `9:133256264` I² reaches 79% and the heterogeneity P value
-is 0.009. Under fixed effects that variant looks genome-wide significant at 1.3 × 10⁻⁹; under
-random effects its P value collapses to 0.0035.
+Its correlated neighbours do not. At `9:133256264` I² reaches 77.8% and the heterogeneity P value
+is 0.011. Under fixed effects that variant looks genome-wide significant at 6.6 × 10⁻⁹; under
+random effects its P value collapses to 0.0040.
 
 Nothing is wrong with the data. Those variants are not causal, they merely tag the causal variant
 through linkage disequilibrium, and LD structure differs between populations, so how well they

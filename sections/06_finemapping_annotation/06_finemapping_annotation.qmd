@@ -142,7 +142,7 @@ cannot be distinguished within one ancestry is distinguished by disagreement bet
 The causal variant is the one that behaves consistently everywhere.
 
 This is the same phenomenon seen from the other side in Section 5, where the causal variant showed
-no heterogeneity while its correlated neighbours reached I² of 79%. Heterogeneity at the proxies
+no heterogeneity while its correlated neighbours in the same window reached I² values above 70%. Heterogeneity at the proxies
 and none at the cause is the signature; here it becomes resolution.
 
 It is also the strongest practical argument for recruiting beyond European ancestry that this
