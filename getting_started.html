@@ -522,7 +522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="callout-body-container callout-body">
 <ul>
 <li>A computer running <strong>Windows (with WSL2), macOS, or Linux</strong></li>
-<li><strong>30-45 minutes</strong> to complete all setting steps</li>
+<li><strong>30-45 minutes</strong> to complete all setup steps</li>
 <li><strong>Internet access</strong> to download tools and data</li>
 <li><strong>optional</strong> Admin rights to install software (or ask your IT team for help)</li>
 </ul>
@@ -539,7 +539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>Inside RStudio:</strong> there is a <em>Terminal</em> tab next to the <em>Console</em> tab — you can use that too.</li>
 </ul>
 <p>Let’s practice using the terminal before we dive into the pipeline.</p>
-<p>Throughout the guide, lines you type into the terminal look like the block below the this text. Try this small practice block. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.</p>
+<p>Throughout the guide, commands that you type into the terminal are shown in blocks like the one below. Try the following short exercise. It creates a tiny throwaway folder and file, looks at it in a few different ways, then removes it.</p>
 <p>Please click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press <kbd>Enter</kbd> to run them. Don’t worry if you don’t understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Windows/Linux, or <kbd>Cmd</kbd> + <kbd>V</kbd> on macOS.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"Welcome to the GWAS tutorial."</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"1) Where am I?"</span></span>
@@ -610,6 +610,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ol type="1">
 <li>After restart, open <strong>Windows Terminal</strong> (search for it in the Start menu)</li>
 <li>Click the dropdown arrow and select <strong>Ubuntu</strong></li>
+<li><strong>The first time only</strong>, Ubuntu asks you to create a username and a password. These are for Linux and are unrelated to your Windows account. Choose anything you like, and note that the password is invisible as you type it, which is normal, not a frozen terminal.</li>
 <li>You should see a bash prompt like <code>user@computer:~$</code></li>
 </ol>
 <p><strong>Part C: Install Basic Tools</strong></p>
@@ -620,7 +621,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For help troubleshooting WSL2, see <a href="./docs/helpers/WSL_SETUP.html">WSL Setup</a>.</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>Your system already has bash. No setup needed for Step 0.</p>
+<p>macOS includes Bash, although Terminal normally opens with Zsh, and most Linux distributions use Bash by default. Either way the commands in this guide work, and the tutorial scripts are run explicitly with <code>bash</code>. No setup is needed for Step 0.</p>
 </div>
 </div>
 </div>

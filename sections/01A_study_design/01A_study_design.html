@@ -559,7 +559,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>GenCall distribution</td>
-<td>bimodal, median 0.73, 1.1% below the 0.15 threshold</td>
+<td>bimodal, median 0.72, 1.1% below the 0.15 threshold</td>
 </tr>
 <tr class="odd">
 <td>No-calls</td>
@@ -613,7 +613,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Ancestry of the study</td>
-<td>Coverage ranges from 2% to 84% in Europeans but only 2% to 40% in Africans. An array designed on European haplotypes tags other populations less well</td>
+<td>An array designed largely on European haplotypes tags other populations less well on the directly genotyped backbone, and arrays differ in whether they carry population-specific content. This is a question about content, not about the coverage figure</td>
 </tr>
 <tr class="odd">
 <td>Compatibility with what you already have</td>
@@ -647,7 +647,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>An Illumina array is scanned, the intensities are clustered by the calling software, and the result is exported as a <strong>Final Report</strong>: one row per variant per sample, with the two called alleles and a confidence score. Affymetrix platforms produce the equivalent from <code>.CEL</code> files with different column names and the same logic.</p>
 <p>Three things in the header must be recorded now, because recovering them later is painful: the array manifest name, the calling software version, and the number of variants and samples the file claims.</p>
 <p><img src="results/pdac_demo_01A_gc_distribution.png" class="img-fluid"></p>
-<p><strong>The GenCall score.</strong> Every call carries a confidence between 0 and 1. Illumina’s guidance is that calls below about 0.15 are failures. Note what that means: a low-confidence call is <em>not</em> missing in the file. It looks like any other genotype unless you check. In this excerpt the median is 0.72 and 1.4% of calls fall below the threshold.</p>
+<p><strong>The GenCall score.</strong> Every call carries a confidence between 0 and 1. Illumina’s guidance is that calls below about 0.15 are failures. Note what that means: a low-confidence call is <em>not</em> missing in the file. It looks like any other genotype unless you check. In this excerpt the median is 0.72 and 1.1% of calls fall below the threshold. A further 1.3% are reported as missing outright: the two are different failures, and the per-sample log below counts them separately.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="A finding worth pausing on">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -771,6 +771,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p>These counts run on the 7,520 variants matched to the manifest, not on all 8,000, which is why they sit slightly below the 25% and the 104 that were injected.</p>
 <p>The offsets here are 384 to 543 kb, the size of a build shift. On the real array this was measured directly: of 5,745 positionally named variants, only 776 agreed with the manifest coordinate and 4,969 differed, because the names carry GRCh37 positions while the A2 manifest is GRCh38. Coordinates read from names would be wrong for the great majority of variants and would look entirely plausible. Nothing downstream would complain.</p>
 </div>
 </div>
