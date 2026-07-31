@@ -30,23 +30,23 @@ which defines the analysis set. The comparison with all ancestries combined also
 Power depends on how much information the design carries about the genetic effect, and that
 information is a product of three things:
 
-$$\text{information} \;=\; N \times \pi(1-\pi) \times \operatorname{Var}(G), \qquad \operatorname{Var}(G) = 2p(1-p)$$
+$$\qquad \operatorname{Var}(G) = 2p(1-p), \text{Fisher information} \;=\; N \times \pi(1-\pi) \times \operatorname{Var}(G)$$
 
-the sample size, the variability of the outcome, and the variability of the genotype. Multiplying
-by the squared effect gives the non-centrality parameter of a one degree of freedom chi-squared
-statistic, and power is the probability that this exceeds the critical value set by the
+the variability of the genotype (**π(1 − π)**), the sample size (**N**), and the variability of the outcome (**Var(G)**). Multiplying
+by the squared effect gives the non-centrality parameter (NCP) of a one degree of freedom chi-squared
+statistic, and power is the probability that the NCP exceeds the critical value set by the
 significance threshold.
 
 Each term earns its place, and each says something practical.
 
 **Var(G) = 2p(1 − p)** means information collapses as a variant becomes rare. This is why
-low-frequency variants are hard, and why a rare disease does not confer any special ability to
+low-frequency variants are harder to identify, and why a rare disease does not confer any special ability to
 detect rare variants.
 
-**π(1 − π)**, where π is the proportion of cases, is maximised at π = 0.5. A balanced design is
+**π(1 − π)**, where π is the proportion of cases, is maximised at π = 0.5. Therefore, a balanced design is
 the most efficient one, and imbalance costs information that no analysis can recover.
 
-**N** is the only term you can buy.
+**N** is the component that can be increased most directly through additional recruitment and investment.
 
 ::: {.callout-important title="Report the effective sample size, not the total"}
 An unbalanced study behaves like a smaller balanced one:
@@ -137,7 +137,7 @@ In a Cox model the partial likelihood compares, at each event time, the genotype
 having the event with those still at risk. Only event times contribute a comparison, so the
 information is
 
-$$\text{information} = D \times \operatorname{Var}(G)$$
+$$\text{Fisher information} = D \times \operatorname{Var}(G)$$
 
 with *D* the number of observed **events**. Censored individuals enter the risk sets and add
 nothing to the test.
