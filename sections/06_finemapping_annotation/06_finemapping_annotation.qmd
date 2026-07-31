@@ -24,7 +24,7 @@ comparison at the end of this page also uses the output of
 :::
 
 ::: {.callout-note title="Something this page can check that a real study cannot"}
-The demonstration phenotype was simulated from a known causal variant, `9:133249045:A:G`. Every
+The demonstration phenotype was simulated from a known causal variant, `9:133273682:A:T`. Every
 statement below can therefore be scored against the truth: does the credible set contain it, and
 where does it rank? On real data you never know this. Take the opportunity while it lasts.
 :::
@@ -98,22 +98,27 @@ probability towards rarer variants, and conversely.
 | | |
 |---|---|
 | Variants in the region | 204 |
-| Variants in the 95% credible set | **77** |
-| Top variant | `9:133249045:A:G`, posterior probability 0.51 |
-| Simulated causal variant in the set | yes, ranked first |
+| Variants in the 95% credible set | **11** |
+| Span of the set | 12.2 kb, 133,261,662 to 133,273,813 |
+| Top variant | `9:133266804:G:T`, posterior probability 0.24 |
+| Simulated causal variant in the set | yes, **ranked third**, posterior 0.13 |
 
-The method puts the true causal variant at the top, which is reassuring, and then spreads the
-remaining half of the probability across 76 other variants, which is the honest part. A credible
-set of that size is not a shortlist for functional work. Those 76 span 628 kb, from 132,968,574 to
-133,596,524, and only 32 of the 77 fall inside *ABO* itself; the rest sit up to 300 kb away on
-either side. It is a statement that at this sample size the locus cannot be resolved further, and
-reporting it as a gene-level finding would misrepresent what the data support.
+Read the last two rows together, because they are the finding. Eleven variants across 12 kb is a
+tight set, tight enough to be a real shortlist for functional work, and much better than this
+sample size might lead you to expect. But the variant at the top of it is **not** the causal one.
+The causal variant is third, with half the posterior of the leader.
+
+This is the ordinary situation and it is why a lead variant is not a conclusion. The eleven
+variants are in tight linkage disequilibrium and carry one signal between them; which of them
+posts the largest estimate is decided by noise, and the method correctly refuses to commit,
+spreading probability across all eleven rather than concentrating it on the winner of a coin
+toss.
 
 ![](results/pdac_demo_06_regional.png)
 
-The lower panel is the one to read. Probability is not concentrated on a peak, it is scattered
-across the region, because the causal variant is correlated with many others and the data cannot
-distinguish them.
+The lower panel is the one to read. Probability is spread across eleven neighbouring variants
+rather than concentrated on one, because they are correlated closely enough that the data cannot
+separate them.
 
 ---
 
@@ -130,25 +135,41 @@ Running the same method on the three-stratum meta-analysis of
 
 | | European set | Three strata combined |
 |---|---|---|
-| Variants in the 95% credible set | 77 | **1** |
-| Posterior probability of the top variant | 0.51 | **0.99** |
-| Is it the true causal variant | yes | yes |
+| Variants in the 95% credible set | 11 | **9** |
+| Posterior probability of the top variant | 0.24 | **0.43** |
+| Rank of the true causal variant | third | **first** |
 
-::: {.callout-important title="Why the set collapses, and why this is not just more power"}
-More samples alone would sharpen the P value without necessarily resolving the locus. What
-resolves it is that linkage disequilibrium **differs between populations**. A variant correlated
-with the causal one in Europeans may not be correlated with it in Africans, so a marker that
-cannot be distinguished within one ancestry is distinguished by disagreement between ancestries.
-The causal variant is the one that behaves consistently everywhere.
+::: {.callout-important title="What ancestral diversity actually bought here"}
+The set barely shrank, from eleven variants to nine. If narrowing were the only benefit, this
+would be a poor return.
 
-This is the same phenomenon seen from the other side in Section 5, where the causal variant showed
-no heterogeneity while its correlated neighbours in the same window reached I² values above 70%. Heterogeneity at the proxies
-and none at the cause is the signature; here it becomes resolution.
+Look at the ranking instead. In the European analysis the causal variant sat third, behind two
+neighbours that happened to post larger estimates. Across the three strata it moves to **first**,
+and its posterior nearly doubles. Nothing about the causal variant changed; what changed is that
+the variants competing with it no longer agree with it in every population.
 
-It is also the strongest practical argument for recruiting beyond European ancestry that this
-guide can make, and it does not depend on fairness or on generalisability, both of which are true
-but are arguments of a different kind. Ancestral diversity is a statistical instrument for
-localising causal variants, and a study confined to one ancestry gives that instrument up.
+That is the mechanism. Linkage disequilibrium **differs between populations**, so a variant
+correlated with the causal one in Europeans may not be correlated with it in Africans. A marker
+indistinguishable within one ancestry is distinguished by disagreement between ancestries, and the
+variant that behaves consistently everywhere is the one that is doing the work.
+
+More samples of the same ancestry would have sharpened the *P* value without necessarily changing
+the order. That distinction matters when planning recruitment: ancestral diversity is a
+statistical instrument for localising causal variants, not merely a larger *n*. A study confined
+to one ancestry gives that instrument up, and the argument does not rest on fairness or
+generalisability, both of which are true but are arguments of a different kind.
+:::
+
+::: {.callout-note title="A caution the textbook version of this story omits"}
+The mirror image of this argument is that the causal variant should show no heterogeneity across
+populations while its proxies do. That is the theory, and it is sound.
+
+It is not what this dataset shows. In
+[Meta-analysis](../05_meta_analysis/05_meta_analysis.qmd) the causal variant has the **highest**
+I² in the region, 41.5%, while three of its non-causal neighbours have none, because with fewer
+than 320 individuals per stratum I² is barely estimable. Do not use heterogeneity as a
+causality detector at this sample size. The resolution gain above is real and is visible in the
+posteriors; the heterogeneity signature that supposedly explains it is not.
 :::
 
 ---
