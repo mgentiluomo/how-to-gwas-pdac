@@ -1,21 +1,22 @@
-# PDAC GWAS Tutorial — Demonstration Dataset
+# PDAC GWAS tutorial, demonstration dataset
 
 The running example for the manuscript
 
-> *"How to carry out a Genome-Wide Association Study: a step-by-step annotated
-> guide using pancreatic cancer as a case study"*
+> *"How to carry out a genome-wide association study of a rare and complex
+> trait: a decision-focused, reproducible guide using pancreatic ductal
+> adenocarcinoma as a worked example"*
 > (TRANSPAN COST Action CA21116, Working Group 1).
 
-## ⚠️ Important: this is a teaching dataset
+## This is a teaching dataset
 
-- **Genotypes are REAL** (public HGDP + 1000 Genomes reference data) but
-  **sample identifiers are anonymised** (`MG0001`–`MG1461`) and bear no
+- **Genotypes are real** (public HGDP and 1000 Genomes reference data) but
+  **sample identifiers are anonymised** (`MG0001` to `MG1461`) and bear no
   relation to any real individual's identity.
-- **The phenotype is ENTIRELY SIMULATED.** No real pancreatic cancer cases are
-  included. Case/control status, age, sex effects and survival outcomes were
-  generated *in silico*.
-- **The X chromosome is SIMULATED** for the sole purpose of demonstrating the
-  sex-check QC step. It does not represent real chrX genotype data.
+- **The phenotype is entirely simulated.** No real pancreatic cancer cases are
+  included. Case and control status, age, sex effects and survival outcomes
+  were generated in silico.
+- **The X chromosome is simulated**, for the sole purpose of demonstrating the
+  sex-check quality-control step. It does not represent real chrX genotype data.
 - This dataset must **not** be used for any biological or clinical inference
   about pancreatic cancer. Its only purpose is to teach GWAS methodology.
 
@@ -23,116 +24,190 @@ The running example for the manuscript
 
 ## Getting the data
 
-The genotype/phenotype files are **not** stored in git (they are large
-binaries). Download them from the GitHub Release with:
+The genotype and phenotype files are not stored in git. Download them from the
+GitHub release the guide links to:
 
 ```bash
-bash demo_dataset/download_data.sh
+bash scripts/dev/download_demo_data.sh
 ```
 
-This fetches the files into `demo_dataset/data/` (git-ignored). The same files
-are mirrored on Zenodo (DOI to be added on publication).
+Pages link to an explicit release tag and never to the latest release, so a page
+and the data it was written against move together. A Zenodo mirror with a DOI
+will be added on publication.
 
 ---
 
 ## Files
 
 | File | Description |
-|------|-------------|
-| `pdac_demo.bed/.bim/.fam` | PLINK binary genotypes (430,000 variants, 1,461 individuals) |
-| `phenotype.txt`     | `FID IID PHENO` (1 = control, 2 = case) |
-| `covariates.txt`    | `FID IID SEX AGE` |
-| `survival.txt`      | `FID IID TIME` (months) `EVENT` (1 = event, 0 = censored) |
-| `sample_ancestry.tsv` | `IID`, genetic-ancestry group (`eur`/`afr`/`eas`) |
+|---|---|
+| `pdac_demo.bed/.bim/.fam` | PLINK binary genotypes, 430,000 variants, 1,461 individuals |
+| `phenotype.txt` | `FID IID PHENO`, 1 = control, 2 = case |
+| `covariates.txt` | `FID IID SEX AGE` |
+| `survival.txt` | `FID IID TIME EVENT`, cases only, time from diagnosis in months |
+| `sample_ancestry.tsv` | `IID` and genetic-ancestry group, `eur` / `afr` / `eas` |
+| `truth.tsv` | generative and recovered effect for every simulated term |
+| `MANIFEST.tsv` | checksums and sizes |
 
 ## Dataset composition
 
-- **1,461 individuals**: 762 EUR, 349 AFR, 350 EAS — a deliberately balanced
-  multi-ancestry design so that population stratification and PCA (Section 2)
+- **1,461 individuals**: 762 EUR, 349 AFR, 350 EAS. The multi-ancestry design is
+  deliberate, so that population stratification and principal component analysis
   can be taught on a clearly structured dataset.
-- **430,000 variants**: 424,000 autosomal + 6,000 simulated chrX. Variants are
-  restricted to Illumina GSA-24v3 positions (GRCh38).
-- Realistic genotype missingness was intentionally introduced (8,480
-  low-call-rate variants; 25 low-call-rate samples) so that QC filters
-  (`--geno`, `--mind`) have a visible effect.
-- Variant IDs in `chr:pos:ref:alt` format (GRCh38).
+- **430,000 variants**: 424,000 autosomal and 6,000 simulated chrX, restricted to
+  Illumina GSA-24v3 positions on GRCh38. Variant identifiers are in
+  `chr:pos:ref:alt` format.
+- Realistic missingness was introduced on purpose, 8,480 low-call-rate variants
+  and 25 low-call-rate samples, so that the `--geno` and `--mind` filters have a
+  visible effect.
+- Case and control counts: 542 cases and 919 controls overall; 239 and 523 in
+  the European group, 154 and 195 in the African, 149 and 201 in the East Asian.
 
 ## Simulated phenotype design
 
-- **Single causal locus in the ABO region** (9q34.2), the most robust and
-  most-replicated PDAC risk locus (Amundadottir et al. 2009; Rizzato et al.
-  2013), with no polygenic background.
-- The effect is deliberately larger than the true ABO effect on pancreatic
-  cancer, which is near 1.2. Without that amplification no locus would be
-  detectable at this sample size and the guide would have nothing to
-  demonstrate downstream. The direction matches the literature.
-- **Important caveat on the effect size.** The phenotype was generated under a
-  liability-threshold model, while the analysis estimates an odds ratio on the
-  log-odds scale. The two scales differ by a factor of roughly 1.3 to 1.8, so
-  the odds ratio observed in the released data is not the parameter specified
-  during construction. Estimated from the two ancestry strata that were not
-  used for discovery, and therefore free of selection bias, the per-allele
-  odds ratio in the released realisation is approximately 3.65 (95% CI 2.63 to
-  5.09). Use that figure, not any generative value, when scoring an analysis
-  of this dataset against a known truth. A replacement simulation on the
-  log-odds scale, which validates itself by re-estimating the parameters it
-  generated, is in preparation.
-- Covariates: sex (slightly higher male risk) and age (cases older).
-- The intended workflow analyses the **EUR subset only**. Before quality
-  control the European group contains 254 cases and 508 controls; after it,
-  the analysis set is **224 cases and 387 controls**, an effective sample
-  size of 568.
+The phenotype is generated by a **logistic model on the observed scale**, so the
+parameter specified during construction is the parameter a logistic analysis
+estimates. No scale conversion is involved at any point.
+
+```
+logit P(case) = alpha_ancestry
+              + beta_1 * dosage at ABO
+              + beta_2 * dosage at TERT/CLPTM1L
+              + beta_sex * male
+              + beta_age * (age - 66.7) / 10
+```
+
+The intercept is solved per ancestry group to reach the target case fraction.
+That is a statement about ascertainment and not about prevalence: pancreatic
+cancer has an incidence near 11 per 100,000 person-years, so a population sample
+of 1,461 people would contain no cases at all. A case-control study samples
+cases and controls separately, and under a logistic model that kind of sampling
+shifts the intercept while leaving the log odds ratios unchanged. That is
+precisely why the generative effects remain recoverable from the sample.
+
+### Two causal variants
+
+| Variant | Locus | MAF | Generative OR | Recovered in the full sample |
+|---|---|---:|---:|---:|
+| `9:133273682:A:T` | *ABO* 9q34.2 | 0.377 | 2.60 | 2.49 |
+| `5:1286401:C:A` | TERT/CLPTM1L 5p15.33 | 0.489 | 1.50 | 1.32 |
+
+The first is the positive control, the single peak of the Manhattan plot and the
+target of the fine-mapping section. Its effect is deliberately larger than the
+true *ABO* effect on pancreatic cancer, which is near 1.2; without that
+amplification no locus would be detectable at this sample size and the guide
+would have nothing to demonstrate downstream. The amplification is declared, not
+concealed.
+
+The second is the second most replicated pancreatic cancer locus, at an effect
+size at the upper end of what the literature reports for cancer susceptibility
+variants, and the European scan misses it. It is recovered only when the three
+ancestry strata are combined. That is the argument for consortium meta-analysis
+made on an effect that is known to be real rather than on an absence.
+
+Covariates: male sex at an odds ratio of 1.30, matching the reported
+male-to-female incidence ratio for pancreatic cancer, and age at 1.50 per ten
+years.
+
+The genetic effects are identical in all three ancestry groups. This is an
+assumption and not a finding, and it is what allows the causal variants to show
+no heterogeneity while their correlated neighbours do.
+
+### Survival
+
+Survival is defined **for cases only**, as time from diagnosis, which is what a
+survival GWAS in a cancer cohort analyses. Of the 542 cases, 423 have an observed
+event and 119 are censored, a censoring fraction of 22%. The censoring arises
+from staggered recruitment rather than from long survival.
+
+### The simulation validates itself
+
+After generating the data, the script re-estimates every generative parameter
+with the same model the tutorial uses and **refuses to write the files** if any
+estimate falls outside its target's confidence interval. A dataset that fails
+this check is never written.
+
+This check exists because its absence caused a documented error in the previous
+version of this dataset. That version specified the causal effect on a liability
+scale while the analysis estimated it on the log-odds scale. The two differ by
+roughly 1.3 to 1.8, so a documented odds ratio of 2.40 appeared in the released
+data as an effect near 3.65. Nothing detected it, because nothing compared the
+documented value with an estimate from the data it described.
+
+The rule that follows generalises beyond this dataset and is stated in the
+manuscript: **when a simulated dataset is used as ground truth, verify that the
+analysis recovers the generative parameter before treating it as truth.**
+
+---
 
 ## Expected results from the canonical run
 
+Two different quantities are reported below and they must not be conflated.
+`truth.tsv` records the effect recovered **in the full sample**, which is what
+the self-validation checks. The table here records the effect estimated **in the
+European analysis set after quality control**, which is what a reader following
+the guide will obtain and which is subject to selection bias.
+
 | Quantity | Value |
 |---|---|
-| Samples after quality control | 1,217 |
-| Variants after quality control | 414,695 |
-| European analysis set | 224 cases, 387 controls |
-| Genomic inflation factor | 1.028 (lambda1000 = 1.10) |
-| Genome-wide significant loci | 1, at ABO |
-| Lead variant | 9:133249045:A:G |
-| P at the lead variant | 5.5e-9 |
-| Odds ratio at the lead variant | 3.90 (95% CI 2.47 to 6.15) |
+| Samples after quality control | 1,214 |
+| Variants after quality control | 414,415 |
+| European analysis set | 219 cases, 390 controls |
+| Effective sample size | 561 |
+| Genomic inflation factor | *(to be filled from the canonical run)* |
+| Genome-wide significant loci | 1, at *ABO* |
+| Lead variant | `9:133273682:A:T` |
+| *P* at the lead variant | 4.6e-9 |
+| Odds ratio at the lead variant | 2.33 |
+| *P* at TERT/CLPTM1L, Europeans | 0.15 |
+| *P* at TERT/CLPTM1L, three strata | 0.03 |
+| *ABO* credible set, Europeans | 11 variants |
+| *ABO* credible set, three strata | 9 variants |
 
-If your numbers differ, check that you are using the release tag the guide
-links to rather than the most recent one.
+If your numbers differ, check that you are using the release tag the guide links
+to rather than the most recent one.
 
-## How the dataset was built (reproducibility)
+---
 
-The dataset was generated on real reference genotypes by the scripts in
-[`scripts/`](scripts/), in this order:
+## How the dataset was built
 
-| Script | Purpose |
-|--------|---------|
-| `01_build_dataset.sh`      | Filter HGDP+1KG VCFs to GSA positions, subset ancestries, make PLINK binaries |
-| `02_degrade_and_anonymize.R` | Inject realistic missingness; anonymise IDs to MG#### |
-| `03_make_chrX.R`           | Add a simulated chrX consistent with karyotypic sex (for the sex-check) |
-| `04_simulate_phenotype.R`  | Simulate the ABO-driven PDAC phenotype + covariates + survival |
+The phenotype, covariates and survival outcome are produced by
+[`scripts/04_simulate_phenotype.R`](scripts/04_simulate_phenotype.R), which is
+committed here and is the file that generated the released data:
 
-These scripts document provenance; you do **not** need to run them to follow
-the tutorial — just download the released data. The private keys used during
-construction (ID mapping, injected sex discordances, causal-locus truth table)
-are **not** distributed.
+```bash
+Rscript 04_simulate_phenotype.R plink2 pdac_demo sample_ancestry.tsv .
+```
+
+Seed 2026, fixed in advance. The seed was never selected on the outcome:
+choosing a seed because a locus reached significance would be conditioning on
+significance, which is the bias the guide sets out to explain. Where the design
+needed to be more robust, the generative effect size was raised instead, and the
+reasoning is in the script's header.
+
+The genotype layer, that is the filtering of the HGDP and 1000 Genomes callset
+to GSA positions, the anonymisation, the injected missingness and the simulated
+chromosome X, was produced by earlier scripts that are **not currently in this
+repository**. Those steps have not been re-run and the genotypes they produced
+are unchanged from the first release.
 
 ## Provenance of genotypes
 
-Real genotypes derived from the **HGDP + 1000 Genomes** joint callset
-(gnomAD v3.1), phased reference panel:
+Real genotypes derived from the HGDP and 1000 Genomes joint callset,
+gnomAD v3.1, phased reference panel:
 
 - gnomAD v3.1 HGDP+1KG (Koenig et al., *Genome Research* 2024)
 - HGDP (Bergström et al., *Science* 2020)
 - 1000 Genomes Project (*Nature* 2015)
 - Source phased panel: Zenodo record `10.5281/zenodo.18156285`
 
-Only autosomal biallelic SNPs at GSA positions were retained; the chrX was
-simulated separately (see above).
+Only autosomal biallelic SNPs at GSA positions were retained. Chromosome X was
+simulated separately, as noted above.
 
-## License
+## Licence
 
 CC-BY 4.0. Please cite the tutorial paper and the sources above.
 
 ---
 
-*Maintained centrally by M. Gentiluomo & R. Farinella (University of Pisa).*
+*Maintained centrally by M. Gentiluomo and R. Farinella, University of Pisa.*
