@@ -1,6 +1,6 @@
 relationship_category	n_pairs	n_unique_samples
 Duplicate_or_twin	0	0
-First_degree	284	448
-Second_degree	267	158
-Third_degree	54786	424
-All_PI_HAT_pairs_reported	55337	798
+First_degree	280	443
+Second_degree	242	142
+Third_degree	54775	434
+All_PI_HAT_pairs_reported	55297	802

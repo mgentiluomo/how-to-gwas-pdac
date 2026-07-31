@@ -2,7 +2,7 @@ PDAC GWAS Genotyping Quality Control Summary
 ============================================
 
 Dataset: pdac_demo
-Analysis date: Thu Jun 25 17:46:45 WEDT 2026
+Analysis date: Fri Jul 31 12:46:01 UTC 2026
 Genome build: GRCh38
 
 QC Pipeline Summary
@@ -13,16 +13,16 @@ Step                          Samples    Variants   Samples lost   Variants lost
 01. Initial stats             1461      430000     0              0
 02. Sample call rate          1436      430000     25             0
 03. Sex check                 1432      430000     4              0
-04. Heterozygosity            1430      430000     2              0
-05. Variant call rate         1430      421520     0              8480
-06. Hardy-Weinberg            1430      406947     0              14573
-07. Relatedness (KING)        1239      406947     191             0
-08. MAF filter (>=1%)         1239      401909     0              5038
+04. Heterozygosity            1412      430000     20              0
+05. Variant call rate         1412      421520     0              8480
+06. Hardy-Weinberg            1412      421520     0              0
+07. Relatedness (KING)        1215      421520     197             0
+08. MAF filter (>=1%)         1215      414662     0              6858
 
-Final dataset: 1239 samples and 401909 variants
-Total sample loss: 222 (15.2%)
-Total variant loss: 28091 (6.5%)
-Sample retention: 83.3%
+Final dataset: 1215 samples and 414662 variants
+Total sample loss: 246 (16.8%)
+Total variant loss: 15338 (3.6%)
+Sample retention: 83.2%
 Variant retention: 96.4%
 
 QC Thresholds Applied
@@ -43,14 +43,14 @@ Variant-level:
 Relatedness Diagnostics
 -----------------------
 
-- KING pairs above pruning threshold: 284
-- Unique samples in those pairs: 448
-- Relatedness graph components: 164
+- KING pairs above pruning threshold: 280
+- Unique samples in those pairs: 443
+- Relatedness graph components: 163
 - Largest relatedness component: 6 samples
-- PLINK2 --king-cutoff removed: 167 samples
-- Phenotype-aware pruning removed: 191 samples (13.4%)
-- Controls removed: 154
-- Cases removed: 37
+- PLINK2 --king-cutoff removed: 166 samples
+- Phenotype-aware pruning removed: 197 samples (14.0%)
+- Controls removed: 167
+- Cases removed: 30
 
 Interpretation Notes
 --------------------

@@ -1,11 +1,22 @@
-# Software versions (reproducibility)
+# Software versions
 
-Record the exact versions used to generate the published results.
+Written automatically by `scripts/dev/run_all.sh`. These are the versions that
+produced the published results; do not edit by hand.
 
-| Tool   | Version | Notes                          |
-|--------|---------|--------------------------------|
-| PLINK  | 2.0 aXX | `plink2 --version`             |
-| R      | 4.x.x   | `R --version`                  |
-| OS     |         | e.g. Ubuntu 22.04 / macOS 14   |
+| Item | Value |
+|---|---|
+| Run started | 2026-07-31T12:45:15Z |
+| Commit | `63d3287f9242b8c04efc397c0f29a87cd14edd70` |
+| Data release | `v0.3-data` |
+| Operating system | Ubuntu 20.04.4 LTS |
+| PLINK 2 | PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025) |
+| PLINK 1.9 | PLINK v1.90b6.25 64-bit (5 Mar 2022) |
+| R | R version 4.5.1 (2025-06-13) |
 
-R packages: see `env/r_packages.txt`.
+## R packages
+
+| Package | Version |
+|---|---|
+| data.table | 1.17.8 |
+| optparse | 1.8.2 |
+| ggplot2 | 4.0.2 |

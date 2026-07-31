@@ -1,0 +1,6 @@
+threshold	variants_below
+1e-6	14899
+1e-10	2416
+1e-15	168
+1e-20	10
+1e-30	0

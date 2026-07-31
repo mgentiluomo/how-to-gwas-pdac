@@ -1,0 +1,29 @@
+Canonical run manifest
+======================
+
+started        2026-07-31T12:45:15Z
+finished       2026-07-31T12:50:08Z
+host           bio-plink3
+user           manuel
+commit         63d3287f9242b8c04efc397c0f29a87cd14edd70
+branch         dataset-v2
+data release   v0.3-data
+steps          31
+
+PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025)
+PLINK v1.90b6.25 64-bit (5 Mar 2022)
+R version 4.5.1 (2025-06-13)
+Ubuntu 20.04.4 LTS
+
+data checksums
+  7d21e54457a963a520124ba10462ff57  pdac_demo.bed
+  a72da3d41b013a7c471fcc16675f751c  pdac_demo.bim
+  d98b8786ec595fb9a277deffb53f822a  pdac_demo.fam
+  03b6c75afd5339f1b9471c16d8e8a90a  sample_ancestry.tsv
+  f1f6b8c9c98c59223433768ef9cb8f5b  phenotype.txt
+  52f9cac3c9fec2909a07e14d6c9eeaa3  covariates.txt
+  f1d4bbec63d4a26f123fcff85a224467  survival.txt
+  ea86f3188278ba39741d006134f97203  truth.tsv
+  90f042565786e925cc2a1aab4631ede4  MANIFEST.tsv
+
+Per-step logs are in logs/.

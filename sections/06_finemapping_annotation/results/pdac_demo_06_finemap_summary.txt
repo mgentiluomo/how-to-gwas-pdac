@@ -1,18 +1,38 @@
 Fine mapping summary, approximate Bayes factor, single causal variant
+Generated: 2026-07-31 12:49:53
 Prior variance W = 0.04;  coverage = 0.95
 
 REGION
   variants analysed: 204
-  span: chr9:132900000-133600000
+  span: chr9:132901458-133597741
 
 EUROPEAN ANALYSIS SET
-  variants in the 95% credible set: 77
-  top variant: 9:133249045:A:G  PP = 0.508
-  simulated causal variant in the set: YES   rank 1
-  credible-set span: chr9:132,968,574-133,596,524
-  credible-set variants inside ABO (chr9:133,233,278-133,276,024): 32 of 77
+  variants in the 95% credible set: 11
+  top variant: 9:133266804:G:T  PP = 0.243
+  simulated causal variant in the set: YES
+  its posterior probability: 0.126   rank 3
 
 THREE STRATA COMBINED
-  variants in the 95% credible set: 1
-  top variant: 9:133249045:A:G  PP = 0.993
-  simulated causal variant in the set: YES   rank 1
+  variants in the 95% credible set: 9
+  top variant: 9:133273682:A:T  PP = 0.432
+  simulated causal variant in the set: YES
+  its posterior probability: 0.432   rank 1
+
+  The comparison is the point of this section. Combining the strata does
+  not merely lower the P value; it changes how well the signal can be
+  localised, because the causal variant sits on different linkage
+  disequilibrium backgrounds in different populations.
+
+CREDIBLE SET, EUROPEAN ANALYSIS SET
+CHROM	POS	ID	A1	A1_FREQ	OR	P	PP	is_causal
+9	133266804	9:133266804:G:T	T	0.386	0.415	1.45e-09	0.2433	
+9	133263862	9:133263862:A:C	C	0.387	0.420	2.18e-09	0.1924	
+9	133273682	9:133273682:A:T	T	0.380	0.428	4.35e-09	0.1256	yes
+9	133261662	9:133261662:G:A	A	0.360	0.434	8.72e-09	0.0790	
+9	133261703	9:133261703:A:G	G	0.359	0.441	1.36e-08	0.0617	
+9	133267960	9:133267960:T:C	C	0.358	0.443	1.50e-08	0.0591	
+9	133270074	9:133270074:T:A	A	0.357	0.445	1.75e-08	0.0531	
+9	133271249	9:133271249:A:T	T	0.357	0.450	2.52e-08	0.0429	
+9	133270565	9:133270565:G:A	A	0.355	0.448	2.63e-08	0.0405	
+9	133269828	9:133269828:T:C	C	0.356	0.450	2.92e-08	0.0384	
+9	133273813	9:133273813:C:T	T	0.352	0.455	4.34e-08	0.0300	

@@ -1,0 +1,4 @@
+group	pairs_tested	r2_above_0.8	r2_above_0.5	max_r2
+afr	132	1	10	0.985
+eas	123	11	11	1
+eur	127	11	12	0.983

@@ -1,30 +1,30 @@
 Meta-analysis summary
-Generated: 2026-07-27 17:43:50
+Generated: 2026-07-31 12:48:34
 
-Variants meta-analysed: 268393
+Variants meta-analysed: 311478
 Strata: eur, afr, eas
 
 Genomic inflation factor
-  eur   lambda = 1.0242
-  afr   lambda = 1.0273
-  eas   lambda = 1.0365
-  meta  lambda = 1.0057
+  eur   lambda = 1.0145
+  afr   lambda = 1.0218
+  eas   lambda = 0.9967
+  meta  lambda = 0.9944
 
 Significance counts
-  P < 5e-8 (fixed effects):  3
-  P < 1e-5 (fixed effects):  13
-  P < 5e-8 (random effects): 2
+  P < 5e-8 (fixed effects):  13
+  P < 1e-5 (fixed effects):  23
+  P < 5e-8 (random effects): 13
 
-Lead variant: 9:133249045:A:G
-  meta OR 3.713, SE 0.1363, P 6.325e-22
-  heterogeneity: I2 = 0.0%, Q = 1.09, P_het = 0.581
-  random effects: P = 6.325e-22
+Lead variant: 9:133273682:A:T
+  meta OR 0.423, SE 0.0988, P 2.900e-18
+  heterogeneity: I2 = 41.5%, Q = 3.42, P_het = 0.181
+  random effects: P = 3.901e-11
   per stratum:
-    eur   OR 3.826  P 6.719e-09  freq 0.086
-    afr   OR 3.141  P 3.098e-07  freq 0.260
-    eas   OR 4.459  P 5.782e-09  freq 0.179
+    eur   OR 0.447  P 1.287e-08  freq 0.380
+    afr   OR 0.302  P 1.548e-08  freq 0.439
+    eas   OR 0.494  P 1.057e-04  freq 0.379
 
 Heterogeneity across all variants
-  I2 > 50%: 36984 (13.8%)
-  P_het < 0.05: 13409 (5.0%)
+  I2 > 50%: 39573 (12.7%)
+  P_het < 0.05: 13904 (4.5%)
   Under the null, 5% of variants should have P_het < 0.05 by chance.

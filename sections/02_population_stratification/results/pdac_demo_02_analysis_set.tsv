@@ -1,9 +1,9 @@
 quantity	value
-qc_passed_total	1217
-european	611
-east_asian	316
-african	290
-analysis_set_cases	224
-analysis_set_controls	387
+qc_passed_total	1215
+qc_passed_eur	611
+qc_passed_afr	287
+qc_passed_eas	317
 analysis_set_total	611
-effective_n	567.5
+analysis_set_cases	219
+analysis_set_controls	392
+analysis_set_effective_n	562.0

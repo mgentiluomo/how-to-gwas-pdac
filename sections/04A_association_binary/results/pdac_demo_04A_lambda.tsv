@@ -1,6 +1,6 @@
 quantity	value
-variants_tested	405020
-cases	224
-controls	387
-lambda_gc	1.0283
-lambda_1000	1.0999
+variants_tested	405000
+cases	219
+controls	392
+lambda_gc	1.0162
+lambda_1000	1.0575
