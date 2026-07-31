@@ -395,7 +395,7 @@
     "href": "index.html",
     "title": "How to carry out a Genome-Wide Association Study",
     "section": "",
-    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1, prepared for submission to Human Genomics. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers without a bioinformatics background.",
+    "text": "NoteAbout this guide\n\n\n\nThis is the companion website to the methodology manuscript developed within the TRANSPAN COST Action (CA21116), Working Group 1; the target journal is to be defined. It pairs annotated PLINK 2 and R code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers without a bioinformatics background.",
     "crumbs": [
       "Home"
     ]
