@@ -198,17 +198,13 @@ written against move together.
 
 ## What remains, in order
 
-> **31 July 2026, end of day.** Phases 1 to 5 and 7 of the conversion are
-> complete. The repository, the site sources, the released data and the
-> checkpoints all describe the new dataset and agree with each other. What
-> follows is what is left.
+> **31 July 2026, end of day.** The conversion is complete and published. The
+> site at `mgentiluomo.github.io/how-to-gwas-pdac` serves the new dataset, the
+> repository and the two current releases agree with it, and a sweep across
+> every versioned file finds no figure from the previous run. The manuscript is
+> the one part still describing the old one.
 
-1. **Publish.** Merge `dataset-v2` into `main`, run `quarto publish gh-pages`,
-   promote `v0.3-data` and `v0.4-checkpoints` to Latest, then run the stale
-   figure sweep across every versioned file. Until this is done the public site
-   still serves the old dataset.
-
-2. **The manuscript, version 12.** The only substantial work left. Six passages
+1. **The manuscript, version 12.** The only substantial work left. Six passages
    change in argument and not only in number, and the rewritten version of each
    already exists on the corresponding site page:
 
@@ -232,10 +228,25 @@ written against move together.
    parameter before treating it as truth; regenerate Tables 2, 4 and 5; and fix
    the numbering, since there is a Table 1, 2, 4 and 5 and no Table 3.
 
-3. **The four items that were already pending**, unchanged: the methodological
+2. **The four items that were already pending**, unchanged: the methodological
    refinements raised in review, the freeze and Zenodo deposit, the six sections
    not built, and the unstated limitation about cleanly separated continental
    groups.
+
+## What was published, and when
+
+| | |
+|---|---|
+| Site | `mgentiluomo.github.io/how-to-gwas-pdac`, published 31 July 2026 from `main` at `f191d1b` |
+| Pages | Nine published stages, the linkage disequilibrium section among them |
+| Data | `v0.3-data`, nine files, checksums verified after upload |
+| Checkpoints | `v0.4-checkpoints`, fifteen files including the full summary statistics, verified against its manifest after upload |
+| Canonical run | pipeline commit `84223a4` on bio-plink3, 31 steps, deterministic on re-run |
+
+Re-running the whole pipeline on the same data and scripts changes only the
+generation timestamps in ten summary files. Nothing else moves. That property
+is worth preserving, and the timestamps are worth removing from those files so
+that a rerun with no substantive change produces no diff at all.
 
 ## What was found during the conversion
 
