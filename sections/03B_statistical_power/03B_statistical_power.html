@@ -554,12 +554,12 @@ window.Quarto = {
 <section id="the-arithmetic-in-three-lines" class="level2">
 <h2 class="anchored" data-anchor-id="the-arithmetic-in-three-lines">The arithmetic, in three lines</h2>
 <p>Power depends on how much information the design carries about the genetic effect, and that information is a product of three things:</p>
-<p><span class="math display">\[\text{information} \;=\; N \times \pi(1-\pi) \times \operatorname{Var}(G), \qquad \operatorname{Var}(G) = 2p(1-p)\]</span></p>
-<p>the sample size, the variability of the outcome, and the variability of the genotype. Multiplying by the squared effect gives the non-centrality parameter of a one degree of freedom chi-squared statistic, and power is the probability that this exceeds the critical value set by the significance threshold.</p>
+<p><span class="math display">\[\text{Fisher information} \;=\; N \times \pi(1-\pi) \times \operatorname{Var}(G), \qquad \operatorname{Var}(G) = 2p(1-p)\]</span></p>
+<p>the sample size (<strong>N</strong>), the variability of the outcome (<strong>π(1 − π)</strong>), and the variability of the genotype (<strong>Var(G)</strong>). Multiplying by the squared effect gives the non-centrality parameter (NCP) of a one degree of freedom chi-squared statistic, and power is the probability that the NCP exceeds the critical value set by the significance threshold.</p>
 <p>Each term earns its place, and each says something practical.</p>
-<p><strong>Var(G) = 2p(1 − p)</strong> means information collapses as a variant becomes rare. This is why low-frequency variants are hard, and why a rare disease does not confer any special ability to detect rare variants.</p>
-<p><strong>π(1 − π)</strong>, where π is the proportion of cases, is maximised at π = 0.5. A balanced design is the most efficient one, and imbalance costs information that no analysis can recover.</p>
-<p><strong>N</strong> is the only term you can buy.</p>
+<p><strong>Var(G) = 2p(1 − p)</strong> means information collapses as a variant becomes rare. This is why low-frequency variants are harder to identify, and why a rare disease does not confer any special ability to detect rare variants.</p>
+<p><strong>π(1 − π)</strong>, where π is the proportion of cases, is maximised at π = 0.5. Therefore, a balanced design is the most efficient one, and imbalance costs information that no analysis can recover.</p>
+<p><strong>N</strong> is the component that can be increased most directly through additional recruitment and investment.</p>
 <div class="callout callout-style-default callout-important callout-titled" title="Report the effective sample size, not the total">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -688,7 +688,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/03B_statistical_power/02_power_events.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="results/pdac_demo_07_survival_power.png" class="img-fluid"></p>
 <p>In a Cox model the partial likelihood compares, at each event time, the genotype of the individual having the event with those still at risk. Only event times contribute a comparison, so the information is</p>
-<p><span class="math display">\[\text{information} = D \times \operatorname{Var}(G)\]</span></p>
+<p><span class="math display">\[\text{Fisher information} = D \times \operatorname{Var}(G)\]</span></p>
 <p>with <em>D</em> the number of observed <strong>events</strong>. Censored individuals enter the risk sets and add nothing to the test.</p>
 <p>On the demonstration data, restricted to the European analysis set:</p>
 <table class="caption-top table">
