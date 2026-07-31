@@ -335,17 +335,17 @@ results/qc/pdac_demo_06_filt.fam
 
 | Threshold, pooled controls | Variants below it |
 |---|---:|
-| 1e-6 | 14,378 |
-| 1e-10 | 2,278 |
-| 1e-15 | 172 |
-| 1e-20 | 12 |
+| 1e-6 | 14,899 |
+| 1e-10 | 2,416 |
+| 1e-15 | 168 |
+| 1e-20 | 10 |
 | 1e-30 | 0 |
 
-Computed within each ancestry group instead, at the same `1e-6`, the counts are four in the
-European group, none in the African and one in the East Asian: **five variants**.
+Computed within each ancestry group instead, at the same `1e-6`, the counts are one in the
+European group, none in the African and six in the East Asian: **seven variants**.
 
 ::: {.callout-important title="Why a gentler threshold does not fix it"}
-The obvious response to 14,378 exclusions is to lower the threshold until the number looks
+The obvious response to 14,899 exclusions is to lower the threshold until the number looks
 reasonable. It does not work, and the reason is worth seeing.
 
 The twelve variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
@@ -472,15 +472,15 @@ Example pruning diagnostics:
 | Unique samples in KING pruning pairs | 443 |
 | Relatedness components | 163 |
 | Largest component samples | 6 |
-| PLINK2 `--king-cutoff` removed samples | 167 |
-| Phenotype-aware removed samples | 195 |
-| Phenotype-aware removed percent | 13.8 |
-| Controls removed | 158 |
-| Cases removed | 37 |
+| PLINK2 `--king-cutoff` removed samples | 166 |
+| Phenotype-aware removed samples | 197 |
+| Phenotype-aware removed percent | 14.0 |
+| Controls removed | 167 |
+| Cases removed | 30 |
 
 
 ::: {.callout-warning title="Review large relatedness loss"}
-In the demo run, phenotype-aware pruning removed **195 samples**. That is a substantial sample
+In the demo run, phenotype-aware pruning removed **197 samples**. That is a substantial sample
 loss. If a real cohort loses many samples at this step, inspect `pdac_demo_07_pruning_components.tsv`,
 `pdac_demo_07_relatedness_pruning_diagnostics.tsv`, and
 `pdac_demo_07_removal_decisions.tsv` before continuing.
@@ -504,8 +504,8 @@ results/qc/pdac_demo_08_filt.fam
 results/qc/pdac_demo_08_afreq.afreq
 ```
 
-In the demo run this step removed **6,820 variants**, leaving **414,695 variants** and
-**1,217 samples**.
+In the demo run this step removed **6,858 variants**, leaving **414,662 variants** and
+**1,215 samples**.
 
 ::: {.callout-note title="Why not use MAF 5%?"}
 Many standard GWAS workflows use `--maf 0.05`. That is often reasonable for common-variant GWAS,
@@ -624,11 +624,11 @@ The demo run used in this page ended with:
 | Heterozygosity, within ancestry | 1,412 | 430,000 | 20 | 0 |
 | Variant call rate | 1,412 | 421,520 | 0 | 8,480 |
 | Hardy-Weinberg, pooled, diagnostic | 1,412 | 421,520 | 0 | 0 |
-| Relatedness | 1,217 | 421,520 | 195 | 0 |
-| MAF filter | 1,217 | 414,700 | 0 | 6,820 |
-| Hardy-Weinberg, within ancestry (Section 2) | 1,217 | 414,695 | 0 | 5 |
+| Relatedness | 1,215 | 421,520 | 197 | 0 |
+| MAF filter | 1,215 | 414,662 | 0 | 6,858 |
+| Hardy-Weinberg, within ancestry (Section 2) | 1,215 | 414,655 | 0 | 7 |
 
-Final retention in the demo run was **83.3% of samples** and **96.4% of variants**.
+Final retention in the demo run was **83.2% of samples** and **96.4% of variants**.
 
 ## PDAC-Specific Notes
 
