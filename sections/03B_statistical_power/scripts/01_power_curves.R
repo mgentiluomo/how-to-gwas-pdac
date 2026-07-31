@@ -145,11 +145,13 @@ truth$MAF <- sapply(truth$variant, function(v) {
 
 w("THE SIMULATED CAUSAL VARIANTS")
 w("  Power computed at the generative odds ratio and the observed frequency.")
+w("  The risk allele is the reference allele at both loci, so an association")
+w("  run reports the effect of the other allele and prints the reciprocal.")
 for (i in seq_len(nrow(truth))) {
   v <- truth$variant[i]; or <- truth$generative_OR[i]; maf <- truth$MAF[i]
   if (is.na(maf)) { w("  ", v, ": not present in the QC-passed data"); next }
   w(sprintf("  %s  (%s)", v, truth$locus[i]))
-  w(sprintf("    generative OR %.2f at frequency %.3f", or, maf))
+  w(sprintf("    generative OR %.2f, minor allele frequency %.3f", or, maf))
   w(sprintf("    power in the analysis set: %5.1f%%", 100 * power_of(N1, maf, or)))
   if (have_meta)
     w(sprintf("    power across all strata:   %5.1f%%", 100 * power_of(N2, maf, or)))
