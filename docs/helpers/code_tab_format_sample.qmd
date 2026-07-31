@@ -142,7 +142,7 @@ cs  <- g$ID[o][seq_len(k)]
 
 cat(sprintf("regione: %d varianti | credible set: %d | top %s PP %.3f\n",
             nrow(g), length(cs), g$ID[o][1], g$PP[o][1]))
-#> regione: 204 varianti | credible set: 77 | top 9:133249045:A:G PP 0.508
+#> regione: 204 varianti | credible set: 11 | top 9:133266804:G:T PP 0.243
 ```
 
 ### Python
@@ -180,7 +180,7 @@ cs = d.ID.iloc[:k]
 
 print(f"regione: {len(g)} varianti | credible set: {len(cs)} | "
       f"top {d.ID.iloc[0]} PP {d.PP.iloc[0]:.3f}")
-#> regione: 204 varianti | credible set: 77 | top 9:133249045:A:G PP 0.508
+#> regione: 204 varianti | credible set: 11 | top 9:133266804:G:T PP 0.243
 ```
 
 :::

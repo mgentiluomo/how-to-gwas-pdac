@@ -48,6 +48,7 @@
 # OUTPUT:
 #   - results/finemap/pdac_demo_06_credible_set.tsv
 #   - results/finemap/pdac_demo_06_finemap_summary.txt
+#   - results/finemap/credible_set_for_VEP.txt      (default VEP input format)
 ################################################################################
 
 out_dir <- "results/finemap"
@@ -171,6 +172,20 @@ cs <- cs[order(-cs$PP), ]
 cs$is_causal <- ifelse(cs$ID == TRUTH, "yes", "")
 write.table(cs, file.path(out_dir, "pdac_demo_06_credible_set.tsv"),
             sep = "\t", quote = FALSE, row.names = FALSE)
+
+# The same set in the default VEP input format, so that anyone moving on to
+# functional annotation starts from the credible set this run produced. It is
+# written here, beside the set itself, because a file of variants maintained
+# separately from the analysis that defines them will eventually describe a
+# different analysis.
+vep <- data.frame(chr = sub(":.*", "", cs$ID),
+                  pos = cs$POS,
+                  id  = ".",
+                  ref = sapply(strsplit(cs$ID, ":"), `[`, 3),
+                  alt = sapply(strsplit(cs$ID, ":"), `[`, 4),
+                  q   = ".", filt = ".", info = ".")
+write.table(vep, file.path(out_dir, "credible_set_for_VEP.txt"),
+            sep = " ", quote = FALSE, row.names = FALSE, col.names = FALSE)
 write.table(format(cs, digits = 3),
             file.path(out_dir, "pdac_demo_06_finemap_summary.txt"),
             sep = "\t", quote = FALSE, row.names = FALSE, append = TRUE)
