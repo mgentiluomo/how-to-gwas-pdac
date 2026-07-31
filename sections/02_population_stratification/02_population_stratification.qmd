@@ -53,7 +53,7 @@ leading components describe local genomic architecture instead of ancestry.
 bash scripts/02_population_stratification/01_ld_pruning.sh
 ```
 
-On the demonstration data this keeps **222,538** variants and prunes away **192,157**. Losing
+On the demonstration data this keeps **222,338** variants and prunes away **192,324**. Losing
 almost half is expected: it is redundancy being removed. The pruned set is used for PCA and
 relatedness only, never for association testing.
 

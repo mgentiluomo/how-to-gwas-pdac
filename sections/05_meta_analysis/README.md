@@ -32,16 +32,17 @@ assumes agreement will never detect disagreement.
 
 | | |
 |---|---|
-| Strata | EUR 229/396, AFR 142/153, EAS 141/178 |
-| Effective N, combined | 1,169.4 against 567.5 for Europeans alone |
-| Effect-allele flips required | 32,829 AFR, 30,878 EAS — within one genotype file |
-| Strand-ambiguous variants | 1,833 (0.6%), 339 in the unresolvable frequency band |
-| Variants in all three strata | 296,678 of 392,331 |
-| λ per stratum / meta | 1.022, 0.991, 1.013 / 1.003 |
-| Lead variant P | 5.4 × 10⁻⁹ European alone → **2.4 × 10⁻²² meta** |
-| Lead variant OR | 3.74 (2.87–4.87); I² = 0%, P het = 0.44 |
-| Simulated truth | OR 2.40 — meta-analysis does not cure the winner's curse |
-| Heterogeneity at LD proxies | up to I² = 79%; one variant drops from P 1.3 × 10⁻⁹ to 0.0035 under random effects |
+| Strata | EUR 219/392, AFR 138/149, EAS 141/176 |
+| Effective N, combined | 1,161.7 against 562.0 for Europeans alone |
+| Effect-allele flips required | 37,738 AFR, 35,843 EAS, within one genotype file |
+| Strand-ambiguous variants | 1,916 (0.6%), 354 in the unresolvable frequency band |
+| Variants in all three strata | 311,478 of 405,000 |
+| λ per stratum / meta | 1.015, 1.022, 0.997 / 0.994 |
+| Causal variant P | 1.3 × 10⁻⁸ European alone → **2.9 × 10⁻¹⁸ meta** |
+| Causal variant OR | 2.36 per risk allele; I² = 41.5%, P het = 0.18 |
+| Simulated truth | OR 2.60; the meta estimate sits slightly below it, not above |
+| TERT/CLPTM1L | 0.16 in Europeans → 0.021 across the strata: a real effect, still not recovered |
+| Heterogeneity | the **causal** variant has the highest I² in the region while three of its proxies have none |
 
 ## Conventions
 

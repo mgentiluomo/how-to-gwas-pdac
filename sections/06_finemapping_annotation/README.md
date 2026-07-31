@@ -35,17 +35,25 @@ where it demonstrably is.
 |---|---|
 | Region | chr9:132.9–133.6 Mb, 204 variants |
 | Prior variance on the log odds ratio | W = 0.04; coverage 95% |
-| European set, credible set size | 77 variants |
-| European set, top variant | `9:133249045:A:G`, posterior probability 0.51, ranked first |
-| Three strata combined, credible set size | **1 variant** |
-| Three strata combined, top variant | `9:133249045:A:G`, posterior probability 0.99 |
-| Scored against the simulated truth | the causal variant is recovered in both, and uniquely identified only after combining ancestries |
+| European set, credible set size | 11 variants spanning 12.2 kb |
+| European set, top variant | `9:133266804:G:T`, posterior probability 0.24, **not the causal one** |
+| European set, causal variant | ranked **third**, posterior probability 0.13 |
+| Three strata combined, credible set size | 9 variants |
+| Three strata combined, top variant | `9:133273682:A:T`, posterior probability 0.43, **the causal one** |
+| Scored against the simulated truth | present in both sets; promoted from third to first by combining ancestries |
 
-The collapse from 77 variants to one is the section's central result. It is not a
-power effect: linkage disequilibrium differs between populations, so variants that
-cannot be distinguished within one ancestry are distinguished by disagreement between
-ancestries. It is the mirror image of the heterogeneity pattern reported in Section 5,
-where the causal variant showed I² = 0 while its correlated neighbours reached 79%.
+The section's central result is the change in **ranking**, not in size: the set
+shrinks only from eleven variants to nine, while the causal variant moves from third
+place to first and its posterior nearly doubles. Linkage disequilibrium differs
+between populations, so variants that cannot be distinguished within one ancestry are
+distinguished by disagreement between ancestries. More samples of the same ancestry
+would have sharpened the P value without necessarily changing the order.
+
+The mirror-image argument, that the causal variant should show no heterogeneity while
+its proxies do, is **not** visible in this dataset. Section 5 reports the opposite,
+because I² is barely estimable with fewer than 320 individuals per stratum. The
+resolution gain above is real and is visible in the posteriors; the heterogeneity
+signature that supposedly explains it is not.
 
 ## Conventions
 
