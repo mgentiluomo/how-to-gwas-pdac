@@ -53,7 +53,13 @@
 out_dir <- "results/finemap"
 W       <- 0.04          # prior variance of the log odds ratio
 COVER   <- 0.95          # credible set coverage
-TRUTH   <- "9:133249045:A:G"   # the simulated causal variant
+# The generative truth is read from the released truth table rather than
+# hardcoded. A constant written here goes stale the moment the phenotype is
+# regenerated, and a stale constant of exactly this kind is why this dataset
+# was rebuilt.
+.truth <- read.delim("demo_data/truth.tsv", stringsAsFactors = FALSE)
+.truth <- .truth[grepl(":", .truth$variant), ]
+TRUTH   <- .truth$variant[1]   # the ABO variant, this section's target
 
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 

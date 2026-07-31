@@ -127,18 +127,43 @@ w("  line for 1.3 and then read it again: that is the answer to whether this")
 w("  study could have found a typical locus.")
 w("")
 
-# --- the simulated causal variant --------------------------------------------
-TRUTH_OR <- 2.40; TRUTH_MAF <- 0.085
-w("THE SIMULATED CAUSAL VARIANT")
-w("  odds ratio 2.40 at frequency 0.085")
-w("  power in the analysis set: ", sprintf("%.1f%%", 100 * power_of(N1, TRUTH_MAF, TRUTH_OR)))
-if (have_meta)
-  w("  power across all strata:   ", sprintf("%.1f%%", 100 * power_of(N2, TRUTH_MAF, TRUTH_OR)))
-w("  It was detected nonetheless, which is not luck to celebrate but a")
-w("  selection event to reckon with: in an underpowered scan the variants that")
-w("  cross the threshold are those whose estimates happened to fall high. That")
-w("  is why the odds ratio recovered in Section 4A is 3.90 rather than the")
-w("  generative value.")
+# --- the simulated causal variants -------------------------------------------
+# Read from the released truth table and the observed allele frequencies, not
+# from constants. A constant here goes stale the moment the phenotype is
+# regenerated, which is exactly how a previous version of this dataset came to
+# document an effect it did not contain.
+truth <- read.delim("demo_data/truth.tsv", stringsAsFactors = FALSE)
+truth <- truth[grepl(":", truth$variant), ]
+
+af <- read.delim("results/qc/pdac_demo_01_qc.afreq", check.names = FALSE,
+                 comment.char = "", stringsAsFactors = FALSE)
+names(af) <- sub("^#", "", names(af))
+truth$MAF <- sapply(truth$variant, function(v) {
+  f <- af$ALT_FREQS[match(v, af$ID)]
+  if (is.na(f)) NA_real_ else min(f, 1 - f)
+})
+
+w("THE SIMULATED CAUSAL VARIANTS")
+w("  Power computed at the generative odds ratio and the observed frequency.")
+for (i in seq_len(nrow(truth))) {
+  v <- truth$variant[i]; or <- truth$generative_OR[i]; maf <- truth$MAF[i]
+  if (is.na(maf)) { w("  ", v, ": not present in the QC-passed data"); next }
+  w(sprintf("  %s  (%s)", v, truth$locus[i]))
+  w(sprintf("    generative OR %.2f at frequency %.3f", or, maf))
+  w(sprintf("    power in the analysis set: %5.1f%%", 100 * power_of(N1, maf, or)))
+  if (have_meta)
+    w(sprintf("    power across all strata:   %5.1f%%", 100 * power_of(N2, maf, or)))
+}
+w("")
+w("  Read the two together. One variant is well powered in the analysis set and")
+w("  is duly detected; the other is not, and is recovered only when the strata")
+w("  are combined. That contrast, not the detection on its own, is the lesson of")
+w("  this section: whether a scan finds a locus is decided here, before any")
+w("  analysis is run.")
+w("")
+w("  NOTE: selection bias still applies to whatever crosses the threshold. The")
+w("  size of that bias is reported in Section 4A by comparing the recovered")
+w("  odds ratio with the generative one in truth.tsv.")
 close(con)
 
 # --- figure ------------------------------------------------------------------
@@ -153,8 +178,9 @@ plot(p, sapply(p, function(q) min_or(N1, q)), type = "l", lwd = 2, col = "#D55E0
 if (have_meta) lines(p, sapply(p, function(q) min_or(N2, q)), lwd = 2, col = "#009E73")
 rect(0.01, 1.1, 0.50, 1.5, col = "#00000010", border = NA)
 text(0.28, 1.27, "effect sizes of established cancer susceptibility loci", cex = 0.7)
-points(TRUTH_MAF, TRUTH_OR, pch = 18, cex = 1.6)
-text(TRUTH_MAF, TRUTH_OR, "simulated causal variant", pos = 4, cex = 0.7)
+ok <- !is.na(truth$MAF)
+points(truth$MAF[ok], truth$generative_OR[ok], pch = 18, cex = 1.6)
+text(truth$MAF[ok], truth$generative_OR[ok], truth$locus[ok], pos = 4, cex = 0.7)
 legend("topright", bty = "n", lwd = 2, cex = 0.8,
        col = if (have_meta) c("#D55E00", "#009E73") else "#D55E00",
        legend = if (have_meta)

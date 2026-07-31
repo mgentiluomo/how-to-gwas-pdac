@@ -23,7 +23,13 @@
 ################################################################################
 
 out_dir <- "results/finemap"
-TRUTH   <- "9:133249045:A:G"
+# The generative truth is read from the released truth table rather than
+# hardcoded. A constant written here goes stale the moment the phenotype is
+# regenerated, and a stale constant of exactly this kind is why this dataset
+# was rebuilt.
+.truth <- read.delim("demo_data/truth.tsv", stringsAsFactors = FALSE)
+.truth <- .truth[grepl(":", .truth$variant), ]
+TRUTH   <- .truth$variant[1]
 blue <- "#0072B2"; orange <- "#D55E00"; green <- "#009E73"; grey <- "#4B6584"
 
 e <- read.delim(file.path(out_dir, "pdac_demo_06_pp_eur.tsv"), stringsAsFactors = FALSE)
