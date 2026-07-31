@@ -153,8 +153,13 @@ c1 <- find_col(CAUSAL[["G1"]]);  c2 <- find_col(CAUSAL[["G2"]])
 msg("  %s  -> column %s", CAUSAL[["G1"]], c1)
 msg("  %s  -> column %s", CAUSAL[["G2"]], c2)
 
-# PLINK counts the ALT allele. The risk allele is defined here as the counted
-# one; whether that is the minor allele is recorded, not assumed.
+# PLINK's --export A counts the allele PLINK 2 treats as REFERENCE when it
+# reads a PLINK 1 fileset, which for these variant IDs (chr:pos:ref:alt) is
+# the ref allele: A at ABO and C at TERT/CLPTM1L. The risk allele is the
+# counted one, so it is the reference allele, and it is the MAJOR allele at
+# ABO. Verify rather than assume: the column header written by --export A is
+# <ID>_<counted allele>. An association run reports its effect for the other
+# allele, so the odds ratio it prints is the reciprocal of the one set here.
 G1 <- raw[[c1]];  G2 <- raw[[c2]]
 
 # The demonstration data carry deliberately injected missingness, including 25

@@ -25,7 +25,7 @@ demonstration data exist, and only one of them is published.
 | Samples after QC | 1,217 | **1,215** |
 | Variants after QC | 414,695 | **414,662**, 414,655 after within-ancestry HWE |
 | European analysis set | 224 cases / 387 controls | **219 / 392**, effective 562 |
-| Causal variants | one, at MAF 0.086 | two, at MAF 0.377 and 0.489 |
+| Causal variants | one, at MAF 0.086 | two; risk allele is the **reference** in both, at frequency 0.61 and 0.49 |
 | Generative odds ratio | documented 2.40, **actually ~3.65** | 2.60 and 1.50, **verified** |
 | ABO credible set | 77 in EUR, 1 in meta | 11 in EUR, 9 in meta |
 
@@ -87,12 +87,14 @@ F_ST below 0.05, eight failures are expected.
 **The new dataset has two causal variants**, so the guide can show a true
 positive recovered and a true positive missed with the truth known for both:
 
-- `9:133273682:A:T`, *ABO* 9q34.2, MAF 0.377, generative OR **2.60**. Detected,
+- `9:133273682:A:T`, *ABO* 9q34.2, risk allele `A` (the reference, and the
+  major allele) at frequency 0.61, generative OR **2.60**. Detected,
   *P* = 4.35e-9, estimated OR 0.428. Measured power 99.1% in the analysis set;
   2.30 was tried first, gave 91%, and the first draw fell in the missing 9%. The
   design parameter was raised, not the seed, because selecting a seed on
   significance is conditioning on significance.
-- `5:1286401:C:A`, TERT/CLPTM1L 5p15.33, MAF 0.489, generative OR **1.50**. Not
+- `5:1286401:C:A`, TERT/CLPTM1L 5p15.33, risk allele `C` (the reference) at
+  frequency 0.49, generative OR **1.50**. Not
   detected in Europeans (*P* = 0.156); reaches only *P* = 0.021 across the three
   strata, with measured power 2.0% and 28.6% respectively, so it is **not**
   recovered; note the East Asian stratum alone reaches *P* = 0.007 while the

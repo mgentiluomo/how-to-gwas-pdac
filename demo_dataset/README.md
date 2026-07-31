@@ -87,10 +87,19 @@ precisely why the generative effects remain recoverable from the sample.
 
 ### Two causal variants
 
-| Variant | Locus | MAF | Generative OR | Recovered in the full sample |
-|---|---|---:|---:|---:|
-| `9:133273682:A:T` | *ABO* 9q34.2 | 0.377 | 2.60 | 2.49 |
-| `5:1286401:C:A` | TERT/CLPTM1L 5p15.33 | 0.489 | 1.50 | 1.32 |
+| Variant | Locus | Risk allele | Its frequency | Generative OR | Recovered in the full sample |
+|---|---|:--:|---:|---:|---:|
+| `9:133273682:A:T` | *ABO* 9q34.2 | `A` | 0.61 | 2.60 | 2.49 |
+| `5:1286401:C:A` | TERT/CLPTM1L 5p15.33 | `C` | 0.49 | 1.50 | 1.32 |
+
+**The risk allele is the reference allele**, the first of the two in the
+`chr:pos:ref:alt` identifier, and at *ABO* it is the **major** allele at
+frequency 0.61. This matters when reading any association output: PLINK reports
+the effect of the other allele, so at *ABO* it prints an odds ratio near 0.43,
+whose reciprocal is 2.3. A reader who compares 0.43 with the generative 2.60
+without knowing this will conclude the dataset is wrong. Allele orientation is
+listed in Section 5 among the most treacherous errors in a meta-analysis, and
+this is what it looks like in practice.
 
 The first is the positive control, the single peak of the Manhattan plot and the
 target of the fine-mapping section. Its effect is deliberately larger than the
