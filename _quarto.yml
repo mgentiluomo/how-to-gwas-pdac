@@ -13,7 +13,6 @@ project:
     # are absent from the sidebar.
     - "!docs/helpers/checkpoint_entry_block.qmd"
     - "!docs/helpers/code_tab_format_sample.qmd"
-    - "!sections/07_linkage_disequilibrium/**"
 
 website:
   title: "How to carry out a GWAS"
@@ -56,6 +55,9 @@ website:
       - section: "From signal to variant"
         contents:
           - sections/06_finemapping_annotation/06_finemapping_annotation.qmd
+      - section: "What sets the resolution"
+        contents:
+          - sections/07_linkage_disequilibrium/07_linkage_disequilibrium.qmd
       # Manuscript sections will be added here as they are drafted:
       # - section: "Pre-GWAS"
       #   contents:

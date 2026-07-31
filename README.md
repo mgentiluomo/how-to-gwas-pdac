@@ -16,7 +16,7 @@ The manuscript explains why each decision is made and when an analysis is or is 
 
 ## Status
 
-Seven stages are published as executable worked analyses, each with annotated
+Nine stages are published as executable worked analyses, each with annotated
 scripts and committed results from a single canonical run. The remaining stages
 of the workflow are covered in the manuscript narrative but are not yet worked
 on the demonstration data, and are listed here as not built rather than as
@@ -32,6 +32,7 @@ forthcoming, so that what is available is never overstated.
 | Association testing, binary outcome | Published, with scripts and results |
 | Meta-analysis across ancestry strata | Published, with scripts and results |
 | Fine mapping | Published, with scripts and results |
+| Linkage disequilibrium and what it decides | Published, with scripts and results |
 | Imputation | Not built |
 | Association testing, time-to-event outcome | Not built |
 | Association software comparison | Not built |
