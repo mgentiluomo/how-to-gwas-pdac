@@ -39,10 +39,16 @@ forthcoming, so that what is available is never overstated.
 | Functional annotation | Not built |
 | Reporting, replication and FAIR data | Not built |
 
-All figures on the site and in the manuscript come from one canonical run of
+Every figure on the site and in this repository comes from one canonical run of
 the published pipeline. Where a number appears in more than one place it is the
 same number; if you find one that is not, it is a defect and an issue is
 welcome.
+
+The manuscript is the exception, and is stated as one rather than left to be
+discovered: it still reports an earlier run of the pipeline, on a demonstration
+dataset that has since been replaced, and is being brought into line. Until that
+is done, take the numbers here and on the site as current and the manuscript's
+as superseded.
 
 ## The demonstration dataset
 
