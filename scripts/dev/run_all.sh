@@ -216,9 +216,6 @@ STEPS=(
   "02_population_stratification/scripts/05_pca_within_eur.sh"
   "02_population_stratification/scripts/06_hwe_within_ancestry.sh"
 
-  "03B_statistical_power/scripts/01_power_curves.R"
-  "03B_statistical_power/scripts/02_power_events.R"
-
   "04A_association_binary/scripts/01_make_covariates.R"
   "04A_association_binary/scripts/02_association.sh"
   "04A_association_binary/scripts/03_qq_lambda.R"
@@ -229,6 +226,13 @@ STEPS=(
   "05_meta_analysis/scripts/02_harmonise.R"
   "05_meta_analysis/scripts/03_meta_analysis.R"
   "05_meta_analysis/scripts/04_meta_plots.R"
+
+  # Power runs after the meta-analysis, not before it. The power report
+  # compares the analysis set with all strata combined, so it needs the
+  # stratum counts the meta-analysis produces. Run earlier, it silently
+  # omits that comparison and the report asserts a contrast it never shows.
+  "03B_statistical_power/scripts/01_power_curves.R"
+  "03B_statistical_power/scripts/02_power_events.R"
 
   "06_finemapping_annotation/scripts/01_region_and_ld.sh"
   "06_finemapping_annotation/scripts/02_finemap_abf.R"
