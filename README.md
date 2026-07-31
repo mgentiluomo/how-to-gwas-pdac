@@ -39,16 +39,10 @@ forthcoming, so that what is available is never overstated.
 | Functional annotation | Not built |
 | Reporting, replication and FAIR data | Not built |
 
-Every figure on the site and in this repository comes from one canonical run of
+All figures on the site and in the manuscript come from one canonical run of
 the published pipeline. Where a number appears in more than one place it is the
 same number; if you find one that is not, it is a defect and an issue is
 welcome.
-
-The manuscript is the exception, and is stated as one rather than left to be
-discovered: it still reports an earlier run of the pipeline, on a demonstration
-dataset that has since been replaced, and is being brought into line. Until that
-is done, take the numbers here and on the site as current and the manuscript's
-as superseded.
 
 ## The demonstration dataset
 
@@ -74,6 +68,8 @@ This dataset teaches GWAS under realistic, difficult conditions on purpose, it i
 how-to-gwas-pdac/
 ├── README.md                you are here
 ├── CONTRIBUTING.md          workflow for contributors, branches, PRs, review
+├── PROJECT_STATE.md         what is built, what the canonical run measured, what remains
+├── RUN_MANIFEST.txt         what the canonical run executed, and from which commit
 ├── LICENSE                  MIT for code, manuscript text CC-BY-4.0
 ├── index.qmd                companion website home page
 ├── getting_started.qmd      setup, project structure, tool install, first command
@@ -82,7 +78,7 @@ how-to-gwas-pdac/
 ├── demo_dataset/            the pdac_demo dataset: README, download script, construction scripts
 ├── sections/                one folder per manuscript section
 │   └── 01B_genotyping_qc/   the QC walkthrough, its scripts and its committed results
-├── scripts/dev/             project bootstrap and tool installation helpers
+├── scripts/dev/             the canonical runner, checkpoint builder, project and tool setup
 ├── docs/                    figures, the pipeline diagram, setup helper documents
 └── env/                     software versions and R package list, for reproducibility
 ```
@@ -96,6 +92,7 @@ how-to-gwas-pdac/
 | 1B | Genotyping quality control | Murat Güler | `sections/01B_genotyping_qc/` |
 | 2 | Population stratification | Elif Öz | `sections/02_population_stratification/` |
 | 3 | Imputation | Pelin Ünal | `sections/03_imputation/` |
+| 3B | Statistical power | Riccardo Farinella | `sections/03B_statistical_power/` |
 | 4A | Association testing, binary outcome | Elif Öz | `sections/04A_association_binary/` |
 | 4B | Association testing, survival outcome | Pelin Ünal | `sections/04B_association_survival/` |
 | 4C | Association testing, pipeline and software | Murat Güler | `sections/04C_association_other/` |
@@ -103,6 +100,7 @@ how-to-gwas-pdac/
 | 6 | Fine mapping | Burçak Otlu, Erdi Kılıç | `sections/06_finemapping_annotation/` |
 | 6.5 | Functional annotation | Chiara Corradi | `sections/06.5_gwas_annotations/` |
 | 7 | Reporting, replication, FAIR data | Manuel Gentiluomo | `sections/07_reporting_fair/` |
+| — | Linkage disequilibrium and what it decides | Manuel Gentiluomo | `sections/07_linkage_disequilibrium/` |
 | — | Shared helper scripts, not a manuscript section | Murat Güler | `sections/08_helper_scripts/` |
 
 Code production: Riccardo Farinella and Murat Güler. Final code review and standardisation: Manuel Gentiluomo.
@@ -116,6 +114,17 @@ bash scripts/dev/download_demo_data.sh        # fetches pdac_demo into demo_data
 quarto preview                            # live preview of the companion website
 ```
 
+To reproduce the run every published figure comes from, rather than read it:
+
+```bash
+bash scripts/dev/run_all.sh v0.3-data
+```
+
+It verifies the downloaded data against the released manifest, records the tool
+versions it found, executes every step in order in a clean shell, stops at the
+first failure, and writes `RUN_MANIFEST.txt`. Re-running it changes nothing but
+the generation timestamps in the summary files.
+
 Readers following the website do not need to clone anything: `getting_started.qmd` sets up the project folders and downloads the data and the tools automatically.
 
 ## Conventions
@@ -124,7 +133,7 @@ Readers following the website do not need to clone anything: `getting_started.qm
 * Build: GRCh38 throughout, variant IDs in `chr:pos:ref:alt` format.
 * Reproducibility: all random steps use a fixed seed, default 2026.
 * References: provisional placeholders as `[DOI/PMID]`, highlighted yellow in the manuscript, final formatting is Vancouver style.
-* Data: raw or intermediate genotype files, `.bed`, `.bim`, `.fam`, `.vcf`, are never committed, see `.gitignore`. Only scripts, narrative, summary statistics and figures live in git.
+* Data: genotype files and the full summary statistics are never committed, see `.gitignore`; they are published as releases. What lives in git is the scripts, the narrative, the result tables each section reports, and the figures.
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branch and pull request workflow. Each contributor works inside their own `sections/<name>/` folder and opens a pull request to `main` when ready.
 
