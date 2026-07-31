@@ -27,9 +27,10 @@ blue <- "#0072B2"; orange <- "#D55E00"; green <- "#009E73"; grey <- "#4B6584"
 # ==============================================================================
 qc <- read.delim("sections/01B_genotyping_qc/results/pdac_demo_09_qc_counts.tsv",
                  stringsAsFactors = FALSE)
-qc$label <- c("Raw", "Initial\nstats", "Sample\ncall rate", "Sex\ncheck",
-              "Hetero-\nzygosity", "Variant\ncall rate", "Hardy-\nWeinberg",
-              "Related-\nness", "MAF")
+# Labels come from the file rather than a fixed list. A fixed list breaks
+# silently whenever a QC step is added or removed, which is what happened here.
+qc$label <- vapply(qc$step, function(s)
+  paste(strwrap(s, width = 10), collapse = "\n"), character(1), USE.NAMES = FALSE)
 
 png(file.path(out_dir, "Figure2_qc_trajectory.png"),
     width = 2400, height = 1500, res = 300)
@@ -144,18 +145,34 @@ alpha <- 5e-8; ca <- qchisq(1 - alpha, 1)
 lam80 <- uniroot(function(l) pchisq(ca, 1, ncp = l, lower.tail = FALSE) - 0.80,
                  c(1, 300))$root
 minOR <- function(neff, p) exp(sqrt(lam80 / (neff * 0.25 * 2 * p * (1 - p))))
+# Effective sample sizes are read from the run, not hardcoded.
+.aset <- read.delim("results/pca/pdac_demo_02_analysis_set.tsv", stringsAsFactors = FALSE)
+NEFF1 <- as.numeric(.aset$value[.aset$quantity == "analysis_set_effective_n"])
+.strata <- read.delim("results/meta/pdac_demo_05_strata_counts.tsv", stringsAsFactors = FALSE)
+NEFF2 <- sum(.strata$effective_n)
+
 pgrid <- seq(0.02, 0.50, by = 0.005)
-plot(pgrid, minOR(580.4, pgrid), type = "l", lwd = 2, col = orange, log = "y",
+plot(pgrid, minOR(NEFF1, pgrid), type = "l", lwd = 2, col = orange, log = "y",
      ylim = c(1.1, 12), xlab = "Minor allele frequency",
      ylab = "Minimum odds ratio detectable\nat 80% power")
-lines(pgrid, minOR(1189.7, pgrid), lwd = 2, col = green)
+lines(pgrid, minOR(NEFF2, pgrid), lwd = 2, col = green)
 rect(0.02, 1.1, 0.50, 1.5, col = "#00000012", border = NA)
 text(0.26, 1.28, "effect sizes of established\ncancer susceptibility loci", cex = 0.6)
-points(0.085, 2.4, pch = 18, cex = 1.4)
-text(0.085, 2.4, "simulated ABO effect", pos = 4, cex = 0.6, font = 3)
+# The simulated effect is read from the released truth table and the observed
+# allele frequencies, so the point cannot drift away from the data behind it.
+.truth <- read.delim("demo_data/truth.tsv", stringsAsFactors = FALSE)
+.truth <- .truth[grepl(":", .truth$variant), ]
+.af <- read.delim("results/qc/pdac_demo_01_qc.afreq", check.names = FALSE,
+                  comment.char = "", stringsAsFactors = FALSE)
+names(.af) <- sub("^#", "", names(.af))
+.abo_or  <- .truth$generative_OR[1]
+.abo_f   <- .af$ALT_FREQS[match(.truth$variant[1], .af$ID)]
+.abo_maf <- min(.abo_f, 1 - .abo_f)
+points(.abo_maf, .abo_or, pch = 18, cex = 1.4)
+text(.abo_maf, .abo_or, "simulated ABO effect", pos = 4, cex = 0.6, font = 3)
 legend("topright", bty = "n", cex = 0.7, lwd = 2, col = c(orange, green),
-       legend = c(expression(European~set~","~N[eff]==580),
-                  expression(three~strata~combined~","~N[eff]==1190)))
+       legend = c(bquote(European~set~","~N[eff]==.(round(NEFF1))),
+                  bquote(three~strata~combined~","~N[eff]==.(round(NEFF2)))))
 mtext("c", 3, 0.3, adj = 0, font = 2, cex = 1.1)
 dev.off()
 
@@ -168,7 +185,9 @@ cat("\nlambda =", sprintf("%.4f", lam), " lambda for 80% power =", sprintf("%.2f
 # ==============================================================================
 fe <- read.delim("results/finemap/pdac_demo_06_pp_eur.tsv", stringsAsFactors = FALSE)
 fm <- read.delim("results/finemap/pdac_demo_06_pp_meta.tsv", stringsAsFactors = FALSE)
-TRUTH <- "9:133249045:A:G"
+# Read from the truth table, not hardcoded: a stale constant here would make
+# the figure highlight a variant the dataset does not contain.
+TRUTH <- .truth$variant[1]
 in_cs <- function(v) v == TRUE | v == "TRUE"
 
 png(file.path(out_dir, "Figure5_fine_mapping.png"),
