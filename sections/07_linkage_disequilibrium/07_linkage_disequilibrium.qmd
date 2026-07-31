@@ -109,9 +109,10 @@ was fixed tens of thousands of years before anyone collected a sample.
 
 ::: {.callout-important title="A small credible set is not a resolved locus"}
 The two statements sound alike and are not. A credible set of eleven variants
-spanning 12 kb looks tidy next to one of seventy-seven spanning 600 kb, and a
-reader may take the tidiness as success. It is not: it is a compact haplotype
-block. Report the span, the number of variants, and the local LD alongside the
+spanning 12 kb looks tidy, and a reader may take the tidiness as success. It is
+not: it is a compact haplotype block, and the set is small because the region is
+small, not because the analysis resolved anything within it. In the African
+group the same locus resolves to one variant, and that is resolution. Report the span, the number of variants, and the local LD alongside the
 posterior probabilities, so that a reader can tell a resolved locus from a
 region where resolution was never available
 [doi:10.1038/nrg1123]{.mark}.
