@@ -52,14 +52,17 @@ if [ ! -s "$ANCESTRY_FILE" ]; then
   exit 1
 fi
 
-GROUPS=$(awk '{print $2}' "$ANCESTRY_FILE" | sort -u | grep -v '^$')
-echo "=== Heterozygosity within ancestry groups: $(echo "$GROUPS" | tr '\n' ' ')"
+# NOTE: do not name this variable GROUPS. In bash, GROUPS is a reserved array
+# holding the current user's Unix groups; assigning to it is ignored and returns
+# a non-zero status, which under 'set -e' terminates the script silently.
+ANC_GROUPS=$(awk '{print $2}' "$ANCESTRY_FILE" | sort -u | grep -v '^$')
+echo "=== Heterozygosity within ancestry groups: $(echo "$ANC_GROUPS" | tr '\n' ' ')"
 
 : > "${OUT_DIR}/${DATASET_NAME}_04_het_outliers.txt"
 printf "group\tn\tmean_F\tsd_F\tlower\tupper\toutliers\n" \
   > "${OUT_DIR}/${DATASET_NAME}_04_het_summary.tsv"
 
-for G in $GROUPS; do
+for G in $ANC_GROUPS; do
   awk -v g="$G" '$2 == g { print $1"\t"$1 }' "$ANCESTRY_FILE" \
     > "${OUT_DIR}/${DATASET_NAME}_04_keep_${G}.txt"
 

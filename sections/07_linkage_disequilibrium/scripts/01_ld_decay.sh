@@ -55,13 +55,16 @@ WINDOW_KB=300     # widest pair distance considered
 MAF=0.05          # applied identically in every group, see header
 
 mkdir -p "$OUT"
-GROUPS=$(awk '{print $2}' "$ANC" | sort -u | grep -v '^$')
+# NOTE: do not name this variable GROUPS. In bash, GROUPS is a reserved array
+# holding the current user's Unix groups; assigning to it is ignored and returns
+# a non-zero status, which under 'set -e' terminates the script silently.
+ANC_GROUPS=$(awk '{print $2}' "$ANC" | sort -u | grep -v '^$')
 
 echo ">>> Region: chr${CHR}:${FROM}-${TO}, causal variant ${CAUSAL}"
-echo ">>> Groups: $(echo "$GROUPS" | tr '\n' ' ')"
+echo ">>> Groups: $(echo "$ANC_GROUPS" | tr '\n' ' ')"
 echo ""
 
-for G in $GROUPS; do
+for G in $ANC_GROUPS; do
     awk -v g="$G" '$2 == g { print $1"\t"$1 }' "$ANC" > "${OUT}/_keep_${G}.txt"
 
     plink2 --bfile "$DATA" \
@@ -88,7 +91,7 @@ done
 echo ""
 echo ">>> Summarising"
 
-Rscript - "$OUT" "$CAUSAL" "$(echo "$GROUPS" | tr '\n' ' ')" <<'RSCRIPT'
+Rscript - "$OUT" "$CAUSAL" "$(echo "$ANC_GROUPS" | tr '\n' ' ')" <<'RSCRIPT'
 args   <- commandArgs(trailingOnly = TRUE)
 OUT    <- args[1]; CAUSAL <- args[2]
 GROUPS <- strsplit(trimws(args[3]), "\\s+")[[1]]

@@ -53,12 +53,15 @@ mkdir -p "$OUT_DIR"
 awk 'NR > 1 && ($3 == 1 || $3 == "1") { print $2 }' "$PHENOTYPE_FILE" \
   > "${OUT_DIR}/${DATASET_NAME}_02_controls.ids"
 
-GROUPS=$(awk '{print $2}' "$ANCESTRY_FILE" | sort -u | grep -v '^$')
+# NOTE: do not name this variable GROUPS. In bash, GROUPS is a reserved array
+# holding the current user's Unix groups; assigning to it is ignored and returns
+# a non-zero status, which under 'set -e' terminates the script silently.
+ANC_GROUPS=$(awk '{print $2}' "$ANCESTRY_FILE" | sort -u | grep -v '^$')
 printf "group\tcontrols_tested\tvariants_failing_%s\n" "$HWE_P" \
   > "${OUT_DIR}/${DATASET_NAME}_02_hwe_summary.tsv"
 : > "${OUT_DIR}/${DATASET_NAME}_02_hwe_exclude.raw"
 
-for G in $GROUPS; do
+for G in $ANC_GROUPS; do
   awk -v g="$G" 'NR == FNR { c[$1]; next } ($2 == g && $1 in c) { print $1"\t"$1 }' \
     "${OUT_DIR}/${DATASET_NAME}_02_controls.ids" "$ANCESTRY_FILE" \
     > "${OUT_DIR}/${DATASET_NAME}_02_ctrl_${G}.txt"
