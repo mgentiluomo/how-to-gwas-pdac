@@ -66,6 +66,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
+<link href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" rel="next">
 <link href="../../sections/05_meta_analysis/05_meta_analysis.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -483,6 +484,23 @@ window.Quarto = {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">What sets the resolution</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium and what it decides for you</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -560,7 +578,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The demonstration phenotype was simulated from a known causal variant, <code>9:133249045:A:G</code>. Every statement below can therefore be scored against the truth: does the credible set contain it, and where does it rank? On real data you never know this. Take the opportunity while it lasts.</p>
+<p>The demonstration phenotype was simulated from a known causal variant, <code>9:133273682:A:T</code>. Every statement below can therefore be scored against the truth: does the credible set contain it, and where does it rank? On real data you never know this. Take the opportunity while it lasts.</p>
 </div>
 </div>
 <hr>
@@ -610,6 +628,10 @@ window.Quarto = {
 <section id="the-result-in-the-european-set" class="level3">
 <h3 class="anchored" data-anchor-id="the-result-in-the-european-set">The result in the European set</h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <tbody>
 <tr class="odd">
 <td>Variants in the region</td>
@@ -617,21 +639,26 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td>Variants in the 95% credible set</td>
-<td><strong>77</strong></td>
+<td><strong>11</strong></td>
 </tr>
 <tr class="odd">
-<td>Top variant</td>
-<td><code>9:133249045:A:G</code>, posterior probability 0.51</td>
+<td>Span of the set</td>
+<td>12.2 kb, 133,261,662 to 133,273,813</td>
 </tr>
 <tr class="even">
+<td>Top variant</td>
+<td><code>9:133266804:G:T</code>, posterior probability 0.24</td>
+</tr>
+<tr class="odd">
 <td>Simulated causal variant in the set</td>
-<td>yes, ranked first</td>
+<td>yes, <strong>ranked third</strong>, posterior 0.13</td>
 </tr>
 </tbody>
 </table>
-<p>The method puts the true causal variant at the top, which is reassuring, and then spreads the remaining half of the probability across 76 other variants, which is the honest part. A credible set of that size is not a shortlist for functional work. Those 76 span 628 kb, from 132,968,574 to 133,596,524, and only 32 of the 77 fall inside <em>ABO</em> itself; the rest sit up to 300 kb away on either side. It is a statement that at this sample size the locus cannot be resolved further, and reporting it as a gene-level finding would misrepresent what the data support.</p>
+<p>Read the last two rows together, because they are the finding. Eleven variants across 12 kb is a tight set, tight enough to be a real shortlist for functional work, and much better than this sample size might lead you to expect. But the variant at the top of it is <strong>not</strong> the causal one. The causal variant is third, with half the posterior of the leader.</p>
+<p>This is the ordinary situation and it is why a lead variant is not a conclusion. The eleven variants are in tight linkage disequilibrium and carry one signal between them; which of them posts the largest estimate is decided by noise, and the method correctly refuses to commit, spreading probability across all eleven rather than concentrating it on the winner of a coin toss.</p>
 <p><img src="results/pdac_demo_06_regional.png" class="img-fluid"></p>
-<p>The lower panel is the one to read. Probability is not concentrated on a peak, it is scattered across the region, because the causal variant is correlated with many others and the data cannot distinguish them.</p>
+<p>The lower panel is the one to read. Probability is spread across eleven neighbouring variants rather than concentrated on one, because they are correlated closely enough that the data cannot separate them.</p>
 <hr>
 </section>
 </section>
@@ -651,34 +678,49 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td>Variants in the 95% credible set</td>
-<td>77</td>
-<td><strong>1</strong></td>
+<td>11</td>
+<td><strong>9</strong></td>
 </tr>
 <tr class="even">
 <td>Posterior probability of the top variant</td>
-<td>0.51</td>
-<td><strong>0.99</strong></td>
+<td>0.24</td>
+<td><strong>0.43</strong></td>
 </tr>
 <tr class="odd">
-<td>Is it the true causal variant</td>
-<td>yes</td>
-<td>yes</td>
+<td>Rank of the true causal variant</td>
+<td>third</td>
+<td><strong>first</strong></td>
 </tr>
 </tbody>
 </table>
-<div class="callout callout-style-default callout-important callout-titled" title="Why the set collapses, and why this is not just more power">
+<div class="callout callout-style-default callout-important callout-titled" title="What ancestral diversity actually bought here">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Why the set collapses, and why this is not just more power
+<span class="screen-reader-only">Important</span>What ancestral diversity actually bought here
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>More samples alone would sharpen the P value without necessarily resolving the locus. What resolves it is that linkage disequilibrium <strong>differs between populations</strong>. A variant correlated with the causal one in Europeans may not be correlated with it in Africans, so a marker that cannot be distinguished within one ancestry is distinguished by disagreement between ancestries. The causal variant is the one that behaves consistently everywhere.</p>
-<p>This is the same phenomenon seen from the other side in Section 5, where the causal variant showed no heterogeneity while its correlated neighbours in the same window reached I² values above 70%. Heterogeneity at the proxies and none at the cause is the signature; here it becomes resolution.</p>
-<p>It is also the strongest practical argument for recruiting beyond European ancestry that this guide can make, and it does not depend on fairness or on generalisability, both of which are true but are arguments of a different kind. Ancestral diversity is a statistical instrument for localising causal variants, and a study confined to one ancestry gives that instrument up.</p>
+<p>The set barely shrank, from eleven variants to nine. If narrowing were the only benefit, this would be a poor return.</p>
+<p>Look at the ranking instead. In the European analysis the causal variant sat third, behind two neighbours that happened to post larger estimates. Across the three strata it moves to <strong>first</strong>, and its posterior nearly doubles. Nothing about the causal variant changed; what changed is that the variants competing with it no longer agree with it in every population.</p>
+<p>That is the mechanism. Linkage disequilibrium <strong>differs between populations</strong>, so a variant correlated with the causal one in Europeans may not be correlated with it in Africans. A marker indistinguishable within one ancestry is distinguished by disagreement between ancestries, and the variant that behaves consistently everywhere is the one that is doing the work.</p>
+<p>More samples of the same ancestry would have sharpened the <em>P</em> value without necessarily changing the order. That distinction matters when planning recruitment: ancestral diversity is a statistical instrument for localising causal variants, not merely a larger <em>n</em>. A study confined to one ancestry gives that instrument up, and the argument does not rest on fairness or generalisability, both of which are true but are arguments of a different kind.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="A caution the textbook version of this story omits">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A caution the textbook version of this story omits
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The mirror image of this argument is that the causal variant should show no heterogeneity across populations while its proxies do. That is the theory, and it is sound.</p>
+<p>It is not what this dataset shows. In <a href="../../sections/05_meta_analysis/05_meta_analysis.html">Meta-analysis</a> the causal variant has the <strong>highest</strong> I² in the region, 41.5%, while three of its non-causal neighbours have none, because with fewer than 320 individuals per stratum I² is barely estimable. Do not use heterogeneity as a causality detector at this sample size. The resolution gain above is real and is visible in the posteriors; the heterogeneity signature that supposedly explains it is not.</p>
 </div>
 </div>
 <hr>
@@ -1125,6 +1167,9 @@ window.Quarto = {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" class="pagination-link" aria-label="Linkage disequilibrium and what it decides for you">
+        <span class="nav-page-text">Linkage disequilibrium and what it decides for you</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

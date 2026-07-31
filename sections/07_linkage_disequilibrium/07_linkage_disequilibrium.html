@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>How to carry out a Genome-Wide Association Study – How to carry out a GWAS</title>
+<title>Linkage disequilibrium and what it decides for you – How to carry out a GWAS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,32 +20,67 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./getting_started.html" rel="next">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-969ddfa49e00a70eb3423444dbc81f6c.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-065a5179aebd64318d7ea99d77b64a9e.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-bad0ee1f8923344779b963586a61fdae.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1ee2027f95721f733021c1cb64b93e1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -75,7 +110,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -249,7 +284,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Home</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html">What sets the resolution</a></li><li class="breadcrumb-item"><a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html">Linkage disequilibrium and what it decides for you</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -263,7 +298,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
-      <a href="./index.html" class="sidebar-logo-link">
+      <a href="../../index.html" class="sidebar-logo-link">
       </a>
       <div class="sidebar-tools-main">
   <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
@@ -278,7 +313,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Home</span></a>
   </div>
 </li>
@@ -293,7 +328,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">
+  <a href="../../getting_started.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Before you start: setup</span></a>
   </div>
 </li>
@@ -310,7 +345,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/01A_study_design/01A_study_design.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Genotyping technologies and file formats</span></a>
   </div>
 </li>
@@ -327,7 +362,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/01B_genotyping_qc/01B_genotyping_qc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Genotyping quality control</span></a>
   </div>
 </li>
@@ -344,7 +379,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/02_population_stratification/02_population_stratification.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Population stratification</span></a>
   </div>
 </li>
@@ -361,7 +396,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/03B_statistical_power/03B_statistical_power.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/03B_statistical_power/03B_statistical_power.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Statistical power</span></a>
   </div>
 </li>
@@ -378,7 +413,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/04A_association_binary/04A_association_binary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Association testing: case-control</span></a>
   </div>
 </li>
@@ -395,7 +430,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/05_meta_analysis/05_meta_analysis.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/05_meta_analysis/05_meta_analysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Meta-analysis</span></a>
   </div>
 </li>
@@ -412,7 +447,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/06_finemapping_annotation/06_finemapping_annotation.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Fine mapping</span></a>
   </div>
 </li>
@@ -420,16 +455,16 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
  <span class="menu-text">What sets the resolution</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" class="sidebar-item-text sidebar-link">
+  <a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Linkage disequilibrium and what it decides for you</span></a>
   </div>
 </li>
@@ -445,21 +480,22 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-is-a-gwas" id="toc-what-is-a-gwas" class="nav-link active" data-scroll-target="#what-is-a-gwas">What is a GWAS?</a></li>
-  <li><a href="#why-pancreatic-cancer" id="toc-why-pancreatic-cancer" class="nav-link" data-scroll-target="#why-pancreatic-cancer">Why pancreatic cancer?</a></li>
-  <li><a href="#who-this-guide-is-for" id="toc-who-this-guide-is-for" class="nav-link" data-scroll-target="#who-this-guide-is-for">Who this guide is for</a></li>
-  <li><a href="#how-to-use-this-guide" id="toc-how-to-use-this-guide" class="nav-link" data-scroll-target="#how-to-use-this-guide">How to use this guide</a></li>
+  <li><a href="#ld-is-a-property-of-a-population-not-of-the-genome" id="toc-ld-is-a-property-of-a-population-not-of-the-genome" class="nav-link active" data-scroll-target="#ld-is-a-property-of-a-population-not-of-the-genome">01 - LD is a property of a population, not of the genome</a></li>
+  <li><a href="#measuring-it-on-the-demonstration-data" id="toc-measuring-it-on-the-demonstration-data" class="nav-link" data-scroll-target="#measuring-it-on-the-demonstration-data">02 - Measuring it on the demonstration data</a></li>
+  <li><a href="#the-consequence-resolution-is-set-before-you-choose-a-method" id="toc-the-consequence-resolution-is-set-before-you-choose-a-method" class="nav-link" data-scroll-target="#the-consequence-resolution-is-set-before-you-choose-a-method">03 - The consequence: resolution is set before you choose a method</a></li>
+  <li><a href="#three-practical-consequences" id="toc-three-practical-consequences" class="nav-link" data-scroll-target="#three-practical-consequences">04 - Three practical consequences</a></li>
+  <li><a href="#key-decisions-on-this-page" id="toc-key-decisions-on-this-page" class="nav-link" data-scroll-target="#key-decisions-on-this-page">Key decisions on this page</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/07_linkage_disequilibrium/07_linkage_disequilibrium.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html">What sets the resolution</a></li><li class="breadcrumb-item"><a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html">Linkage disequilibrium and what it decides for you</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">How to carry out a Genome-Wide Association Study</h1>
-<p class="subtitle lead">A decision-focused, reproducible guide using pancreatic cancer as a worked example</p>
+<h1 class="title">Linkage disequilibrium and what it decides for you</h1>
+<p class="subtitle lead">Why the resolution of a fine-mapping analysis is set by the population, not by the method</p>
 </div>
 
 
@@ -476,54 +512,134 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-default callout-note callout-titled" title="About this guide">
+<p>Every association a GWAS reports is an association with a <em>region</em>, not with a variant. The scan tests markers, and a marker is informative only because it is correlated with whatever is actually causal nearby. That correlation is linkage disequilibrium, and it is the reason the method works at all.</p>
+<p>It is also the reason the method stops working at a certain point. LD is what lets a genotyping array of 400,000 markers stand in for three billion bases; it is equally what prevents the resulting signal from being narrowed to one variant. The same property does both, and no analysis can have the first without the second.</p>
+<p>This page is about the second half of that trade, because it is the half that tutorials skip. It concerns how the guide’s fine-mapping result should be read, and it makes a case for ancestral diversity in genetic studies that rests on resolution rather than on fairness.</p>
+<hr>
+<section id="ld-is-a-property-of-a-population-not-of-the-genome" class="level2">
+<h2 class="anchored" data-anchor-id="ld-is-a-property-of-a-population-not-of-the-genome">01 - LD is a property of a population, not of the genome</h2>
+<p><strong>Why.</strong> There is no such thing as <em>the</em> linkage disequilibrium between two variants. There is the LD between them in a particular population, and it can differ severalfold between populations at the same pair of sites.</p>
+<p>The reason is demographic history. LD is created by drift and destroyed by recombination, so the balance between them depends on effective population size. A population that has been small has more LD, because its members are closer relatives and fewer recombination events separate them; a population that has been large has less, because recombination has had more independent opportunities to break associations apart <mark>doi:10.1534/genetics.114.166454</mark>. Bottlenecks and expansions leave distinct and long-lasting signatures on the whole LD curve, and those signatures persist for hundreds of generations after the demographic event that caused them <mark>doi:10.1534/genetics.114.166454</mark>.</p>
+<p>For human populations, one consequence dominates everything else. African populations have the largest ancestral effective size and did not pass through the out-of-Africa bottleneck; non-African populations did. LD therefore extends further in Europe and East Asia than in Africa, and this has been documented at genome scale since the first surveys <mark>PMID:11346797</mark> <mark>PMID:11967554</mark>.</p>
+<hr>
+</section>
+<section id="measuring-it-on-the-demonstration-data" class="level2">
+<h2 class="anchored" data-anchor-id="measuring-it-on-the-demonstration-data">02 - Measuring it on the demonstration data</h2>
+<p><strong>Why.</strong> The statement above is standard and you should not take it on trust when you can check it in the dataset you are already using.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> scripts/07_linkage_disequilibrium/01_ld_decay.sh</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The script computes pairwise r² among common variants across the <em>ABO</em> region, separately within each ancestry group, and averages by physical distance.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Distance between variants</th>
+<th style="text-align: right;">European</th>
+<th style="text-align: right;">African</th>
+<th style="text-align: right;">East Asian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0-10 kb</td>
+<td style="text-align: right;">0.272</td>
+<td style="text-align: right;"><strong>0.184</strong></td>
+<td style="text-align: right;">0.344</td>
+</tr>
+<tr class="even">
+<td>10-25 kb</td>
+<td style="text-align: right;">0.122</td>
+<td style="text-align: right;"><strong>0.063</strong></td>
+<td style="text-align: right;">0.173</td>
+</tr>
+<tr class="odd">
+<td>25-50 kb</td>
+<td style="text-align: right;">0.047</td>
+<td style="text-align: right;"><strong>0.022</strong></td>
+<td style="text-align: right;">0.089</td>
+</tr>
+<tr class="even">
+<td>50-100 kb</td>
+<td style="text-align: right;">0.031</td>
+<td style="text-align: right;"><strong>0.010</strong></td>
+<td style="text-align: right;">0.029</td>
+</tr>
+<tr class="odd">
+<td>100-200 kb</td>
+<td style="text-align: right;">0.018</td>
+<td style="text-align: right;">0.006</td>
+<td style="text-align: right;">0.013</td>
+</tr>
+</tbody>
+</table>
+<p>Read the African column against the other two. At 25 to 50 kb, average r² in the African group is less than half the European value and about a quarter of the East Asian one. The ordering is the same at every distance, and it is the ordering that population history predicts.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="What this is not">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>About this guide
+<span class="screen-reader-only">Note</span>What this is not
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This is the companion website to the methodology manuscript developed within the <strong>TRANSPAN COST Action (CA21116), Working Group 1</strong>; the target journal is to be defined. It pairs annotated <strong>PLINK 2</strong> and <strong>R</strong> code with a fully open, reproducible demo dataset, and is written for master’s students, clinicians and early-career researchers <strong>without</strong> a bioinformatics background.</p>
+<p>This is 288 African individuals at one locus on one array, not a genome-wide estimate of LD decay. The magnitudes here should not be quoted as such. What the comparison establishes is the <em>direction and the size of the difference between groups measured in the same way on the same variants</em>, which is the only thing the next section needs.</p>
 </div>
 </div>
-<section id="what-is-a-gwas" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-a-gwas">What is a GWAS?</h2>
-<p>A genome-wide association study (GWAS) tests the statistical <strong>association</strong> between <strong>genetic variants</strong>, typically single-nucleotide polymorphisms (SNPs), and a <strong>trait</strong> across the entire genome, in order to identify genetic factors that contribute to complex traits and diseases.</p>
+<hr>
 </section>
-<section id="why-pancreatic-cancer" class="level2">
-<h2 class="anchored" data-anchor-id="why-pancreatic-cancer">Why pancreatic cancer?</h2>
-<p>Pancreatic ductal adenocarcinoma (PDAC) is the deliberate case study throughout this guide: a <strong>relatively rare, multifactorial cancer</strong> with a poorly characterised genetic component. Single-centre studies are underpowered, and international consortia, such as PanScan, PanC4 and PANDoRA, are the rule rather than the exception. Teaching GWAS under these realistically difficult conditions makes the methodological decisions more transparent than a large, well-powered textbook example would: a correctly executed pipeline does not, on its own, guarantee a genome-wide significant result, and this guide is built to show why.</p>
+<section id="the-consequence-resolution-is-set-before-you-choose-a-method" class="level2">
+<h2 class="anchored" data-anchor-id="the-consequence-resolution-is-set-before-you-choose-a-method">03 - The consequence: resolution is set before you choose a method</h2>
+<p><strong>Why.</strong> Fine mapping asks which variant in a region is causal. It can only distinguish variants that the data distinguish. Two variants in perfect LD carry identical information about every phenotype, so no amount of statistical sophistication, and no increase in sample size, will ever separate them.</p>
+<p>The demonstration dataset makes this concrete. Counting variants in strong LD (r² &gt; 0.8) with the causal variant, within each group:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th style="text-align: right;">European</th>
+<th style="text-align: right;">African</th>
+<th style="text-align: right;">East Asian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Variants indistinguishable from the causal one</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;"><strong>1</strong></td>
+<td style="text-align: right;">11</td>
+</tr>
+</tbody>
+</table>
+<p>This single table explains the fine-mapping result of <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html">Fine mapping</a> before any Bayes factor is computed. The European credible set contains eleven variants because Europe contains eleven variants that behave identically at this locus. The credible set is not eleven wide because the method is weak; it is eleven wide because the population is.</p>
+<p>In the African group the same locus resolves to a single variant. The causal variant is separable there and is not separable in Europe, and that difference was fixed tens of thousands of years before anyone collected a sample.</p>
+<div class="callout callout-style-default callout-important callout-titled" title="A small credible set is not a resolved locus">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A small credible set is not a resolved locus
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The two statements sound alike and are not. A credible set of eleven variants spanning 12 kb looks tidy, and a reader may take the tidiness as success. It is not: it is a compact haplotype block, and the set is small because the region is small, not because the analysis resolved anything within it. In the African group the same locus resolves to one variant, and that is resolution. Report the span, the number of variants, and the local LD alongside the posterior probabilities, so that a reader can tell a resolved locus from a region where resolution was never available <mark>doi:10.1038/nrg1123</mark>.</p>
+</div>
+</div>
+<hr>
 </section>
-<section id="who-this-guide-is-for" class="level2">
-<h2 class="anchored" data-anchor-id="who-this-guide-is-for">Who this guide is for</h2>
-<p>The tutorial is written for two kinds of reader:</p>
+<section id="three-practical-consequences" class="level2">
+<h2 class="anchored" data-anchor-id="three-practical-consequences">04 - Three practical consequences</h2>
+<p><strong>The LD reference must match the ancestry of the analysis.</strong> Summary-statistic fine-mapping and conditional analysis both need an LD matrix, and if that matrix comes from a population with different LD than the study sample, the method is being told correlations that do not hold in the data. This produces credible sets that are confidently wrong rather than honestly wide. Where the study is multi-ancestry, one reference cannot serve, and per-stratum LD is required.</p>
+<p><strong>Diversity buys resolution, not only equity.</strong> The argument for including non-European participants in genetic studies is usually made on grounds of fairness, and that argument is sufficient on its own. But it is not the only one. The table above shows a locus that is unresolvable in Europe and resolvable in Africa, in the same data, with the same method. Shorter LD is more information per variant. A study that recruits only Europeans is not merely leaving other populations unserved; it is discarding the resolution that would have answered its own question <mark>PMID:11037333</mark>.</p>
+<p><strong>Trans-ancestry analysis helps when the strata are large enough to be heard.</strong> In this demonstration, combining the three groups moves the causal variant to first place in the credible set but barely shrinks the set, because the African group that could separate the variants contributes 288 people against 608 Europeans. The mechanism is real and the sample is too small to exploit it. That is the honest reading, and it is also the argument for building consortia in which non-European strata are large enough to change the answer rather than large enough to be mentioned.</p>
+<hr>
+</section>
+<section id="key-decisions-on-this-page" class="level2">
+<h2 class="anchored" data-anchor-id="key-decisions-on-this-page">Key decisions on this page</h2>
 <ul>
-<li><strong>Beginners</strong>, with little or no previous experience of GWAS, bioinformatics or the command line. Every command is given in full, together with the output you should expect to see.</li>
-<li><strong>Intermediate and advanced users</strong>, who already work with genetic data and want a transparent, reproducible teaching workflow in which each decision is visible rather than buried in a wrapper.</li>
+<li>Whether the LD reference panel matches the ancestry of each analysed stratum, and what was done where it could not.</li>
+<li>Whether reported credible sets are accompanied by their span and by the local LD, so that width can be attributed to the population rather than to the method.</li>
+<li>Whether the study design treats ancestral diversity as a source of resolution at the analysis stage, or only as a recruitment target.</li>
 </ul>
-</section>
-<section id="how-to-use-this-guide" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-use-this-guide">How to use this guide</h2>
-<p>Every analysis step is shown as a real command you can run yourself on the open demo dataset. The sections released so far take you from raw genotypes through quality control, population structure, association testing, meta-analysis and fine mapping; the remaining steps are added as each is completed.</p>
-<p>👉 <strong>Start here:</strong> <a href="./getting_started.html">Before you start, setup and your first PLINK command</a></p>
-<div class="callout callout-style-default callout-tip callout-titled" title="No coding experience?">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>No coding experience?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>You do <strong>not</strong> need to know how to program. Every command is given in full, with an explanation of what it does and what the output should look like. If you can copy, paste and press Enter, you can follow this guide.</p>
-</div>
-</div>
-<p>The structure is intentionally step by step. Some tasks are split across more than one script even where they could be merged into a single command, because the purpose is to make each decision visible and to let you see what each filter actually removed.</p>
-<p>For the same reason, this is not a high-performance computing workflow and it is not a template for large-scale parallel processing. If you are working with a full consortium dataset, run the same steps in an appropriate computing environment and distribute jobs according to your institution’s guidelines.</p>
+<p>Next: <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html">Fine mapping</a>, where these constraints determine the result.</p>
 
 
 </section>
@@ -944,11 +1060,11 @@ ul.task-list li input[type="checkbox"] {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html" class="pagination-link" aria-label="Fine mapping">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Fine mapping</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./getting_started.html" class="pagination-link" aria-label="Before you start: setup">
-        <span class="nav-page-text">Before you start: setup</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -956,4 +1072,4 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/edit/main/sections/07_linkage_disequilibrium/07_linkage_disequilibrium.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mgentiluomo/how-to-gwas-pdac/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

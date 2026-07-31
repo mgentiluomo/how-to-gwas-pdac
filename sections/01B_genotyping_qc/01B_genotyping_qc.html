@@ -455,6 +455,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">What sets the resolution</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium and what it decides for you</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -822,19 +839,19 @@ results/qc/pdac_demo_06_filt.fam</code></pre>
 <tbody>
 <tr class="odd">
 <td>1e-6</td>
-<td style="text-align: right;">14,378</td>
+<td style="text-align: right;">14,899</td>
 </tr>
 <tr class="even">
 <td>1e-10</td>
-<td style="text-align: right;">2,278</td>
+<td style="text-align: right;">2,416</td>
 </tr>
 <tr class="odd">
 <td>1e-15</td>
-<td style="text-align: right;">172</td>
+<td style="text-align: right;">168</td>
 </tr>
 <tr class="even">
 <td>1e-20</td>
-<td style="text-align: right;">12</td>
+<td style="text-align: right;">10</td>
 </tr>
 <tr class="odd">
 <td>1e-30</td>
@@ -842,7 +859,7 @@ results/qc/pdac_demo_06_filt.fam</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Computed within each ancestry group instead, at the same <code>1e-6</code>, the counts are four in the European group, none in the African and one in the East Asian: <strong>five variants</strong>.</p>
+<p>Computed within each ancestry group instead, at the same <code>1e-6</code>, the counts are one in the European group, none in the African and six in the East Asian: <strong>seven variants</strong>.</p>
 <div class="callout callout-style-default callout-important callout-titled" title="Why a gentler threshold does not fix it">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -853,7 +870,7 @@ results/qc/pdac_demo_06_filt.fam</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The obvious response to 14,378 exclusions is to lower the threshold until the number looks reasonable. It does not work, and the reason is worth seeing.</p>
+<p>The obvious response to 14,899 exclusions is to lower the threshold until the number looks reasonable. It does not work, and the reason is worth seeing.</p>
 <p>The twelve variants that still fail the pooled test at <code>1e-20</code> have <strong>no overlap at all</strong> with the five that fail within a group. The two tests are not a lenient and a stringent version of one procedure; they are measuring different things. No pooled threshold exists at which the test stops detecting structure and starts detecting error.</p>
 </div>
 </div>
@@ -1072,23 +1089,23 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 </tr>
 <tr class="even">
 <td>PLINK2 <code>--king-cutoff</code> removed samples</td>
-<td style="text-align: right;">167</td>
+<td style="text-align: right;">166</td>
 </tr>
 <tr class="odd">
 <td>Phenotype-aware removed samples</td>
-<td style="text-align: right;">195</td>
+<td style="text-align: right;">197</td>
 </tr>
 <tr class="even">
 <td>Phenotype-aware removed percent</td>
-<td style="text-align: right;">13.8</td>
+<td style="text-align: right;">14.0</td>
 </tr>
 <tr class="odd">
 <td>Controls removed</td>
-<td style="text-align: right;">158</td>
+<td style="text-align: right;">167</td>
 </tr>
 <tr class="even">
 <td>Cases removed</td>
-<td style="text-align: right;">37</td>
+<td style="text-align: right;">30</td>
 </tr>
 </tbody>
 </table>
@@ -1102,7 +1119,7 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>In the demo run, phenotype-aware pruning removed <strong>195 samples</strong>. That is a substantial sample loss. If a real cohort loses many samples at this step, inspect <code>pdac_demo_07_pruning_components.tsv</code>, <code>pdac_demo_07_relatedness_pruning_diagnostics.tsv</code>, and <code>pdac_demo_07_removal_decisions.tsv</code> before continuing.</p>
+<p>In the demo run, phenotype-aware pruning removed <strong>197 samples</strong>. That is a substantial sample loss. If a real cohort loses many samples at this step, inspect <code>pdac_demo_07_pruning_components.tsv</code>, <code>pdac_demo_07_relatedness_pruning_diagnostics.tsv</code>, and <code>pdac_demo_07_removal_decisions.tsv</code> before continuing.</p>
 </div>
 </div>
 </section>
@@ -1116,7 +1133,7 @@ results/qc/pdac_demo_07_filt.fam</code></pre>
 results/qc/pdac_demo_08_filt.bim
 results/qc/pdac_demo_08_filt.fam
 results/qc/pdac_demo_08_afreq.afreq</code></pre>
-<p>In the demo run this step removed <strong>6,820 variants</strong>, leaving <strong>414,695 variants</strong> and <strong>1,217 samples</strong>.</p>
+<p>In the demo run this step removed <strong>6,858 variants</strong>, leaving <strong>414,662 variants</strong> and <strong>1,215 samples</strong>.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Why not use MAF 5%?">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1345,28 +1362,28 @@ results/qc/pdac_demo_09_qc_report.pdf</code></pre>
 </tr>
 <tr class="even">
 <td>Relatedness</td>
-<td style="text-align: right;">1,217</td>
+<td style="text-align: right;">1,215</td>
 <td style="text-align: right;">421,520</td>
-<td style="text-align: right;">195</td>
+<td style="text-align: right;">197</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td>MAF filter</td>
-<td style="text-align: right;">1,217</td>
-<td style="text-align: right;">414,700</td>
+<td style="text-align: right;">1,215</td>
+<td style="text-align: right;">414,662</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">6,820</td>
+<td style="text-align: right;">6,858</td>
 </tr>
 <tr class="even">
 <td>Hardy-Weinberg, within ancestry (Section 2)</td>
-<td style="text-align: right;">1,217</td>
-<td style="text-align: right;">414,695</td>
+<td style="text-align: right;">1,215</td>
+<td style="text-align: right;">414,655</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">5</td>
+<td style="text-align: right;">7</td>
 </tr>
 </tbody>
 </table>
-<p>Final retention in the demo run was <strong>83.3% of samples</strong> and <strong>96.4% of variants</strong>.</p>
+<p>Final retention in the demo run was <strong>83.2% of samples</strong> and <strong>96.4% of variants</strong>.</p>
 </section>
 </section>
 <section id="pdac-specific-notes" class="level2">

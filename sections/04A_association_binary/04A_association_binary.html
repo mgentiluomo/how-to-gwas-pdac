@@ -455,6 +455,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false">
+ <span class="menu-text">What sets the resolution</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../sections/07_linkage_disequilibrium/07_linkage_disequilibrium.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linkage disequilibrium and what it decides for you</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
     </ul>
     </div>
 </nav>
@@ -563,7 +580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>For a single, moderately imbalanced, essentially unrelated cohort of this size, logistic regression with a Firth fallback is adequate and transparent. Two situations call for something else. Where relatedness is extensive enough that pruning would cost a substantial share of cases, retain those individuals and use a mixed model or whole-genome regression: SAIGE or REGENIE. Where a modest case series is merged with a very large external control set, increasingly common with biobank controls, a saddlepoint-corrected method is required rather than optional, because standard asymptotics fail at those ratios.</p>
 </div>
 </div>
-<p>The log reports what was actually analysed. On the demonstration data: <strong>224 cases and 387 controls</strong>.</p>
+<p>The log reports what was actually analysed. On the demonstration data: <strong>219 cases and 392 controls</strong>.</p>
 <hr>
 </section>
 <section id="checking-the-result-before-believing-it" class="level2">
@@ -572,7 +589,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> scripts/04A_association_binary/03_qq_lambda.R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="results/pdac_demo_04A_qq.png" class="img-fluid"></p>
 <p>Points should follow the diagonal, lifting off only in the extreme upper tail where true associations live. A curve that rises above the line along its whole length means inflation affecting every variant, which is a property of the analysis rather than of biology.</p>
-<p>On the demonstration data <strong>λ = 1.028</strong>, and λ₁₀₀₀ = 1.100.</p>
+<p>On the demonstration data <strong>λ = 1.016</strong>, and λ₁₀₀₀ = 1.058.</p>
 <div class="callout callout-style-default callout-warning callout-titled" title="Compute lambda correctly">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -640,19 +657,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tbody>
 <tr class="odd">
 <td>Variant</td>
-<td>9:133249045:A:G, at <em>ABO</em> (9q34.2)</td>
+<td>9:133266804:G:T, at <em>ABO</em> (9q34.2)</td>
 </tr>
 <tr class="even">
-<td>Effect allele</td>
-<td>G, frequency 0.0855</td>
+<td>Effect allele reported by PLINK</td>
+<td>T, frequency 0.386</td>
 </tr>
 <tr class="odd">
-<td>Odds ratio</td>
-<td>3.90 (95% CI 2.47 to 6.15)</td>
+<td>Odds ratio as printed</td>
+<td>0.415 (95% CI 0.312 to 0.552)</td>
 </tr>
 <tr class="even">
+<td>Odds ratio per copy of the other allele</td>
+<td>2.41 (95% CI 1.81 to 3.20)</td>
+</tr>
+<tr class="odd">
 <td>P</td>
-<td>5.5 × 10⁻⁹</td>
+<td>1.4 × 10⁻⁹</td>
+</tr>
+<tr class="even">
+<td>Variants at <em>P</em> &lt; 5 × 10⁻⁸</td>
+<td>11, all in this region</td>
 </tr>
 </tbody>
 </table>
@@ -660,19 +685,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-important callout-titled" title="The effect size is wrong, and knowing by how much is the lesson">
+<div class="callout callout-style-default callout-important callout-titled" title="The lead variant is not the causal variant">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>The effect size is wrong, and knowing by how much is the lesson
+<span class="screen-reader-only">Important</span>The lead variant is not the causal variant
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The simulated odds ratio at this variant is <strong>2.40</strong>. The analysis recovered <strong>3.90</strong>, with a confidence interval whose lower bound, 2.47, sits just above the truth. The estimate is inflated by roughly 62%.</p>
-<p>This is the <strong>winner’s curse</strong>. When an effect size is read from the same underpowered scan that discovered it, only upward fluctuations cross the significance threshold, so surviving estimates are systematically too large. What is unusual here is that the truth is known, so the bias can be measured instead of merely anticipated.</p>
-<p>In a real study the same distortion operates invisibly. Effect estimates from a discovery scan should not be carried into risk prediction, into meta-analytic weighting, or into the power calculation for a replication study without correction. Where replication data exist, take effect sizes from the replication or the combined analysis.</p>
+<p>The phenotype was simulated from <code>9:133273682:A:T</code>. That variant is <strong>not</strong> the one at the top of the scan. It sits 6.9 kb away, at <em>P</em> = 4.4 × 10⁻⁹ against the lead’s 1.4 × 10⁻⁹, and its odds ratio per copy of the risk allele is 2.34 (95% CI 1.76 to 3.10).</p>
+<p>The two variants are in tight linkage disequilibrium and carry the same signal. Which of them reaches the top is decided by sampling noise, and with eleven variants above genome-wide significance in this region the one that wins is, by construction, the one whose estimate drifted furthest. Selection is operating here, not on the size of the effect but on the identity of the variant reported.</p>
+<p>This is why a lead variant should be reported as the top of a credible set rather than as a finding, and it is what <a href="../../sections/06_finemapping_annotation/06_finemapping_annotation.html">Fine mapping</a> exists to resolve. In that section the causal variant ranks third among eleven in the European credible set, and first once the ancestry strata are combined.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Read the direction before reading the number">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Read the direction before reading the number
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>PLINK reports the effect of the allele in its <code>A1</code> column, which here is <code>T</code>. The risk allele is the other one, the reference <code>A</code>, and at this locus it is the <strong>major</strong> allele. That is why the printed odds ratio is 0.415 rather than something above 1. The reciprocal, 2.41, is the number to compare with anything stated on the risk-allele scale.</p>
+<p>Nothing is wrong with the output. The orientation is simply a property of how the tool reports, and getting it backwards is one of the most common ways a real analysis goes quietly astray, which is why <a href="../../sections/05_meta_analysis/05_meta_analysis.html">Meta-analysis</a> treats allele alignment as a first-order concern rather than a formatting detail.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Why there is no winner's curse to show here">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Why there is no winner’s curse to show here
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An underpowered scan overstates the effects it discovers, because only upward fluctuations cross the threshold. It is worth stating plainly that <strong>this did not happen at this locus</strong>, and why.</p>
+<p>The generative odds ratio is 2.60. The analysis recovers 2.34, slightly below rather than above. At the 99.1% power reported in <a href="../../sections/03B_statistical_power/03B_statistical_power.html">Statistical power</a> there is no selection to inflate anything: the variant was going to be detected whatever the noise did, so the estimate simply scatters around the truth.</p>
+<p>The rule generalises in the useful direction. The winner’s curse is a consequence of low power rather than a property of discovery, so the question to ask of any published effect size is what power produced it. An estimate obtained at 2% power, as TERT/CLPTM1L would have been here, should not be carried into risk prediction, into meta-analytic weighting or into a replication power calculation. An estimate obtained at 99% power can be.</p>
 </div>
 </div>
 <hr>
