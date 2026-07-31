@@ -101,9 +101,19 @@ concealed.
 
 The second is the second most replicated pancreatic cancer locus, at an effect
 size at the upper end of what the literature reports for cancer susceptibility
-variants, and the European scan misses it. It is recovered only when the three
-ancestry strata are combined. That is the argument for consortium meta-analysis
-made on an effect that is known to be real rather than on an absence.
+variants. The European scan misses it, and so does the meta-analysis. Combining
+the three strata raises its power from 2% to 29% and moves it from *P* = 0.16 to
+*P* = 0.02, a large relative gain that still leaves it far short of genome-wide
+significance.
+
+That is a more useful lesson than a rescue would have been. The effect is known
+to be real, because it was simulated, and the study still does not find it in
+either analysis. Meta-analysis is not a remedy for an underpowered scan; it is
+the only lever available, and this dataset shows how much more of it would be
+needed. Note also that the East Asian stratum alone reaches *P* = 0.007 while
+the combined result is weaker, because the African stratum happens to point the
+other way: with roughly 350 people per group, that is sampling noise, and it is
+worth showing rather than hiding.
 
 Covariates: male sex at an odds ratio of 1.30, matching the reported
 male-to-female incidence ratio for pancreatic cancer, and age at 1.50 per ten
@@ -142,27 +152,35 @@ analysis recovers the generative parameter before treating it as truth.**
 
 ## Expected results from the canonical run
 
-Two different quantities are reported below and they must not be conflated.
-`truth.tsv` records the effect recovered **in the full sample**, which is what
-the self-validation checks. The table here records the effect estimated **in the
+All figures below are measured from the canonical run recorded in
+`RUN_MANIFEST.txt`, not predicted.
+
+Two different quantities appear and they must not be conflated. `truth.tsv`
+records the effect recovered **in the full sample**, which is what the
+self-validation checks. The table here records what is estimated **in the
 European analysis set after quality control**, which is what a reader following
-the guide will obtain and which is subject to selection bias.
+the guide obtains and which is subject to selection bias. Note that the lead
+variant of the scan is not the causal variant: the causal one ranks third in the
+European credible set and first once the strata are combined.
 
 | Quantity | Value |
 |---|---|
-| Samples after quality control | 1,214 |
-| Variants after quality control | 414,415 |
-| European analysis set | 219 cases, 390 controls |
-| Effective sample size | 561 |
-| Genomic inflation factor | *(to be filled from the canonical run)* |
-| Genome-wide significant loci | 1, at *ABO* |
-| Lead variant | `9:133273682:A:T` |
-| *P* at the lead variant | 4.6e-9 |
-| Odds ratio at the lead variant | 2.33 |
-| *P* at TERT/CLPTM1L, Europeans | 0.15 |
-| *P* at TERT/CLPTM1L, three strata | 0.03 |
-| *ABO* credible set, Europeans | 11 variants |
-| *ABO* credible set, three strata | 9 variants |
+| Samples after quality control | 1,215 |
+| Variants after quality control | 414,662 |
+| European analysis set | 219 cases, 392 controls |
+| Effective sample size | 562 |
+| Genomic inflation factor | 1.016 |
+| Variants at *P* < 5e-8 | 11, all at *ABO* |
+| Lead variant | `9:133266804:G:T` |
+| *P* at the lead variant | 1.4e-9 |
+| Causal variant `9:133273682:A:T` | *P* = 4.4e-9, OR 0.43 |
+| Power at *ABO*, analysis set | 99.1% |
+| *P* at TERT/CLPTM1L, Europeans | 0.16 |
+| *P* at TERT/CLPTM1L, three strata | 0.02 |
+| Power at TERT/CLPTM1L, analysis set | 2.0% |
+| Power at TERT/CLPTM1L, three strata | 28.6% |
+| *ABO* credible set, Europeans | 11 variants, causal one ranked 3rd |
+| *ABO* credible set, three strata | 9 variants, causal one ranked 1st |
 
 If your numbers differ, check that you are using the release tag the guide links
 to rather than the most recent one.
