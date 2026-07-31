@@ -95,8 +95,8 @@ Three plots, each answering a different question.
 
 ![](results/pdac_demo_02_pca_scree.png)
 
-How many components carry real signal? On the demonstration data PC1 explains 47.9% of the
-variance and PC2 38.2%, then the curve collapses to 3.5% at PC3. That cliff is the signature of
+How many components carry real signal? On the demonstration data PC1 explains 47.7% of the
+variance and PC2 38.3%, then the curve collapses to 3.5% at PC3. That cliff is the signature of
 discrete continental ancestry: two components separate three groups, and everything after is
 noise and fine structure.
 
@@ -145,12 +145,12 @@ On the demonstration data:
 
 | | |
 |---|---|
-| QC-passed total | 1,217 |
+| QC-passed total | 1,215 |
 | European | 611 |
-| East Asian | 316 |
-| African | 290 |
-| **Analysis set** | **611: 224 cases, 387 controls** |
-| Effective sample size | 567.5 |
+| East Asian | 317 |
+| African | 287 |
+| **Analysis set** | **611: 219 cases, 392 controls** |
+| Effective sample size | 562.0 |
 
 The third strategy is the one to prefer whenever it is available, because it neither discards
 data nor assumes that effect sizes transfer between populations with different causal-allele
@@ -159,7 +159,7 @@ strata, which is the situation of most real rare-cancer cohorts, so the analysis
 European subset alone.
 
 ::: {.callout-note title="Effective sample size is the number that matters"}
-4 × cases × controls / (cases + controls) = 567.5, not 611. In an unbalanced design the effective
+4 × cases × controls / (cases + controls) = 562.0, not 611. In an unbalanced design the effective
 figure is what governs power, and it is what should be reported. Section 4A returns to what this
 number does and does not make detectable.
 :::
@@ -190,8 +190,8 @@ bash scripts/02_population_stratification/05_pca_within_eur.sh
 
 ![](results/pdac_demo_02_pca_eur_scree.png)
 
-Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.8% and PC2
-11.9%, and the curve declines gently instead of collapsing, which is what within-population
+Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2
+11.8%, and the curve declines gently instead of collapsing, which is what within-population
 structure looks like: continuous gradients rather than discrete groups.
 
 ::: {.callout-tip title="How many components should you keep?"}
@@ -223,21 +223,20 @@ anywhere is evidence against the variant.
 
 | Group | Controls tested | Variants failing |
 |---|---:|---:|
-| European | 387 | 4 |
-| African | 151 | 0 |
-| East Asian | 175 | 1 |
-| **Union** | | **5** |
+| European | 392 | 1 |
+| African | 149 | 0 |
+| East Asian | 176 | 6 |
+| **Union** | | **7** |
 
-Five, against the 14,378 the same threshold flagged on the pooled sample. The difference is not a
+Seven, against the 14,899 the same threshold flagged on the pooled sample. The difference is not a
 matter of degree. Almost every variant the pooled test rejected was rejected for having different
 allele frequencies in Europe, Africa and East Asia, which is true of a large part of the genome
 and says nothing whatever about genotyping quality.
 
 ::: {.callout-note title="What this cost, and what it bought"}
-Running the filter in the wrong place would have discarded 3.4% of the genome for no reason. It
+Running the filter in the wrong place would have discarded 3.5% of the genome for no reason. It
 would also have been invisible: the pipeline runs, the counts look plausible, and the association
-test that follows is well controlled either way. The genomic inflation factor is 1.028 with those
-variants and 1.028 without them.
+test that follows is well controlled either way. The genomic inflation factor is 1.016 either way.
 :::
 
 ---
