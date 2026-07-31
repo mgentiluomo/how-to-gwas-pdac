@@ -33,3 +33,12 @@ sections/**/results/*.id
 sections/**/results/*.prune.in
 sections/**/results/*.prune.out
 sections/**/results/*_visualizations.R
+
+# Canonical run artefacts. The pipeline writes into these; they are inputs and
+# intermediates, not results to be published, and demo_data alone is ~180 MB.
+# The small artefacts that ARE committed are copied into sections/*/results/
+# by scripts/dev/run_all.sh.
+/demo_data/
+/results/
+/logs/
+/data_processed/

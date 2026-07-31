@@ -42,6 +42,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
+die_early() { printf '\nFAILED: %s\n' "$*" >&2; exit 1; }
+
+# ---------------------------------------------------------------- 1. commit --
+# A result is only attributable to a commit if the tree matches that commit.
+if ! command -v git >/dev/null 2>&1; then
+  die_early "git not found. The run must be attributable to a commit."
+fi
+if [ -n "$(git status --porcelain)" ]; then
+  git status --short
+  die_early "the working tree has uncommitted changes. Commit or stash them first, \
+otherwise the recorded commit does not describe what actually ran."
+fi
+COMMIT="$(git rev-parse HEAD)"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+printf "Commit  %s\nBranch  %s\n\n" "$COMMIT" "$BRANCH"
+
+
 LOG_DIR="logs"
 MANIFEST="RUN_MANIFEST.txt"
 STARTED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
@@ -62,21 +79,6 @@ say " project root   $PROJECT_ROOT"
 say " data release   $DATA_TAG"
 say "==============================================================="
 
-# ---------------------------------------------------------------- 1. commit --
-# A result is only attributable to a commit if the tree matches that commit.
-if ! command -v git >/dev/null 2>&1; then
-  die "git not found. The run must be attributable to a commit."
-fi
-if [ -n "$(git status --porcelain)" ]; then
-  git status --short | tee -a "$MASTER_LOG"
-  die "the working tree has uncommitted changes. Commit or stash them first, \
-otherwise the recorded commit does not describe what actually ran."
-fi
-COMMIT="$(git rev-parse HEAD)"
-BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-say ""
-say "Commit  $COMMIT"
-say "Branch  $BRANCH"
 
 # ------------------------------------------------------------------ 2. data --
 say ""
