@@ -6,7 +6,7 @@
 [![Demo dataset](https://img.shields.io/badge/demo%20dataset-v0.1--data-green)](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data)
 [![License: MIT](https://img.shields.io/badge/code-MIT-lightgrey)](LICENSE)
 
-This repository is the companion resource for the methodology manuscript submitted to *Human Genomics*, developed within the **TRANSPAN COST Action (CA21116), Working Group 1**. It pairs a narrative on how to design and run a GWAS of a rare, genetically complex trait such as pancreatic cancer with an annotated PLINK 2 and R pipeline, demonstrated on a purpose-built demonstration dataset.
+This repository is the companion resource for the methodology manuscript developed within the **TRANSPAN COST Action (CA21116), Working Group 1**; target journal to be defined. It pairs a narrative on how to design and run a GWAS of a rare, genetically complex trait such as pancreatic cancer with an annotated PLINK 2 and R pipeline, demonstrated on a purpose-built demonstration dataset.
 
 The manuscript explains why each decision is made and when an analysis is or is not legitimate given the data in hand. This repository shows how each step is actually run. Neither replaces the other; they are intended to be used together.
 
@@ -124,7 +124,7 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branch and pull request workflo
 
 If you use this guide, the demonstration dataset or the accompanying scripts, please cite:
 
-> Gentiluomo M, Campa D, Farinella R, et al. How to carry out a genome-wide association study of a rare and complex trait: a decision-focused, reproducible guide using pancreatic ductal adenocarcinoma as a worked example. *Human Genomics*. In preparation.
+> Gentiluomo M, Campa D, Farinella R, et al. How to carry out a genome-wide association study of a rare and complex trait: a decision-focused, reproducible guide using pancreatic ductal adenocarcinoma as a worked example. Target journal to be defined. In preparation.
 
 A citable Zenodo archive of the code and demonstration dataset will be linked here on publication.
 
