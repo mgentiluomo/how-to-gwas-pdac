@@ -1,5 +1,5 @@
 Fine mapping summary, approximate Bayes factor, single causal variant
-Generated: 2026-07-31 12:49:53
+Generated: 2026-07-31 13:47:45
 Prior variance W = 0.04;  coverage = 0.95
 
 REGION

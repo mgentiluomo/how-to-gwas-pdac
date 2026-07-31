@@ -1,5 +1,5 @@
 Statistical power of the analysis set
-Generated: 2026-07-31 12:49:11
+Generated: 2026-07-31 13:46:58
 Threshold: P < 5e-08   target power: 80%
 
 ANALYSIS SET
@@ -33,12 +33,14 @@ POWER AT EFFECT SIZES THAT ACTUALLY OCCUR
 
 THE SIMULATED CAUSAL VARIANTS
   Power computed at the generative odds ratio and the observed frequency.
+  The risk allele is the reference allele at both loci, so an association
+  run reports the effect of the other allele and prints the reciprocal.
   9:133273682:A:T  (ABO 9q34.2)
-    generative OR 2.60 at frequency 0.393
+    generative OR 2.60, minor allele frequency 0.393
     power in the analysis set:  99.1%
     power across all strata:   100.0%
   5:1286401:C:A  (TERT/CLPTM1L 5p15.33)
-    generative OR 1.50 at frequency 0.492
+    generative OR 1.50, minor allele frequency 0.492
     power in the analysis set:   2.0%
     power across all strata:    28.6%
 
