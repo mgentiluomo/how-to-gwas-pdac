@@ -348,8 +348,8 @@ European group, none in the African and six in the East Asian: **seven variants*
 The obvious response to 14,899 exclusions is to lower the threshold until the number looks
 reasonable. It does not work, and the reason is worth seeing.
 
-The twelve variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
-five that fail within a group. The two tests are not a lenient and a stringent version of one
+The ten variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
+seven that fail within a group. The two tests are not a lenient and a stringent version of one
 procedure; they are measuring different things. No pooled threshold exists at which the test stops
 detecting structure and starts detecting error.
 :::
