@@ -368,13 +368,13 @@ Download files individually. If your system has `curl` but not `wget`, use the a
 cd ~/gwas_tutorial  # Make sure you're in your project folder
 
 # Download all 7 files
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bed -O demo_data/pdac_demo.bed
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.bim -O demo_data/pdac_demo.bim
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/pdac_demo.fam -O demo_data/pdac_demo.fam
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/phenotype.txt -O demo_data/phenotype.txt
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/covariates.txt -O demo_data/covariates.txt
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/survival.txt -O demo_data/survival.txt
-wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.1-data/sample_ancestry.tsv -O demo_data/sample_ancestry.tsv
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/pdac_demo.bed -O demo_data/pdac_demo.bed
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/pdac_demo.bim -O demo_data/pdac_demo.bim
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/pdac_demo.fam -O demo_data/pdac_demo.fam
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/phenotype.txt -O demo_data/phenotype.txt
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/covariates.txt -O demo_data/covariates.txt
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/survival.txt -O demo_data/survival.txt
+wget https://github.com/mgentiluomo/how-to-gwas-pdac/releases/download/v0.3-data/sample_ancestry.tsv -O demo_data/sample_ancestry.tsv
 ```
 
 :::

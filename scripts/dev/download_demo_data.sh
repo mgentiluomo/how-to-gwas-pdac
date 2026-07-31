@@ -22,7 +22,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 cd "$PROJECT_ROOT"
 
 REPO='mgentiluomo/how-to-gwas-pdac'
-TAG='v0.1-data'
+TAG='v0.3-data'
 BASE_URL="https://github.com/$REPO/releases/download/$TAG"
 
 DEST_DIR='demo_data'
@@ -79,15 +79,17 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Verifying SHA256 hashes..."
 echo ""
 
-# Define expected hashes (from GitHub Release v0.1-data).
+# Define expected hashes (from GitHub Release v0.3-data). The three genotype
+# files and sample_ancestry.tsv are unchanged from v0.1-data; the phenotype,
+# covariates and survival files were regenerated and their hashes differ.
 # This Bash-3-compatible format also works with the default macOS shell.
 HASHES=(
   "pdac_demo.bed d5c7a3c5816b70f3cb6c12b08b79940495aff5f32d765f5173c53dc46f64e984"
   "pdac_demo.bim 9399f4ab3a8929dd1feac345ad57a7c0b0a262574327a106b3371e32c50e5c0c"
   "pdac_demo.fam fb4f97191a32e108452d284054a033897d763e7acc138fb0c6a7f90a7fc129f3"
-  "phenotype.txt 6eb084e67daf5e06df7212aad8f9fd8f1df0929f4641a36f95c248a5939822cc"
-  "covariates.txt a0ee20ec8ca388bcf8986701c0843c236eb5da88b33d8540ad3cdf2e291561be"
-  "survival.txt 6525a67c087dc5d89f528be5190a1a93f3ce6d635e861170d29ac5046eea69bb"
+  "phenotype.txt e1b54b0519d84200aa91fa354153ae789c23c187a12d23415bdb0e7c30f60364"
+  "covariates.txt 70201ed41b39bf81ac6537d5b672262d914ed7a8d026caebc9947b721cadd735"
+  "survival.txt d68493ee84ae153cf494f818d69bf425489a048bf35e94b6ecc8b05c97163685"
   "sample_ancestry.tsv 9d78bb59aa1bb16c83c457dcf3c376fd500bd2ca55913c5690c33dae25c06e23"
 )
 
@@ -137,7 +139,7 @@ else
   echo ""
   echo "Solutions:"
   echo "  1. Delete mismatched files and re-download from:"
-  echo "     https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data"
+  echo "     https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.3-data"
   echo "  2. Or run this script again: bash scripts/dev/download_demo_data.sh"
   exit 1
 fi

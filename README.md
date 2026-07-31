@@ -3,7 +3,7 @@
 **A decision-focused, reproducible guide using pancreatic ductal adenocarcinoma (PDAC) as a worked example**
 
 [![Companion website](https://img.shields.io/badge/companion%20site-live-blue)](https://mgentiluomo.github.io/how-to-gwas-pdac/)
-[![Demo dataset](https://img.shields.io/badge/demo%20dataset-v0.1--data-green)](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data)
+[![Demo dataset](https://img.shields.io/badge/demo%20dataset-v0.3--data-green)](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.3-data)
 [![License: MIT](https://img.shields.io/badge/code-MIT-lightgrey)](LICENSE)
 
 This repository is the companion resource for the methodology manuscript developed within the **TRANSPAN COST Action (CA21116), Working Group 1**; target journal to be defined. It pairs a narrative on how to design and run a GWAS of a rare, genetically complex trait such as pancreatic cancer with an annotated PLINK 2 and R pipeline, demonstrated on a purpose-built demonstration dataset.
@@ -53,11 +53,12 @@ welcome.
 | Individuals | 1,461, 762 EUR, 349 AFR, 350 EAS |
 | Variants | 430,000, 424,000 autosomal, 6,000 simulated chrX |
 | Injected artefacts | 8,480 low-call-rate variants, 25 low-call-rate samples, 4 sex discordances |
-| Causal locus | *ABO* (9q34.2), single locus, no polygenic background |
-| Pre-QC EUR case:control | 254 cases, 508 controls, approximately 1:2 |
-| After QC | 1,217 individuals retained (83.3%) and 414,695 variants retained (96.4%) |
+| Causal variants | two: *ABO* (9q34.2) at OR 2.60, and TERT/CLPTM1L (5p15.33) at OR 1.50; no polygenic background |
+| Cases and controls | 542 and 919 overall; 239 and 523 among Europeans before QC |
+| After QC | 1,215 individuals retained (83.2%) and 414,662 variants retained (96.4%) |
+| European analysis set | 219 cases, 392 controls; effective sample size 562 |
 
-Genotypes and phenotypes are not stored in git, see `.gitignore`. Download them with `bash scripts/dev/download_demo_data.sh`, or from the [release page](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.1-data). Full provenance, construction scripts and the didactic rationale for the dataset design are in [`demo_dataset/README.md`](demo_dataset/README.md).
+Genotypes and phenotypes are not stored in git, see `.gitignore`. Download them with `bash scripts/dev/download_demo_data.sh`, or from the [release page](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.3-data). Full provenance, construction scripts and the didactic rationale for the dataset design are in [`demo_dataset/README.md`](demo_dataset/README.md).
 
 This dataset teaches GWAS under realistic, difficult conditions on purpose, it is not an idealised example in which every locus succeeds.
 
