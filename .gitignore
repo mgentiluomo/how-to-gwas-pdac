@@ -42,3 +42,17 @@ sections/**/results/*_visualizations.R
 /results/
 /logs/
 /data_processed/
+
+# Genome-wide intermediate and raw output. These are regenerated in minutes by
+# scripts/dev/run_all.sh and together weigh about 80 MB, which git would carry
+# permanently. The repository commits summaries, tables and figures.
+#
+# NOTE: the full summary statistics are NOT discarded. Section 7 asks authors to
+# deposit them, so they belong in the data release and the Zenodo deposit, not
+# in version control. Attach them when the resource is frozen.
+sections/**/results/*.glm.logistic.hybrid
+sections/**/results/*.glm.linear
+sections/**/results/*.tsv.gz
+sections/**/results/*.vcor
+sections/**/results/pdac_demo_07_ibd_pi_hat_annotated.tsv
+sections/**/results/pdac_demo_07_king_vs_pihat_comparison.tsv
