@@ -29,7 +29,7 @@ qc <- read.delim("sections/01B_genotyping_qc/results/pdac_demo_09_qc_counts.tsv"
                  stringsAsFactors = FALSE)
 qc$label <- c("Raw", "Initial\nstats", "Sample\ncall rate", "Sex\ncheck",
               "Hetero-\nzygosity", "Variant\ncall rate", "Hardy-\nWeinberg",
-              "Related-\nness", "MAF", "HWE\nwithin\nancestry")
+              "Related-\nness", "MAF")
 
 png(file.path(out_dir, "Figure2_qc_trajectory.png"),
     width = 2400, height = 1500, res = 300)
@@ -145,7 +145,7 @@ lam80 <- uniroot(function(l) pchisq(ca, 1, ncp = l, lower.tail = FALSE) - 0.80,
                  c(1, 300))$root
 minOR <- function(neff, p) exp(sqrt(lam80 / (neff * 0.25 * 2 * p * (1 - p))))
 pgrid <- seq(0.02, 0.50, by = 0.005)
-plot(pgrid, minOR(567.5, pgrid), type = "l", lwd = 2, col = orange, log = "y",
+plot(pgrid, minOR(580.4, pgrid), type = "l", lwd = 2, col = orange, log = "y",
      ylim = c(1.1, 12), xlab = "Minor allele frequency",
      ylab = "Minimum odds ratio detectable\nat 80% power")
 lines(pgrid, minOR(1189.7, pgrid), lwd = 2, col = green)
@@ -154,7 +154,7 @@ text(0.26, 1.28, "effect sizes of established\ncancer susceptibility loci", cex 
 points(0.085, 2.4, pch = 18, cex = 1.4)
 text(0.085, 2.4, "simulated ABO effect", pos = 4, cex = 0.6, font = 3)
 legend("topright", bty = "n", cex = 0.7, lwd = 2, col = c(orange, green),
-       legend = c(expression(European~set~","~N[eff]==568),
+       legend = c(expression(European~set~","~N[eff]==580),
                   expression(three~strata~combined~","~N[eff]==1190)))
 mtext("c", 3, 0.3, adj = 0, font = 2, cex = 1.1)
 dev.off()
