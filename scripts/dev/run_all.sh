@@ -178,22 +178,23 @@ say ""
 say "  wrote env/software_versions.md"
 
 # ------------------------------------------------------------------ 4. run --
-# Dependency order. Section 1A is excluded on purpose: it demonstrates raw
+# Dependency order. Entries may carry arguments; most scripts need none because
+# their defaults already chain together. Two R scripts are absent on purpose:
+# 01_initial_qc_plots.R and 09_qc_report.R are invoked by their own shell steps.
+# Section 1A is excluded on purpose: it demonstrates raw
 # array output handling on its own synthetic example files and does not depend
 # on the phenotype, and one of its steps writes into demo_data/.
 STEPS=(
   "01B_genotyping_qc/scripts/01_initial_qc_stats.sh"
-  "01B_genotyping_qc/scripts/01_initial_qc_plots.R"
   "01B_genotyping_qc/scripts/02_sample_callrate.sh"
   "01B_genotyping_qc/scripts/03_sex_check.sh"
   "01B_genotyping_qc/scripts/04_heterozygosity.sh"
   "01B_genotyping_qc/scripts/05_variant_callrate.sh"
   "01B_genotyping_qc/scripts/06_hardy_weinberg.sh"
-  "01B_genotyping_qc/scripts/06_hwe_plot.R"
+  "01B_genotyping_qc/scripts/06_hwe_plot.R results/qc/pdac_demo_06_hwe.hardy results/qc/pdac_demo_06_hwe"
   "01B_genotyping_qc/scripts/07_relatedness.sh"
   "01B_genotyping_qc/scripts/08_maf_filter.sh"
   "01B_genotyping_qc/scripts/09_qc_summary.sh"
-  "01B_genotyping_qc/scripts/09_qc_report.R"
 
   "02_population_stratification/scripts/01_ld_pruning.sh"
   "02_population_stratification/scripts/02_pca_all.sh"
@@ -226,8 +227,9 @@ STEPS=(
 say ""
 say "--- Pipeline, ${#STEPS[@]} steps ---"
 n=0
-for rel in "${STEPS[@]}"; do
+for entry in "${STEPS[@]}"; do
   n=$((n + 1))
+  read -r rel args <<< "$entry"
   path="sections/$rel"
   [ -f "$path" ] || die "step $n missing from the repository: $path"
 
@@ -237,9 +239,9 @@ for rel in "${STEPS[@]}"; do
 
   t0=$(date +%s)
   if [[ "$path" == *.R ]]; then
-    Rscript "$path" > "$log" 2>&1 || { echo "FAILED"; tail -20 "$log"; die "step $n failed, see $log"; }
+    Rscript "$path" $args > "$log" 2>&1 || { echo "FAILED"; tail -20 "$log"; die "step $n failed, see $log"; }
   else
-    bash "$path" > "$log" 2>&1 || { echo "FAILED"; tail -20 "$log"; die "step $n failed, see $log"; }
+    bash "$path" $args > "$log" 2>&1 || { echo "FAILED"; tail -20 "$log"; die "step $n failed, see $log"; }
   fi
   t1=$(date +%s)
   printf 'ok  %3ds\n' "$((t1 - t0))" | tee -a "$MASTER_LOG"
