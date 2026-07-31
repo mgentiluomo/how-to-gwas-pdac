@@ -73,7 +73,7 @@ cp "$PCA/pdac_demo_02_pca_all.eigenvec" "$OUT/pdac_demo_pca_all.eigenvec"
 cp "$PCA/pdac_demo_02_pca_all.eigenval" "$OUT/pdac_demo_pca_all.eigenval"
 cp "$PCA/pdac_demo_02_pca_eur.eigenvec" "$OUT/pdac_demo_pca_eur.eigenvec"
 cp "$PCA/pdac_demo_02_pca_eur.eigenval" "$OUT/pdac_demo_pca_eur.eigenval"
-cp "$ASSOC/pdac_demo_04A_covariates.txt" "$OUT/pdac_demo_covar_eur.txt"
+cp "$ASSOC/pdac_demo_04A_covar.txt" "$OUT/pdac_demo_covar_eur.txt"
 
 echo ">>> Summary-statistics checkpoint: no genotypes needed downstream"
 # -n suppresses the timestamp, so repeated runs give identical bytes
