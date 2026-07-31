@@ -186,8 +186,10 @@ files it cannot, because eigenvector sign is arbitrary.
 
 | Tag | Contents | Status |
 |---|---|---|
-| `v0.1-data` | genotypes, phenotype, covariates, survival | **Will be superseded**: the phenotype files change with the new simulation, the genotypes do not |
-| `v0.2-checkpoints` | summary-statistics bundle, 8 files + manifest | Published, verified end to end. **Will need regenerating** |
+| `v0.1-data` | genotypes, phenotype, covariates, survival | Superseded by `v0.3-data`. Left in place, not withdrawn |
+| `v0.2-checkpoints` | checkpoint bundle, 8 files + manifest | Superseded by `v0.4-checkpoints`. Left in place, not withdrawn |
+| `v0.3-data` | genotypes, new phenotype, covariates, survival, `truth.tsv`, `MANIFEST.tsv` | **Current.** Nine files, checksums verified after upload |
+| `v0.4-checkpoints` | checkpoints and full summary statistics, 15 files | **Current.** Built from pipeline commit `84223a4`, verified against its manifest after upload |
 
 Pages link to an explicit tag, never to `latest`, so a page and the data it was
 written against move together.
@@ -196,32 +198,67 @@ written against move together.
 
 ## What remains, in order
 
-1. **Convert the fork.** A full day. New data tag; regenerate figures, result
-   files and the seven pages; add the LD section to `_quarto.yml`; update the
-   manuscript; regenerate the checkpoint bundle. Every file corrected today
-   carries the current run's figures and will need doing again, but the list is
-   now known and the `grep -r` finds them.
-2. **Methodological refinements** raised by review and still open:
-   stratum-specific rather than global HWE exclusion; heterozygosity as a flag
-   rather than automatic removal; the five HWE failures described as flagged for
-   investigation rather than demonstrated errors, since 1.24 are expected by
-   chance at that threshold across three tests; the lambda claim narrowed to what
-   it supports; I-squared with three strata presented as underpowered.
-3. **Freeze and deposit before review, not after acceptance.** A mutable GitHub
-   repository is not a reproducible artefact. Versioned release, Zenodo DOI in
-   the manuscript, commit SHA, checksums, environment lockfile.
-   `env/software_versions.md` is still a template and the manuscript promises
-   exact versions.
-4. **Sections not built**: functional annotation (needs one VEP run on the
-   credible set, and supplies the table deleted from the manuscript for lack of
-   it), study design, imputation, time-to-event, software comparison, reporting.
-5. **A limitation not yet stated**: the demonstration has three cleanly
-   separated continental groups, so within-ancestry filtering is easy. In a real,
-   predominantly European cohort with continuous gradients and admixed
-   individuals, the central recommendation of Section 4 is much harder to apply.
+> **31 July 2026, end of day.** Phases 1 to 5 and 7 of the conversion are
+> complete. The repository, the site sources, the released data and the
+> checkpoints all describe the new dataset and agree with each other. What
+> follows is what is left.
 
-**Deadline.** Acceptance is required by mid-October 2026 for the COST Action
-budget. Items 1 and 4 do not both fit comfortably before submission.
+1. **Publish.** Merge `dataset-v2` into `main`, run `quarto publish gh-pages`,
+   promote `v0.3-data` and `v0.4-checkpoints` to Latest, then run the stale
+   figure sweep across every versioned file. Until this is done the public site
+   still serves the old dataset.
+
+2. **The manuscript, version 12.** The only substantial work left. Six passages
+   change in argument and not only in number, and the rewritten version of each
+   already exists on the corresponding site page:
+
+   - Abstract: one causal locus becomes two.
+   - Results: every count.
+   - The winner's curse passage: **delete and replace**. At 99.1% power there is
+     no selection bias to show; the recovered odds ratio, 2.34, sits below the
+     generative 2.60 rather than above it. The replacement argument, that
+     selection acts on which variant is named rather than on the size of the
+     effect, is written on the Section 4A page.
+   - The power passage: the claim that the locus was detected despite being
+     underpowered is **wrong**, not stale.
+   - Fine mapping: the credible set does not collapse to one variant. It goes
+     from 11 to 9, and what changes is the ranking of the causal variant, from
+     third to first.
+   - Heterogeneity: I² at this sample size points the wrong way. The causal
+     variant has the highest I² in the region while three of its proxies have
+     none.
+
+   Also: add a Table 1 row on verifying that an analysis recovers the generative
+   parameter before treating it as truth; regenerate Tables 2, 4 and 5; and fix
+   the numbering, since there is a Table 1, 2, 4 and 5 and no Table 3.
+
+3. **The four items that were already pending**, unchanged: the methodological
+   refinements raised in review, the freeze and Zenodo deposit, the six sections
+   not built, and the unstated limitation about cleanly separated continental
+   groups.
+
+## What was found during the conversion
+
+Four defects that the previous, hand-run workflow had concealed:
+
+- Three scripts assigned to `GROUPS`, a reserved bash array. Under `set -e` the
+  assignment returns non-zero and the script dies silently. The lesson had been
+  written into one script's comments months earlier and never applied to the
+  others.
+- The fine-mapping and figure scripts carried the previous causal variant as a
+  hardcoded constant, so they reported that the causal variant was absent from a
+  credible set that in fact contained it, and the manuscript figure marked a
+  variant the dataset does not contain.
+- The power script carried the previous odds ratio and frequency, which is where
+  the 9.2% power figure came from.
+- The risk allele at both causal loci is the **reference** allele, and the major
+  allele at *ABO*. The simulation script's comment said otherwise. An
+  association run therefore prints an odds ratio near 0.43 where the documented
+  effect is 2.60.
+
+None of these changed a result once corrected; all of them changed what the
+resource *said* about its results. The runner found them because it executes
+every step in order in a clean shell and stops at the first failure.
 
 ---
 
