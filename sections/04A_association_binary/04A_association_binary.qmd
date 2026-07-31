@@ -84,7 +84,7 @@ with biobank controls, a saddlepoint-corrected method is required rather than op
 standard asymptotics fail at those ratios.
 :::
 
-The log reports what was actually analysed. On the demonstration data: **224 cases and 387
+The log reports what was actually analysed. On the demonstration data: **219 cases and 392
 controls**.
 
 ---
@@ -105,7 +105,7 @@ Points should follow the diagonal, lifting off only in the extreme upper tail wh
 associations live. A curve that rises above the line along its whole length means inflation
 affecting every variant, which is a property of the analysis rather than of biology.
 
-On the demonstration data **λ = 1.028**, and λ₁₀₀₀ = 1.100.
+On the demonstration data **λ = 1.016**, and λ₁₀₀₀ = 1.058.
 
 ::: {.callout-warning title="Compute lambda correctly"}
 `lambda = median(qchisq(1 - P, df = 1)) / qchisq(0.5, df = 1)`
@@ -183,10 +183,12 @@ believed.
 
 | | |
 |---|---|
-| Variant | 9:133249045:A:G, at *ABO* (9q34.2) |
-| Effect allele | G, frequency 0.0855 |
-| Odds ratio | 3.90 (95% CI 2.47 to 6.15) |
-| P | 5.5 × 10⁻⁹ |
+| Variant | 9:133266804:G:T, at *ABO* (9q34.2) |
+| Effect allele reported by PLINK | T, frequency 0.386 |
+| Odds ratio as printed | 0.415 (95% CI 0.312 to 0.552) |
+| Odds ratio per copy of the other allele | 2.41 (95% CI 1.81 to 3.20) |
+| P | 1.4 × 10⁻⁹ |
+| Variants at *P* < 5 × 10⁻⁸ | 11, all in this region |
 
 *ABO* is the most robustly replicated PDAC susceptibility locus, and it is the locus the
 phenotype was simulated from. Recovering it is the positive control: it confirms the pipeline
@@ -194,20 +196,51 @@ works end to end.
 
 :::
 
-::: {.callout-important title="The effect size is wrong, and knowing by how much is the lesson"}
-The simulated odds ratio at this variant is **2.40**. The analysis recovered **3.90**, with a
-confidence interval whose lower bound, 2.47, sits just above the truth. The estimate is inflated
-by roughly 62%.
+::: {.callout-important title="The lead variant is not the causal variant"}
+The phenotype was simulated from `9:133273682:A:T`. That variant is **not** the one at the top of
+the scan. It sits 6.9 kb away, at *P* = 4.4 × 10⁻⁹ against the lead's 1.4 × 10⁻⁹, and its odds
+ratio per copy of the risk allele is 2.34 (95% CI 1.76 to 3.10).
 
-This is the **winner's curse**. When an effect size is read from the same underpowered scan that
-discovered it, only upward fluctuations cross the significance threshold, so surviving estimates
-are systematically too large. What is unusual here is that the truth is known, so the bias can be
-measured instead of merely anticipated.
+The two variants are in tight linkage disequilibrium and carry the same signal. Which of them
+reaches the top is decided by sampling noise, and with eleven variants above genome-wide
+significance in this region the one that wins is, by construction, the one whose estimate drifted
+furthest. Selection is operating here, not on the size of the effect but on the identity of the
+variant reported.
 
-In a real study the same distortion operates invisibly. Effect estimates from a discovery scan
-should not be carried into risk prediction, into meta-analytic weighting, or into the power
-calculation for a replication study without correction. Where replication data exist, take effect
-sizes from the replication or the combined analysis.
+This is why a lead variant should be reported as the top of a credible set rather than as a
+finding, and it is what
+[Fine mapping](../06_finemapping_annotation/06_finemapping_annotation.qmd) exists to resolve. In
+that section the causal variant ranks third among eleven in the European credible set, and first
+once the ancestry strata are combined.
+:::
+
+::: {.callout-note title="Read the direction before reading the number"}
+PLINK reports the effect of the allele in its `A1` column, which here is `T`. The risk allele is
+the other one, the reference `A`, and at this locus it is the **major** allele. That is why the
+printed odds ratio is 0.415 rather than something above 1. The reciprocal, 2.41, is the number to
+compare with anything stated on the risk-allele scale.
+
+Nothing is wrong with the output. The orientation is simply a property of how the tool reports,
+and getting it backwards is one of the most common ways a real analysis goes quietly astray, which
+is why [Meta-analysis](../05_meta_analysis/05_meta_analysis.qmd) treats allele alignment as a
+first-order concern rather than a formatting detail.
+:::
+
+::: {.callout-note title="Why there is no winner's curse to show here"}
+An underpowered scan overstates the effects it discovers, because only upward fluctuations cross
+the threshold. It is worth stating plainly that **this did not happen at this locus**, and why.
+
+The generative odds ratio is 2.60. The analysis recovers 2.34, slightly below rather than above.
+At the 99.1% power reported in
+[Statistical power](../03B_statistical_power/03B_statistical_power.qmd) there is no selection to
+inflate anything: the variant was going to be detected whatever the noise did, so the estimate
+simply scatters around the truth.
+
+The rule generalises in the useful direction. The winner's curse is a consequence of low power
+rather than a property of discovery, so the question to ask of any published effect size is what
+power produced it. An estimate obtained at 2% power, as TERT/CLPTM1L would have been here, should
+not be carried into risk prediction, into meta-analytic weighting or into a replication power
+calculation. An estimate obtained at 99% power can be.
 :::
 
 ---
