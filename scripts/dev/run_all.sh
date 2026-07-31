@@ -44,13 +44,19 @@ cd "$PROJECT_ROOT"
 
 die_early() { printf '\nFAILED: %s\n' "$*" >&2; exit 1; }
 
+# Locally installed tools take precedence, matching scripts/dev/test.sh.
+[ -d tools/bin ] && PATH="$(cd tools/bin && pwd):$PATH" && export PATH
+
 # ---------------------------------------------------------------- 1. commit --
 # A result is only attributable to a commit if the tree matches that commit.
 if ! command -v git >/dev/null 2>&1; then
   die_early "git not found. The run must be attributable to a commit."
 fi
-if [ -n "$(git status --porcelain)" ]; then
-  git status --short
+# env/software_versions.md is written by this script, so a previous run always
+# leaves it modified. It is excluded here: the runner owns that file.
+DIRTY="$(git status --porcelain | grep -v ' env/software_versions.md$' || true)"
+if [ -n "$DIRTY" ]; then
+  printf '%s\n' "$DIRTY"
   die_early "the working tree has uncommitted changes. Commit or stash them first, \
 otherwise the recorded commit does not describe what actually ran."
 fi
@@ -128,8 +134,14 @@ say ""
 say "--- Tool versions ---"
 command -v plink2 >/dev/null 2>&1 || die "plink2 not found on PATH"
 command -v Rscript >/dev/null 2>&1 || die "Rscript not found on PATH"
+# The relatedness step uses PLINK 1.9 for the PI_HAT comparison. Some systems
+# install it under another name; symlink it into tools/bin, which is on PATH.
+command -v plink >/dev/null 2>&1 || die "PLINK 1.9 not found on PATH as 'plink'. \
+The relatedness step needs it. If it is installed under another name, run: \
+mkdir -p tools/bin && ln -sf \"\$(command -v plink19)\" tools/bin/plink"
 
 PLINK_V="$(plink2 --version 2>&1 | head -1)"
+PLINK1_V="$(plink --version 2>&1 | head -1)"
 R_V="$(Rscript -e 'cat(R.version.string)' 2>/dev/null)"
 OS_V="$(. /etc/os-release 2>/dev/null && echo "$PRETTY_NAME" || uname -sr)"
 say "  $PLINK_V"
@@ -165,7 +177,8 @@ produced the published results; do not edit by hand.
 | Commit | \`$COMMIT\` |
 | Data release | \`$DATA_TAG\` |
 | Operating system | $OS_V |
-| PLINK | $PLINK_V |
+| PLINK 2 | $PLINK_V |
+| PLINK 1.9 | $PLINK1_V |
 | R | $R_V |
 
 ## R packages
@@ -290,6 +303,7 @@ FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo "steps          ${#STEPS[@]}"
   echo
   echo "$PLINK_V"
+  echo "$PLINK1_V"
   echo "$R_V"
   echo "$OS_V"
   echo
