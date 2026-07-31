@@ -25,14 +25,16 @@ in Section 2, with the diagnostics needed before any result is interpreted.
 
 | | |
 |---|---|
-| Analysis set | 224 cases, 387 controls |
-| Variants tested | 396,396 autosomal; 392,331 with a valid P |
-| Firth fallback invoked | 2,221 variants |
-| Genomic inflation | λ = 1.028, λ₁₀₀₀ = 1.098 |
-| P < 5 × 10⁻⁸ | 1 variant |
-| P < 1 × 10⁻⁵ | 8 variants |
-| Lead variant | 9:133249045:A:G (*ABO*), OR 3.90 (95% CI 2.47–6.15), P = 5.5 × 10⁻⁹ |
-| Simulated truth at that variant | OR 2.40 — the recovered estimate is inflated by ~58%, the winner's curse |
+| Analysis set | 219 cases, 392 controls |
+| Variants tested | 409,105 autosomal; 405,000 with a valid P |
+| Firth fallback invoked | 2,460 variants |
+| Genomic inflation | λ = 1.016, λ₁₀₀₀ = 1.058 |
+| P < 5 × 10⁻⁸ | 11 variants, all at *ABO* |
+| P < 1 × 10⁻⁵ | 13 variants |
+| Lead variant | 9:133266804:G:T (*ABO*), **not the causal one**; OR 2.41 per the risk allele (95% CI 1.81 to 3.20), P = 1.4 × 10⁻⁹ |
+| Simulated causal variant | 9:133273682:A:T, third by P; OR 2.34, P = 4.4 × 10⁻⁹ |
+| Scored against the truth | generative OR 2.60, so the recovered estimate sits slightly **below** it. At 99% power there is no selection to inflate it |
+| Allele orientation | the risk allele is the reference and the major allele, so PLINK prints 0.415 rather than 2.41 |
 
 ## Conventions
 
