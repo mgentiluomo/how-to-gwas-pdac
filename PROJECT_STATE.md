@@ -12,11 +12,19 @@ alternative is that someone opens the repository and cannot tell.
 The repository is in a **fork**. Two mutually inconsistent versions of the
 demonstration data exist, and only one of them is published.
 
+> **31 July 2026.** The figures in the right-hand column below are no longer
+> predictions. They are measured from the canonical run recorded in
+> `RUN_MANIFEST.txt`, produced by `scripts/dev/run_all.sh` at commit `63d3287`
+> against data release `v0.3-data`, on bio-plink3. Where they differ from what
+> was written here before, the run supersedes the note: the earlier figures came
+> from an unrecorded run made before three script defects were found. Lambda for
+> the analysis set is **1.016**.
+
 | | Published site, manuscript and repository | New dataset, not yet published |
 |---|---|---|
-| Samples after QC | 1,217 | 1,214 |
-| Variants after QC | 414,695 | 414,415 |
-| European analysis set | 224 cases / 387 controls | 219 / 390 |
+| Samples after QC | 1,217 | **1,215** |
+| Variants after QC | 414,695 | **414,662**, 414,655 after within-ancestry HWE |
+| European analysis set | 224 cases / 387 controls | **219 / 392**, effective 562 |
 | Causal variants | one, at MAF 0.086 | two, at MAF 0.377 and 0.489 |
 | Generative odds ratio | documented 2.40, **actually ~3.65** | 2.60 and 1.50, **verified** |
 | ABO credible set | 77 in EUR, 1 in meta | 11 in EUR, 9 in meta |
@@ -50,8 +58,9 @@ from the beginning; nobody compared it against an estimate from the data.
 
 **What it invalidated.** The manuscript reported a winner's curse of 62%,
 measured as 3.90 against a supposed truth of 2.40. Against the real effect the
-selection bias is about 7%. The power section reported 9.2% power at the causal
-variant; at the true effect it is roughly 74%. The claim that the locus was
+selection bias is small. The power section reported 9.2% power at the causal
+variant; measured at the true effect it is **99.1%** in the analysis set and
+100% across the strata. The claim that the locus was
 "detected despite being underpowered" was wrong: detection was expected.
 
 **The rule this produces**, which belongs in Table 1 and in the reporting
@@ -79,12 +88,15 @@ F_ST below 0.05, eight failures are expected.
 positive recovered and a true positive missed with the truth known for both:
 
 - `9:133273682:A:T`, *ABO* 9q34.2, MAF 0.377, generative OR **2.60**. Detected,
-  *P* = 4.6e-9, estimated 2.33. Designed for about 99% detection probability;
+  *P* = 4.35e-9, estimated OR 0.428. Measured power 99.1% in the analysis set;
   2.30 was tried first, gave 91%, and the first draw fell in the missing 9%. The
   design parameter was raised, not the seed, because selecting a seed on
   significance is conditioning on significance.
 - `5:1286401:C:A`, TERT/CLPTM1L 5p15.33, MAF 0.489, generative OR **1.50**. Not
-  detected in Europeans (*P* = 0.15); reaches *P* = 0.03 across the three strata,
+  detected in Europeans (*P* = 0.156); reaches only *P* = 0.021 across the three
+  strata, with measured power 2.0% and 28.6% respectively, so it is **not**
+  recovered; note the East Asian stratum alone reaches *P* = 0.007 while the
+  combined result is weaker, because the African stratum points the other way,
   which is the meta-analysis argument made on a known true effect.
 
 **The simulation validates itself.** It re-estimates every generative parameter
