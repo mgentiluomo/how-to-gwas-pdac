@@ -351,7 +351,18 @@ reasonable. It does not work, and the reason is worth seeing.
 The ten variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
 seven that fail within a group. The two tests are not a lenient and a stringent version of one
 procedure; they are measuring different things. No pooled threshold exists at which the test stops
-detecting structure and starts detecting error.
+detecting structure and starts detecting error. 
+
+This can be checked rather than asserted. Under the Wahlund effect the heterozygote deficit created 
+by pooling equals the variance in allele frequency between the constituent groups, so the inbreeding 
+coefficient of the pooled sample is F and the Hardy-Weinberg test statistic is approximately 
+N F squared. Computing F between the three ancestry groups from allele frequencies alone, with 
+no Hardy-Weinberg test performed, predicts the observed statistic across 415,520 variants with a 
+Pearson correlation of 0.85 and a regression slope of 0.94 against the 1.00 of exact agreement, and
+accounts for 69.6% of its variance. The relationship is a clean dose-response: among the 282,000 variants
+with F below 0.05, eight failures are expected, while essentially all failures arise above 0.10. 
+The exclusions produced by the pooled test are therefore a measurement of population structure rather 
+than of genotyping quality, and reporting them as the latter is a category error, not a conservative choice.
 :::
 
 ![](results/pdac_demo_06_hwe_pvalue_distribution.png){fig-alt="Histogram of minus log10 Hardy-Weinberg p-values."}
