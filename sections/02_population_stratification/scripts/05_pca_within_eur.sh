@@ -16,11 +16,16 @@
 #   only a PCA computed within that group can see it.
 #
 #   LD pruning is also repeated, because allele frequencies, and therefore which
-#   variants are correlated, differ between populations.
+#   variants are correlated, differ between populations. --keep is applied
+#   before both --maf and --indep-pairwise, so the frequency floor and the LD
+#   estimates both use the analysis set's own genotypes rather than the pooled
+#   multi-ancestry ones.
+#
 #
 # INPUT:
 #   - results/qc/pdac_demo_08_filt.bed/bim/fam
 #   - results/pca/pdac_demo_02_eur_keep.txt   (from Step 04)
+#   - data_processed/highLD_b38.bed           (long-range LD regions, GRCh38)
 #
 # OUTPUT:
 #   - results/pca/pdac_demo_02_pca_eur.eigenvec   covariates for Section 4A
@@ -42,19 +47,71 @@ cd "$PROJECT_ROOT"
 
 IN="${1:-results/qc/pdac_demo_08_filt}"
 OUT_DIR="${2:-results/pca}"
+LRLD_BED="${3:-data_processed/highLD_b38.bed}"
+PRUNE_MAF="${4:-0.05}"
 KEEP="${OUT_DIR}/pdac_demo_02_eur_keep.txt"
 PRUNE="${OUT_DIR}/pdac_demo_02_prune_eur"
 OUT_PREFIX="${OUT_DIR}/pdac_demo_02_pca_eur"
+
+# ---------------------------------------------------------------------------
+# Long-range LD guard. Fails loudly rather than proceeding without the
+# exclusion, because a silent no-op produces output indistinguishable from a
+# correct run and would put the Methods text out of step with the code.
+# ---------------------------------------------------------------------------
+require_lrld() {
+  local bed="$1" bim="$2" n regions
+  if [ ! -s "$bed" ]; then
+    echo "✗ Long-range LD region file not found: $bed" >&2
+    echo "  Create it before running this step, or pass a path as argument 3." >&2
+    exit 1
+  fi
+  n=$(awk '
+    FNR == NR {
+      if ($0 ~ /^#/ || NF < 3) next
+      k++; c[k] = $1; s[k] = $2 + 0; e[k] = $3 + 0
+      next
+    }
+    { for (i = 1; i <= k; i++) if ($1 == c[i] && $4 > s[i] && $4 <= e[i]) { hit++; break } }
+    END { print hit + 0 }
+  ' "$bed" "$bim")
+  regions=$(awk '!/^#/ && NF >= 3' "$bed" | wc -l)
+  if [ "$n" -eq 0 ]; then
+    echo "✗ No variants fall inside the long-range LD regions listed in $bed" >&2
+    echo "  The exclusion would be a silent no-op. Usual causes:" >&2
+    echo "    - chromosome codes differ ('1' in the .bim vs 'chr1' in the BED)" >&2
+    echo "    - the BED is on a different build than the data (GRCh38 expected)" >&2
+    echo "    - bed0 vs bed1 coordinate convention mismatch" >&2
+    exit 1
+  fi
+  echo "Long-range LD exclusion: ${regions} regions, ${n} variants removed before pruning"
+}
+
+if [ ! -s "$KEEP" ]; then
+  echo "✗ Analysis set keep list not found: $KEEP" >&2
+  echo "  Run Step 04 first:" >&2
+  echo "    bash scripts/02_population_stratification/04_define_analysis_set.sh" >&2
+  exit 1
+fi
 
 echo ""
 echo "=== LD pruning within the analysis set ==="
 echo ""
 
+require_lrld "$LRLD_BED" "${IN}.bim"
+echo ""
+
 plink2 \
   --bfile "$IN" \
   --keep "$KEEP" \
+  --autosome \
+  --maf "$PRUNE_MAF" \
+  --exclude bed0 "$LRLD_BED" \
   --indep-pairwise 50 5 0.2 \
   --out "$PRUNE"
+
+NVAR=$(wc -l < "${PRUNE}.prune.in")
+echo ""
+echo "Variants retained for the within-group PCA: ${NVAR}"
 
 echo ""
 echo "=== PCA within the analysis set ==="
@@ -86,9 +143,16 @@ echo "  ${OUT_PREFIX}.eigenvec       covariates for association testing"
 echo "  ${OUT_PREFIX}.eigenval"
 echo "  ${OUT_PREFIX}_scree.png"
 echo ""
+echo "Report ${NVAR} as the number of variants the components were computed on."
+echo "If PC3 or PC4 has moved appreciably against a run without the long-range"
+echo "LD exclusion, that component was tracking a haplotype block rather than"
+echo "ancestry, and the comparison is worth recording."
+echo ""
 echo "How many components to carry forward is decided in Section 4A, from this"
 echo "scree plot, from testing each component against case status, and from"
-echo "checking that the results are stable across a range of counts."
+echo "checking that the results are stable across a range of counts. Note that"
+echo "--pca 10 above caps extraction at ten components: raise it if the"
+echo "sensitivity check calls for comparing 5, 10 and 20."
 echo ""
 echo "=== NEXT STEP ==="
 echo ""
