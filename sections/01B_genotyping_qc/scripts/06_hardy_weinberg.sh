@@ -1,38 +1,36 @@
 #!/usr/bin/env bash
 
 ################################################################################
-# Section 1B: Genotyping QC — Step 08: Minor Allele Frequency (MAF) Filter
-# 
-# PURPOSE:
-#   Remove or keep variants based on minor allele frequency. MAF filtering is
-#   context-dependent and depends on:
-#   - Study design (discovery vs replication)
-#   - Sample size and power
-#   - Disease rarity and heritability architecture
+# Section 1B: Genotyping QC — Step 06: Hardy-Weinberg, DIAGNOSTIC ONLY
 #
-# INPUT:
-#   - pdac_demo_07_filt.bed/bim/fam (from Step 07, relatedness-pruned)
+# WHAT CHANGED AND WHY
+#   This step no longer removes variants. It measures, and passes everything on.
 #
-# OUTPUT:
-#   - pdac_demo_08_filt.bed/bim/fam — MAF-filtered genotypes (ready for association!)
+#   The HWE exact test assumes one randomly mating population. Applied to a
+#   cohort that spans three continental ancestry groups it detects the Wahlund
+#   effect, that is, the allele-frequency differences between the constituent
+#   populations, and reports them as genotyping failure.
 #
-# THRESHOLD FOR PDAC:
-#   --maf 0.01  (keep variants with MAF ≥ 1%)
-#   NOT --maf 0.05 (which would discard rare variants with large effects)
+#   Measured on pdac_demo, in controls:
+#     pooled, 1e-6    14,378 variants
+#     pooled, 1e-10    2,496
+#     pooled, 1e-15      199
+#     pooled, 1e-20       17   <- and these 17 have ZERO overlap with the
+#                                 variants that fail within ancestry groups
+#     within ancestry  EUR 4, AFR 0, EAS 1  ->  5 in total
 #
-# RATIONALE FOR LOW-MAF THRESHOLD IN PDAC:
-#   1. Rare variants carry larger effect sizes in complex diseases
-#   2. Limited sample size: we need all signals (can't afford to discard rare variants)
-#   3. Pancreatic cancer is rare (~2% lifetime risk): causal variants may be rare
-#   4. Common variant + rare variant mixed model explains most heritability
+#   Lowering the threshold does not repair the test, because the pooled and the
+#   stratified test are not lenient and stringent versions of one procedure:
+#   they measure different things. The exclusion therefore belongs after the
+#   ancestry split, and is applied by
+#     scripts/02_population_stratification/06_hwe_within_ancestry.sh
 #
-# NOTES:
-#   - Alternative thresholds:
-#     - --maf 0.05: classic GWAS (assumes common-disease common-variant)
-#     - --maf 0.001 (or --mac 3): discovery in very small cohorts
-#   - If computational power is limited, can increase to 0.05 later
-#   - Statistical power decreases with lower MAF; adjust sample size expectations
+#   Reference: Peterson RE et al. Cell 2019;179:589-603. PMID:31607513
 #
+# INPUT   pdac_demo_05_filt.bed/bim/fam, demo_data/phenotype.txt
+# OUTPUT  pdac_demo_06_hwe.hardy, pdac_demo_06_hwe_threshold_sweep.tsv,
+#         pdac_demo_06_hwe_flagged.txt (reported, NOT removed),
+#         pdac_demo_06_filt.* (a copy of the input, so step numbering holds)
 ################################################################################
 
 set -euo pipefail
@@ -47,113 +45,46 @@ else
 fi
 cd "$PROJECT_ROOT"
 
-# Configuration
 SEED="${1:-2026}"
 DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
-OUT_DIR="${3:-results/qc}"
-MAF_THRESHOLD="${4:-0.01}"  # Default: 1% (PDAC context)
+PHENOTYPE_FILE="${3:-demo_data/phenotype.txt}"
+OUT_DIR="${4:-results/qc}"
 
 mkdir -p "$OUT_DIR"
 
-# ============================================================================
-# STEP 1: Apply MAF filter
-# ============================================================================
-echo ""
-echo "=== Applying MAF filter (--maf ${MAF_THRESHOLD}) ==="
-echo ""
-
-# Why --maf 0.01 for PDAC?
-#   Standard GWAS uses --maf 0.05 (common-disease common-variant model).
-#   PDAC context requires a different approach:
-#
-#   - Pancreatic cancer is RARE (2% lifetime risk)
-#   - Genetic architecture likely includes rare-to-intermediate variants
-#   - Removing variants with 1-5% MAF discards potential signal
-#   - Sample size is limited (~250 EUR cases): power is already low
-#     → Retaining rare variants is necessary to detect effects
-#
-# MAF = minor allele frequency = frequency of less-common allele
-# --maf 0.01 keeps variants where the rarer allele appears in ≥1% of the sample
+# Controls only: a true disease association legitimately deviates in cases.
+awk 'NR > 1 && ($3 == 1 || $3 == "1") { print $1"\t"$2 }' "$PHENOTYPE_FILE" \
+  > "${OUT_DIR}/${DATASET_NAME}_06_controls.txt"
+echo "Control samples: $(wc -l < "${OUT_DIR}/${DATASET_NAME}_06_controls.txt")"
 
 plink2 \
-  --bfile "${DATASET_INPUT}/${DATASET_NAME}_07_filt" \
-  --maf "${MAF_THRESHOLD}" \
-  --make-bed \
-  --out "${OUT_DIR}/${DATASET_NAME}_08_filt"
+  --bfile "${DATASET_INPUT}/${DATASET_NAME}_05_filt" \
+  --keep "${OUT_DIR}/${DATASET_NAME}_06_controls.txt" \
+  --hardy \
+  --out "${OUT_DIR}/${DATASET_NAME}_06_hwe"
 
-echo "✓ MAF-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_08_filt.bed/bim/fam"
+# Threshold sweep: shows that no pooled threshold separates structure from error
+printf "threshold\tvariants_below\n" > "${OUT_DIR}/${DATASET_NAME}_06_hwe_threshold_sweep.tsv"
+for T in 1e-6 1e-10 1e-15 1e-20 1e-30; do
+  N=$(awk -v t="$T" 'NR > 1 && $NF + 0 < t' "${OUT_DIR}/${DATASET_NAME}_06_hwe.hardy" | wc -l)
+  printf "%s\t%d\n" "$T" "$N" >> "${OUT_DIR}/${DATASET_NAME}_06_hwe_threshold_sweep.tsv"
+done
+column -t "${OUT_DIR}/${DATASET_NAME}_06_hwe_threshold_sweep.tsv"
 
-# ============================================================================
-# STEP 2: Display filtered allele spectrum
-# ============================================================================
-echo ""
-echo "=== Allele frequency spectrum (post-QC) ==="
-echo ""
-
-# Compute final allele frequencies
-plink2 \
-  --bfile "${OUT_DIR}/${DATASET_NAME}_08_filt" \
-  --freq \
-  --out "${OUT_DIR}/${DATASET_NAME}_08_afreq"
-
-# Summary statistics on final dataset
-echo "Final dataset summary:"
-NVAR_FINAL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_08_filt.bim")
-NSAMP_FINAL=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_08_filt.fam")
-
-# Count variants by MAF bins
-echo ""
-echo "Variants by MAF bin (post-QC):"
-awk 'NR > 1 {
-  maf = $5 < 0.5 ? $5 : 1 - $5
-  if (maf < 0.001) bin = "< 0.1%"
-  else if (maf < 0.01) bin = "0.1%-1%"
-  else if (maf < 0.05) bin = "1%-5%"
-  else bin = "> 5%"
-  count[bin]++
-}
-END {
-  for (b in count) print "  " b ": " count[b]
-}' "${OUT_DIR}/${DATASET_NAME}_08_afreq.afreq" | sort
+awk 'NR > 1 && $NF + 0 < 1e-6 { print $2 }' "${OUT_DIR}/${DATASET_NAME}_06_hwe.hardy" \
+  > "${OUT_DIR}/${DATASET_NAME}_06_hwe_flagged.txt"
 
 echo ""
-echo "Total variants: ${NVAR_FINAL}"
-echo "Total samples:  ${NSAMP_FINAL}"
-echo ""
+echo "Flagged at 1e-6 in the pooled control series: $(wc -l < "${OUT_DIR}/${DATASET_NAME}_06_hwe_flagged.txt")"
+echo "NONE of these are removed here. Compare this figure with the"
+echo "within-ancestry count produced after the ancestry split."
 
-# ============================================================================
-# SUMMARY & NEXT STEP
-# ============================================================================
-echo ""
-echo "=== Summary ==="
-echo ""
+# Carry the dataset forward unchanged, so downstream step numbering is unaffected
+for EXT in bed bim fam; do
+  cp "${DATASET_INPUT}/${DATASET_NAME}_05_filt.${EXT}" \
+     "${OUT_DIR}/${DATASET_NAME}_06_filt.${EXT}"
+done
 
-NVAR_BEFORE=$(wc -l < "${DATASET_INPUT}/${DATASET_NAME}_07_filt.bim")
-NVAR_AFTER=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_08_filt.bim")
-NVAR_REMOVED=$((NVAR_BEFORE - NVAR_AFTER))
-
-echo "Variants before MAF filter: ${NVAR_BEFORE}"
-echo "Variants after MAF filter:  ${NVAR_AFTER}"
-echo "Variants removed:           ${NVAR_REMOVED}"
 echo ""
-
-# ============================================================================
-# NEXT STEP
-# ============================================================================
-echo "=== NEXT STEP ==="
-echo ""
-echo "Run the final QC summary:"
-echo ""
-echo "  bash scripts/01B_genotyping_qc/09_qc_summary.sh"
-echo ""
-echo "This will:"
-echo "  - Summarize total samples and variants filtered at each step"
-echo "  - Show filtering impact on sample/variant counts"
-echo "  - Create a decision-tree figure for reproducibility and documentation"
-echo ""
-echo "After that, your dataset is ready for:"
-echo "  - Population stratification analysis (Section 2: PCA)"
-echo "  - Imputation (Section 3)"
-echo "  - Association testing (Section 4)"
-echo ""
+echo "[NEXT] bash scripts/01B_genotyping_qc/07_relatedness.sh"
