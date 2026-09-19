@@ -8,9 +8,31 @@
 #   of independent samples in GWAS, leading to inflated test statistics and
 #   false positive associations.
 #
+# WHAT CHANGED IN THIS REVISION
+#   The pruning that defines the kinship variant set now restricts to common
+#   autosomal variants outside long-range LD regions (--autosome, --maf,
+#   --exclude bed0). Three reasons:
+#
+#     1. Long-range LD. --indep-pairwise works in a 50-variant sliding window,
+#        which is far shorter than the MHC or the chromosome 8 inversion, so
+#        representatives from across those regions survive pruning and feed
+#        correlated information into the kinship estimates.
+#     2. Rare variants. KING-robust is estimated from genotype concordance;
+#        low-frequency variants contribute noise rather than signal, which is
+#        why kinship is conventionally estimated on common variants.
+#     3. Ordering. The global --maf filter is applied in Step 08, after this
+#        step. Applying a frequency floor here means kinship rests on clean
+#        common variants regardless of where the global filter sits, which is
+#        the property the Methods text asks for without needing the pipeline
+#        reordered.
+#
+#   Note this changes the kinship variant set, so the pair counts and the
+#   removal list will differ from the previous run. That is expected.
+#
 # INPUT:
 #   - pdac_demo_06_filt.bed/bim/fam (from Step 06, HWE-filtered)
 #   - phenotype.txt with columns FID IID PHENO (1=control, 2=case)
+#   - data_processed/highLD_b38.bed (long-range LD regions, GRCh38)
 #
 # OUTPUT:
 #   - pdac_demo_07_filt.bed/bim/fam — pruned to unrelated samples
@@ -40,7 +62,7 @@
 #     This is roughly comparable to KING 0.0442 on ideal pedigree expectations.
 #
 # METHOD:
-#   1. LD-prune variants (keep ~30K for kinship inference; too many cause noise)
+#   1. LD-prune common autosomal variants outside long-range LD regions
 #   2. Run PLINK2 --king-cutoff 0.1875 as a standard reference check
 #   3. Run PLINK1.9 --genome as a PI_HAT teaching/comparison report
 #   4. Create an annotated KING pair table and category summary
@@ -52,6 +74,9 @@
 #   - PDAC may have related samples (family cohorts)
 #   - In rare-cancer GWAS, cases are precious; remove controls first where possible
 #   - KING algorithm is fast and accurate for unrelated to 3rd-degree relatives
+#   - KING-robust is also robust to population structure, which PI_HAT is not.
+#     On a multi-ancestry cohort the two disagree by orders of magnitude, and
+#     the comparison written by Step 5 below is the evidence for that.
 #
 ################################################################################
 
@@ -76,6 +101,8 @@ PHENOTYPE_FILE="${4:-demo_data/phenotype.txt}"
 REMOVE_THRESHOLD="${5:-0.1875}"
 REPORT_THRESHOLD="${6:-0.0442}"
 PIHAT_REPORT_THRESHOLD="${7:-0.0884}"
+LRLD_BED="${8:-data_processed/highLD_b38.bed}"
+PRUNE_MAF="${9:-0.05}"
 
 mkdir -p "$OUT_DIR"
 
@@ -98,6 +125,40 @@ if [ ! -f "$PHENOTYPE_FILE" ]; then
   echo "  Expected format: FID IID PHENO, where 1=control and 2=case."
   exit 1
 fi
+
+# ---------------------------------------------------------------------------
+# Long-range LD guard. Fails loudly rather than proceeding without the
+# exclusion, because a silent no-op is indistinguishable from a correct run.
+# ---------------------------------------------------------------------------
+require_lrld() {
+  local bed="$1" bim="$2" n regions
+  if [ ! -s "$bed" ]; then
+    echo "✗ Long-range LD region file not found: $bed" >&2
+    echo "  Create it before running this step, or pass a path as argument 8." >&2
+    exit 1
+  fi
+  n=$(awk '
+    FNR == NR {
+      if ($0 ~ /^#/ || NF < 3) next
+      k++; c[k] = $1; s[k] = $2 + 0; e[k] = $3 + 0
+      next
+    }
+    { for (i = 1; i <= k; i++) if ($1 == c[i] && $4 > s[i] && $4 <= e[i]) { hit++; break } }
+    END { print hit + 0 }
+  ' "$bed" "$bim")
+  regions=$(awk '!/^#/ && NF >= 3' "$bed" | wc -l)
+  if [ "$n" -eq 0 ]; then
+    echo "✗ No variants fall inside the long-range LD regions listed in $bed" >&2
+    echo "  The exclusion would be a silent no-op. Usual causes:" >&2
+    echo "    - chromosome codes differ ('1' in the .bim vs 'chr1' in the BED)" >&2
+    echo "    - the BED is on a different build than the data (GRCh38 expected)" >&2
+    echo "    - bed0 vs bed1 coordinate convention mismatch" >&2
+    exit 1
+  fi
+  echo "Long-range LD exclusion: ${regions} regions, ${n} variants in scope"
+}
+
+require_lrld "$LRLD_BED" "${DATASET_INPUT}/${DATASET_NAME}_06_filt.bim"
 
 if ! awk '
   function clean(value) {
@@ -156,16 +217,24 @@ echo "=== LD-pruning variants for kinship inference ==="
 echo ""
 
 # Why prune SNPs for kinship?
-#   Too many variants make kinship estimates noisy (redundant information).
-#   Standard practice: keep ~30K-50K independent variants.
-#   Parameters:
+#   Correlated variants contribute redundant information to the kinship
+#   estimate; the conventional target is a set of approximately independent
+#   common variants. Parameters:
 #   --indep-pairwise <window_size> <window_step> <r2_threshold>
-#   - 50 bp window (50 SNPs at a time)
-#   - 5 SNP step (move by 5 SNPs)
-#   - r2 > 0.2 (remove if more correlated than this)
+#   - 50   window size, in variants
+#   - 5    the window advances five variants at a time
+#   - 0.2  r-squared threshold; within a window, one of any pair above this
+#          is dropped
+#
+#   --autosome, --maf and --exclude bed0 restrict the candidate pool before
+#   pruning begins: autosomes only, common variants only, and nothing from
+#   the long-range LD regions that a 50-variant window cannot resolve.
 
 plink2 \
   --bfile "${DATASET_INPUT}/${DATASET_NAME}_06_filt" \
+  --autosome \
+  --maf "$PRUNE_MAF" \
+  --exclude bed0 "$LRLD_BED" \
   --indep-pairwise 50 5 0.2 \
   --out "${OUT_DIR}/${DATASET_NAME}_07_prune"
 
@@ -216,6 +285,11 @@ echo ""
 # PI_HAT = P(IBD=2) + 0.5 * P(IBD=1). This is useful for teaching and for
 # comparison with older GWAS QC workflows. PI_HAT and KING kinship are on
 # different scales, so final pruning below remains based on KING pairs.
+#
+# PI_HAT also assumes a single homogeneous population: it computes allele
+# frequencies across whatever sample it is given, so on a multi-ancestry
+# cohort the between-population frequency differences are attributed to IBD
+# sharing. The comparison in Step 5 quantifies the resulting inflation.
 plink \
   --bfile "${DATASET_INPUT}/${DATASET_NAME}_06_filt" \
   --extract "${OUT_DIR}/${DATASET_NAME}_07_prune.prune.in" \
@@ -498,8 +572,13 @@ echo "=== Comparing KING kinship and PLINK1.9 PI_HAT ==="
 echo ""
 
 # KING kinship and PI_HAT are related but not interchangeable. In ideal outbred
-# pedigrees, PI_HAT is approximately 2 * KING kinship. This comparison table is
-# for QC review and teaching; the final removal list below still uses KING.
+# pedigrees, PI_HAT is approximately 2 * KING kinship. That approximation holds
+# only within a homogeneous sample: PI_HAT is computed from pooled allele
+# frequencies, so on a multi-ancestry cohort it attributes between-population
+# frequency differences to IBD sharing and reports large numbers of spurious
+# distant relatives. This is the same Wahlund effect that invalidates the
+# pooled Hardy-Weinberg test in Step 06. The comparison table is for QC review
+# and teaching; the final removal list below uses KING.
 awk -F "\t" '
   BEGIN {
     OFS = "\t"
@@ -987,9 +1066,11 @@ RELATEDNESS_LOSS_PCT=$(awk -v removed="$NREMOVE" -v total="$NSAMP_BEFORE_DIAG" '
 NCONTROL_REMOVED_DIAG=$(awk '$1 == "control" {print $2}' "$REMOVAL_PHENO_COUNTS")
 NCASE_REMOVED_DIAG=$(awk '$1 == "case" {print $2}' "$REMOVAL_PHENO_COUNTS")
 NUNKNOWN_REMOVED_DIAG=$(awk '$1 == "unknown" {print $2}' "$REMOVAL_PHENO_COUNTS")
+NKINSHIP_VARIANTS=$(wc -l < "${OUT_DIR}/${DATASET_NAME}_07_prune.prune.in")
 
 {
   echo -e "metric\tvalue"
+  echo -e "kinship_variants_after_pruning\t${NKINSHIP_VARIANTS}"
   echo -e "samples_before_relatedness_filter\t${NSAMP_BEFORE_DIAG}"
   echo -e "king_pruning_pairs_gt_${REMOVE_THRESHOLD}\t${NPRUNE_PAIRS}"
   echo -e "unique_samples_in_king_pruning_pairs\t${NPRUNE_SAMPLES}"
@@ -1089,6 +1170,7 @@ if [ "$NSAMP_REMOVED" -ne "$NPHENO_SUM" ]; then
   exit 1
 fi
 
+echo "Kinship estimated on:              ${NKINSHIP_VARIANTS} pruned common autosomal variants"
 echo "Samples before relatedness filter: ${NSAMP_BEFORE}"
 echo "Samples after relatedness filter:  ${NSAMP_AFTER}"
 echo "Related samples removed:          ${NSAMP_REMOVED}"
