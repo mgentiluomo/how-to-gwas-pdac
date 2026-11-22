@@ -37,6 +37,10 @@
 #   - results/raw/binary/*.ped|.map                     per sample
 #   - results/raw/merged/DB_merged_final.bed|.bim|.fam
 #   - results/raw/pdac_demo_01A_format_sizes.tsv
+#   - results/raw/pdac_demo_01A_allele_repair.tsv
+#
+# USAGE
+#   bash 03_lgen_to_binary.sh [out_dir] [example_data_dir]
 ################################################################################
 
 set -euo pipefail
@@ -52,6 +56,7 @@ fi
 cd "$PROJECT_ROOT"
 
 OUT_DIR="${1:-results/raw}"
+EXAMPLE_DIR="${2:-example_data}"   # where the Final Reports are, for the size table
 LGEN_DIR="${OUT_DIR}/lgen"
 BIN_DIR="${OUT_DIR}/binary"
 MRG_DIR="${OUT_DIR}/merged"
@@ -158,6 +163,9 @@ bim\$V5[fix] <- ifelse(bim\$V6[fix] == m\$A1[fix], m\$A2[fix],
 after <- sum(bim\$V5 == '0')
 write.table(bim, '${MRG_DIR}/DB_merged.bim', col.names = FALSE, row.names = FALSE,
             quote = FALSE, sep = '\t')
+write.table(data.frame(metric = c('variants', 'unobserved_allele', 'repaired', 'unresolved'),
+                       value  = c(nrow(bim), before, before - after, after)),
+            '${OUT_DIR}/pdac_demo_01A_allele_repair.tsv', sep = '\t', quote = FALSE, row.names = FALSE)
 cat('  variants with an unobserved allele:', before, '\n')
 cat('  repaired from the manifest:        ', before - after, '\n')
 cat('  still unresolved:                  ', after, '\n')
@@ -171,7 +179,7 @@ echo "=== Size of the same data in each format ==="
 echo ""
 {
   echo -e "format\tfiles\tbytes"
-  RAW=$(cat example_data/*_final_report.csv 2>/dev/null | wc -c)
+  RAW=$(cat "${EXAMPLE_DIR}"/*_final_report.csv 2>/dev/null | wc -c)
   LG=$(cat "${LGEN_DIR}"/*.lgen "${LGEN_DIR}"/*.map "${LGEN_DIR}"/*.fam | wc -c)
   PD=$(cat "${BIN_DIR}"/*.ped "${BIN_DIR}"/*.map 2>/dev/null | wc -c)
   BN=$(( $(stat -c%s "${MRG_DIR}/DB_merged_final.bed") + $(stat -c%s "${MRG_DIR}/DB_merged_final.bim") + $(stat -c%s "${MRG_DIR}/DB_merged_final.fam") ))

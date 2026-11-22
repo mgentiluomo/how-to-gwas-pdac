@@ -314,6 +314,10 @@ find scripts/dev -maxdepth 1 -type f -name "*.sh" | sort >> scripts/dev/script_m
 sort -u scripts/dev/section_manifest.txt -o scripts/dev/section_manifest.txt
 sort -u scripts/dev/script_manifest.txt -o scripts/dev/script_manifest.txt
 
+# Copy the synthetic Final Reports and array manifest used in Section 1A
+mkdir -p example_data
+cp how-to-gwas-pdac/sections/01A_study_design/example_data/*.csv example_data/
+
 # Optional cleanup: delete only the temporary cloned copy after scripts are copied
 rm -r how-to-gwas-pdac
 ```

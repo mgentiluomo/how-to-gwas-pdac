@@ -213,10 +213,18 @@ say "  wrote env/software_versions.md"
 # Dependency order. Entries may carry arguments; most scripts need none because
 # their defaults already chain together. Two R scripts are absent on purpose:
 # 01_initial_qc_plots.R and 09_qc_report.R are invoked by their own shell steps.
-# Section 1A is excluded on purpose: it demonstrates raw
-# array output handling on its own synthetic example files and does not depend
-# on the phenotype, and one of its steps writes into demo_data/.
+# Section 1A runs first, on its own synthetic Final Reports. Step 00
+# regenerates them from demo_data/pdac_demo.bim with seed 2026; the result is
+# byte-identical to the committed files, so git sees no change unless the
+# generator or the data release changes. The other steps take explicit paths
+# because the repository keeps the example data inside the section folder.
 STEPS=(
+  "01A_study_design/scripts/00_make_example_raw_data.R"
+  "01A_study_design/scripts/01_inspect_final_report.sh sections/01A_study_design/example_data/DEMO001_final_report.csv results/raw"
+  "01A_study_design/scripts/02_report_to_lgen.R sections/01A_study_design/example_data sections/01A_study_design/example_data/example_manifest.csv 0.15"
+  "01A_study_design/scripts/03_lgen_to_binary.sh results/raw sections/01A_study_design/example_data"
+  "01A_study_design/scripts/04_preflight_and_formats.sh results/raw demo_data/pdac_demo"
+
   "01B_genotyping_qc/scripts/01_initial_qc_stats.sh"
   "01B_genotyping_qc/scripts/02_sample_callrate.sh"
   "01B_genotyping_qc/scripts/03_sex_check.sh"
@@ -300,6 +308,7 @@ done
 say ""
 say "--- Collecting artefacts into the section folders ---"
 declare -A MAP=(
+  [raw]="01A_study_design"
   [qc]="01B_genotyping_qc"
   [pca]="02_population_stratification"
   [power]="03B_statistical_power"

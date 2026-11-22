@@ -20,7 +20,8 @@
 #
 # OUTPUT:
 #   - results/raw/pdac_demo_01A_preflight.txt
-#   - results/raw/format_demo.*             (conversion examples)
+#   - results/raw/pdac_demo_01A_demo_chr22_format_sizes.tsv
+#   - results/raw/formats/format_demo.*     (conversion examples, chr22)
 ################################################################################
 
 set -euo pipefail
@@ -111,21 +112,31 @@ echo "=== Format conversions you will actually use ==="
 echo ""
 
 if [ -f "${DEMO}.bed" ]; then
+  # Conversion products go in a subfolder: they are large, regenerable, and
+  # must not be collected with the small results.
+  mkdir -p "${OUT_DIR}/formats"
   echo "--- PLINK 1 binary to PLINK 2 native (pgen), the fastest working format"
-  plink2 --bfile "$DEMO" --chr 22 --make-pgen --out "${OUT_DIR}/format_demo" > /dev/null 2>&1
+  plink2 --bfile "$DEMO" --chr 22 --make-pgen --out "${OUT_DIR}/formats/format_demo" > /dev/null 2>&1
   echo "    plink2 --bfile ${DEMO} --make-pgen --out out"
 
   echo "--- PLINK to VCF, required by imputation servers and for sharing"
-  plink2 --bfile "$DEMO" --chr 22 --export vcf bgz --out "${OUT_DIR}/format_demo" > /dev/null 2>&1
+  plink2 --bfile "$DEMO" --chr 22 --export vcf bgz --out "${OUT_DIR}/formats/format_demo" > /dev/null 2>&1
   echo "    plink2 --bfile ${DEMO} --export vcf bgz --out out"
 
   echo "--- PLINK binary to text, for looking at the data by eye"
-  plink2 --bfile "$DEMO" --chr 22 --export ped --out "${OUT_DIR}/format_demo" > /dev/null 2>&1
+  plink2 --bfile "$DEMO" --chr 22 --export ped --out "${OUT_DIR}/formats/format_demo" > /dev/null 2>&1
   echo "    plink2 --bfile ${DEMO} --export ped --out out"
 
   echo ""
   echo "Sizes for chromosome 22 of the demonstration dataset:"
-  ls -l "${OUT_DIR}"/format_demo.* 2>/dev/null | awk '{printf "  %10d  %s\n", $5, $9}'
+  ls -l "${OUT_DIR}"/formats/format_demo.* 2>/dev/null | awk '{printf "  %10d  %s\n", $5, $9}'
+  {
+    echo -e "file\tbytes"
+    for e in ped map pgen pvar psam vcf.gz; do
+      f="${OUT_DIR}/formats/format_demo.${e}"
+      [ -f "$f" ] && echo -e "format_demo.${e}\t$(stat -c%s "$f")"
+    done
+  } > "${OUT_DIR}/pdac_demo_01A_demo_chr22_format_sizes.tsv"
 fi
 
 echo ""

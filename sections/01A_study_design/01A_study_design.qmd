@@ -31,6 +31,10 @@ dm_n      <- pf("^\\s+variants: ([0-9]+)")
 dm_unpl   <- pf("^\\s+unplaced: ([0-9]+)")
 dm_dpos   <- pf("^\\s+duplicated positions: ([0-9]+)")
 dm_amb    <- pf("^\\s+strand-ambiguous: ([0-9]+)")
+n_minus   <- as.numeric(val(S, "pdac_demo_01A_reference_summary.tsv", "minus_strand_complemented"))
+rp        <- function(k) as.numeric(val(S, "pdac_demo_01A_allele_repair.tsv", k))
+fsz       <- tab(S, "pdac_demo_01A_demo_chr22_format_sizes.tsv")
+mb        <- function(f) dec(fsz$bytes[fsz$file == f] / 1e6, 1)
 ```
 
 Every other page in this guide starts from a clean PLINK dataset. This one is about how that
@@ -57,15 +61,13 @@ PLINK 1 input, which is why both are needed on this page and only `plink2` elsew
 `example_data/` holds three Final Reports and an array manifest, generated from `pdac_demo` by
 `scripts/00_make_example_raw_data.R` with the project seed 2026.
 
-**Where the figures on this page come from.** The example data were generated from
-`pdac_demo.bim` of data release `v0.3-data`. Figures about the example are read from the files in
-`sections/01A_study_design/results/`, written by one run of scripts 01 to 04 and committed in
-`fa99b5b` (27 July 2026). This section is not part of the canonical run
-(`scripts/dev/run_all.sh`). On 22 November 2026 the example data and every text result were
-regenerated from scratch with PLINK v1.90b6.25 and found identical, apart from timestamps and
-file paths. A few counts are printed by the scripts but not written to a results file; they are
-marked in the page source. Figures about a real Illumina report are measurements on a file that
-is not distributed, and are labelled as such.
+**Where the figures on this page come from.** The example data are generated from
+`pdac_demo.bim` of data release `v0.3-data`. Steps 00 to 04 are part of the canonical run
+(`scripts/dev/run_all.sh`): every run regenerates the example data, byte-identical to the files
+in `example_data/`, reruns the four steps, and writes the results in
+`sections/01A_study_design/results/`, from which every figure about the example on this page is
+read. Figures about a real Illumina report are measurements on a file that is not distributed,
+and are labelled as such.
 
 They are synthetic for a reason that this guide takes seriously: a real Final Report contains the
 genome-wide genotypes of an identifiable person, and a manufacturer's manifest is not ours to
@@ -128,7 +130,7 @@ density. The cheap, current, GWAS-oriented array is almost always the right answ
 low-quality calls, is visible in the raw export and invisible afterwards.
 
 ```bash
-bash scripts/01A_study_design/01_inspect_final_report.sh
+bash scripts/01A_study_design/01_inspect_final_report.sh example_data/DEMO001_final_report.csv
 ```
 
 An Illumina array is scanned, the intensities are clustered by the calling software, and the
@@ -209,8 +211,8 @@ manufacturer's file, and the one you need is the one matching *your* array, not 
 
 ```bash
 Rscript scripts/01A_study_design/02_report_to_lgen.R \
-        example_data/example_final_report.csv \
-        /path/to/GSA-24v3-0_A2.csv \
+        example_data \
+        example_data/example_manifest.csv \
         0.15
 ```
 
@@ -262,9 +264,8 @@ entirely plausible. Nothing downstream would complain.
 ### What the conversion does
 
 **Strand.** The manifest gives the design alleles as `[A/G]` on the design strand, and
-`RefStrand` says whether that is the plus strand of the reference. <!-- 3,194: printed by 02_report_to_lgen.R ("3194 had their alleles complemented"), not written to a results file -->
-In the example data
-**3,194 of `r num(n_match)` variants, `r pct(100 * 3194 / n_match)`, are on the minus strand** and must be complemented before they
+`RefStrand` says whether that is the plus strand of the reference. In the example data
+**`r num(n_minus)` of `r num(n_match)` variants, `r pct(100 * n_minus / n_match)`, are on the minus strand** and must be complemented before they
 can be compared with plus-strand genotypes; the real array measured 43%. Skip this and you get
 the wrong reference allele for nearly half the array, silently.
 
@@ -338,19 +339,17 @@ A variant that is monomorphic among the samples in hand shows only one allele, s
 `0` in the other allele column of the `.bim`. That zero is not missing data, it is an
 **unobserved** allele, and it breaks later merges, strand checks and imputation.
 
-<!-- 1,546: printed by 03_lgen_to_binary.sh ("variants with an unobserved allele"), not written to a results file -->
-In the example, across `r n_samples` samples, **1,546 of `r num(ex_n)` variants** carry such a zero: the fewer
+In the example, across `r n_samples` samples, **`r num(rp("unobserved_allele"))` of `r num(rp("variants"))` variants** carry such a zero: the fewer
 samples you have, the more variants look monomorphic, and with a single sample it would be most
 of them. The manifest knows what the second allele should be, so the script fills it in: take the
-observed allele, look up the design pair, write the other one. **All 1,546 are repaired.**
+observed allele, look up the design pair, write the other one. **`r if (rp("unresolved") == 0) paste("All", num(rp("repaired")), "are repaired.") else paste(num(rp("repaired")), "are repaired and", num(rp("unresolved")), "remain unresolved.")`**
 
 Without this step the dataset looks fine and cannot be combined with anything.
 :::
 
 **Why binary.** A `.ped` stores roughly four bytes per genotype; a `.bed` packs four genotypes
-into one byte. <!-- sizes: printed by 04_preflight_and_formats.sh (format_demo.ped 36,459,255 bytes), not written to a results file -->
-On chromosome 22 of the demonstration dataset the text export is 36 MB against
-1.5 MB for the PLINK 2 native format.
+into one byte. On chromosome 22 of the demonstration dataset the text export (`.ped`) is
+`r mb("format_demo.ped")` MB against `r mb("format_demo.pgen")` MB for the PLINK 2 native genotype file (`.pgen`).
 
 | File | Content |
 |---|---|

@@ -27,7 +27,7 @@
 #   that looks like any other unless you check.
 #
 # INPUT:
-#   - example_data/example_final_report.csv
+#   - example_data/DEMO001_final_report.csv
 #     A genuine Illumina Final Report from a GSA-24v3 array, the same array
 #     family the demonstration dataset is built on. Excerpt of 8,000 variants
 #     for one sample; the sample identifier has been replaced with DEMO001.
@@ -49,7 +49,7 @@ else
 fi
 cd "$PROJECT_ROOT"
 
-REPORT="${1:-example_data/example_final_report.csv}"
+REPORT="${1:-example_data/DEMO001_final_report.csv}"
 OUT_DIR="${2:-results/raw}"
 GC_MIN="${3:-0.15}"
 

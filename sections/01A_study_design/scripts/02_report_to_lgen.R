@@ -49,14 +49,16 @@
 #   - results/raw/lgen/<sample>.lgen / .map / .fam
 #   - results/raw/pdac_demo_01A_manifest_check.txt
 #   - results/raw/pdac_demo_01A_conversion_log.tsv
+#   - results/raw/pdac_demo_01A_reference_summary.tsv
+#   - results/raw/pdac_demo_01A_reference_alleles.csv
 #
 # Usage:
 #   Rscript 02_report_to_lgen.R [report_dir_or_file] [manifest.csv] [gc_min]
 ################################################################################
 
 args      <- commandArgs(trailingOnly = TRUE)
-report_in <- if (length(args) >= 1) args[1] else "example_data/example_final_report.csv"
-manifest  <- if (length(args) >= 2) args[2] else "example_data/manifest.csv"
+report_in <- if (length(args) >= 1) args[1] else "example_data"
+manifest  <- if (length(args) >= 2) args[2] else "example_data/example_manifest.csv"
 gc_min    <- if (length(args) >= 3) as.numeric(args[3]) else 0.15
 
 out_dir <- "results/raw"
@@ -166,7 +168,8 @@ report_snps <- unique(rep1[[snp_col]])
 w("Manifest check")
 w("Generated: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S"))
 w("")
-w("Report:   ", report_files[1])
+# Relative to the working directory, so the record does not carry a machine path.
+w("Report:   ", sub(paste0("^", normalizePath(getwd()), "/"), "", report_files[1]))
 w("Manifest: ", manifest)
 w("")
 w("1. PRODUCT")
@@ -260,6 +263,10 @@ write.csv(ref[, c("Name", "Chr", "MapInfo", "A1", "A2", "RefStrand")],
 
 cat("\nReference table built for", nrow(ref), "variants;",
     sum(flip), "had their alleles complemented (RefStrand '-').\n\n")
+write.table(data.frame(metric = c("reference_variants", "minus_strand_complemented"),
+                       value  = c(nrow(ref), sum(flip))),
+            file.path(out_dir, "pdac_demo_01A_reference_summary.tsv"),
+            sep = "\t", quote = FALSE, row.names = FALSE)
 
 # --- 6. convert each report --------------------------------------------------
 

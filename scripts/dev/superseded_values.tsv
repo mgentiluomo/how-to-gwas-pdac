@@ -75,3 +75,5 @@ sections/01B_genotyping_qc/*.qmd	F	correlation of 0.85	Wahlund r, unsourced figu
 sections/01A_study_design/*.qmd	F	median 0.72	GenCall median; the results file says 0.7301
 sections/01A_study_design/*.qmd	F	this excerpt	the example data are synthetic, not an excerpt
 sections/01A_study_design/*.qmd	F	a real Illumina Final Report, one sample	three synthetic Final Reports
+sections/01A_study_design/*.qmd	F	example_final_report.csv	a file that does not exist; the reports are DEMO00x_final_report.csv
+sections/01A_study_design/*.qmd	F	/path/to/GSA-24v3-0_A2.csv	placeholder manifest; the example uses example_data/example_manifest.csv
