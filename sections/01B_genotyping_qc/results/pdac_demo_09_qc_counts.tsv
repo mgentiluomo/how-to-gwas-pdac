@@ -6,5 +6,5 @@ step_index	step	samples	variants	samples_lost	variants_lost
 4	Heterozygosity	1412	430000	20	0
 5	Variant call rate	1412	421520	0	8480
 6	Hardy-Weinberg	1412	421520	0	0
-7	Relatedness	1215	421520	197	0
-8	MAF filter	1215	414662	0	6858
+7	Relatedness	1213	421520	199	0
+8	MAF filter	1213	414667	0	6853

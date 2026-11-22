@@ -5,8 +5,8 @@ same_category	290
 different_category_check_values	4
 reported_by_king_only	0
 reported_by_pihat_only	55003
-pruning_pairs	280
-pruning_pairs_with_pihat	280
+pruning_pairs	284
+pruning_pairs_with_pihat	284
 pruning_pairs_without_pihat	0
 mean_abs_pihat_minus_2king	0.028973
 max_abs_pihat_minus_2king	0.129531

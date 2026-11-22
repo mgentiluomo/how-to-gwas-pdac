@@ -1,8 +1,8 @@
 quantity	value
-qc_passed_total	1215
+qc_passed_total	1213
 qc_passed_eur	611
-qc_passed_afr	287
-qc_passed_eas	317
+qc_passed_afr	286
+qc_passed_eas	316
 analysis_set_total	611
 analysis_set_cases	219
 analysis_set_controls	392

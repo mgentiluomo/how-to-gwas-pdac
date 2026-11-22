@@ -1,5 +1,5 @@
 REMOVED_FID	REMOVED_IID	REMOVED_PHENO	KEPT_FID	KEPT_IID	KEPT_PHENO	KINSHIP	RELATIONSHIP_CATEGORY	REASON
-MG1265	MG1265	control	MG1417	MG1417	control	0.255724	First_degree	same_phenotype_remove_higher_related_degree_or_id
+MG1417	MG1417	control	MG1265	MG1265	control	0.255724	First_degree	same_phenotype_remove_higher_related_degree_or_id
 MG0977	MG0977	control	MG0782	MG0782	case	0.253591	First_degree	case_control_pair_keep_case_remove_control
 MG0529	MG0529	control	MG0543	MG0543	case	0.253297	First_degree	case_control_pair_keep_case_remove_control
 MG0508	MG0508	control	MG0572	MG0572	control	0.252279	First_degree	same_phenotype_remove_higher_related_degree_or_id
@@ -95,6 +95,7 @@ MG0623	MG0623	control	MG0626	MG0626	case	0.249645	First_degree	case_control_pair
 MG1344	MG1344	control	MG1356	MG1356	case	0.249594	First_degree	case_control_pair_keep_case_remove_control
 MG0357	MG0357	control	MG0355	MG0355	control	0.249548	First_degree	same_phenotype_remove_higher_related_degree_or_id
 MG0371	MG0371	control	MG0369	MG0369	case	0.249509	First_degree	case_control_pair_keep_case_remove_control
+MG1265	MG1265	control	MG1153	MG1153	case	0.249495	First_degree	case_control_pair_keep_case_remove_control
 MG0969	MG0969	case	MG0865	MG0865	case	0.249445	First_degree	same_phenotype_remove_higher_related_degree_or_id
 MG1403	MG1403	control	MG1172	MG1172	case	0.24944	First_degree	case_control_pair_keep_case_remove_control
 MG0869	MG0869	case	MG0938	MG0938	case	0.249431	First_degree	same_phenotype_remove_higher_related_degree_or_id
@@ -196,3 +197,4 @@ MG1153	MG1153	case	MG1260	MG1260	case	0.242163	First_degree	same_phenotype_remov
 MG0631	MG0631	control	MG0496	MG0496	control	0.24065	First_degree	same_phenotype_remove_higher_related_degree_or_id
 MG1084	MG1084	control	MG1019	MG1019	case	0.238065	First_degree	case_control_pair_keep_case_remove_control
 MG1042	MG1042	control	MG0898	MG0898	case	0.236447	First_degree	case_control_pair_keep_case_remove_control
+MG0775	MG0775	control	MG1070	MG1070	case	0.112737	Second_degree	case_control_pair_keep_case_remove_control

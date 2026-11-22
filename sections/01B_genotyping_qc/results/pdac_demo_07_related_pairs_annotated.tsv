@@ -172,9 +172,9 @@ MG0625	MG0625	MG0622	MG0622	control	control	0.251151	First_degree	yes
 MG0626	MG0626	MG0623	MG0623	case	control	0.249645	First_degree	yes
 MG0627	MG0627	MG0623	MG0623	control	control	0.248368	First_degree	yes
 MG0628	MG0628	MG0487	MG0487	control	control	0.0658391	Third_degree	no
-MG0628	MG0628	MG0496	MG0496	control	control	0.128337	Second_degree	no
+MG0628	MG0628	MG0496	MG0496	control	control	0.128337	Second_degree	yes
 MG0630	MG0630	MG0628	MG0628	control	control	0.250219	First_degree	yes
-MG0631	MG0631	MG0487	MG0487	control	control	0.119335	Second_degree	no
+MG0631	MG0631	MG0487	MG0487	control	control	0.119335	Second_degree	yes
 MG0631	MG0631	MG0496	MG0496	control	control	0.24065	First_degree	yes
 MG0631	MG0631	MG0628	MG0628	control	control	0.24753	First_degree	yes
 MG0632	MG0632	MG0629	MG0629	control	control	0.24836	First_degree	yes
@@ -240,7 +240,7 @@ MG1053	MG1053	MG0787	MG0787	control	case	0.249348	First_degree	yes
 MG1060	MG1060	MG0945	MG0945	control	case	0.249805	First_degree	yes
 MG1068	MG1068	MG0837	MG0837	case	control	0.250111	First_degree	yes
 MG1068	MG1068	MG0953	MG0953	case	control	0.250481	First_degree	yes
-MG1070	MG1070	MG0775	MG0775	case	control	0.112737	Second_degree	no
+MG1070	MG1070	MG0775	MG0775	case	control	0.112737	Second_degree	yes
 MG1071	MG1071	MG0957	MG0957	control	control	0.244015	First_degree	yes
 MG1073	MG1073	MG0915	MG0915	case	control	0.247912	First_degree	yes
 MG1076	MG1076	MG0815	MG0815	control	control	0.246617	First_degree	yes
@@ -280,7 +280,7 @@ MG1410	MG1410	MG1282	MG1282	control	case	0.24761	First_degree	yes
 MG1414	MG1414	MG1305	MG1305	control	case	0.251332	First_degree	yes
 MG1414	MG1414	MG1312	MG1312	control	control	0.249695	First_degree	yes
 MG1416	MG1416	MG1140	MG1140	case	case	0.251039	First_degree	yes
-MG1417	MG1417	MG1153	MG1153	control	case	0.121866	Second_degree	no
+MG1417	MG1417	MG1153	MG1153	control	case	0.121866	Second_degree	yes
 MG1417	MG1417	MG1265	MG1265	control	control	0.255724	First_degree	yes
 MG1423	MG1423	MG1244	MG1244	control	case	0.250073	First_degree	yes
 MG1423	MG1423	MG1286	MG1286	control	control	0.0553076	Third_degree	no

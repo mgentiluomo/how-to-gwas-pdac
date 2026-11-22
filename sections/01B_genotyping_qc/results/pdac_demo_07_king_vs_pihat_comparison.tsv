@@ -16288,7 +16288,7 @@ MG1185	MG1185	MG1207	MG1207	NA	NA	0.1591	Third_degree	NA	NA	no	reported_by_pihat
 MG1183	MG1183	MG1414	MG1414	NA	NA	0.1522	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1218	MG1218	MG1321	MG1321	NA	NA	0.1428	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1198	MG1198	MG1224	MG1224	NA	NA	0.1673	Third_degree	NA	NA	no	reported_by_pihat_only
-MG0775	MG0775	MG1070	MG1070	0.112737	Second_degree	0.2558	Second_degree	0.225474	0.030326	no	same_category
+MG0775	MG0775	MG1070	MG1070	0.112737	Second_degree	0.2558	Second_degree	0.225474	0.030326	yes	same_category
 MG1378	MG1378	MG1401	MG1401	NA	NA	0.1577	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1232	MG1232	MG1311	MG1311	NA	NA	0.1595	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1118	MG1118	MG1453	MG1453	NA	NA	0.1588	Third_degree	NA	NA	no	reported_by_pihat_only
@@ -17283,7 +17283,7 @@ MG1363	MG1363	MG1365	MG1365	NA	NA	0.1602	Third_degree	NA	NA	no	reported_by_pihat
 MG1160	MG1160	MG1346	MG1346	NA	NA	0.1642	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1256	MG1256	MG1329	MG1329	NA	NA	0.1613	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1208	MG1208	MG1270	MG1270	NA	NA	0.1663	Third_degree	NA	NA	no	reported_by_pihat_only
-MG0487	MG0487	MG0631	MG0631	0.119335	Second_degree	0.2700	Second_degree	0.238670	0.031330	no	same_category
+MG0487	MG0487	MG0631	MG0631	0.119335	Second_degree	0.2700	Second_degree	0.238670	0.031330	yes	same_category
 MG1152	MG1152	MG1314	MG1314	NA	NA	0.1626	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1298	MG1298	MG1404	MG1404	NA	NA	0.1591	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1312	MG1312	MG1394	MG1394	NA	NA	0.1504	Third_degree	NA	NA	no	reported_by_pihat_only
@@ -26033,7 +26033,7 @@ MG1267	MG1267	MG1374	MG1374	NA	NA	0.1676	Third_degree	NA	NA	no	reported_by_pihat
 MG1202	MG1202	MG1457	MG1457	NA	NA	0.1565	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1301	MG1301	MG1461	MG1461	NA	NA	0.1666	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1217	MG1217	MG1267	MG1267	NA	NA	0.1606	Third_degree	NA	NA	no	reported_by_pihat_only
-MG0496	MG0496	MG0628	MG0628	0.128337	Second_degree	0.2887	Second_degree	0.256674	0.032026	no	same_category
+MG0496	MG0496	MG0628	MG0628	0.128337	Second_degree	0.2887	Second_degree	0.256674	0.032026	yes	same_category
 MG1281	MG1281	MG1364	MG1364	NA	NA	0.1583	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1207	MG1207	MG1442	MG1442	NA	NA	0.1618	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1231	MG1231	MG1257	MG1257	NA	NA	0.1469	Third_degree	NA	NA	no	reported_by_pihat_only
@@ -53537,7 +53537,7 @@ MG1209	MG1209	MG1373	MG1373	NA	NA	0.1697	Third_degree	NA	NA	no	reported_by_pihat
 MG1260	MG1260	MG1453	MG1453	NA	NA	0.1736	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1356	MG1356	MG1436	MG1436	NA	NA	0.1620	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1210	MG1210	MG1346	MG1346	NA	NA	0.1557	Third_degree	NA	NA	no	reported_by_pihat_only
-MG1153	MG1153	MG1417	MG1417	0.121866	Second_degree	0.3438	Second_degree	0.243732	0.100068	no	same_category
+MG1153	MG1153	MG1417	MG1417	0.121866	Second_degree	0.3438	Second_degree	0.243732	0.100068	yes	same_category
 MG1369	MG1369	MG1453	MG1453	NA	NA	0.1535	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1190	MG1190	MG1249	MG1249	NA	NA	0.1645	Third_degree	NA	NA	no	reported_by_pihat_only
 MG1223	MG1223	MG1363	MG1363	NA	NA	0.1622	Third_degree	NA	NA	no	reported_by_pihat_only

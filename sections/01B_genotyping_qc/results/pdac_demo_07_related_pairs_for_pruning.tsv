@@ -278,3 +278,7 @@ MG1260	MG1260	MG1153	MG1153	case	case	0.242163	First_degree	yes
 MG0631	MG0631	MG0496	MG0496	control	control	0.24065	First_degree	yes
 MG1084	MG1084	MG1019	MG1019	control	case	0.238065	First_degree	yes
 MG1042	MG1042	MG0898	MG0898	control	case	0.236447	First_degree	yes
+MG0628	MG0628	MG0496	MG0496	control	control	0.128337	Second_degree	yes
+MG1417	MG1417	MG1153	MG1153	control	case	0.121866	Second_degree	yes
+MG0631	MG0631	MG0487	MG0487	control	control	0.119335	Second_degree	yes
+MG1070	MG1070	MG0775	MG0775	case	control	0.112737	Second_degree	yes
