@@ -3,6 +3,39 @@ title: "Association testing: case-control"
 description: "Test every variant against disease status, check the result before believing it, and read a scan that is mostly null"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "04A_association_binary"
+lam <- function(key) val(S, "pdac_demo_04A_lambda.tsv", key)
+sm  <- function(pattern) grab(S, "pdac_demo_04A_summary.txt", pattern)
+n_gws  <- as.integer(sm("P < 5e-8: ([0-9]+) variants"))
+n_sugg <- as.integer(sm("P < 1e-5: ([0-9]+) variants"))
+th <- tab(S, "pdac_demo_04A_top_hits.tsv")
+lead <- th[which.min(th$P), ]
+ABO  <- "9:133273682:A:T"
+abo  <- th[th$ID == ABO, ]
+gws_chr <- unique(th$CHROM[th$P < 5e-8])
+pcs <- tab(S, "pdac_demo_04A_pc_screen.tsv")
+pc_hit <- pcs[pcs$nominally_associated == "yes", ]
+pcm <- tab(S, "pdac_demo_04A_pc_model_comparison.tsv"); rownames(pcm) <- pcm$model
+aset <- function(key) val("02_population_stratification", "pdac_demo_02_analysis_set.tsv", key)
+pt  <- tab("03B_statistical_power", "pdac_demo_07_power_table.tsv")
+ps  <- lines_of("03B_statistical_power", "pdac_demo_07_power_summary.txt")
+abo_power <- sub(".*analysis set:\\s+([0-9.]+%).*", "\\1",
+                 ps[grep(ABO, ps, fixed = TRUE)[1] + 2])
+tert_power <- sub(".*analysis set:\\s+([0-9.]+%).*", "\\1",
+                  ps[grep("5:1286401:C:A", ps, fixed = TRUE)[1] + 2])
+abo_gen_or <- sub(".*generative OR ([0-9.]+).*", "\\1", ps[grep(ABO, ps, fixed = TRUE)[1] + 1])
+fm  <- lines_of("06_finemapping_annotation", "pdac_demo_06_finemap_summary.txt")
+fm_rank <- as.integer(sub(".*rank ([0-9]+).*", "\\1", grep("rank", fm, value = TRUE)[1]))
+cs_eur  <- as.integer(sub(".*: ([0-9]+)$", "\\1", grep("variants in the 95% credible set", fm, value = TRUE)[1]))
+words <- c("none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+           "eleven", "twelve")
+w <- function(n) if (n <= 12) words[n + 1] else num(n)
+ordinal <- c("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth")
+```
+
 This is the step everything so far has been preparing for: testing each variant for association
 with disease status. It is also the shortest step to run and the easiest to misread.
 
@@ -37,7 +70,9 @@ Rscript scripts/04A_association_binary/01_make_covariates.R
 
 This merges sex and age with the ten within-Europe components, and additionally tests each
 component against case status in a model containing sex and age. On the demonstration data
-**no component is associated with status**, which is what a single-ancestry analysis set should
+**`r w(nrow(pc_hit))` of the ten components are nominally associated with status**, `r paste(sprintf("%s (*P* = %s)", pc_hit$PC, dec(pc_hit$P, 3)), collapse = " and ")`. Adjusting for those two alone
+instead of all ten moves λ from `r dec(pcm["primary", "lambda"], 3)` to `r dec(pcm["screened", "lambda"], 3)` and leaves the same lead variant
+(`pdac_demo_04A_pc_model_comparison.tsv`), which is what a single-ancestry analysis set should
 look like.
 
 ::: {.callout-important title="What it means if several components are strongly associated"}
@@ -62,7 +97,8 @@ Three parts of that command are worth understanding.
 cases are few, or when a genotype almost perfectly separates cases from controls: the estimate
 diverges and the P value cannot be trusted. Firth's penalised likelihood fixes this. The fallback
 form uses ordinary regression by default and switches to Firth only where it is needed. On the
-demonstration data Firth is invoked for **2,289** variants, all of them low-frequency. With a few
+<!-- source: results/assoc/pdac_demo_04A_gwas.PHENO.glm.logistic.hybrid, FIRTH? = Y; highest MAF 0.017 -->
+demonstration data Firth is invoked for **2,457** variants, all of them low-frequency. With a few
 hundred cases this is not a refinement, it is a requirement.
 
 **`--covar-name SEX,AGE,PC1...PC10`.** The adjustment set. In a multi-centre study, recruitment
@@ -84,7 +120,7 @@ with biobank controls, a saddlepoint-corrected method is required rather than op
 standard asymptotics fail at those ratios.
 :::
 
-The log reports what was actually analysed. On the demonstration data: **[PENDING RERUN] cases and [PENDING RERUN]
+The log reports what was actually analysed. On the demonstration data: **`r num(lam("cases"))` cases and `r num(lam("controls"))`
 controls**.
 
 ---
@@ -105,7 +141,7 @@ Points should follow the diagonal, lifting off only in the extreme upper tail wh
 associations live. A curve that rises above the line along its whole length means inflation
 affecting every variant, which is a property of the analysis rather than of biology.
 
-On the demonstration data **λ = 1.016**, and λ₁₀₀₀ = 1.058.
+On the demonstration data **λ = `r dec(lam("lambda_gc"), 3)`**, and λ₁₀₀₀ = `r dec(lam("lambda_1000"), 3)`.
 
 ::: {.callout-warning title="Compute lambda correctly"}
 `lambda = median(qchisq(1 - P, df = 1)) / qchisq(0.5, df = 1)`
@@ -138,11 +174,13 @@ One peak. Everything else is flat.
 
 If you have followed a tutorial built on a well-powered common-disease cohort, you have seen a
 dozen peaks and you may read this plot as a failed analysis. It is not. The phenotype here was
-simulated from a **single causal locus** at *ABO* with no polygenic background, so one signal is
-the correct answer and the flat genome is the true one.
+simulated from **two causal variants** and no polygenic background: one at *ABO*, which this
+study had the power to detect, and one at TERT/CLPTM1L, which at `r tert_power` power it
+did not ([Statistical power](../03B_statistical_power/03B_statistical_power.qmd)). One peak is
+therefore the expected answer, and the flat genome elsewhere does not mean nothing is there.
 
-The deeper point is the one this guide exists to make. At an effective sample size of [PENDING RERUN], the
-smallest odds ratio detectable with 80% power at genome-wide significance is about 2.3 even for a
+The deeper point is the one this guide exists to make. At an effective sample size of `r num(round(as.numeric(aset("analysis_set_effective_n"))))`, the
+smallest odds ratio detectable with 80% power at genome-wide significance is about `r dec(pt$min_OR_analysis_set[pt$MAF == 0.3], 1)` even for a
 common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have
 odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it
 was conducted. The scan is sound; it is simply not powered, and those are different things.
@@ -152,7 +190,8 @@ was conducted. The scan is sound; it is simply not powered, and those are differ
 European-ancestry data. It is somewhat conservative for a single ancestry and anticonservative
 for trans-ancestry analyses, where LD blocks are shorter.
 
-**1 × 10⁻⁵** is the conventional suggestive line: **7 variants** here. These are not findings and
+**1 × 10⁻⁵** is the conventional suggestive line: **`r n_sugg` variants** here, `r n_gws` of which also pass
+5 × 10⁻⁸. These are not findings and
 must never be presented as such. But in a rare cancer, discarding them entirely also discards the
 most plausible candidates for the next consortium round. Report them transparently, flagged as
 requiring replication, next to the power curve that explains why the study could not resolve
@@ -183,14 +222,14 @@ believed.
 
 | | |
 |---|---|
-| Variant | 9:133266804:G:T, at *ABO* (9q34.2) |
-| Effect allele reported by PLINK | T, frequency 0.386 |
-| Odds ratio as printed | 0.415 (95% CI 0.312 to 0.552) |
-| Odds ratio per copy of the other allele | 2.41 (95% CI 1.81 to 3.20) |
-| P | 1.4 × 10⁻⁹ |
-| Variants at *P* < 5 × 10⁻⁸ | 11, all in this region |
+| Variant | `r lead$ID`, at *ABO* (9q34.2) |
+| Effect allele reported by PLINK | `r lead$A1`, frequency `r dec(lead$A1_FREQ, 3)` |
+| Odds ratio as printed | `r dec(lead$OR, 3)` (95% CI `r dec(lead$OR_L95, 3)` to `r dec(lead$OR_U95, 3)`) |
+| Odds ratio per copy of the other allele | `r dec(1 / lead$OR, 2)` (95% CI `r dec(1 / lead$OR_U95, 2)` to `r dec(1 / lead$OR_L95, 2)`) |
+| P | `r sci(lead$P)` |
+| Variants at *P* < 5 × 10⁻⁸ | `r n_gws`, `r if (length(gws_chr) == 1) "all in this region" else "not all in this region"` |
 
-*ABO* is the most robustly replicated PDAC susceptibility locus, and it is the locus the
+*ABO* is the most robustly replicated PDAC susceptibility locus, and one of the two loci the
 phenotype was simulated from. Recovering it is the positive control: it confirms the pipeline
 works end to end.
 
@@ -198,11 +237,11 @@ works end to end.
 
 ::: {.callout-important title="The lead variant is not the causal variant"}
 The phenotype was simulated from `9:133273682:A:T`. That variant is **not** the one at the top of
-the scan. It sits 6.9 kb away, at *P* = 4.4 × 10⁻⁹ against the lead's 1.4 × 10⁻⁹, and its odds
-ratio per copy of the risk allele is 2.34 (95% CI 1.76 to 3.10).
+the scan. It sits `r dec(abs(abo$POS - lead$POS) / 1000, 1)` kb away, at *P* = `r sci(abo$P)` against the lead's `r sci(lead$P)`, and its odds
+ratio per copy of the risk allele is `r dec(1 / abo$OR, 2)` (95% CI `r dec(1 / abo$OR_U95, 2)` to `r dec(1 / abo$OR_L95, 2)`).
 
 The two variants are in tight linkage disequilibrium and carry the same signal. Which of them
-reaches the top is decided by sampling noise, and with eleven variants above genome-wide
+reaches the top is decided by sampling noise, and with `r w(n_gws)` variants above genome-wide
 significance in this region the one that wins is, by construction, the one whose estimate drifted
 furthest. Selection is operating here, not on the size of the effect but on the identity of the
 variant reported.
@@ -210,14 +249,14 @@ variant reported.
 This is why a lead variant should be reported as the top of a credible set rather than as a
 finding, and it is what
 [Fine mapping](../06_finemapping_annotation/06_finemapping_annotation.qmd) exists to resolve. In
-that section the causal variant ranks third among eleven in the European credible set, and first
+that section the causal variant ranks `r ordinal[fm_rank]` among `r w(cs_eur)` in the European credible set, and first
 once the ancestry strata are combined.
 :::
 
 ::: {.callout-note title="Read the direction before reading the number"}
 PLINK reports the effect of the allele in its `A1` column, which here is `T`. The risk allele is
 the other one, the reference `A`, and at this locus it is the **major** allele. That is why the
-printed odds ratio is 0.415 rather than something above 1. The reciprocal, 2.41, is the number to
+printed odds ratio is `r dec(lead$OR, 3)` rather than something above 1. The reciprocal, `r dec(1 / lead$OR, 2)`, is the number to
 compare with anything stated on the risk-allele scale.
 
 Nothing is wrong with the output. The orientation is simply a property of how the tool reports,
@@ -230,8 +269,8 @@ first-order concern rather than a formatting detail.
 An underpowered scan overstates the effects it discovers, because only upward fluctuations cross
 the threshold. It is worth stating plainly that **this did not happen at this locus**, and why.
 
-The generative odds ratio is 2.60. The analysis recovers 2.34, slightly below rather than above.
-At the 99.1% power reported in
+The generative odds ratio is `r dec(abo_gen_or, 2)`. The analysis recovers `r dec(1 / abo$OR, 2)`, slightly below rather than above.
+At the `r abo_power` power reported in
 [Statistical power](../03B_statistical_power/03B_statistical_power.qmd) there is no selection to
 inflate anything: the variant was going to be detected whatever the noise did, so the estimate
 simply scatters around the truth.

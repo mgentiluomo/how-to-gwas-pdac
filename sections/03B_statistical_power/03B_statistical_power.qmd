@@ -3,6 +3,42 @@ title: "Statistical power"
 description: "Work out what the data can support before running the test that will be interpreted"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "03B_statistical_power"
+PS <- "pdac_demo_07_power_summary.txt"
+SP <- "pdac_demo_07_survival_power.txt"
+aset <- function(key) val("02_population_stratification", "pdac_demo_02_analysis_set.tsv", key)
+pt <- tab(S, "pdac_demo_07_power_table.tsv")
+mor <- function(maf, col) dec(pt[[col]][pt$MAF == maf], 2)
+neff_all <- grab(S, PS, "combined effective sample size: ([0-9.]+)")
+pw <- function(or, maf) {   # power at an OR, from the "POWER AT EFFECT SIZES" block
+  l <- grab(S, PS, paste0("^\\s+(OR ", or, " at MAF 0\\.30:.*)$"))
+  m <- regmatches(l, gregexpr("[0-9.]+%", l))[[1]]
+  if (maf == 0.30) m[1] else m[2]
+}
+# The two simulated causal variants, in the order the report lists them
+cv <- function(id, what) {
+  x <- lines_of(S, PS); i <- grep(id, x, fixed = TRUE)[1]
+  blk <- x[i:(i + 3)]
+  switch(what,
+    or  = sub(".*generative OR ([0-9.]+).*", "\\1", blk[2]),
+    maf = sub(".*frequency ([0-9.]+).*", "\\1", blk[2]),
+    pw_set = sub(".*analysis set:\\s+([0-9.]+%).*", "\\1", blk[3]),
+    pw_all = sub(".*all strata:\\s+([0-9.]+%).*", "\\1", blk[4]))
+}
+ABO  <- "9:133273682:A:T"; TERT <- "5:1286401:C:A"
+th <- tab("04A_association_binary", "pdac_demo_04A_top_hits.tsv")
+abo <- th[th$ID == ABO, ]
+lead <- th[which.min(th$P), ]
+fm  <- lines_of("06_finemapping_annotation", "pdac_demo_06_finemap_summary.txt")
+fm_rank <- sub(".*rank ([0-9]+).*", "\\1", grep("rank", fm, value = TRUE)[1])
+ordinal <- c("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth")
+sv <- function(pattern) grab(S, SP, pattern)
+sv_ev <- sv("observed events: ([0-9]+)")
+```
+
 Power analysis has a reputation as a formality performed for a grant application and then
 forgotten. In a rare and complex trait it is the step that decides which of the analyses in this
 guide are legitimate at all, and it belongs exactly here: after the analysis set is fixed, and
@@ -54,7 +90,7 @@ An unbalanced study behaves like a smaller balanced one:
 
 $$N_{\text{eff}} = \frac{4 \, N_{\text{cases}} \, N_{\text{controls}}}{N_{\text{cases}} + N_{\text{controls}}}$$
 
-On the demonstration data, 219 cases and 392 controls, **611 people behave like 562**. Past about
+On the demonstration data, `r num(aset("analysis_set_cases"))` cases and `r num(aset("analysis_set_controls"))` controls, **`r num(aset("analysis_set_total"))` people behave like `r num(round(as.numeric(aset("analysis_set_effective_n"))))`**. Past about
 four controls per case the curve flattens, so recruiting a fifth or sixth control adds almost
 nothing. If controls are cheap and cases are not, which is the usual situation in a rare cancer,
 this is where to stop.
@@ -70,14 +106,14 @@ Rscript scripts/03B_statistical_power/01_power_curves.R
 
 ![](results/pdac_demo_07_power_curves.png)
 
-| Minor allele frequency | Analysis set, N_eff 562 | All strata combined, N_eff 1,162 |
+| Minor allele frequency | Analysis set, N_eff `r num(round(as.numeric(aset("analysis_set_effective_n"))))` | All strata combined, N_eff `r num(round(as.numeric(neff_all)))` |
 |---|---|---|
-| 0.50 | 2.12 | 1.69 |
-| 0.30 | 2.27 | 1.77 |
-| 0.20 | 2.56 | 1.92 |
-| 0.10 | 3.49 | 2.39 |
-| 0.05 | 5.60 | 3.31 |
-| 0.02 | 14.61 | 6.46 |
+| 0.50 | `r mor(0.5, "min_OR_analysis_set")` | `r mor(0.5, "min_OR_all_strata")` |
+| 0.30 | `r mor(0.3, "min_OR_analysis_set")` | `r mor(0.3, "min_OR_all_strata")` |
+| 0.20 | `r mor(0.2, "min_OR_analysis_set")` | `r mor(0.2, "min_OR_all_strata")` |
+| 0.10 | `r mor(0.1, "min_OR_analysis_set")` | `r mor(0.1, "min_OR_all_strata")` |
+| 0.05 | `r mor(0.05, "min_OR_analysis_set")` | `r mor(0.05, "min_OR_all_strata")` |
+| 0.02 | `r mor(0.02, "min_OR_analysis_set")` | `r mor(0.02, "min_OR_all_strata")` |
 
 Those are the smallest odds ratios detectable with 80% power at *P* < 5 × 10⁻⁸. Read them against
 the effects that actually exist: established cancer susceptibility loci have odds ratios between
@@ -87,10 +123,10 @@ Put as power rather than as a threshold, the same fact is starker:
 
 | | Power at MAF 0.30 | Power at MAF 0.10 |
 |---|---|---|
-| OR 1.2 | 0.0% | 0.0% |
-| OR 1.3 | 0.0% | 0.0% |
-| OR 1.5 | 1.0% | 0.0% |
-| OR 2.0 | 45.0% | 2.5% |
+| OR 1.2 | `r pw("1.2", 0.30)` | `r pw("1.2", 0.10)` |
+| OR 1.3 | `r pw("1.3", 0.30)` | `r pw("1.3", 0.10)` |
+| OR 1.5 | `r pw("1.5", 0.30)` | `r pw("1.5", 0.10)` |
+| OR 2.0 | `r pw("2.0", 0.30)` | `r pw("2.0", 0.10)` |
 
 ::: {.callout-warning title="The result of this study was determined before it was run"}
 A typical cancer susceptibility variant, odds ratio 1.3, had **no chance** of detection here. The
@@ -110,8 +146,8 @@ The demonstration phenotype was simulated from two variants. Their generative ef
 
 | Locus | Risk allele | MAF | Generative OR | Power, analysis set | Power, all strata |
 |---|:--:|---:|---:|---:|---:|
-| *ABO* 9q34.2 | `A` | 0.39 | 2.60 | **99.1%** | 100% |
-| TERT/CLPTM1L 5p15.33 | `C` | 0.49 | 1.50 | **2.0%** | 28.6% |
+| *ABO* 9q34.2 | `A` | `r dec(cv(ABO, "maf"), 2)` | `r dec(cv(ABO, "or"), 2)` | **`r cv(ABO, "pw_set")`** | `r cv(ABO, "pw_all")` |
+| TERT/CLPTM1L 5p15.33 | `C` | `r dec(cv(TERT, "maf"), 2)` | `r dec(cv(TERT, "or"), 2)` | **`r cv(TERT, "pw_set")`** | `r cv(TERT, "pw_all")` |
 
 Read the two power columns and the result of the study is already written. *ABO* was going to be
 found; TERT/CLPTM1L was not. Neither outcome says anything about the quality of the analysis, and
@@ -121,9 +157,9 @@ else, is the picture this table predicted.
 
 ::: {.callout-note title="The risk allele is the reference allele"}
 At both loci the allele carrying the effect is the reference, the first of the two in the
-`chr:pos:ref:alt` identifier, and at *ABO* it is the **major** allele at frequency 0.61. An
+`chr:pos:ref:alt` identifier, and at *ABO* it is the **major** allele at frequency `r dec(1 - abo$A1_FREQ, 2)`. An
 association run reports the effect of the other allele, so at *ABO* it prints an odds ratio near
-0.43. Its reciprocal, 2.3, is the number to compare with the generative 2.60. Allele orientation
+`r dec(abo$OR, 2)`. Its reciprocal, `r dec(1 / abo$OR, 1)`, is the number to compare with the generative `r dec(cv(ABO, "or"), 2)`. Allele orientation
 is listed in [Meta-analysis](../05_meta_analysis/05_meta_analysis.qmd) among the errors that most
 often go unnoticed; this is what one looks like.
 :::
@@ -134,9 +170,9 @@ An underpowered scan overstates the effects it does find, because the variants t
 threshold are those whose estimates happened to fall high. That is the winner's curse, and it is
 worth knowing precisely when it applies.
 
-Here it does not. At 99.1% power, *ABO* was going to be detected whatever the noise did, so there
-is no selection to inflate the estimate. The recovered odds ratio is **2.34** against a generative
-2.60, slightly below rather than above, which is what sampling error alone looks like.
+Here it does not. At `r cv(ABO, "pw_set")` power, *ABO* was going to be detected whatever the noise did, so there
+is no selection to inflate the estimate. The recovered odds ratio is **`r dec(1 / abo$OR, 2)`** against a generative
+`r dec(cv(ABO, "or"), 2)`, slightly below rather than above, which is what sampling error alone looks like.
 
 The lesson survives the absence of the phenomenon, and is sharper for it: the winner's curse is a
 consequence of low power, not a property of discovery. Ask for the power first. An effect
@@ -147,8 +183,8 @@ be.
 ### Selection did operate, on which variant was named
 
 One thing was still decided by noise. The variant at the top of the scan is
-`9:133266804:G:T`, at *P* = 1.4 × 10⁻⁹, and it is **not** the causal one. The causal variant
-`9:133273682:A:T` is third by posterior probability, at *P* = 4.4 × 10⁻⁹.
+`` `r lead$ID` ``, at *P* = `r sci(lead$P)`, and it is **not** the causal one. The causal variant
+`` `r ABO` `` is `r ordinal[as.integer(fm_rank)]` by posterior probability, at *P* = `r sci(abo$P)`.
 
 This is close to inevitable. Dozens of correlated variants in the region carry the same signal, and
 the one that reaches the top is the one whose estimate the noise pushed furthest. Selection here
@@ -160,9 +196,10 @@ lead variant should be reported as the top of a credible set rather than as a fi
 
 ### What combining the strata buys, and what it does not
 
-Across the three ancestry strata the effective sample size rises from 562 to 1,162, and power at
-TERT/CLPTM1L from 2.0% to 28.6%. That is a large relative gain and it is still not enough: the
-variant reaches *P* = 0.02 in
+Across the three ancestry strata the effective sample size rises from `r num(round(as.numeric(aset("analysis_set_effective_n"))))` to `r num(round(as.numeric(neff_all)))`, and power at
+TERT/CLPTM1L from `r cv(TERT, "pw_set")` to `r cv(TERT, "pw_all")`. That is a large relative gain and it is still not enough: the
+<!-- source: results/meta/pdac_demo_05_meta.tsv.gz, 5:1286401:C:A, P = 0.0296 -->
+variant reaches *P* = 0.03 in
 [the meta-analysis](../05_meta_analysis/05_meta_analysis.qmd), far short of genome-wide
 significance, and its effect is known to be real because it was simulated.
 
@@ -194,20 +231,20 @@ On the demonstration data, restricted to the European analysis set:
 
 | | |
 |---|---|
-| Individuals with follow up | 611 |
-| Observed events | **140** |
-| Censored | 471 |
+| Individuals with follow up | `r num(sv("individuals with survival information: ([0-9]+)"))` |
+| Observed events | **`r num(sv_ev)`** |
+| Censored | `r num(sv("censored: ([0-9]+)"))` |
 
-**The number that governs power is 140, not 611.** With 140 events, the smallest detectable hazard
-ratio at MAF 0.30 is 2.27, and a hazard ratio of 1.5 has 1.0% power.
+**The number that governs power is `r num(sv_ev)`, not `r num(sv("individuals with survival information: ([0-9]+)"))`.** With `r num(sv_ev)` events, the smallest detectable hazard
+ratio at MAF 0.30 is `r sv("MAF 0.30: HR ([0-9.]+)")`, and a hazard ratio of 1.5 has `r sv("HR 1.5 at MAF 0.30:\\s+([0-9.]+%)")` power.
 
 Turning it round gives the number to put in a protocol:
 
 | To detect, at MAF 0.30 with 80% power | Events required |
 |---|---|
-| HR 1.3 | 1,370 |
-| HR 1.5 | 574 |
-| HR 2.0 | 196 |
+| HR 1.3 | `r sv("detect HR 1.3 at MAF 0.30 with 80% power: ([0-9,]+) events")` |
+| HR 1.5 | `r sv("detect HR 1.5 at MAF 0.30 with 80% power: ([0-9,]+) events")` |
+| HR 2.0 | `r sv("detect HR 2.0 at MAF 0.30 with 80% power: ([0-9,]+) events")` |
 
 ::: {.callout-important title="What this means for a rapidly fatal cancer"}
 The way to power a survival scan is to raise the event count: enrich for individuals at higher

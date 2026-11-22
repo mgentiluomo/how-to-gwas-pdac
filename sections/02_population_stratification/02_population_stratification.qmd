@@ -3,6 +3,24 @@ title: "Population stratification"
 description: "Find the ancestry structure in the cohort, decide who is analysed, and build the covariates that remove the confounding"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "02_population_stratification"
+pv_all <- tab(S, "pdac_demo_02_pca_variance.tsv")
+ev_eur <- as.numeric(lines_of(S, "pdac_demo_02_pca_eur.eigenval"))
+ve_eur <- 100 * ev_eur / sum(ev_eur)   # same convention as pdac_demo_02_pca_variance.tsv
+aset <- function(key) val(S, "pdac_demo_02_analysis_set.tsv", key)
+hwe2 <- tab(S, "pdac_demo_02_hwe_summary.tsv"); rownames(hwe2) <- hwe2$group
+hwe2_n <- n_lines(S, "pdac_demo_02_hwe_exclude.txt")
+pooled_1e6 <- with(tab("01B_genotyping_qc", "pdac_demo_06_hwe_threshold_sweep.tsv"),
+                   variants_below[threshold == 1e-6])
+pooled_in  <- as.numeric(qc_counts("Hardy-Weinberg", "variants"))
+lambda_4a  <- val("04A_association_binary", "pdac_demo_04A_lambda.tsv", "lambda_gc")
+words <- c("None", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten")
+W <- function(n) if (n <= 10) words[n + 1] else num(n)
+```
+
 Population stratification is what happens when the people in a study differ in ancestry, and
 those differences line up with case or control status. Allele frequencies vary between
 populations for reasons that have nothing to do with disease, so if one ancestry group is
@@ -53,8 +71,9 @@ leading components describe local genomic architecture instead of ancestry.
 bash scripts/02_population_stratification/01_ld_pruning.sh
 ```
 
-On the demonstration data this keeps **222,338** variants and prunes away **192,324**. Losing
-almost half is expected: it is redundancy being removed. The pruned set is used for PCA and
+<!-- source: logs/11_01_ld_pruning.sh.log, canonical run of 22 Nov 2026 -->
+On the demonstration data this keeps **121,428** variants and prunes away **142,045**. Losing
+more than half is expected: it is redundancy being removed. The pruned set is used for PCA and
 relatedness only, never for association testing.
 
 ::: {.callout-note title="The r-squared threshold is a decision, not a standard"}
@@ -95,8 +114,8 @@ Three plots, each answering a different question.
 
 ![](results/pdac_demo_02_pca_scree.png)
 
-How many components carry real signal? On the demonstration data PC1 explains 47.7% of the
-variance and PC2 38.3%, then the curve collapses to 3.5% at PC3. That cliff is the signature of
+How many components carry real signal? On the demonstration data PC1 explains `r pct(pv_all$variance_explained_pct[1])` of the
+variance and PC2 `r pct(pv_all$variance_explained_pct[2])`, then the curve collapses to `r pct(pv_all$variance_explained_pct[3])` at PC3. That cliff is the signature of
 discrete continental ancestry: two components separate three groups, and everything after is
 noise and fine structure.
 
@@ -145,12 +164,12 @@ On the demonstration data:
 
 | | |
 |---|---|
-| QC-passed total | [PENDING RERUN] |
-| European | [PENDING RERUN] |
-| East Asian | [PENDING RERUN] |
-| African | [PENDING RERUN] |
-| **Analysis set** | **[PENDING RERUN] cases, [PENDING RERUN] controls** |
-| Effective sample size | [PENDING RERUN] |
+| QC-passed total | `r num(aset("qc_passed_total"))` |
+| European | `r num(aset("qc_passed_eur"))` |
+| East Asian | `r num(aset("qc_passed_eas"))` |
+| African | `r num(aset("qc_passed_afr"))` |
+| **Analysis set** | **`r num(aset("analysis_set_cases"))` cases, `r num(aset("analysis_set_controls"))` controls** |
+| Effective sample size | `r dec(aset("analysis_set_effective_n"), 1)` |
 
 The third strategy is the one to prefer whenever it is available, because it neither discards
 data nor assumes that effect sizes transfer between populations with different causal-allele
@@ -159,7 +178,7 @@ strata, which is the situation of most real rare-cancer cohorts, so the analysis
 European subset alone.
 
 ::: {.callout-note title="Effective sample size is the number that matters"}
-4 × cases × controls / (cases + controls) = [PENDING RERUN], not [PENDING RERUN]. In an unbalanced design the effective
+4 × cases × controls / (cases + controls) = `r dec(aset("analysis_set_effective_n"), 1)`, not `r num(aset("analysis_set_total"))`. In an unbalanced design the effective
 figure is what governs power, and it is what should be reported. Section 4A returns to what this
 number does and does not make detectable.
 :::
@@ -190,8 +209,8 @@ bash scripts/02_population_stratification/05_pca_within_eur.sh
 
 ![](results/pdac_demo_02_pca_eur_scree.png)
 
-Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains 23.9% and PC2
-11.8%, and the curve declines gently instead of collapsing, which is what within-population
+Compare this with the scree plot from Step 03. The cliff is gone. PC1 now explains `r pct(ve_eur[1])` and PC2
+`r pct(ve_eur[2])`, and the curve declines gently instead of collapsing, which is what within-population
 structure looks like: continuous gradients rather than discrete groups.
 
 ::: {.callout-tip title="How many components should you keep?"}
@@ -223,20 +242,21 @@ anywhere is evidence against the variant.
 
 | Group | Controls tested | Variants failing |
 |---|---:|---:|
-| European | 392 | 1 |
-| African | 149 | 0 |
-| East Asian | 176 | 6 |
-| **Union** | | **7** |
+| European | `r num(hwe2["eur","controls_tested"])` | `r hwe2["eur","variants_failing_1e-6"]` |
+| African | `r num(hwe2["afr","controls_tested"])` | `r hwe2["afr","variants_failing_1e-6"]` |
+| East Asian | `r num(hwe2["eas","controls_tested"])` | `r hwe2["eas","variants_failing_1e-6"]` |
+| **Union** | | **`r hwe2_n`** |
 
-Seven, against the 14,899 the same threshold flagged on the pooled sample. The difference is not a
+`r W(hwe2_n)`, against the `r num(pooled_1e6)` the same threshold flagged on the pooled sample. The difference is not a
 matter of degree. Almost every variant the pooled test rejected was rejected for having different
 allele frequencies in Europe, Africa and East Asia, which is true of a large part of the genome
 and says nothing whatever about genotyping quality.
 
 ::: {.callout-note title="What this cost, and what it bought"}
-Running the filter in the wrong place would have discarded 3.5% of the genome for no reason. It
+Running the filter in the wrong place would have discarded `r pct(100 * pooled_1e6 / pooled_in)` of the genome for no reason. It
 would also have been invisible: the pipeline runs, the counts look plausible, and the association
-test that follows is well controlled either way. The genomic inflation factor is 1.016 either way.
+test that follows is well controlled: the scan in Section 4A has a genomic inflation factor of
+`r dec(lambda_4a, 3)`.
 :::
 
 ---

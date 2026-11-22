@@ -3,6 +3,32 @@ title: "Fine mapping"
 description: "From a peak to a shortlist of candidate causal variants, and an honest account of how short that list can be"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "06_finemapping_annotation"
+FS <- "pdac_demo_06_finemap_summary.txt"
+fs <- function(pattern, n = 1L) grab(S, FS, pattern, n)
+span <- as.numeric(strsplit(fs("span: chr9:([0-9-]+)"), "-")[[1]])
+n_region <- fs("variants analysed: ([0-9]+)")
+cs_eur <- tab(S, "pdac_demo_06_credible_set.tsv")
+cs_n   <- c(eur = as.integer(fs("variants in the 95% credible set: ([0-9]+)", 1)),
+            meta = as.integer(fs("variants in the 95% credible set: ([0-9]+)", 2)))
+top_id <- c(eur = fs("top variant: (\\S+)\\s+PP", 1), meta = fs("top variant: (\\S+)\\s+PP", 2))
+top_pp <- c(eur = fs("top variant: \\S+\\s+PP = ([0-9.]+)", 1), meta = fs("top variant: \\S+\\s+PP = ([0-9.]+)", 2))
+c_pp   <- c(eur = fs("its posterior probability: ([0-9.]+)", 1), meta = fs("its posterior probability: ([0-9.]+)", 2))
+c_rank <- c(eur = as.integer(fs("rank ([0-9]+)", 1)), meta = as.integer(fs("rank ([0-9]+)", 2)))
+ordinal <- c("first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth")
+words <- c("none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+           "eleven", "twelve")
+w <- function(n) if (n <= 12) words[n + 1] else num(n)
+cs_span_kb <- (max(cs_eur$POS) - min(cs_eur$POS)) / 1000
+mth <- tab("05_meta_analysis", "pdac_demo_05_top_hits.tsv"); rownames(mth) <- mth$ID
+ABO <- "9:133273682:A:T"
+noncausal <- c("9:133266804:G:T", "9:133270074:T:A", "9:133263862:A:C", "9:133261662:G:A")
+st <- tab("05_meta_analysis", "pdac_demo_05_strata_counts.tsv")
+```
+
 An association peak is not a finding about one variant. Nearby variants are inherited together, so
 a single causal variant drags its neighbours up with it and the association test cannot tell them
 apart. In the European analysis set the *ABO* signal is carried by dozens of variants, and the one
@@ -42,7 +68,7 @@ variants in it.
 
 **Choosing the window.** Wide enough to contain the signal and its flanks, narrow enough that
 assuming a single cause is plausible. A few hundred kilobases either side of the lead variant is
-conventional; here 132.9 to 133.6 Mb on chromosome 9, which contains **204 variants**.
+conventional; here `r dec(span[1] / 1e6, 1)` to `r dec(span[2] / 1e6, 1)` Mb on chromosome 9, which contains **`r n_region` variants**.
 
 That number is worth pausing on. A genotyping array carries a couple of hundred markers in a
 700 kb window, and the resolution of any fine mapping is bounded by what was measured. Imputation
@@ -97,13 +123,13 @@ probability towards rarer variants, and conversely.
 
 | | |
 |---|---|
-| Variants in the region | 204 |
-| Variants in the 95% credible set | **11** |
-| Span of the set | 12.2 kb, 133,261,662 to 133,273,813 |
-| Top variant | `9:133266804:G:T`, posterior probability 0.24 |
-| Simulated causal variant in the set | yes, **ranked third**, posterior 0.13 |
+| Variants in the region | `r n_region` |
+| Variants in the 95% credible set | **`r cs_n[["eur"]]`** |
+| Span of the set | `r dec(cs_span_kb, 1)` kb, `r num(min(cs_eur$POS))` to `r num(max(cs_eur$POS))` |
+| Top variant | `` `r top_id[["eur"]]` ``, posterior probability `r dec(top_pp[["eur"]], 2)` |
+| Simulated causal variant in the set | yes, **ranked `r ordinal[c_rank[["eur"]]]`**, posterior `r dec(c_pp[["eur"]], 2)` |
 
-Read the last two rows together, because they are the finding. Eleven variants across 12 kb is a
+Read the last two rows together, because they are the finding. `r tools::toTitleCase(w(cs_n[["eur"]]))` variants across `r round(cs_span_kb)` kb is a
 tight set, tight enough to be a real shortlist for functional work, and much better than this
 sample size might lead you to expect. But the variant at the top of it is **not** the causal one.
 The causal variant is third, with half the posterior of the leader.
@@ -135,17 +161,17 @@ Running the same method on the three-stratum meta-analysis of
 
 | | European set | Three strata combined |
 |---|---|---|
-| Variants in the 95% credible set | 11 | **9** |
-| Posterior probability of the top variant | 0.24 | **0.43** |
-| Rank of the true causal variant | third | **first** |
+| Variants in the 95% credible set | `r cs_n[["eur"]]` | **`r cs_n[["meta"]]`** |
+| Posterior probability of the top variant | `r dec(top_pp[["eur"]], 2)` | **`r dec(top_pp[["meta"]], 2)`** |
+| Rank of the true causal variant | `r ordinal[c_rank[["eur"]]]` | **`r ordinal[c_rank[["meta"]]]`** |
 
 ::: {.callout-important title="What ancestral diversity actually bought here"}
-The set barely shrank, from eleven variants to nine. If narrowing were the only benefit, this
+The set barely shrank, from `r w(cs_n[["eur"]])` variants to `r w(cs_n[["meta"]])`. If narrowing were the only benefit, this
 would be a poor return.
 
 Look at the ranking instead. In the European analysis the causal variant sat third, behind two
 neighbours that happened to post larger estimates. Across the three strata it moves to **first**,
-and its posterior nearly doubles. Nothing about the causal variant changed; what changed is that
+and its posterior rises from `r dec(c_pp[["eur"]], 2)` to `r dec(c_pp[["meta"]], 2)`. Nothing about the causal variant changed; what changed is that
 the variants competing with it no longer agree with it in every population.
 
 That is the mechanism. Linkage disequilibrium **differs between populations**, so a variant
@@ -165,9 +191,9 @@ The mirror image of this argument is that the causal variant should show no hete
 populations while its proxies do. That is the theory, and it is sound.
 
 It is not what this dataset shows. In
-[Meta-analysis](../05_meta_analysis/05_meta_analysis.qmd) the causal variant has the **highest**
-I² in the region, 41.5%, while three of its non-causal neighbours have none, because with fewer
-than 320 individuals per stratum I² is barely estimable. Do not use heterogeneity as a
+[Meta-analysis](../05_meta_analysis/05_meta_analysis.qmd) the causal variant has an I² of
+`r pct(mth[ABO, "I2"])`, more than the lead variant and its closest proxies, `r w(sum(mth[noncausal, "I2"] == 0))` of which
+have none, because with `r num(min(st$individuals))` to `r num(max(st$individuals))` individuals per stratum I² is barely estimable. Do not use heterogeneity as a
 causality detector at this sample size. The resolution gain above is real and is visible in the
 posteriors; the heterogeneity signature that supposedly explains it is not.
 :::

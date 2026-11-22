@@ -3,6 +3,45 @@ title: "Meta-analysis"
 description: "Combine ancestry strata into one result, and read what the strata disagree about"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "05_meta_analysis"
+st <- tab(S, "pdac_demo_05_strata_counts.tsv"); rownames(st) <- st$stratum
+stc <- function(g, col) if (col == "effective_n") dec(st[g, col], 1) else num(st[g, col])
+neff_all <- sum(st$effective_n)
+HR <- "pdac_demo_05_harmonisation_report.txt"; MS <- "pdac_demo_05_meta_summary.txt"
+hr <- function(pattern) grab(S, HR, pattern)
+ms <- function(pattern) grab(S, MS, pattern)
+flips_afr <- as.numeric(hr("afr\\s+allele-pair mismatches: [0-9]+\\s+effect-allele flips applied: ([0-9]+)"))
+flips_eas <- as.numeric(hr("eas\\s+allele-pair mismatches: [0-9]+\\s+effect-allele flips applied: ([0-9]+)"))
+n_all3 <- as.numeric(hr("Variants present in all 3 strata: ([0-9]+)"))
+n_amb  <- as.numeric(hr("Strand-ambiguous variants \\(A/T or C/G\\): ([0-9]+)"))
+n_amb_mid <- as.numeric(hr("the strand: ([0-9]+)"))
+eur_tested <- as.numeric(hr("eur\\s+variants with a usable estimate: ([0-9]+)"))
+th <- tab(S, "pdac_demo_05_top_hits.tsv"); rownames(th) <- th$ID
+ABO <- "9:133273682:A:T"; LEAD4A <- "9:133266804:G:T"
+het <- function(id, col) th[id, col]
+i2  <- function(id) { v <- het(id, "I2"); if (v == 0) "**0%**" else pct(v) }
+proxies <- c("9:133270074:T:A", "9:133263862:A:C", "9:133261662:G:A")
+noncausal <- c(LEAD4A, proxies)
+n_zero <- sum(th[noncausal, "I2"] == 0)
+words <- c("none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+           "eleven", "twelve", "thirteen")
+w <- function(n) if (n <= 13) words[n + 1] else num(n)
+p10 <- with(tab("04A_association_binary", "pdac_demo_04A_top_hits.tsv"), P[ID == ABO])
+or_st <- function(g) 1 / as.numeric(ms(paste0("^\\s+", g, "\\s+OR ([0-9.]+)")))
+or_meta <- 1 / th[ABO, "OR"]
+ps <- lines_of("03B_statistical_power", "pdac_demo_07_power_summary.txt")
+abo_gen_or <- sub(".*generative OR ([0-9.]+).*", "\\1", ps[grep(ABO, ps, fixed = TRUE)[1] + 1])
+lam_eur  <- ms("eur\\s+lambda = ([0-9.]+)"); lam_meta <- ms("meta\\s+lambda = ([0-9.]+)")
+gws_meta  <- ms("P < 5e-8 \\(fixed effects\\):\\s+([0-9]+)")
+sugg_meta <- ms("P < 1e-5 \\(fixed effects\\):\\s+([0-9]+)")
+i2_50  <- ms("I2 > 50%: [0-9]+ \\(([0-9.]+)%\\)")
+phet05 <- ms("P_het < 0.05: [0-9]+ \\(([0-9.]+)%\\)")
+orders <- floor(log10(th[ABO, "P_eur"] / th[ABO, "P"]))
+```
+
 A single cohort of a few hundred cases cannot find a variant with an odds ratio of 1.2. That is
 not a failure of analysis, it is arithmetic, and Section 4A showed it: one signal, and only
 because the demonstration data were built with an implausibly strong one.
@@ -60,23 +99,23 @@ Each stratum gets its own LD pruning, its own principal components and its own a
 
 | Stratum | Individuals | Cases | Controls | Effective N |
 |---|---|---|---|---|
-| European | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] |
-| African | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] |
-| East Asian | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] |
-| **Combined** | **[PENDING RERUN]** | **[PENDING RERUN]** | **[PENDING RERUN]** | **[PENDING RERUN]** |
+| European | `r stc("eur", "individuals")` | `r stc("eur", "cases")` | `r stc("eur", "controls")` | `r stc("eur", "effective_n")` |
+| African | `r stc("afr", "individuals")` | `r stc("afr", "cases")` | `r stc("afr", "controls")` | `r stc("afr", "effective_n")` |
+| East Asian | `r stc("eas", "individuals")` | `r stc("eas", "cases")` | `r stc("eas", "controls")` | `r stc("eas", "effective_n")` |
+| **Combined** | **`r num(sum(st$individuals))`** | **`r num(sum(st$cases))`** | **`r num(sum(st$controls))`** | **`r dec(neff_all, 1)`** |
 
 Notice the African stratum. It has fewer than half the individuals of the European one, but
-because its case-control ratio is nearly balanced it contributes an effective sample size of [PENDING RERUN]
-against [PENDING RERUN]: proportionally far more per participant. Effective sample size, not headline count,
+because its case-control ratio is nearly balanced it contributes an effective sample size of `r stc("afr", "effective_n")`
+against `r stc("eur", "effective_n")`: proportionally far more per participant. Effective sample size, not headline count,
 is what a meta-analysis is really combining.
 
 ::: {.callout-note title="Five components, not ten"}
 Section 4A used ten principal components in the European stratum. Here every stratum uses five,
-because estimating ten components in fewer than [PENDING RERUN] individuals spends parameters the data cannot
-support, and because the strata must be treated identically for their results to be comparable.
+because estimating ten components in the African and East Asian strata, of `r stc("afr", "individuals")` and
+`r stc("eas", "individuals")` individuals, spends parameters the data cannot support, and because the strata must be treated identically for their results to be comparable.
 
 This gives a free stability check, one of the three the guide recommends. In the European
-stratum, the causal variant's P value is 4.4 × 10⁻⁹ with ten components and 1.3 × 10⁻⁸ with five.
+stratum, the causal variant's P value is `r sci(p10)` with ten components and `r sci(th[ABO, "P_eur"])` with five.
 The choice does not matter here, and now we know that rather than assuming it.
 :::
 
@@ -94,7 +133,7 @@ Rscript scripts/05_meta_analysis/02_harmonise.R
 
 ::: {.callout-important title="The demonstration found a real one"}
 Comparing the effect allele across strata, the script had to flip the sign of the effect estimate
-for **37,738** variants in the African stratum and **35,843** in the East Asian one. Roughly one
+for **`r num(flips_afr)`** variants in the African stratum and **`r num(flips_eas)`** in the East Asian one. Roughly one
 variant in seven.
 
 These strata came from *the same genotype file*. The cause is that PLINK 2 reports the effect
@@ -113,8 +152,8 @@ assumption that two files agree.**
 The other three checks the script performs:
 
 **Strand ambiguity.** At A/T and C/G variants the effect allele cannot be resolved by comparing
-alleles, because A complements T and C complements G. Here 1,916 variants (0.6%) are ambiguous,
-354 of them with frequency between 0.4 and 0.6, where frequency cannot resolve them either. They
+alleles, because A complements T and C complements G. Here `r num(n_amb)` variants (`r pct(100 * n_amb / n_all3)`) are ambiguous,
+`r num(n_amb_mid)` of them with frequency between 0.4 and 0.6, where frequency cannot resolve them either. They
 are flagged. Many consortia simply exclude ambiguous variants in that frequency band.
 
 **Effect-size scale.** A log odds ratio, an odds ratio and a linear-model beta cannot be averaged
@@ -125,7 +164,7 @@ correlated, the fixed-effect standard error is too small, and significance is in
 cannot be detected from summary statistics; it has to come from the study descriptions.
 
 ::: {.callout-note title="Fewer variants than you started with"}
-The European analysis tested 405,000 variants. Only **311,478** are present in all three strata,
+The European analysis tested `r num(eur_tested)` variants. Only **`r num(n_all3)`** are present in all three strata,
 because a variant that is monomorphic in one population cannot be tested there. A real
 meta-analysis usually keeps such variants, combining each across whatever studies carry it and
 reporting the study count per variant. This demonstration takes the simpler route of using the
@@ -159,12 +198,14 @@ changes the conclusion.
 
 | | European stratum, 5 PCs | Meta-analysis |
 |---|---|---|
-| Lead variant P | 5.4 × 10⁻⁹ | **6.3 × 10⁻²²** |
-| Genome-wide significant | 1 | 3 |
-| Suggestive (P < 1 × 10⁻⁵) | 8 | 11 |
-| λ | 1.022 | 1.006 |
+<!-- European-stratum counts and lead P: results/meta/eur/pdac_demo_05_eur_gwas.PHENO.glm.logistic.hybrid,
+     canonical run of 22 Nov 2026 (lead 9:133266804:G:T, P 3.03e-9; 9 variants < 5e-8; 14 < 1e-5) -->
+| Lead variant P | 3.0 × 10⁻⁹ | **`r sci(ms("meta OR [0-9.]+, SE [0-9.]+, P ([0-9.e-]+)"))`** |
+| Variants at P < 5 × 10⁻⁸ | 9 | `r gws_meta` |
+| Variants at P < 1 × 10⁻⁵ | 14 | `r sugg_meta` |
+| λ | `r dec(lam_eur, 3)` | `r dec(lam_meta, 3)` |
 
-Thirteen orders of magnitude at the causal variant, from roughly doubling the effective sample
+`r tools::toTitleCase(w(orders))` orders of magnitude at the causal variant, from roughly doubling the effective sample
 size. That is the whole argument of this guide in one line: the single-cohort analysis was sound
 but nearly uninformative, and it became informative by being combined.
 
@@ -186,12 +227,12 @@ Rscript scripts/05_meta_analysis/04_meta_plots.R
 
 ![](results/pdac_demo_05_forest.png)
 
-The causal variant, stratum by stratum, on the risk-allele scale. The odds ratios are 2.24 in
-Europeans, 3.31 in Africans and 2.02 in East Asians, combining to 2.36, with confidence intervals
+The causal variant, stratum by stratum, on the risk-allele scale. The odds ratios are `r dec(or_st("eur"), 2)` in
+Europeans, `r dec(or_st("afr"), 2)` in Africans and `r dec(or_st("eas"), 2)` in East Asians, combining to `r dec(or_meta, 2)`, with confidence intervals
 that overlap heavily.
 
-The dashed green line marks the true simulated odds ratio, **2.60**. Two strata fall below it and
-one above, and so does the combined estimate, at 2.36. There is no systematic overstatement to
+The dashed green line marks the true simulated odds ratio, **`r dec(abo_gen_or, 2)`**. Two strata fall below it and
+one above, and so does the combined estimate, at `r dec(or_meta, 2)`. There is no systematic overstatement to
 correct here, which is what
 [Statistical power](../03B_statistical_power/03B_statistical_power.qmd) predicts: at 99% power
 nothing was selected on, so the estimates scatter around the truth instead of being pulled above
@@ -206,24 +247,24 @@ heterogeneity should therefore be zero. It is not:
 
 | Variant | Role | I² | *P* het |
 |---|---|---:|---:|
-| `9:133273682:A:T` | **causal** | **41.5%** | 0.181 |
-| `9:133266804:G:T` | lead, not causal | 8.8% | 0.334 |
-| `9:133270074:T:A` | proxy | **0%** | 0.413 |
-| `9:133263862:A:C` | proxy | **0%** | 0.539 |
-| `9:133261662:G:A` | proxy | **0%** | 0.922 |
+| `9:133273682:A:T` | **causal** | **`r pct(het(ABO, "I2"))`** | `r dec(het(ABO, "P_het"), 3)` |
+| `9:133266804:G:T` | lead, not causal | `r i2(LEAD4A)` | `r dec(het(LEAD4A, "P_het"), 3)` |
+| `9:133270074:T:A` | proxy | `r i2(proxies[1])` | `r dec(het(proxies[1], "P_het"), 3)` |
+| `9:133263862:A:C` | proxy | `r i2(proxies[2])` | `r dec(het(proxies[2], "P_het"), 3)` |
+| `9:133261662:G:A` | proxy | `r i2(proxies[3])` | `r dec(het(proxies[3], "P_het"), 3)` |
 
-The variant whose effect is identical by construction shows the highest heterogeneity in the
-region, and three of its non-causal neighbours show none at all. Anyone reading I² as evidence
+The variant whose effect is identical by construction shows more heterogeneity than the lead
+variant and its closest proxies, and `r w(n_zero)` of those `r w(length(noncausal))` non-causal neighbours show none at all. Anyone reading I² as evidence
 about mechanism would here reach the wrong conclusion with confidence.
 
-Nothing is wrong with the data. With fewer than 320 individuals per stratum, I² is estimated from
+Nothing is wrong with the data. With `r stc("afr", "individuals")` to `r stc("eur", "individuals")` individuals per stratum, I² is estimated from
 three effect sizes each carrying wide confidence intervals, and it scatters accordingly. The
-*P* value for heterogeneity says so plainly: 0.181 is not evidence of anything. **Read the
+*P* value for heterogeneity says so plainly: `r dec(het(ABO, "P_het"), 3)` is not evidence of anything. **Read the
 heterogeneity *P* value before the I² percentage**, because I² is a proportion of a quantity that
 is itself barely estimated.
 
 The cost is not only interpretive. Under random effects the causal variant's *P* value falls from
-2.9 × 10⁻¹⁸ to 3.9 × 10⁻¹¹, penalised for heterogeneity that is noise. A random-effects model is
+`r sci(het(ABO, "P"))` to `r sci(het(ABO, "P_re"))`, penalised for heterogeneity that is noise. A random-effects model is
 the conservative choice, and at these sample sizes conservative means discarding real signal.
 Report both, as this pipeline does, and say which one the conclusion rests on.
 :::
@@ -238,8 +279,8 @@ That pattern is real and it is why fine mapping should be done per ancestry rath
 (Section 6). It is simply not visible at this sample size, and a guide that showed it here would be
 showing a picture drawn from a larger study than the one it is teaching.
 
-Across all 311,478 variants meta-analysed, 4.5% have a heterogeneity *P* below 0.05, against the
-5% expected by chance alone, while 12.7% carry an I² above 50%. Genome-wide there is no excess
+Across all `r num(n_all3)` variants meta-analysed, `r pct(phet05)` have a heterogeneity *P* below 0.05, against the
+5% expected by chance alone, while `r pct(i2_50)` carry an I² above 50%. Genome-wide there is no excess
 heterogeneity at all. The two numbers together are the point: I² is routinely large where nothing
 is heterogeneous, and the *P* value is the statistic that says so.
 :::
@@ -260,7 +301,7 @@ is heterogeneous, and the *P* value is the statistic that says so.
 
 ## The pitfalls checklist
 
-1. **Effect allele.** Align explicitly, by allele name. This demonstration needed 73,581 sign
+1. **Effect allele.** Align explicitly, by allele name. This demonstration needed `r num(flips_afr + flips_eas)` sign
    flips within a single genotype file.
 2. **Strand.** A/T and C/G variants near 50% frequency cannot be resolved. Flag or drop them.
 3. **Scale.** Log odds ratio, odds ratio and linear beta are not interchangeable.

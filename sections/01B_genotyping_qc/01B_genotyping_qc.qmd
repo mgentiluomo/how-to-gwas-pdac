@@ -3,6 +3,29 @@ title: "Genotyping quality control"
 description: "Clean the demo genotype data before population structure and association testing"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "01B_genotyping_qc"
+q  <- function(step, col) num(qc_counts(step, col))
+het <- tab(S, "pdac_demo_04_het_summary.tsv"); rownames(het) <- het$group
+hs  <- function(g, col, d = 4) dec(het[g, col], d)
+sweep <- tab(S, "pdac_demo_06_hwe_threshold_sweep.tsv")
+sw_n <- function(t) { v <- sweep$variants_below[sweep$threshold == as.numeric(t)]; stopifnot(length(v) == 1L); v }
+sw  <- function(t) num(sw_n(t))
+rel <- tab(S, "pdac_demo_07_relatedness_summary.tsv"); rownames(rel) <- rel$relationship_category
+rl  <- function(cat, col) num(rel[cat, col])
+dg  <- function(key) val(S, "pdac_demo_07_relatedness_pruning_diagnostics.tsv", key)
+hwe2 <- tab("02_population_stratification", "pdac_demo_02_hwe_summary.tsv"); rownames(hwe2) <- hwe2$group
+hwe2_n <- n_lines("02_population_stratification", "pdac_demo_02_hwe_exclude.txt")
+final_samples  <- as.numeric(qc_counts("MAF filter", "samples"))
+final_variants <- as.numeric(qc_counts("MAF filter", "variants")) - hwe2_n
+raw_samples    <- as.numeric(qc_counts("Raw data", "samples"))
+raw_variants   <- as.numeric(qc_counts("Raw data", "variants"))
+words <- c("none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
+w <- function(n) if (n <= 10) words[n + 1] else num(n)
+```
+
 Real genotype data is never perfect. Some samples have too many missing calls, some variants are
 poorly measured, sex labels can be wrong, and related individuals can break the independence
 assumption used by standard GWAS tests. **Quality control (QC)** removes or flags these problems
@@ -173,7 +196,7 @@ This applies:
 ```
 
 `--mind 0.02` removes samples with more than 2% missing genotypes. In the demo run this removed
-**25 samples**, leaving **1,436 samples**.
+**`r q("Sample call rate", "samples_lost")` samples**, leaving **`r q("Sample call rate", "samples")` samples**.
 
 Main outputs:
 
@@ -249,17 +272,17 @@ results/qc/pdac_demo_04_filt.fam
 | | n | mean *F* | SD *F* | outliers |
 |---|---:|---:|---:|---:|
 | Pooled | 1,432 | 0.0683 | 0.0288 | **2** |
-| European | 743 | 0.0061 | 0.0116 | 9 |
-| African | 343 | 0.0049 | 0.0183 | 6 |
-| East Asian | 346 | 0.0085 | 0.0138 | 5 |
-| **Union across groups** | | | | **20** |
+| European | `r num(het["eur","n"])` | `r hs("eur","mean_F")` | `r hs("eur","sd_F")` | `r het["eur","outliers"]` |
+| African | `r num(het["afr","n"])` | `r hs("afr","mean_F")` | `r hs("afr","sd_F")` | `r het["afr","outliers"]` |
+| East Asian | `r num(het["eas","n"])` | `r hs("eas","mean_F")` | `r hs("eas","sd_F")` | `r het["eas","outliers"]` |
+| **Union across groups** | | | | **`r q("Heterozygosity", "samples_lost")`** |
 
 Read the mean before the outlier count. Pooled, *F* averages 0.068; within each group it falls to
-between 0.005 and 0.009, which is what an inbreeding coefficient should be in a randomly mating
+between `r dec(min(het$mean_F), 3)` and `r dec(max(het$mean_F), 3)`, which is what an inbreeding coefficient should be in a randomly mating
 sample. Pooled, the statistic was not measuring inbreeding at all: it was measuring population
 structure, and the width of the band it produced made the filter almost inert.
 
-In the demo run, this step removed **20 samples**.
+In the demo run, this step removed **`r q("Heterozygosity", "samples_lost")` samples**.
 
 The baseline heterozygosity distribution from Step 01 is shown again here because it is the plot
 that motivates this filter:
@@ -287,7 +310,7 @@ This applies:
 ```
 
 `--geno 0.05` removes variants missing in more than 5% of samples. In the demo run this removed
-**8,480 variants**, leaving **421,520 variants**.
+**`r q("Variant call rate", "variants_lost")` variants**, leaving **`r q("Variant call rate", "variants")` variants**.
 
 Main outputs:
 
@@ -335,21 +358,21 @@ results/qc/pdac_demo_06_filt.fam
 
 | Threshold, pooled controls | Variants below it |
 |---|---:|
-| 1e-6 | 14,899 |
-| 1e-10 | 2,416 |
-| 1e-15 | 168 |
-| 1e-20 | 10 |
-| 1e-30 | 0 |
+| 1e-6 | `r sw("1e-6")` |
+| 1e-10 | `r sw("1e-10")` |
+| 1e-15 | `r sw("1e-15")` |
+| 1e-20 | `r sw("1e-20")` |
+| 1e-30 | `r sw("1e-30")` |
 
-Computed within each ancestry group instead, at the same `1e-6`, the counts are one in the
-European group, none in the African and six in the East Asian: **seven variants**.
+Computed within each ancestry group instead, at the same `1e-6`, the counts are `r w(hwe2["eur","variants_failing_1e-6"])` in the
+European group, `r w(hwe2["afr","variants_failing_1e-6"])` in the African and `r w(hwe2["eas","variants_failing_1e-6"])` in the East Asian: **`r w(hwe2_n)` variants**.
 
 ::: {.callout-important title="Why a gentler threshold does not fix it"}
-The obvious response to 14,899 exclusions is to lower the threshold until the number looks
+The obvious response to `r sw("1e-6")` exclusions is to lower the threshold until the number looks
 reasonable. It does not work, and the reason is worth seeing.
 
-The ten variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
-seven that fail within a group. The two tests are not a lenient and a stringent version of one
+The `r w(sw_n("1e-20"))` variants that still fail the pooled test at `1e-20` have **no overlap at all** with the
+`r w(hwe2_n)` that fail within a group. The two tests are not a lenient and a stringent version of one
 procedure; they are measuring different things. No pooled threshold exists at which the test stops
 detecting structure and starts detecting error. 
 
@@ -476,31 +499,31 @@ Example relatedness summary:
 
 | Relationship category | Pairs | Unique samples |
 |---|---:|---:|
-| Duplicate or twin | 0 | 0 |
-| First degree | 280 | 443 |
-| Second degree | 4 | 8 |
-| Third degree | 10 | 20 |
-| Total samples before relatedness filter | NA | 1,412 |
+| Duplicate or twin | `r rl("Duplicate_or_twin","n_pairs")` | `r rl("Duplicate_or_twin","n_unique_samples")` |
+| First degree | `r rl("First_degree","n_pairs")` | `r rl("First_degree","n_unique_samples")` |
+| Second degree | `r rl("Second_degree","n_pairs")` | `r rl("Second_degree","n_unique_samples")` |
+| Third degree | `r rl("Third_degree","n_pairs")` | `r rl("Third_degree","n_unique_samples")` |
+| Total samples before relatedness filter | NA | `r rl("Total_samples_before_relatedness_filter","n_unique_samples")` |
 
 Example pruning diagnostics:
 
 | Metric | Value |
 |---|---:|
-| Samples before relatedness filter | 1,412 |
-| KING pruning pairs > 0.0884 | [PENDING RERUN] |
-| Unique samples in KING pruning pairs | [PENDING RERUN] |
-| Relatedness components | [PENDING RERUN] |
-| Largest component samples | [PENDING RERUN] |
-| PLINK2 `--king-cutoff` removed samples | [PENDING RERUN] |
-| Phenotype-aware removed samples | [PENDING RERUN] |
-| Phenotype-aware removed percent | [PENDING RERUN] |
-| Controls removed | [PENDING RERUN] |
-| Cases removed | [PENDING RERUN] |
+| Samples before relatedness filter | `r num(dg("samples_before_relatedness_filter"))` |
+| KING pruning pairs > 0.0884 | `r num(dg("king_pruning_pairs_gt_0.0884"))` |
+| Unique samples in KING pruning pairs | `r num(dg("unique_samples_in_king_pruning_pairs"))` |
+| Relatedness components | `r num(dg("relatedness_components"))` |
+| Largest component samples | `r num(dg("largest_component_samples"))` |
+| PLINK2 `--king-cutoff` removed samples | `r num(dg("plink2_king_cutoff_removed_samples"))` |
+| Phenotype-aware removed samples | `r num(dg("phenotype_aware_removed_samples"))` |
+| Phenotype-aware removed percent | `r pct(dg("phenotype_aware_removed_percent"))` |
+| Controls removed | `r num(dg("controls_removed"))` |
+| Cases removed | `r num(dg("cases_removed"))` |
 
 
 ::: {.callout-warning title="Review large relatedness loss"}
-In the demo run, phenotype-aware pruning removed **[PENDING RERUN] samples**. [PENDING RERUN:
-confirm this is still a substantial sample loss.] If a real cohort loses many samples at this step, inspect `pdac_demo_07_pruning_components.tsv`,
+In the demo run, phenotype-aware pruning removed **`r num(dg("phenotype_aware_removed_samples"))` samples**, `r pct(dg("phenotype_aware_removed_percent"))` of those
+entering the step and more than every other sample filter together. If a real cohort loses many samples at this step, inspect `pdac_demo_07_pruning_components.tsv`,
 `pdac_demo_07_relatedness_pruning_diagnostics.tsv`, and
 `pdac_demo_07_removal_decisions.tsv` before continuing.
 :::
@@ -523,8 +546,8 @@ results/qc/pdac_demo_08_filt.fam
 results/qc/pdac_demo_08_afreq.afreq
 ```
 
-In the demo run this step removed **6,858 variants**, leaving **414,662 variants** and
-**1,215 samples**.
+In the demo run this step removed **`r q("MAF filter", "variants_lost")` variants**, leaving **`r q("MAF filter", "variants")` variants** and
+**`r q("MAF filter", "samples")` samples**.
 
 ::: {.callout-note title="Why not use MAF 5%?"}
 Many standard GWAS workflows use `--maf 0.05`. That is often reasonable for common-variant GWAS,
@@ -636,18 +659,18 @@ The demo run used in this page ended with:
 
 | Stage | Samples | Variants | Samples lost | Variants lost |
 |---|---:|---:|---:|---:|
-| Raw data | 1,461 | 430,000 | 0 | 0 |
-| Initial stats | 1,461 | 430,000 | 0 | 0 |
-| Sample call rate | 1,436 | 430,000 | 25 | 0 |
-| Sex check | 1,432 | 430,000 | 4 | 0 |
-| Heterozygosity, within ancestry | 1,412 | 430,000 | 20 | 0 |
-| Variant call rate | 1,412 | 421,520 | 0 | 8,480 |
-| Hardy-Weinberg, pooled, diagnostic | 1,412 | 421,520 | 0 | 0 |
-| Relatedness | [PENDING RERUN] | 421,520 | [PENDING RERUN] | 0 |
-| MAF filter | [PENDING RERUN] | [PENDING RERUN] | 0 | [PENDING RERUN] |
-| Hardy-Weinberg, within ancestry (Section 2) | [PENDING RERUN] | [PENDING RERUN] | 0 | [PENDING RERUN] |
+| Raw data | `r q("Raw data","samples")` | `r q("Raw data","variants")` | `r q("Raw data","samples_lost")` | `r q("Raw data","variants_lost")` |
+| Initial stats | `r q("Initial stats","samples")` | `r q("Initial stats","variants")` | `r q("Initial stats","samples_lost")` | `r q("Initial stats","variants_lost")` |
+| Sample call rate | `r q("Sample call rate","samples")` | `r q("Sample call rate","variants")` | `r q("Sample call rate","samples_lost")` | `r q("Sample call rate","variants_lost")` |
+| Sex check | `r q("Sex check","samples")` | `r q("Sex check","variants")` | `r q("Sex check","samples_lost")` | `r q("Sex check","variants_lost")` |
+| Heterozygosity, within ancestry | `r q("Heterozygosity","samples")` | `r q("Heterozygosity","variants")` | `r q("Heterozygosity","samples_lost")` | `r q("Heterozygosity","variants_lost")` |
+| Variant call rate | `r q("Variant call rate","samples")` | `r q("Variant call rate","variants")` | `r q("Variant call rate","samples_lost")` | `r q("Variant call rate","variants_lost")` |
+| Hardy-Weinberg, pooled, diagnostic | `r q("Hardy-Weinberg","samples")` | `r q("Hardy-Weinberg","variants")` | `r q("Hardy-Weinberg","samples_lost")` | `r q("Hardy-Weinberg","variants_lost")` |
+| Relatedness | `r q("Relatedness","samples")` | `r q("Relatedness","variants")` | `r q("Relatedness","samples_lost")` | `r q("Relatedness","variants_lost")` |
+| MAF filter | `r q("MAF filter","samples")` | `r q("MAF filter","variants")` | `r q("MAF filter","samples_lost")` | `r q("MAF filter","variants_lost")` |
+| Hardy-Weinberg, within ancestry (Section 2) | `r num(final_samples)` | `r num(final_variants)` | 0 | `r num(hwe2_n)` |
 
-Final retention in the demo run was **[PENDING RERUN] of samples** and **[PENDING RERUN] of variants**.
+Final retention in the demo run was **`r pct(100 * final_samples / raw_samples)` of samples** and **`r pct(100 * final_variants / raw_variants)` of variants**.
 
 ## PDAC-Specific Notes
 

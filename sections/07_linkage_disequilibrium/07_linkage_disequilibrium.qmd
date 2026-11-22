@@ -3,6 +3,16 @@ title: "Linkage disequilibrium and what it decides for you"
 subtitle: "Why the resolution of a fine-mapping analysis is set by the population, not by the method"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "07_linkage_disequilibrium"
+ld <- tab(S, "pdac_demo_07_ld_decay.tsv")
+r2 <- function(g, bin) dec(round(ld$mean_r2[ld$group == g & ld$bin == bin], 3), 3)
+lc <- tab(S, "pdac_demo_07_ld_causal.tsv"); rownames(lc) <- lc$group
+st <- tab("05_meta_analysis", "pdac_demo_05_strata_counts.tsv"); rownames(st) <- st$stratum
+```
+
 Every association a GWAS reports is an association with a *region*, not with a
 variant. The scan tests markers, and a marker is informative only because it is
 correlated with whatever is actually causal nearby. That correlation is linkage
@@ -61,11 +71,11 @@ separately within each ancestry group, and averages by physical distance.
 
 | Distance between variants | European | African | East Asian |
 |---|---:|---:|---:|
-| 0-10 kb | 0.272 | **0.184** | 0.344 |
-| 10-25 kb | 0.122 | **0.063** | 0.173 |
-| 25-50 kb | 0.047 | **0.022** | 0.089 |
-| 50-100 kb | 0.031 | **0.010** | 0.029 |
-| 100-200 kb | 0.018 | 0.006 | 0.013 |
+| 0-10 kb | `r r2("eur", "0-10 kb")` | **`r r2("afr", "0-10 kb")`** | `r r2("eas", "0-10 kb")` |
+| 10-25 kb | `r r2("eur", "10-25 kb")` | **`r r2("afr", "10-25 kb")`** | `r r2("eas", "10-25 kb")` |
+| 25-50 kb | `r r2("eur", "25-50 kb")` | **`r r2("afr", "25-50 kb")`** | `r r2("eas", "25-50 kb")` |
+| 50-100 kb | `r r2("eur", "50-100 kb")` | **`r r2("afr", "50-100 kb")`** | `r r2("eas", "50-100 kb")` |
+| 100-200 kb | `r r2("eur", "100-200 kb")` | `r r2("afr", "100-200 kb")` | `r r2("eas", "100-200 kb")` |
 
 Read the African column against the other two. At 25 to 50 kb, average r² in the
 African group is less than half the European value and about a quarter of the
@@ -73,7 +83,7 @@ East Asian one. The ordering is the same at every distance, and it is the
 ordering that population history predicts.
 
 ::: {.callout-note title="What this is not"}
-This is 288 African individuals at one locus on one array, not a genome-wide
+This is `r num(st["afr", "individuals"])` African individuals at one locus on one array, not a genome-wide
 estimate of LD decay. The magnitudes here should not be quoted as such. What the
 comparison establishes is the *direction and the size of the difference between
 groups measured in the same way on the same variants*, which is the only thing
@@ -94,7 +104,7 @@ The demonstration dataset makes this concrete. Counting variants in strong LD
 
 | | European | African | East Asian |
 |---|---:|---:|---:|
-| Variants indistinguishable from the causal one | 11 | **1** | 11 |
+| Variants indistinguishable from the causal one | `r lc["eur", "r2_above_0.8"]` | **`r lc["afr", "r2_above_0.8"]`** | `r lc["eas", "r2_above_0.8"]` |
 
 This single table explains the fine-mapping result of
 [Fine mapping](../06_finemapping_annotation/06_finemapping_annotation.qmd)
@@ -141,7 +151,7 @@ its own question [PMID:11037333]{.mark}.
 **Trans-ancestry analysis helps when the strata are large enough to be heard.**
 In this demonstration, combining the three groups moves the causal variant to
 first place in the credible set but barely shrinks the set, because the African
-group that could separate the variants contributes 288 people against 608
+group that could separate the variants contributes `r num(st["afr", "individuals"])` people against `r num(st["eur", "individuals"])`
 Europeans. The mechanism is real and the sample is too small to exploit it. That
 is the honest reading, and it is also the argument for building consortia in
 which non-European strata are large enough to change the answer rather than
