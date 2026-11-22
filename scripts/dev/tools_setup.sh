@@ -44,6 +44,9 @@ mkdir -p tools/micromamba-root
 TOOL_MANIFEST="scripts/dev/tool_manifest.tsv"
 TOOL_MANIFEST_ROWS=()
 REGENIE_ENV_NAME="${REGENIE_ENV_NAME:-regenie_env}"
+# Pinned: the manuscript reports this version, and an unpinned install takes
+# whatever bioconda offers on the day it runs.
+REGENIE_VERSION="${REGENIE_VERSION:-4.1.2}"
 MICROMAMBA_BIN="$PROJECT_ROOT/tools/micromamba/bin/micromamba"
 MICROMAMBA_ROOT="$PROJECT_ROOT/tools/micromamba-root"
 
@@ -763,10 +766,10 @@ install_regenie() {
 
     if "$MICROMAMBA_BIN" env list | awk '{print $1}' | grep -Fxq "$REGENIE_ENV_NAME"; then
         echo "  Environment exists. Ensuring REGENIE is installed..."
-        "$MICROMAMBA_BIN" install -y -n "$REGENIE_ENV_NAME" -c conda-forge -c bioconda regenie
+        "$MICROMAMBA_BIN" install -y -n "$REGENIE_ENV_NAME" -c conda-forge -c bioconda "regenie=${REGENIE_VERSION}"
     else
         echo "  Creating $REGENIE_ENV_NAME..."
-        "$MICROMAMBA_BIN" create -y -n "$REGENIE_ENV_NAME" -c conda-forge -c bioconda regenie
+        "$MICROMAMBA_BIN" create -y -n "$REGENIE_ENV_NAME" -c conda-forge -c bioconda "regenie=${REGENIE_VERSION}"
     fi
 
     mkdir -p tools/regenie

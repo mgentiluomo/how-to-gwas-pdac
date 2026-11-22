@@ -22,7 +22,7 @@
 #   2. Downloads the demonstration data from the release and verifies every
 #      checksum against the released MANIFEST.tsv.
 #   3. Captures the version of every tool it is about to use.
-#   4. Runs the 33 analysis scripts in dependency order, one log each,
+#   4. Runs every analysis script in dependency order, one log each,
 #      stopping at the first failure.
 #   5. Copies the committable artefacts into the section results folders.
 #   6. Writes RUN_MANIFEST.txt.
@@ -148,12 +148,21 @@ command -v Rscript >/dev/null 2>&1 || die "Rscript not found on PATH"
 command -v plink >/dev/null 2>&1 || die "PLINK 1.9 not found on PATH as 'plink'. \
 The relatedness step needs it. If it is installed under another name, run: \
 mkdir -p tools/bin && ln -sf \"\$(command -v plink19)\" tools/bin/plink"
+# Section 4C compares whole-genome regression with PLINK 2 and needs REGENIE.
+# The manuscript reports a specific version, so the run refuses to proceed
+# without one rather than skipping the comparison silently.
+command -v regenie >/dev/null 2>&1 || die "REGENIE not found on PATH. Section 4C \
+needs it. Install the pinned version into tools/ with the REGENIE step of \
+scripts/dev/tools_setup.sh, which does not touch the PLINK binaries."
 
 PLINK_V="$(plink2 --version 2>&1 | head -1)"
 PLINK1_V="$(plink --version 2>&1 | head -1)"
+REGENIE_V="$(regenie --version 2>&1 | head -1)"
 R_V="$(Rscript -e 'cat(R.version.string)' 2>/dev/null)"
 OS_V="$(. /etc/os-release 2>/dev/null && echo "$PRETTY_NAME" || uname -sr)"
 say "  $PLINK_V"
+say "  $PLINK1_V"
+say "  REGENIE $REGENIE_V"
 say "  $R_V"
 say "  $OS_V"
 
@@ -188,6 +197,7 @@ produced the published results; do not edit by hand.
 | Operating system | $OS_V |
 | PLINK 2 | $PLINK_V |
 | PLINK 1.9 | $PLINK1_V |
+| REGENIE | $REGENIE_V |
 | R | $R_V |
 
 ## R packages
@@ -230,6 +240,13 @@ STEPS=(
   "04A_association_binary/scripts/03_qq_lambda.R"
   "04A_association_binary/scripts/04_manhattan.R"
   "04A_association_binary/scripts/05_summary.R"
+
+  # Survival among cases, and whole-genome regression against PLINK 2. Both
+  # read the analysis set and covariates written above, so they run here.
+  "04B_association_survival/01_cox_survival.R"
+  "04B_association_survival/02_test_calibration.R"
+  "04B_association_survival/03_covariate_cost.R"
+  "04C_association_other/01_regenie_wgr.sh"
 
   "05_meta_analysis/scripts/01_stratified_gwas.sh"
   "05_meta_analysis/scripts/02_harmonise.R"
@@ -287,6 +304,7 @@ declare -A MAP=(
   [meta]="05_meta_analysis"
   [finemap]="06_finemapping_annotation"
   [ld]="07_linkage_disequilibrium"
+  [regenie]="04C_association_other"
 )
 for area in "${!MAP[@]}"; do
   src="results/$area"
@@ -299,6 +317,19 @@ for area in "${!MAP[@]}"; do
     say "  $(printf '%-9s' "$area") -> MISSING, no $src produced"
   fi
 done
+
+# The survival scripts write into results/assoc beside the binary scan, so the
+# loop above files their output under Section 4A. Move it to its own section,
+# where the page that describes it can find it.
+SURV_DST="sections/04B_association_survival/results"
+mkdir -p "$SURV_DST"
+n_surv=0
+for f in sections/04A_association_binary/results/pdac_demo_04B_*; do
+  [ -e "$f" ] || continue
+  mv -f "$f" "$SURV_DST"/
+  n_surv=$((n_surv + 1))
+done
+say "  survival  -> $SURV_DST  ($n_surv files, moved out of 4A)"
 
 # -------------------------------------------------------------- 6. manifest --
 FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
@@ -317,6 +348,7 @@ FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo
   echo "$PLINK_V"
   echo "$PLINK1_V"
+  echo "REGENIE $REGENIE_V"
   echo "$R_V"
   echo "$OS_V"
   echo
