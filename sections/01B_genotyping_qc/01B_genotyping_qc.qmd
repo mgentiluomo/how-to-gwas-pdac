@@ -350,7 +350,8 @@ Main outputs:
 results/qc/pdac_demo_06_controls.txt
 results/qc/pdac_demo_06_hwe.hardy
 results/qc/pdac_demo_06_hwe_pvalue_distribution.png
-results/qc/pdac_demo_06_hwe_exclude.txt
+results/qc/pdac_demo_06_hwe_flagged.txt
+results/qc/pdac_demo_06_hwe_threshold_sweep.tsv
 results/qc/pdac_demo_06_filt.bed
 results/qc/pdac_demo_06_filt.bim
 results/qc/pdac_demo_06_filt.fam
