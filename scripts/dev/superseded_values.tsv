@@ -65,3 +65,5 @@ sections/07_linkage_disequilibrium/*.qmd	E	\b288\b	AFR individuals, July run (no
 sections/07_linkage_disequilibrium/*.qmd	E	\b608\b	EUR individuals, July run (now 611)
 sections/07_linkage_disequilibrium/*.qmd	F	0.272	EUR mean r2 0-10 kb, July run
 sections/07_linkage_disequilibrium/*.qmd	F	0.344	EAS mean r2 0-10 kb, July run
+getting_started.qmd	F	PLINK v2.00a5	PLINK 2 version in the setup example, never the canonical one
+getting_started.qmd	F	PLINK v1.90b7.2	PLINK 1.9 version in the setup example, never the canonical one

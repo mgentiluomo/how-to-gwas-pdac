@@ -452,13 +452,37 @@ When finished, you'll see:
 ```
 Detected: OS=Linux, Architecture=x86_64_avx2
   ✓ R found
-  ✓ PLINK2: PLINK v2.00a5 (64-bit build)
-  ✓ PLINK1.9: PLINK v1.90b7.2
+  ✓ PLINK2: PLINK v2...
+  ✓ PLINK1.9: PLINK v1.9...
   ✓ METAL
   ✓ REGENIE: regenie v...
 ```
 
 REGENIE is installed with project-local micromamba, following the official REGENIE conda install route. The environment files are stored under `tools/micromamba-root/`, so users do not need an existing conda installation.
+
+### The versions behind the published results
+
+The results on these pages were produced with the versions recorded in
+[`env/software_versions.md`](https://github.com/mgentiluomo/how-to-gwas-pdac/blob/main/env/software_versions.md),
+which `scripts/dev/run_all.sh` writes at every canonical run. The two PLINK builds are identified
+here by the MD5 checksum of the executable, because a version string alone does not identify a
+build.
+
+| Tool | Version string | MD5 of the executable | Where to obtain it |
+|---|---|---|---|
+| PLINK 2 | `PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025)` | `47a67647af6c9160c9443f8cbd2df017` | no longer distributed |
+| PLINK 1.9 | `PLINK v1.90b6.25 64-bit (5 Mar 2022)` | `d5f949f706d8ab017cf9a05426e18b3b` | [`plink_linux_x86_64_20220305.zip`](https://s3.amazonaws.com/plink1-assets/plink_linux_x86_64_20220305.zip), official site |
+
+That PLINK 2 build is no longer available from the official download site or from Bioconda. The
+builds dated 7 July 2025 that remain on the official site report themselves as v2.0.0-a.6.20, not
+a.7, and are different executables. `tools_setup.sh` therefore installs later builds of both
+programs (PLINK 2 `20260504`, PLINK 1.9 `20250819`), and results obtained with them have not been
+compared with the published ones. To see which build you are running:
+
+```bash
+plink2 --version; md5sum "$(command -v plink2)"
+plink --version;  md5sum "$(readlink -f "$(command -v plink)")"
+```
 
 ### Manual
 
