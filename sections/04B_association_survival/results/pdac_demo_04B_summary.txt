@@ -1,0 +1,55 @@
+Cox proportional hazards survival scan
+Generated: 2026-11-22 14:38:36
+
+ANALYSIS SET
+  European cases with follow-up, sex and age: 219
+  events: 167   censored: 52
+  minor allele frequency floor, evaluated in this set: 0.05
+
+COVARIATES
+  components computed within this set, on 86321 pruned variants
+  primary model: SEX, AGE, PC1-PC10  (13 parameters)
+  events per parameter: 12.8
+
+  The number governing power is the event count, not the sample size.
+
+SCAN
+  variants tested: 239881
+  variants with a valid P: 239881
+  skipped (monomorphic in this set, or the fit failed): 0
+  genomic inflation factor lambda: 1.1131
+  lambda per 1000 events: 1.6773
+
+  genome-wide significant (P < 5e-8): 0
+  suggestive (P < 1e-5): 9
+  expected under the null at 1e-5: 2.4
+  lead variant: 15:71619612:T:C  HR 0.470  P 5.27e-07
+
+COVARIATE COMPARISON
+  Same 219 individuals, same 239881 variants, same outcome.
+  Only the covariate axes differ, so any difference in lambda is theirs.
+
+  within-set PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1131  suggestive 9
+  within-set PCs, PC1-PC5              8 par   20.9 ev/par  lambda 1.0679  suggestive 8
+  Section 4A PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1321  suggestive 9
+
+  The two sets of components leave similar inflation, so borrowing them
+  from Section 4A was not the source of the problem. If lambda remains
+  above about 1.05, look elsewhere: a frequency floor set by events
+  rather than by sample size, or cryptic relatedness within the cases.
+
+HOW TO READ THIS SCAN
+  Section 03B gives the detectable effect sizes for 167 events. A null
+  result at this event count is the expected outcome, not a failure of the
+  analysis. But a null scan and an uncontrolled scan are different things:
+  an excess of suggestive results is only interpretable once lambda is near
+  one. Report the event count, the covariates, lambda and the minimum
+  detectable hazard ratio together, so that a reader can tell an
+  uninformative scan from a negative one.
+
+  WARNING: lambda is 1.113. The suggestive count above is
+  not yet interpretable as signal. Resolve the inflation before reporting.
+
+RESOURCES USED
+  cores: 31 (detectCores)   chunk: 25000 variants
+  elapsed: 3.6 min

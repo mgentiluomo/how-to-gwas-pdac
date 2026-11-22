@@ -1,0 +1,15 @@
+metric	value
+n_individuals	219
+n_events	167
+n_censored	52
+n_parameters	13
+events_per_parameter	12.8
+pca_variants	86321
+variants_tested	239881
+variants_skipped	0
+lambda	1.1131
+lambda_per_1000_events	1.6773
+genome_wide_sig	0
+suggestive	9
+cores_used	31
+chunk_size	25000

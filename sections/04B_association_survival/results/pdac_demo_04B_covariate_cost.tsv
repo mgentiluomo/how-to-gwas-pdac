@@ -1,0 +1,5 @@
+covariates	n_parameters	events_per_par	median_SE	SE_inflation	HR_multiplier	lambda
+unadjusted	1	167	0.13121	1	1	1.0662
+SEX + AGE	3	55.7	0.13232	1.0085	1.0085	1.0734
+SEX + AGE + 5 PCs	8	20.9	0.13555	1.0331	1.0331	1.0976
+SEX + AGE + 10 PCs	13	12.8	0.13851	1.0556	1.0556	1.1436

@@ -1,0 +1,4 @@
+model	n_par	events_per_par	lambda	suggestive
+within-set PCs, PC1-PC10	13	12.8	1.1131	9
+within-set PCs, PC1-PC5	8	20.9	1.0679	8
+Section 4A PCs, PC1-PC10	13	12.8	1.1321	9

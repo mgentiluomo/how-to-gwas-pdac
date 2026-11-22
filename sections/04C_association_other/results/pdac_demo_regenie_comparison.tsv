@@ -1,0 +1,5 @@
+analysis	cases	controls	neff	variants	lambda	sig_5e8	sugg_1e5	P_causal
+A pruned, plink2	219	392	562	401126	1.0216	10	14	5.31e-09
+B unpruned, plink2	233	501	636.1	401126	0.9984	13	18	4.66e-12
+C unpruned, REGENIE	233	501	636.1	401126	1.0382	14	22	4.39e-12
+D unpruned, REGENIE no offset	233	501	636.1	401126	0.9999	13	18	5.26e-13

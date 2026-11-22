@@ -1,0 +1,23 @@
+                      analysis cases controls  neff variants lambda sig_5e8
+              A pruned, plink2   219      392 562.0   401126 1.0216      10
+            B unpruned, plink2   233      501 636.1   401126 0.9984      13
+           C unpruned, REGENIE   233      501 636.1   401126 1.0382      14
+ D unpruned, REGENIE no offset   233      501 636.1   401126 0.9999      13
+ sugg_1e5 P_causal
+       14 5.31e-09
+       18 4.66e-12
+       22 4.39e-12
+       18 5.26e-13
+
+How to read this table.
+  A vs B  the whole pruning decision. The sets differ in size and in
+          balance, so read neff, not the headline counts. If B is no more
+          inflated than A, the retained relatedness cost nothing and the
+          pruning removed information for no statistical gain.
+  B vs C  the mixed model, on the same people. C lower means the offset
+          absorbed real structure; C higher means it absorbed signal.
+  D       REGENIE without the offset. B vs D isolates the software from
+          the method; D vs C isolates the offset.
+  P_causal is the simulated ABO variant. Watch it alongside lambda: an
+          analysis that lowers inflation by discarding real signal is not
+          an improvement.
