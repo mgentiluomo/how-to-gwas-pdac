@@ -3,6 +3,36 @@ title: "Genotyping technologies and file formats"
 description: "What comes off the array, how it becomes analysable, and which decisions here you cannot undo later"
 ---
 
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "01A_study_design"
+gc <- function(p) grab(S, "pdac_demo_01A_gc_summary.txt", p)
+mc <- function(p) grab(S, "pdac_demo_01A_manifest_check.txt", p)
+pf <- function(p, n = 1L) grab(S, "pdac_demo_01A_preflight.txt", p, n)
+cl <- tab(S, "pdac_demo_01A_conversion_log.tsv"); d1 <- cl[cl$sample == "DEMO001", ]
+n_samples <- nrow(cl)
+n_report  <- as.numeric(mc("variants in this report:\\s+([0-9]+)"))
+n_match   <- as.numeric(mc("matched as written:\\s+([0-9]+)"))
+pct_match <- mc("matched as written:\\s+[0-9]+ \\(([0-9.]+)%\\)")
+build     <- mc("manifest GenomeBuild: ([0-9]+)")
+n_posname <- mc("variants with a positional name: ([0-9]+)")
+n_eq      <- mc("equals the manifest coordinate: ([0-9]+)")
+n_diff    <- mc("whose name position differs:\\s+([0-9]+)")
+n_chr     <- mc("whose name chromosome differs:\\s+([0-9]+)")
+gc_median <- gc("Median GC:\\s+([0-9.]+)")
+gc_below  <- gc("Calls below 0.15:\\s+[0-9]+ \\(([0-9.]+)%\\)")
+ex_n      <- as.numeric(pf("converted example: [0-9]+ of ([0-9]+) have no"))
+ex_unpl   <- pf("converted example: ([0-9]+) of [0-9]+ have no")
+ex_dpos   <- pf("duplicated chr:pos: ([0-9]+)")
+ex_did    <- pf("duplicated variant IDs: ([0-9]+)")
+ex_amb    <- pf("A/T or C/G in the converted example: ([0-9]+) of")
+dm_n      <- pf("^\\s+variants: ([0-9]+)")
+dm_unpl   <- pf("^\\s+unplaced: ([0-9]+)")
+dm_dpos   <- pf("^\\s+duplicated positions: ([0-9]+)")
+dm_amb    <- pf("^\\s+strand-ambiguous: ([0-9]+)")
+```
+
 Every other page in this guide starts from a clean PLINK dataset. This one is about how that
 dataset comes into existence, and about the decisions taken before it exists that constrain
 everything afterwards.
@@ -13,7 +43,7 @@ usually several, because the samples were collected over fifteen years.
 
 ```bash
 ~/gwas_tutorial/
-├── example_data/            a real Illumina Final Report, one sample
+├── example_data/            three synthetic Final Reports and a manifest
 ├── scripts/01A_study_design/
 └── results/raw/
 ```
@@ -27,6 +57,16 @@ PLINK 1 input, which is why both are needed on this page and only `plink2` elsew
 `example_data/` holds three Final Reports and an array manifest, generated from `pdac_demo` by
 `scripts/00_make_example_raw_data.R` with the project seed 2026.
 
+**Where the figures on this page come from.** The example data were generated from
+`pdac_demo.bim` of data release `v0.3-data`. Figures about the example are read from the files in
+`sections/01A_study_design/results/`, written by one run of scripts 01 to 04 and committed in
+`fa99b5b` (27 July 2026). This section is not part of the canonical run
+(`scripts/dev/run_all.sh`). On 22 November 2026 the example data and every text result were
+regenerated from scratch with PLINK v1.90b6.25 and found identical, apart from timestamps and
+file paths. A few counts are printed by the scripts but not written to a results file; they are
+marked in the page source. Figures about a real Illumina report are measurements on a file that
+is not distributed, and are labelled as such.
+
 They are synthetic for a reason that this guide takes seriously: a real Final Report contains the
 genome-wide genotypes of an identifiable person, and a manufacturer's manifest is not ours to
 redistribute. Everything on this page therefore runs on data we are entitled to publish, exactly
@@ -38,8 +78,8 @@ it is quoted as a measurement; the file itself is not reproduced.
 
 | Injected | Amount |
 |---|---|
-| Variants, samples | 8,000 across 3 samples |
-| GenCall distribution | bimodal, median 0.72, 1.1% below the 0.15 threshold |
+| Variants, samples | `r num(n_report)` across `r n_samples` samples |
+| GenCall distribution | bimodal; measured in DEMO001: median `r dec(gc_median, 2)`, `r pct(gc_below)` below the 0.15 threshold |
 | No-calls | about 1.4%, reported as `-`, a few with a `NaN` score |
 | Indel probes | 7.7%, reported as `I`/`D` |
 | Minus-strand design | 42.6% of variants |
@@ -104,12 +144,12 @@ file claims.
 
 **The GenCall score.** Every call carries a confidence between 0 and 1. Illumina's guidance is
 that calls below about 0.15 are failures. Note what that means: a low-confidence call is *not*
-missing in the file. It looks like any other genotype unless you check. In this excerpt the
-median is 0.72 and 1.1% of calls fall below the threshold. A further 1.3% are reported as missing
+missing in the file. It looks like any other genotype unless you check. In DEMO001 the
+median is `r dec(gc_median, 2)` and `r pct(gc_below)` of calls fall below the threshold. A further `r pct(100 * d1$no_call / d1$calls)` are reported as missing
 outright: the two are different failures, and the per-sample log below counts them separately.
 
 ::: {.callout-note title="A finding worth pausing on"}
-In the full report this excerpt came from, the variants named by rs number have a median GenCall
+In the real GSAMD-24v3 report the simulation was calibrated on, the variants named by rs number have a median GenCall
 of 0.720 and 1.2% failures. The variants named by position, which are the array's custom content,
 mostly copy-number and gene-tiling probes, have a median of 0.441 and 4.5% failures.
 
@@ -186,13 +226,13 @@ as a result.
 
 **2. Size.** Loci in the manifest against variants in the report.
 
-**3. Name matching.** How many report identifiers are found: **7,520 of 8,000, 94.0%** here, the
+**3. Name matching.** How many report identifiers are found: **`r num(n_match)` of `r num(n_report)`, `r pct(pct_match)`** here, the
 remainder being the variants deliberately left out of the manifest. The script also tests whether
 stripping a `GSA-` prefix improves the match, because some manifests prefix their identifiers
 while reports do not, and a merge on exact names then fails for every rs-numbered variant without
 a single error message. That happened too. Below 90% the script warns.
 
-**4. Genome build.** Taken from the manifest's `GenomeBuild` column: 38 for all matched variants
+**4. Genome build.** Taken from the manifest's `GenomeBuild` column: `r build` for all matched variants
 here. Note that the same array has an A1 manifest on GRCh37 and an A2 manifest on GRCh38.
 Choosing the wrong one shifts every coordinate.
 
@@ -204,12 +244,12 @@ them instead of using the manifest. Measured on the example data:
 
 | | |
 |---|---|
-| Variants with a positional name | 1,860 |
-| Name position **equals** the manifest coordinate | 0 |
-| Name position **differs** | 1,860 |
-| Chromosome also differs | 97 |
+| Variants with a positional name | `r num(n_posname)` |
+| Name position **equals** the manifest coordinate | `r num(n_eq)` |
+| Name position **differs** | `r num(n_diff)` |
+| Chromosome also differs | `r num(n_chr)` |
 
-These counts run on the 7,520 variants matched to the manifest, not on all 8,000, which is why
+These counts run on the `r num(n_match)` variants matched to the manifest, not on all `r num(n_report)`, which is why
 they sit slightly below the 25% and the 104 that were injected.
 
 The offsets here are 384 to 543 kb, the size of a build shift. On the real array this was measured
@@ -222,8 +262,9 @@ entirely plausible. Nothing downstream would complain.
 ### What the conversion does
 
 **Strand.** The manifest gives the design alleles as `[A/G]` on the design strand, and
-`RefStrand` says whether that is the plus strand of the reference. In the example data
-**3,194 of 7,520 variants, 42.5%, are on the minus strand** and must be complemented before they
+`RefStrand` says whether that is the plus strand of the reference. <!-- 3,194: printed by 02_report_to_lgen.R ("3194 had their alleles complemented"), not written to a results file -->
+In the example data
+**3,194 of `r num(n_match)` variants, `r pct(100 * 3194 / n_match)`, are on the minus strand** and must be complemented before they
 can be compared with plus-strand genotypes; the real array measured 43%. Skip this and you get
 the wrong reference allele for nearly half the array, silently.
 
@@ -235,9 +276,9 @@ count goes in the log.
 
 | In the report | Count in sample DEMO001 | Treatment |
 |---|---|---|
-| `A` `C` `G` `T` | 7,292 | kept |
-| `-` | 102 | no-call, written as missing |
-| `I` or `D` | 606 (7.6%) | **indel**, dropped, and counted |
+| `A` `C` `G` `T` | `r num(d1$calls - d1$no_call - d1$indel)` | kept |
+| `-` | `r num(d1$no_call)` | no-call, written as missing |
+| `I` or `D` | `r num(d1$indel)` (`r pct(100 * d1$indel / d1$calls)`) | **indel**, dropped, and counted |
 
 The array carries insertion and deletion probes. A filter written as "keep only A, C, G, T",
 which is the natural thing to write, discards them along with the no-calls, and nothing says so.
@@ -297,7 +338,8 @@ A variant that is monomorphic among the samples in hand shows only one allele, s
 `0` in the other allele column of the `.bim`. That zero is not missing data, it is an
 **unobserved** allele, and it breaks later merges, strand checks and imputation.
 
-In the example, across three samples, **1,546 of 6,938 variants** carry such a zero: the fewer
+<!-- 1,546: printed by 03_lgen_to_binary.sh ("variants with an unobserved allele"), not written to a results file -->
+In the example, across `r n_samples` samples, **1,546 of `r num(ex_n)` variants** carry such a zero: the fewer
 samples you have, the more variants look monomorphic, and with a single sample it would be most
 of them. The manifest knows what the second allele should be, so the script fills it in: take the
 observed allele, look up the design pair, write the other one. **All 1,546 are repaired.**
@@ -306,7 +348,8 @@ Without this step the dataset looks fine and cannot be combined with anything.
 :::
 
 **Why binary.** A `.ped` stores roughly four bytes per genotype; a `.bed` packs four genotypes
-into one byte. On chromosome 22 of the demonstration dataset the text export is 36 MB against
+into one byte. <!-- sizes: printed by 04_preflight_and_formats.sh (format_demo.ped 36,459,255 bytes), not written to a results file -->
+On chromosome 22 of the demonstration dataset the text export is 36 MB against
 1.5 MB for the PLINK 2 native format.
 
 | File | Content |
@@ -341,11 +384,11 @@ demonstration dataset for comparison:
 
 | Check | Converted example | Demo dataset |
 |---|---|---|
-| Variants | 6,938 | 430,000 |
-| Unplaced | 0 | 0 |
-| Duplicated positions | 0 | 22 |
-| Duplicated identifiers | 0 | 0 |
-| Strand-ambiguous (A/T, C/G) | 82 | 2,430 |
+| Variants | `r num(ex_n)` | `r num(dm_n)` |
+| Unplaced | `r ex_unpl` | `r dm_unpl` |
+| Duplicated positions | `r ex_dpos` | `r dm_dpos` |
+| Duplicated identifiers | `r ex_did` | 0 <!-- not in the preflight report; checked on pdac_demo.bim of v0.3-data --> |
+| Strand-ambiguous (A/T, C/G) | `r num(ex_amb)` | `r num(dm_amb)` |
 
 The converted example is clean on the first three because the manifest supplied every coordinate
 and the synthetic array carries one probe per position. Real arrays do not: they place several
@@ -361,7 +404,7 @@ Section 5 shows what that costs.
 coordinates wrong by megabases, and nothing complains. Everything in this guide is GRCh38 with
 identifiers in `chr:pos:ref:alt` form.
 
-Note that even the curated demonstration dataset carries 22 duplicated positions and 2,430
+Note that even the curated demonstration dataset carries `r dm_dpos` duplicated positions and `r num(dm_amb)`
 ambiguous variants. Clean data are not the same as unchecked data.
 
 ---
