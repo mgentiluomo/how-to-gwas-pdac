@@ -168,12 +168,15 @@ one <- function(i) {
   wald <- pchisq(z^2, 1, lower.tail = FALSE)
   lr   <- pchisq(2 * (f1$loglik[2] - f0$loglik[2]), 1, lower.tail = FALSE)
   # score test for the genotype term: the full model's score statistic
-  # evaluated at the null fit, obtained by starting the fit at zero
+  # evaluated at the null fit, obtained by starting the fit at zero.
+  # coxph's $score is the score test at init; at (0, coef(f0)) the covariate
+  # scores are zero, so fs$score is already the 1-df test for G. Subtracting
+  # f0$score (the null model's global test against beta = 0) is wrong.
   fs <- tryCatch(coxph(surv_obj[good] ~ ., data = d1,
                        init = c(0, coef(f0)), control = coxph.control(iter.max = 0)),
                  error = function(e) NULL)
   sc <- if (is.null(fs)) NA_real_ else
-    pchisq(fs$score - f0$score, 1, lower.tail = FALSE)
+    pchisq(fs$score, 1, lower.tail = FALSE)
   c(wald, lr, sc)
 }
 
