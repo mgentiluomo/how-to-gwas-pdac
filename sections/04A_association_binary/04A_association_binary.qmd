@@ -181,14 +181,23 @@ therefore the expected answer, and the flat genome elsewhere does not mean nothi
 
 The deeper point is the one this guide exists to make. At an effective sample size of `r num(round(as.numeric(aset("analysis_set_effective_n"))))`, the
 smallest odds ratio detectable with 80% power at genome-wide significance is about `r dec(pt$min_OR_analysis_set[pt$MAF == 0.3], 1)` even for a
-common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have
-odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it
-was conducted. The scan is sound; it is simply not powered, and those are different things.
+common variant, and it rises steeply as frequency falls. The loci found by pancreatic cancer GWAS
+are far weaker: the five new loci reported by a meta-analysis of 9,040 cases and 12,496 controls,
+with replication in PANDoRA, have per-allele odds ratios between about 1.1 and 1.3 (Klein et al. 2018).
+A study of this size could not have found them however well it was conducted. The scan is sound;
+it is simply not powered for effects of realistic size, and those are different things. *ABO* was
+found because its simulated effect is far larger than that.
 
 ::: {.callout-note title="The two thresholds"}
-**5 × 10⁻⁸** is approximately a Bonferroni correction for one million independent tests in
-European-ancestry data. It is somewhat conservative for a single ancestry and anticonservative
-for trans-ancestry analyses, where LD blocks are shorter.
+**5 × 10⁻⁸** is calibrated on common variants in imputed European-ancestry data: it is a
+Bonferroni correction for the roughly one million independent common-variant tests estimated in
+Europeans (Pe'er et al. 2008), and sequencing data confirm it for variants with minor allele
+frequency of 5% or more (Fadista et al. 2016). For an array-only scan such as this one, which tests
+`r num(lam("variants_tested"))` variants and fewer independent ones, it is conservative. It is
+anticonservative where the number of independent tests is larger: in African-ancestry data, where
+shorter LD roughly doubles the testing burden (Pe'er et al. 2008), and for low-frequency and rare
+variants from dense sequencing, for which Fadista et al. derive 3 × 10⁻⁸, 2 × 10⁻⁸ and 1 × 10⁻⁸ at
+minor allele frequencies of 1%, 0.5% and 0.1% in Europeans.
 
 **1 × 10⁻⁵** is the conventional suggestive line: **`r n_sugg` variants** here, `r n_gws` of which also pass
 5 × 10⁻⁸. These are not findings and
@@ -301,3 +310,15 @@ A single underpowered cohort is where most rare-cancer studies start, not where 
 result above is a legitimate contribution to a meta-analysis that will eventually have power, and
 producing it correctly, with full summary statistics and documented decisions, is what makes that
 contribution usable.
+
+## References
+
+- Pe'er I, Yelensky R, Altshuler D, Daly MJ. [Estimation of the multiple testing burden for
+  genomewide association studies of nearly all common variants](https://pubmed.ncbi.nlm.nih.gov/18348202/).
+  *Genetic Epidemiology*. 2008;32(4):381-385. PMID: 18348202.
+- Fadista J, Manning AK, Florez JC, Groop L. [The (in)famous GWAS P-value threshold revisited and
+  updated for low-frequency variants](https://pubmed.ncbi.nlm.nih.gov/26733288/). *European Journal
+  of Human Genetics*. 2016;24(8):1202-1205. PMID: 26733288.
+- Klein AP, Wolpin BM, Risch HA, et al. [Genome-wide meta-analysis identifies five new
+  susceptibility loci for pancreatic cancer](https://pubmed.ncbi.nlm.nih.gov/29422604/). *Nature
+  Communications*. 2018;9(1):556. PMID: 29422604.

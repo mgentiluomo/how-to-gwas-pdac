@@ -66,13 +66,15 @@ which defines the analysis set. The comparison with all ancestries combined also
 Power depends on how much information the design carries about the genetic effect, and that
 information is a product of three things:
 
-$$\text{Fisher information} \;=\; N \times \pi(1-\pi) \times \operatorname{Var}(G), \qquad \operatorname{Var}(G) = 2p(1-p)$$
+$$\text{Fisher information} \;\approx\; N \times \pi(1-\pi) \times \operatorname{Var}(G), \qquad \operatorname{Var}(G) = 2p(1-p)$$
 
 the sample size (**N**), the variability of the outcome (**π(1 − π)**), and the variability of the
-genotype (**Var(G)**). Multiplying
-by the squared effect gives the non-centrality parameter (NCP) of a one degree of freedom chi-squared
-statistic, and power is the probability that the NCP exceeds the critical value set by the
-significance threshold.
+genotype (**Var(G)**). The approximation holds for logistic regression near the null, that is for
+small effects, and the expression for Var(G) assumes genotypes in Hardy-Weinberg proportions.
+Multiplying by the squared effect gives the non-centrality parameter (NCP) of a one degree of
+freedom chi-squared statistic. Power is the probability that the test statistic, distributed as a
+non-central chi-squared with that NCP, exceeds the critical value set by the significance
+threshold.
 
 Each term earns its place, and each says something practical.
 

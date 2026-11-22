@@ -34,9 +34,8 @@ poorly measured, sex labels can be wrong, and related individuals can break the 
 assumption used by standard GWAS tests. **Quality control (QC)** removes or flags these problems
 before any association analysis.
 
-This page is the canonical QC tutorial for the website. The source scripts live in
-`sections/01B_genotyping_qc/scripts/`, but learners run the copied scripts from their tutorial
-working folder:
+The source scripts live in `sections/01B_genotyping_qc/scripts/`; learners run the copied scripts
+from their tutorial working folder:
 
 ```bash
 ~/gwas_tutorial/
@@ -69,7 +68,7 @@ Your own numbers may differ if you change thresholds, use a different random see
 workflow on another dataset.
 :::
 
-## What QC Does
+## What QC does
 
 The demo QC pipeline is intentionally stepwise. Each script runs one check, writes output to
 `results/qc/`, and prints the next command to run.
@@ -100,9 +99,9 @@ time lets you see how many samples or variants each filter removes. That is how 
 early.
 :::
 
-## Run the QC Pipeline
+## Run the QC pipeline
 
-## 01 - Initial QC Statistics
+## 01 - Initial QC statistics
 
 **Why.** Before removing anything, measure the dataset. This step creates baseline allele
 frequency, heterozygosity, sample missingness, and variant missingness summaries.
@@ -138,7 +137,7 @@ Example Step 01 plots:
 
 ::: {.panel-tabset}
 
-### Variant Density
+### Variant density
 
 ![](results/pdac_demo_01_qc_variant_density_by_chromosome.png){fig-alt="Bar plot of variant density by chromosome."}
 
@@ -159,7 +158,7 @@ chromosomes or strong chromosome-specific gaps would suggest a data preparation 
 Most samples and variants should have low missingness. The sample call-rate filter in Step 02
 and variant call-rate filter in Step 05 act on these distributions.
 
-### Allele Frequency
+### Allele frequency
 
 ![](results/pdac_demo_01_qc_allele_frequency_distribution.png){fig-alt="Histogram of alternate allele frequencies."}
 
@@ -182,7 +181,7 @@ heterozygosity deserve attention before downstream analysis.
 
 :::
 
-## 02 - Sample Call Rate
+## 02 - Sample call rate
 
 **Why.** Samples with too many missing genotypes often reflect poor DNA quality, lab failure, or
 platform problems. In a rare cancer GWAS, every sample is valuable, but very low-quality samples
@@ -217,7 +216,7 @@ In real data, also check whether removed samples are disproportionately cases, c
 contributing cohort.
 :::
 
-## 03 - Sex Check
+## 03 - Sex check
 
 **Why.** The genetic data on chromosome X should broadly agree with the recorded sex. A mismatch
 can indicate a sample swap, data entry error, or contamination.
@@ -243,7 +242,7 @@ Sex check is not only a biology check. It is also a sample identity check. A sex
 the first visible sign that labels, sample IDs, or genotype files were mixed.
 :::
 
-## 04 - Heterozygosity Outliers
+## 04 - Heterozygosity outliers
 
 **Why.** Extremely high or low heterozygosity can signal contamination, inbreeding, or a
 technical artefact. The inbreeding coefficient *F* compares observed with expected heterozygous
@@ -300,7 +299,7 @@ Do not remove a case just because it is visually interesting. Remove it because 
 a documented QC rule. In the final report, keep the threshold and number removed.
 :::
 
-## 05 - Variant Call Rate
+## 05 - Variant call rate
 
 **Why.** Variants missing in many samples are unreliable. Missingness can reflect poor probe
 performance, batch effects, or genotype calling problems.
@@ -330,7 +329,7 @@ The Step 01 variant missingness plot shows why this filter exists:
 
 ![](results/pdac_demo_01_qc_variant_missingness_histogram.png){fig-alt="Histogram of per-variant missingness."}
 
-## 06 - Hardy-Weinberg Equilibrium
+## 06 - Hardy-Weinberg equilibrium
 
 **Why.** Strong departure from Hardy-Weinberg equilibrium more often indicates a genotyping error
 than real biology. Two conditions must hold for the test to mean that, and most tutorials state
@@ -427,7 +426,7 @@ This step uses the phenotype file to protect rare cancer cases during pruning:
 The first two columns must match the family ID and individual ID in the `.fam` file. A header
 line is allowed.
 
-### KING, PI_HAT, and Thresholds
+### KING, PI_HAT, and thresholds
 
 This step uses LD-pruned variants and KING kinship to find duplicate/twin, first-degree and
 second-degree related samples. It also runs the older PLINK 1.9 `--genome` command to report
@@ -473,7 +472,7 @@ relatives, the cutoff used by Anderson et al. (2010). Because KING kinship is ro
 `PI_HAT`, applying `0.1875` to KING kinship removes only first-degree-or-closer pairs and keeps
 second-degree relatives in the analysis. The KING equivalent of that `PI_HAT` cutoff is `0.0884`.
 
-### Rare-Cancer Pruning Rule
+### Rare-cancer pruning rule
 
 Because this is a rare-cancer tutorial, the final pruning list is **phenotype-aware**:
 
@@ -538,7 +537,7 @@ entering the step and more than every other sample filter together. If a real co
 `pdac_demo_07_removal_decisions.tsv` before continuing.
 :::
 
-## 08 - Minor Allele Frequency
+## 08 - Minor allele frequency
 
 **Why.** Very rare variants can be unstable in small studies. For PDAC we keep the threshold low
 (`--maf 0.01`) because rare and low-frequency variants may be important in rare cancers.
@@ -565,7 +564,7 @@ but rare cancer studies have fewer cases and may be especially interested in low
 effects. This tutorial uses `--maf 0.01` as a teaching example of a less aggressive threshold.
 :::
 
-## 09 - QC Summary Report
+## 09 - QC summary report
 
 **Why.** A reproducible GWAS needs a record of every threshold and how many samples or variants
 were removed at each step. This final step creates one combined PDF report with the count table,
@@ -593,7 +592,7 @@ The generated report combines the same checks shown on this page into one review
 - relatedness and phenotype-aware pruning diagnostics
 - method notes for downstream interpretation
 
-### Methods Notes and Interpretation
+### Methods notes and interpretation
 
 The report also summarizes the QC rules in a methods-friendly table. This is useful when you later
 write the Methods section of a manuscript or need to explain exactly why a sample or variant was
@@ -618,7 +617,7 @@ The main interpretation points are:
 - **Large relatedness loss:** inspect relatedness components and removal decisions before continuing.
 - **Final QC-pass data:** the Step 08 dataset is the input for ancestry checks, PCA, and association testing.
 
-### Example Report Preview
+### Example report preview
 
 The example report is a PDF. Some preview browsers automatically download PDFs if they are
 embedded directly in the page, so the report is shown here as a launch panel instead.
@@ -682,7 +681,7 @@ The demo run used in this page ended with:
 
 Final retention in the demo run was **`r pct(100 * final_samples / raw_samples)` of samples** and **`r pct(100 * final_variants / raw_variants)` of variants**.
 
-## PDAC-Specific Notes
+## PDAC-specific notes
 
 Pancreatic cancer GWAS is a rare-cancer setting. That changes how we think about QC:
 

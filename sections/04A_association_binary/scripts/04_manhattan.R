@@ -71,7 +71,11 @@ plot(d$cum[keep], logp[keep],
      ylab = expression(-log[10](italic(P))),
      ylim = c(0, max(3, max(logp) * 1.15)),
      main = "Association results, European analysis set")
-axis(1, at = axis_at, labels = names(axis_at), cex.axis = 0.7, tick = FALSE)
+# Label every chromosome. axis() silently drops labels that would overlap,
+# which removes the small chromosomes; staggering the labels on two lines
+# keeps all 22 legible.
+odd <- seq_along(axis_at) %% 2 == 1
+mtext(names(axis_at), side = 1, at = axis_at, line = ifelse(odd, 0.3, 1.2), cex = 0.7)
 abline(h = -log10(5e-8), col = "#D55E00", lty = 2)
 abline(h = -log10(1e-5), col = "#0072B2", lty = 3)
 legend("topright", bty = "n", cex = 0.8,
