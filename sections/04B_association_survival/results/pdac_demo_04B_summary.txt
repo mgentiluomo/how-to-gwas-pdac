@@ -1,5 +1,5 @@
 Cox proportional hazards survival scan
-Generated: 2026-11-22 17:52:33
+Generated: 2026-11-22 18:11:38
 
 ANALYSIS SET
   European cases with follow-up, sex and age: 219
@@ -52,4 +52,4 @@ HOW TO READ THIS SCAN
 
 RESOURCES USED
   cores: 31 (detectCores)   chunk: 25000 variants
-  elapsed: 3.6 min
+  elapsed: 3.5 min

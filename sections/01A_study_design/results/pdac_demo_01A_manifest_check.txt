@@ -1,5 +1,5 @@
 Manifest check
-Generated: 2026-11-22 17:50:11
+Generated: 2026-11-22 18:09:16
 
 Report:   sections/01A_study_design/example_data/DEMO001_final_report.csv
 Manifest: sections/01A_study_design/example_data/example_manifest.csv
