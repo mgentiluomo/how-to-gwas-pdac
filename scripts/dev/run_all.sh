@@ -181,6 +181,35 @@ if printf '%s' "$PKG_TABLE" | grep -q "NOT INSTALLED"; then
   die "an R package listed in env/r_packages.txt is not installed"
 fi
 
+# Checksums of the executables, because a version string does not identify a
+# build: two PLINK 2 binaries can report the same date and differ. Wrappers
+# are resolved to the binary they run. Paths inside the project are written
+# relative to it, so the record carries no machine-specific prefix.
+rel_path() { case "$1" in "$PROJECT_ROOT"/*) echo "${1#"$PROJECT_ROOT"/}" ;; *) echo "$1" ;; esac; }
+exe_row() {   # tool, resolved path or empty, note
+  local tool="$1" path="$2" note="$3"
+  if [ -n "$path" ] && [ -f "$path" ]; then
+    printf '| %s | `%s` | `%s` | %s |\n' "$tool" "$(rel_path "$path")" "$(md5sum "$path" | cut -d' ' -f1)" "$note"
+  else
+    printf '| %s | not found | | %s |\n' "$tool" "$note"
+  fi
+}
+resolve() { local c; c="$(command -v "$1" 2>/dev/null)" && readlink -f "$c" || true; }
+REGENIE_BIN=""
+for cand in tools/micromamba-root/envs/regenie_env/bin/regenie; do
+  [ -f "$cand" ] && REGENIE_BIN="$(readlink -f "$cand")"
+done
+EXE_TABLE="$(
+  exe_row plink2  "$(resolve plink2)"  ""
+  exe_row plink   "$(resolve plink)"   "PLINK 1.9"
+  exe_row regenie "$REGENIE_BIN"       "binary run by the tools/bin/regenie wrapper"
+  exe_row metal   "$(resolve metal)"   "not used by the canonical run"
+  exe_row Rscript "$(resolve Rscript)" ""
+)"
+say ""
+say "  Executables (MD5):"
+printf '%s\n' "$EXE_TABLE" | sed 's/^/    /' | tee -a "$MASTER_LOG"
+
 # env/software_versions.md is a template in the repository and the manuscript
 # promises exact versions. Write it from what actually ran.
 cat > env/software_versions.md <<EOF
@@ -199,6 +228,12 @@ produced the published results; do not edit by hand.
 | PLINK 1.9 | $PLINK1_V |
 | REGENIE | $REGENIE_V |
 | R | $R_V |
+
+## Executables
+
+| Tool | Executable | MD5 | Note |
+|---|---|---|---|
+$EXE_TABLE
 
 ## R packages
 
