@@ -21,12 +21,12 @@ You do **not** need any programming experience. Every command is provided in ful
 
 ## A note on the command line {#sec-terminal}
 
-Most steps in this guide are typed into a **SHELL** (also called a "command line" or "console") — a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
+Most steps in this guide are typed into a **SHELL** (also called a "command line" or "console"): a window where you type a command, press <kbd>Enter</kbd>, and the program runs.
 
 - **Windows:** You must use **WSL2 terminal** (see Step 0). WSL2 gives you Linux inside Windows.
 - **macOS:** Open the *Terminal* app (in *Applications → Utilities*).
 - **Linux:** Open your *Terminal*.
-- **Inside RStudio:** there is a *Terminal* tab next to the *Console* tab — you can use that too.
+- **Inside RStudio:** there is a *Terminal* tab next to the *Console* tab; you can use that too.
 
 Let's practice using the terminal before we dive into the pipeline.
 
@@ -34,7 +34,7 @@ Throughout the guide, commands that you type into the terminal are shown in bloc
 below. Try the following short exercise. It creates a tiny throwaway folder and file, looks at it
 in a few different ways, then removes it.
 
- Please click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press <kbd>Enter</kbd> to run them. Don't worry if you don't understand every command right now — just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Windows/Linux, or <kbd>Cmd</kbd> + <kbd>V</kbd> on macOS.
+ Please click the copy button on the right side of the block to copy all the commands, paste them into your terminal, and press <kbd>Enter</kbd> to run them. Don't worry if you don't understand every command right now; just get a feel for how the terminal works. To paste into the terminal, you can usually right-click on the terminal, or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Windows/Linux, or <kbd>Cmd</kbd> + <kbd>V</kbd> on macOS.
 
 
 ```bash
@@ -102,7 +102,7 @@ one [recommendation](https://datacarpentry.github.io/shell-genomics/).
 
 ---
 
-## Step 0 — Prepare your operating system {#sec-os-setup}
+## Step 0: Prepare your operating system {#sec-os-setup}
 
 Before you begin, set up your OS environment.
 
@@ -152,7 +152,7 @@ explicitly with `bash`. No setup is needed for Step 0.
 
 ---
 
-## Step 1 — Create your project folder {#sec-project-folder}
+## Step 1: Create your project folder {#sec-project-folder}
 
 Choose any location on your computer and create a folder named `gwas_tutorial`. This will be your **working folder** for the entire pipeline.
 
@@ -163,12 +163,12 @@ cd "$DIR"
 ```
 
 ::: {.callout-tip title="Tip"}
-You can place this folder anywhere: Desktop, Documents, custom path — it doesn't matter. Everything is portable because we use relative paths. `DIR` is a variable that holds the path to your project folder. `$HOME` means "home directory", so this creates the folder in your home directory. You can also create it on other drives or directories by changing the `DIR` variable, for example `DIR="/your/desired/directory"`.
+You can place this folder anywhere: Desktop, Documents, custom path; it doesn't matter. Everything is portable because we use relative paths. `DIR` is a variable that holds the path to your project folder. `$HOME` means "home directory", so this creates the folder in your home directory. You can also create it on other drives or directories by changing the `DIR` variable, for example `DIR="/your/desired/directory"`.
 :::
 
 ---
 
-## Step 2 — Create the directory structure {#sec-directories}
+## Step 2: Create the directory structure {#sec-directories}
 
 Create the folder structure that keeps scripts, data, and tools organized.
 
@@ -282,7 +282,7 @@ For a compact project-folder overview, see [Setup Project Structure](docs/helper
 
 ---
 
-## Step 3 — Download the GWAS scripts {#sec-scripts}
+## Step 3: Download the GWAS scripts {#sec-scripts}
 
 Clone the GitHub repo to get all the GWAS pipeline scripts organized by section:
 
@@ -348,7 +348,7 @@ You should see: `download_demo_data.sh`, `tools_setup.sh`, `test.sh`, `init_proj
 
 ---
 
-## Step 4 — Download the demo dataset {#sec-data}
+## Step 4: Download the demo dataset {#sec-data}
 
 Download the 7 demo dataset files (~164 MB total) to your `demo_data/` folder.
 
@@ -405,7 +405,7 @@ If any file fails verification, the script will tell you which one and suggest r
 
 ---
 
-## Step 5 — Install dependencies {#sec-install}
+## Step 5: Install dependencies {#sec-install}
 
 Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.
 
@@ -711,7 +711,7 @@ bash scripts/dev/tools_setup.sh
 
 ---
 
-## Step 6 — Test tools and scripts {#sec-first-run}
+## Step 6: Test tools and scripts {#sec-first-run}
 
 Run the test script to verify everything is installed and working:
 
@@ -875,8 +875,8 @@ bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
 
 ## Additional Resources
 
-- **[Setup Project Structure](docs/helpers/SETUP_PROJECT_STRUCTURE.md)** — Detailed setup guide
-- **[WSL Setup](docs/helpers/WSL_SETUP.md)** — WSL2 troubleshooting  
+- **[Setup Project Structure](docs/helpers/SETUP_PROJECT_STRUCTURE.md)**: Detailed setup guide
+- **[WSL Setup](docs/helpers/WSL_SETUP.md)**: WSL2 troubleshooting  
 
 ---
 
@@ -885,8 +885,8 @@ bash scripts/01B_genotyping_qc/01_initial_qc_stats.sh
 You now have a working GWAS pipeline setup and have confirmed the tools runs successfully. Continue with the QC and other steps:
 
 
-- **Quality control (Section 1B)** — cleaning the raw genotypes before any analysis.
-- **Population stratification (Section 2)** — detecting and correcting for ancestry.
+- **Quality control (Section 1B)**: cleaning the raw genotypes before any analysis.
+- **Population stratification (Section 2)**: detecting and correcting for ancestry.
 
 *(These sections will be linked here as they are added.)*
 ---

@@ -137,7 +137,7 @@ Da sostituire nel blocco `expected` a seconda della pagina.
 "variants after QC" = list(want = 414695L, got = function() length(readLines("checkpoints/pdac_demo_qc.bim")))
 ```
 
-**Sezione 4A, association testing** — serve anche il set di analisi
+**Sezione 4A, association testing**: serve anche il set di analisi
 
 ```r
 "samples after QC"     = list(want = 1217L,   got = function() length(readLines("checkpoints/pdac_demo_qc.fam"))),
@@ -145,7 +145,7 @@ Da sostituire nel blocco `expected` a seconda della pagina.
 "European analysis set"= list(want = 611L,    got = function() length(readLines("checkpoints/pdac_demo_eur_keep.txt")))
 ```
 
-**Sezioni 5 e 6, meta-analisi e fine mapping** — nessun genotipo
+**Sezioni 5 e 6, meta-analisi e fine mapping**: nessun genotipo
 
 ```r
 "variants with a P value" = list(

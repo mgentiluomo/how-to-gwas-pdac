@@ -12,6 +12,8 @@
 #      scripts/dev/superseded_values.tsv, i.e. one that an earlier run put on
 #      the page and a later run replaced. Removing the marker is not enough;
 #      the old number must be gone too.
+#   2b. Forbidden characters. No page may contain an em dash (U+2014), which
+#      the house style excludes.
 #   3. Inline figures. Pages that read their figures from the results files
 #      (`r ...` with R/facts.R) are knitted into a temporary directory. A
 #      missing results file, a renamed key or an expression left unevaluated
@@ -97,6 +99,18 @@ else
     printf 'OK: none of the %s superseded figures in %s is on a page.\n' \
       "$N_ENTRIES" "${LIST#"$PROJECT_ROOT"/}"
   fi
+fi
+
+# ------------------------------------------------ 2b. forbidden characters ----
+EMDASH=$'\u2014'
+HITS="$(grep -nF -- "$EMDASH" "${PAGES[@]}" || true)"
+if [ -n "$HITS" ]; then
+  printf '%s\n' "$HITS"
+  printf 'FAILED: %s line(s) contain an em dash; the house style excludes it.\n\n' \
+    "$(printf '%s\n' "$HITS" | wc -l | tr -d ' ')" >&2
+  FAIL=1
+else
+  printf 'OK: no em dashes in .qmd files.\n'
 fi
 
 # ------------------------------------------------------ 3. inline figures ----
