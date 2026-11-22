@@ -60,19 +60,19 @@ Each stratum gets its own LD pruning, its own principal components and its own a
 
 | Stratum | Individuals | Cases | Controls | Effective N |
 |---|---|---|---|---|
-| European | 611 | 219 | 392 | 562.0 |
-| African | 287 | 138 | 149 | 286.6 |
-| East Asian | 317 | 141 | 176 | 313.1 |
-| **Combined** | **1,215** | **498** | **717** | **1,161.7** |
+| European | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] |
+| African | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] |
+| East Asian | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] | [PENDING RERUN] |
+| **Combined** | **[PENDING RERUN]** | **[PENDING RERUN]** | **[PENDING RERUN]** | **[PENDING RERUN]** |
 
 Notice the African stratum. It has fewer than half the individuals of the European one, but
-because its case-control ratio is nearly balanced it contributes an effective sample size of 287
-against 562: proportionally far more per participant. Effective sample size, not headline count,
+because its case-control ratio is nearly balanced it contributes an effective sample size of [PENDING RERUN]
+against [PENDING RERUN]: proportionally far more per participant. Effective sample size, not headline count,
 is what a meta-analysis is really combining.
 
 ::: {.callout-note title="Five components, not ten"}
 Section 4A used ten principal components in the European stratum. Here every stratum uses five,
-because estimating ten components in fewer than 320 individuals spends parameters the data cannot
+because estimating ten components in fewer than [PENDING RERUN] individuals spends parameters the data cannot
 support, and because the strata must be treated identically for their results to be comparable.
 
 This gives a free stability check, one of the three the guide recommends. In the European

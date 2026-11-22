@@ -254,7 +254,7 @@ Sample-level:
 - Sample call rate: --mind 0.02
 - Sex check: X chromosome F-statistic discordance
 - Heterozygosity: autosomal F +/- 3 SD
-- Relatedness: KING kinship > 0.1875
+- Relatedness: KING kinship > 0.0884 (second-degree or closer)
 - Relatedness pruning strategy: phenotype-aware; prefer removing controls over cases
 
 Variant-level:

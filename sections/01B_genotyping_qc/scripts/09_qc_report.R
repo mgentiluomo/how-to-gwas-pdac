@@ -500,7 +500,7 @@ thresholds <- data.frame(
   Check = c("Call rate", "Sex check", "Heterozygosity", "Relatedness",
             "Call rate", "Hardy-Weinberg", "Minor allele frequency"),
   Threshold = c("--mind 0.02", "X chromosome F statistic", "F +/- 3 SD",
-                "KING kinship > 0.1875", "--geno 0.05", "--hwe 1e-6 in controls",
+                "KING kinship > 0.0884", "--geno 0.05", "--hwe 1e-6 in controls",
                 "--maf 0.01"),
   Rationale = c("Remove low-quality samples", "Detect swaps or metadata errors",
                 "Detect contamination/outliers", "Preserve independence; keep cases where possible",

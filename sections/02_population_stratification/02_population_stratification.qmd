@@ -145,12 +145,12 @@ On the demonstration data:
 
 | | |
 |---|---|
-| QC-passed total | 1,215 |
-| European | 611 |
-| East Asian | 317 |
-| African | 287 |
-| **Analysis set** | **611: 219 cases, 392 controls** |
-| Effective sample size | 562.0 |
+| QC-passed total | [PENDING RERUN] |
+| European | [PENDING RERUN] |
+| East Asian | [PENDING RERUN] |
+| African | [PENDING RERUN] |
+| **Analysis set** | **[PENDING RERUN] cases, [PENDING RERUN] controls** |
+| Effective sample size | [PENDING RERUN] |
 
 The third strategy is the one to prefer whenever it is available, because it neither discards
 data nor assumes that effect sizes transfer between populations with different causal-allele
@@ -159,7 +159,7 @@ strata, which is the situation of most real rare-cancer cohorts, so the analysis
 European subset alone.
 
 ::: {.callout-note title="Effective sample size is the number that matters"}
-4 × cases × controls / (cases + controls) = 562.0, not 611. In an unbalanced design the effective
+4 × cases × controls / (cases + controls) = [PENDING RERUN], not [PENDING RERUN]. In an unbalanced design the effective
 figure is what governs power, and it is what should be reported. Section 4A returns to what this
 number does and does not make detectable.
 :::

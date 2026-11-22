@@ -47,6 +47,15 @@ die_early() { printf '\nFAILED: %s\n' "$*" >&2; exit 1; }
 # Locally installed tools take precedence, matching scripts/dev/test.sh.
 [ -d tools/bin ] && PATH="$(cd tools/bin && pwd):$PATH" && export PATH
 
+# ------------------------------------------------------ 0. pending markers --
+# Pages may still carry "PENDING RERUN" placeholders for figures this run is
+# meant to produce. That is expected before the run, so it is a warning here,
+# not a failure. The same check must pass before the site is published.
+if ! bash "$SCRIPT_DIR/check_pending_rerun.sh"; then
+  printf '\nWARNING: "PENDING RERUN" markers found (listed above). Continuing;\n' >&2
+  printf 'replace them from this run before publishing.\n\n' >&2
+fi
+
 # ---------------------------------------------------------------- 1. commit --
 # A result is only attributable to a commit if the tree matches that commit.
 if ! command -v git >/dev/null 2>&1; then

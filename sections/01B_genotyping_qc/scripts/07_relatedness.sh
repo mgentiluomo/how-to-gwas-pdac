@@ -32,8 +32,13 @@
 #   - pdac_demo_07_removal_list.txt — samples removed for relatedness
 #
 # THRESHOLD:
-#   Removal cutoff: KING kinship coefficient > 0.1875
-#     This primarily removes duplicate/twin and first-degree relationships.
+#   Removal cutoff: KING kinship coefficient > 0.0884
+#     0.0884 (2^-3.5) is the KING inference boundary between second- and
+#     third-degree relatives (Manichaikul et al. 2010), so this removes
+#     second-degree-or-closer pairs (duplicate/twin, first and second degree).
+#     It replaces an earlier 0.1875, which is a PI_HAT-scale value (the
+#     second/third-degree boundary in Anderson et al. 2010) misapplied to KING
+#     kinship; on the KING scale it removed only first-degree-or-closer pairs.
 #   Reporting cutoff: KING kinship coefficient >= 0.0442
 #     This also reports weaker pair categories for teaching/review.
 #   PI_HAT reporting cutoff: PI_HAT >= 0.0884
@@ -41,11 +46,11 @@
 #
 # METHOD:
 #   1. LD-prune variants (keep ~30K for kinship inference; too many cause noise)
-#   2. Run PLINK2 --king-cutoff 0.1875 as a standard reference check
+#   2. Run PLINK2 --king-cutoff 0.0884 as a standard reference check
 #   3. Run PLINK1.9 --genome as a PI_HAT teaching/comparison report
 #   4. Create an annotated KING pair table and category summary
 #   5. Compare KING kinship and PI_HAT for QC review
-#   6. Create a phenotype-aware removal list from KING pairs above 0.1875
+#   6. Create a phenotype-aware removal list from KING pairs above 0.0884
 #   7. Prefer removing controls over cases in case-control related pairs
 #
 # NOTES:
@@ -73,7 +78,7 @@ DATASET_INPUT="${2:-results/qc}"
 DATASET_NAME="pdac_demo"
 OUT_DIR="${3:-results/qc}"
 PHENOTYPE_FILE="${4:-demo_data/phenotype.txt}"
-REMOVE_THRESHOLD="${5:-0.1875}"
+REMOVE_THRESHOLD="${5:-0.0884}"
 REPORT_THRESHOLD="${6:-0.0442}"
 PIHAT_REPORT_THRESHOLD="${7:-0.0884}"
 
@@ -182,9 +187,12 @@ echo ""
 #   KING (Kinship-based INference for Gwas) is robust to population stratification.
 #   Computes KING kinship coefficients:
 #   - Unrelated: near 0
+#   - Second-degree relatives: near 0.125
 #   - First-degree relatives: near 0.25
 #   - Duplicates/twins: near 0.5
-#   - Threshold 0.1875 catches duplicate/twin and first-degree relationships
+#   - Inference boundaries: 0.354 (duplicate/twin), 0.177 (first degree),
+#     0.0884 (second degree), 0.0442 (third degree)
+#   - Threshold 0.0884 catches duplicate/twin, first- and second-degree pairs
 #
 echo "✓ Removal threshold: KING kinship > ${REMOVE_THRESHOLD}"
 echo "✓ Reporting threshold: KING kinship >= ${REPORT_THRESHOLD}"

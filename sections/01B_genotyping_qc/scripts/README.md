@@ -12,7 +12,7 @@ This folder contains annotated scripts for the **full sample and variant-level Q
 | 4 | `04_heterozygosity.sh` | Remove contamination/outliers | Dataset from 03 | het outliers list, plots | F ± 3 SD |
 | 5 | `05_variant_callrate.sh` | Remove low-genotype variants | Dataset from 04 | filtered variants | --geno 0.05 |
 | 6 | `06_hardy_weinberg.sh` | Remove HWE-deviant variants | Dataset from 05 | HWE filtered (controls) | p > 1e-6 |
-| 7 | `07_relatedness.sh` | Prune related samples (KING) | Dataset from 06 | phenotype-aware pruned samples list | KING kinship > 0.1875 |
+| 7 | `07_relatedness.sh` | Prune related samples (KING) | Dataset from 06 | phenotype-aware pruned samples list | KING kinship > 0.0884 |
 | 8 | `08_maf_filter.sh` | Apply MAF threshold (context-dependent) | Dataset from 07 | final variants | --maf 0.01 (PDAC) |
 | 9 | `09_qc_summary.sh` + `09_qc_report.R` | Summarize QC impact | All datasets | combined PDF report, count table, text summary | — |
 
@@ -93,8 +93,8 @@ results/qc/pdac_demo_03_sexcheck.sexcheck — sex concordance check
 results/qc/pdac_demo_04_het_outliers.txt — list of het outliers to remove
 results/qc/pdac_demo_06_hwe.hardy      — Hardy-Weinberg p-values
 results/qc/pdac_demo_06_hwe_pvalue_distribution.png — HWE p-value histogram
-results/qc/pdac_demo_07_king_cutoff.king.cutoff.in.id — PLINK2 --king-cutoff 0.1875 keep list
-results/qc/pdac_demo_07_king_cutoff.king.cutoff.out.id — PLINK2 --king-cutoff 0.1875 removal list
+results/qc/pdac_demo_07_king_cutoff.king.cutoff.in.id — PLINK2 --king-cutoff 0.0884 keep list
+results/qc/pdac_demo_07_king_cutoff.king.cutoff.out.id — PLINK2 --king-cutoff 0.0884 removal list
 results/qc/pdac_demo_07_ibd_pi_hat.genome — PLINK1.9 --genome PI_HAT report
 results/qc/pdac_demo_07_ibd_pi_hat_annotated.tsv — PI_HAT pairs with category labels
 results/qc/pdac_demo_07_ibd_pi_hat_summary.tsv — PI_HAT relationship category counts
@@ -123,6 +123,6 @@ For **pancreatic cancer GWAS**:
 - Use **low MAF threshold** (0.01) to retain signal from rare variants
 - Separate HWE p-values for cases and controls (cases may deviate due to disease association)
 - Prefer removing controls over cases during relatedness pruning when a related pair is case-control
-- Use KING kinship >0.1875 for final removal, while also reporting PLINK1.9 PI_HAT for teaching and review
+- Use KING kinship >0.0884 (second-degree or closer) for final removal, while also reporting PLINK1.9 PI_HAT for teaching and review
 - Remember that PI_HAT and KING kinship are related but not interchangeable scales
 - Document thresholds and filtering rationale for reproducibility and transparency

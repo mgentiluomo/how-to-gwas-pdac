@@ -396,9 +396,9 @@ line is allowed.
 
 ### KING, PI_HAT, and Thresholds
 
-This step uses LD-pruned variants and KING kinship to find duplicate/twin or first-degree related
-samples. It also runs the older PLINK 1.9 `--genome` command to report `PI_HAT`, which many GWAS
-QC tutorials use for identity-by-descent checks.
+This step uses LD-pruned variants and KING kinship to find duplicate/twin, first-degree and
+second-degree related samples. It also runs the older PLINK 1.9 `--genome` command to report
+`PI_HAT`, which many GWAS QC tutorials use for identity-by-descent checks.
 
 `PI_HAT` and KING kinship are related but not the same scale. In ideal outbred pedigrees,
 `PI_HAT` is roughly twice KING kinship, but real data will not match perfectly. This tutorial
@@ -415,28 +415,36 @@ reports both and uses KING for the final pruning list.
 | First cousins | 3rd | 0.125 | 0.0625 |
 | Identical twins or duplicate DNA sample | - | 1 | 0.5 |
 
-The `0.1875` KING cutoff sits between the expected first-degree value (`0.25`) and second-degree
-value (`0.125`):
+KING infers relationship degree from kinship using boundaries placed at the geometric mean of
+adjacent expected values (Manichaikul et al. 2010):
+
+| KING kinship | Inferred relationship |
+|---|---|
+| `> 0.354` | Duplicate or monozygotic twin |
+| `0.177` to `0.354` | First degree |
+| `0.0884` to `0.177` | Second degree |
+| `0.0442` to `0.0884` | Third degree |
+
+For example, the second/third-degree boundary is:
 
 ```text
-(0.25 + 0.125) / 2 = 0.1875
+sqrt(0.125 * 0.0625) = 0.0884
 ```
 
-That means pairs above `0.1875` are treated as duplicate/twin or first-degree-or-closer for
-pruning. Some tutorials use the nearby geometric-mean cutoff instead:
+This tutorial removes pairs with KING kinship above `0.0884`, that is second-degree-or-closer
+pairs. Pairs between `0.0442` and `0.0884` are reported for review but not removed.
 
-```text
-sqrt(0.25 * 0.125) = 0.177
-```
-
-Both cutoffs try to separate first-degree-or-closer pairs from more distant relatives. Here we use
-`0.1875` because it is common in GWAS QC scripts and easy to explain.
+A value of `0.1875` appears in many GWAS QC scripts. It belongs to the `PI_HAT` scale: it is the
+midpoint between the expected `PI_HAT` of second-degree (`0.25`) and third-degree (`0.125`)
+relatives, the cutoff used by Anderson et al. (2010). Because KING kinship is roughly half of
+`PI_HAT`, applying `0.1875` to KING kinship removes only first-degree-or-closer pairs and keeps
+second-degree relatives in the analysis. The KING equivalent of that `PI_HAT` cutoff is `0.0884`.
 
 ### Rare-Cancer Pruning Rule
 
 Because this is a rare-cancer tutorial, the final pruning list is **phenotype-aware**:
 
-- If a related pair above `0.1875` contains one case and one control, keep the case and remove the control.
+- If a related pair above `0.0884` contains one case and one control, keep the case and remove the control.
 - If both samples have the same phenotype, remove one sample to break the relationship.
 - If a sample appears in many related pairs, removing that sample may resolve multiple pairs at once.
 
@@ -479,20 +487,20 @@ Example pruning diagnostics:
 | Metric | Value |
 |---|---:|
 | Samples before relatedness filter | 1,412 |
-| KING pruning pairs > 0.1875 | 280 |
-| Unique samples in KING pruning pairs | 443 |
-| Relatedness components | 163 |
-| Largest component samples | 6 |
-| PLINK2 `--king-cutoff` removed samples | 166 |
-| Phenotype-aware removed samples | 197 |
-| Phenotype-aware removed percent | 14.0 |
-| Controls removed | 167 |
-| Cases removed | 30 |
+| KING pruning pairs > 0.0884 | [PENDING RERUN] |
+| Unique samples in KING pruning pairs | [PENDING RERUN] |
+| Relatedness components | [PENDING RERUN] |
+| Largest component samples | [PENDING RERUN] |
+| PLINK2 `--king-cutoff` removed samples | [PENDING RERUN] |
+| Phenotype-aware removed samples | [PENDING RERUN] |
+| Phenotype-aware removed percent | [PENDING RERUN] |
+| Controls removed | [PENDING RERUN] |
+| Cases removed | [PENDING RERUN] |
 
 
 ::: {.callout-warning title="Review large relatedness loss"}
-In the demo run, phenotype-aware pruning removed **197 samples**. That is a substantial sample
-loss. If a real cohort loses many samples at this step, inspect `pdac_demo_07_pruning_components.tsv`,
+In the demo run, phenotype-aware pruning removed **[PENDING RERUN] samples**. [PENDING RERUN:
+confirm this is still a substantial sample loss.] If a real cohort loses many samples at this step, inspect `pdac_demo_07_pruning_components.tsv`,
 `pdac_demo_07_relatedness_pruning_diagnostics.tsv`, and
 `pdac_demo_07_removal_decisions.tsv` before continuing.
 :::
@@ -563,7 +571,7 @@ removed.
 | Sample | Sample call rate | `--mind 0.02` | Remove samples with more than 2% missing genotypes. |
 | Sample | Sex check | X chromosome F statistic | Detect sex discordance, swaps, or metadata errors. |
 | Sample | Heterozygosity | Autosomal `F +/- 3 SD` | Remove strong contamination or heterozygosity outliers. |
-| Sample | Relatedness | KING kinship `> 0.1875` | Remove duplicate/twin or first-degree-or-closer related samples. |
+| Sample | Relatedness | KING kinship `> 0.0884` | Remove second-degree-or-closer related samples (duplicate/twin, first and second degree). |
 | Sample | Relatedness pruning strategy | Phenotype-aware | Prefer removing controls over cases in related case-control pairs. |
 | Variant | Variant call rate | `--geno 0.05` | Remove variants missing in more than 5% of samples. |
 | Variant | Hardy-Weinberg equilibrium | `--hwe 1e-6` in controls | Remove variants with strong control-only HWE deviation. |
@@ -635,11 +643,11 @@ The demo run used in this page ended with:
 | Heterozygosity, within ancestry | 1,412 | 430,000 | 20 | 0 |
 | Variant call rate | 1,412 | 421,520 | 0 | 8,480 |
 | Hardy-Weinberg, pooled, diagnostic | 1,412 | 421,520 | 0 | 0 |
-| Relatedness | 1,215 | 421,520 | 197 | 0 |
-| MAF filter | 1,215 | 414,662 | 0 | 6,858 |
-| Hardy-Weinberg, within ancestry (Section 2) | 1,215 | 414,655 | 0 | 7 |
+| Relatedness | [PENDING RERUN] | 421,520 | [PENDING RERUN] | 0 |
+| MAF filter | [PENDING RERUN] | [PENDING RERUN] | 0 | [PENDING RERUN] |
+| Hardy-Weinberg, within ancestry (Section 2) | [PENDING RERUN] | [PENDING RERUN] | 0 | [PENDING RERUN] |
 
-Final retention in the demo run was **83.2% of samples** and **96.4% of variants**.
+Final retention in the demo run was **[PENDING RERUN] of samples** and **[PENDING RERUN] of variants**.
 
 ## PDAC-Specific Notes
 
@@ -669,6 +677,10 @@ The final QC-pass dataset is the starting point for population stratification an
   [Robust relationship inference in genome-wide association studies](https://pubmed.ncbi.nlm.nih.gov/20926424/).
   *Bioinformatics*. 2010;26(22):2867-2873. PMID: 20926424. This is the KING
   relatedness method used for kinship-based pruning.
+- Anderson CA, Pettersson FH, Clarke GM, Cardon LR, Morris AP, Zondervan KT.
+  [Data quality control in genetic case-control association studies](https://pubmed.ncbi.nlm.nih.gov/21085122/).
+  *Nature Protocols*. 2010;5(9):1564-1573. PMID: 21085122. Source of the
+  `PI_HAT > 0.1875` relatedness cutoff, which is on the `PI_HAT` scale.
 - Wigginton JE, Cutler DJ, Abecasis GR. [A note on exact tests of Hardy-Weinberg
   equilibrium](https://pubmed.ncbi.nlm.nih.gov/15789306/). *American Journal of
   Human Genetics*. 2005;76(5):887-893. PMID: 15789306.

@@ -84,7 +84,7 @@ with biobank controls, a saddlepoint-corrected method is required rather than op
 standard asymptotics fail at those ratios.
 :::
 
-The log reports what was actually analysed. On the demonstration data: **219 cases and 392
+The log reports what was actually analysed. On the demonstration data: **[PENDING RERUN] cases and [PENDING RERUN]
 controls**.
 
 ---
@@ -141,7 +141,7 @@ dozen peaks and you may read this plot as a failed analysis. It is not. The phen
 simulated from a **single causal locus** at *ABO* with no polygenic background, so one signal is
 the correct answer and the flat genome is the true one.
 
-The deeper point is the one this guide exists to make. At an effective sample size of 568, the
+The deeper point is the one this guide exists to make. At an effective sample size of [PENDING RERUN], the
 smallest odds ratio detectable with 80% power at genome-wide significance is about 2.3 even for a
 common variant, and it rises steeply as frequency falls. Real cancer susceptibility variants have
 odds ratios between 1.1 and 1.5. A study of this size could not have found them however well it
