@@ -24,6 +24,9 @@ raw_samples    <- as.numeric(qc_counts("Raw data", "samples"))
 raw_variants   <- as.numeric(qc_counts("Raw data", "variants"))
 words <- c("none", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten")
 w <- function(n) if (n <= 10) words[n + 1] else num(n)
+hp  <- function(key) val(S, "pdac_demo_10_het_pooled.tsv", key)
+wa  <- function(key) val(S, "pdac_demo_10_wahlund.tsv", key)
+wb  <- tab(S, "pdac_demo_10_wahlund_bins.tsv")
 ```
 
 Real genotype data is never perfect. Some samples have too many missing calls, some variants are
@@ -271,13 +274,16 @@ results/qc/pdac_demo_04_filt.fam
 
 | | n | mean *F* | SD *F* | outliers |
 |---|---:|---:|---:|---:|
-| Pooled | 1,432 | 0.0683 | 0.0288 | **2** |
+| Pooled | `r num(hp("n"))` | `r hp("mean_F")` | `r hp("sd_F")` | **`r hp("outliers")`** |
 | European | `r num(het["eur","n"])` | `r hs("eur","mean_F")` | `r hs("eur","sd_F")` | `r het["eur","outliers"]` |
 | African | `r num(het["afr","n"])` | `r hs("afr","mean_F")` | `r hs("afr","sd_F")` | `r het["afr","outliers"]` |
 | East Asian | `r num(het["eas","n"])` | `r hs("eas","mean_F")` | `r hs("eas","sd_F")` | `r het["eas","outliers"]` |
 | **Union across groups** | | | | **`r q("Heterozygosity", "samples_lost")`** |
 
-Read the mean before the outlier count. Pooled, *F* averages 0.068; within each group it falls to
+The pooled row uses the *F* that step 01 computed on all `r num(hp("frequency_basis_samples"))` samples, restricted to the
+`r num(hp("n"))` that enter this step (`pdac_demo_10_het_pooled.tsv`, written by step 10).
+
+Read the mean before the outlier count. Pooled, *F* averages `r dec(hp("mean_F"), 3)`; within each group it falls to
 between `r dec(min(het$mean_F), 3)` and `r dec(max(het$mean_F), 3)`, which is what an inbreeding coefficient should be in a randomly mating
 sample. Pooled, the statistic was not measuring inbreeding at all: it was measuring population
 structure, and the width of the band it produced made the filter almost inert.
@@ -380,11 +386,14 @@ detecting structure and starts detecting error.
 This can be checked rather than asserted. Under the Wahlund effect the heterozygote deficit created 
 by pooling equals the variance in allele frequency between the constituent groups, so the inbreeding 
 coefficient of the pooled sample is F and the Hardy-Weinberg test statistic is approximately 
-N F squared. Computing F between the three ancestry groups from allele frequencies alone, with 
-no Hardy-Weinberg test performed, predicts the observed statistic across 415,520 variants with a 
-Pearson correlation of 0.85 and a regression slope of 0.94 against the 1.00 of exact agreement, and
-accounts for 69.6% of its variance. The relationship is a clean dose-response: among the 282,000 variants
-with F below 0.05, eight failures are expected, while essentially all failures arise above 0.10. 
+N F squared. Computing F between the three ancestry groups from the allele frequencies of their
+controls alone, with no Hardy-Weinberg test performed, predicts the observed statistic across
+`r num(wa("variants_compared"))` variants with a Pearson correlation of `r wa("pearson_r")` and a regression slope of
+`r wa("slope")` against the 1.00 of exact agreement, and accounts for `r wa("r_squared_pct")`% of its variance. The
+relationship is a clean dose-response: among the `r num(wb$variants[1])` variants with F below 0.05,
+`r dec(wb$expected_failures_wahlund[1], 0)` failures are expected and `r wb$observed_failures[1]` observed, while
+`r wa("failures_share_fst_ge_0.10_pct")`% of all failures arise at 0.10 or above (step 10,
+`pdac_demo_10_wahlund.tsv` and `pdac_demo_10_wahlund_bins.tsv`). 
 The exclusions produced by the pooled test are therefore a measurement of population structure rather 
 than of genotyping quality, and reporting them as the latter is a category error, not a conservative choice.
 :::
@@ -393,7 +402,7 @@ than of genotyping quality, and reporting them as the latter is a category error
 
 ::: {.callout-warning title="Two conditions, not one"}
 Compute HWE in controls, and compute it within ancestry. Getting the first right and the second
-wrong discards 14,373 variants that have nothing wrong with them, which in a rare-trait study is
+wrong discards `r num(wa("discarded_for_no_reason"))` variants that have nothing wrong with them, which in a rare-trait study is
 power you cannot afford and did not need to lose.
 
 Where discrete ancestry groups cannot be defined, as in admixed cohorts, ancestry-aware tests that

@@ -234,6 +234,9 @@ STEPS=(
   "02_population_stratification/scripts/04_define_analysis_set.sh"
   "02_population_stratification/scripts/05_pca_within_eur.sh"
   "02_population_stratification/scripts/06_hwe_within_ancestry.sh"
+  # Section 1B step 10 reads the within-group Hardy-Weinberg files written
+  # just above, so it runs here rather than with the rest of Section 1B.
+  "01B_genotyping_qc/scripts/10_pooled_diagnostics.R"
 
   "04A_association_binary/scripts/01_make_covariates.R"
   "04A_association_binary/scripts/02_association.sh"
