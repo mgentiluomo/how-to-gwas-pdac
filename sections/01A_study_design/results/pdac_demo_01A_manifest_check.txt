@@ -1,8 +1,8 @@
 Manifest check
-Generated: 2026-07-27 15:04:19
+Generated: 2026-11-22 17:50:11
 
-Report:   /home/claude/gwas/example_data/DEMO001_final_report.csv
-Manifest: example_data/example_manifest.csv
+Report:   sections/01A_study_design/example_data/DEMO001_final_report.csv
+Manifest: sections/01A_study_design/example_data/example_manifest.csv
 
 1. PRODUCT
    report header 'Content':            DEMO-ARRAY-v1_A1.bpm

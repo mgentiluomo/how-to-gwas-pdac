@@ -1,5 +1,5 @@
 GenCall score summary
-File: example_data/DEMO001_final_report.csv
+File: sections/01A_study_design/example_data/DEMO001_final_report.csv
 
 Calls in file:        7998
 Median GC:            0.7301
