@@ -1,0 +1,67 @@
+# Figures that earlier runs put on the pages and later runs superseded.
+# check_pending_rerun.sh fails if any of them is still present.
+#
+# Columns, tab-separated:
+#   page    shell glob, relative to the project root
+#   mode    F = fixed string, E = extended regular expression (grep -E)
+#   value   the superseded text
+#   note    what it was and what replaced it
+#
+# Scope each entry to the page it was on, so that a short number does not
+# raise a false alarm elsewhere. Add an entry whenever a rerun changes a figure
+# that was ever typed into a page.
+page	mode	value	note
+sections/01B_genotyping_qc/*.qmd	F	6,858	MAF filter variants lost, July run
+sections/01B_genotyping_qc/*.qmd	F	414,662	variants after MAF filter, July run
+sections/01B_genotyping_qc/*.qmd	F	1,215	samples after QC, July run
+sections/02_population_stratification/*.qmd	F	222,338	LD-pruned variants kept, July run
+sections/02_population_stratification/*.qmd	F	192,324	LD-pruned variants removed, July run
+sections/02_population_stratification/*.qmd	F	47.7%	PC1 variance, July run
+sections/02_population_stratification/*.qmd	F	38.3%	PC2 variance, July run
+sections/02_population_stratification/*.qmd	F	23.9%	within-EUR PC1 variance, July run
+sections/02_population_stratification/*.qmd	F	11.8%	within-EUR PC2 variance, July run
+sections/02_population_stratification/*.qmd	F	1.016	lambda, July run
+sections/02_population_stratification/*.qmd	E	\|\s*149\s*\|	AFR controls tested for HWE, July run
+sections/02_population_stratification/*.qmd	E	\|\s*176\s*\|	EAS controls tested for HWE, July run
+sections/02_population_stratification/*.qmd	F	almost half is expected	pruning share, now more than half
+sections/03B_statistical_power/*.qmd	F	1,162	combined N_eff, July run (now 1,160)
+sections/03B_statistical_power/*.qmd	F	28.6%	TERT power across strata, July run
+sections/03B_statistical_power/*.qmd	F	1.4 × 10⁻⁹	lead P, July run
+sections/03B_statistical_power/*.qmd	F	4.4 × 10⁻⁹	causal P, July run
+sections/03B_statistical_power/*.qmd	F	frequency 0.61	ABO major-allele frequency, July run
+sections/03B_statistical_power/*.qmd	F	**140**	survival events, July run (whole analysis set)
+sections/03B_statistical_power/*.qmd	F	*P* = 0.02	TERT meta P, July run
+sections/04A_association_binary/*.qmd	F	1.016	lambda, July run
+sections/04A_association_binary/*.qmd	F	1.058	lambda_1000, July run
+sections/04A_association_binary/*.qmd	F	1.4 × 10⁻⁹	lead P, July run
+sections/04A_association_binary/*.qmd	F	4.4 × 10⁻⁹	causal P, July run
+sections/04A_association_binary/*.qmd	F	2,289	Firth count, July run
+sections/04A_association_binary/*.qmd	F	single causal locus	the phenotype has two causal variants
+sections/04A_association_binary/*.qmd	F	no component is associated	PC2 and PC9 are nominally associated
+sections/04A_association_binary/*.qmd	F	11, all in this region	genome-wide significant count, July run
+sections/04A_association_binary/*.qmd	F	**7 variants**	suggestive count, July run
+sections/05_meta_analysis/*.qmd	F	311,478	variants in all strata, July run
+sections/05_meta_analysis/*.qmd	F	5.4 × 10⁻⁹	European-stratum lead P, July run
+sections/05_meta_analysis/*.qmd	F	6.3 × 10⁻²²	meta lead P, July run
+sections/05_meta_analysis/*.qmd	F	1.3 × 10⁻⁸	stability check P, July run
+sections/05_meta_analysis/*.qmd	F	41.5%	causal I2, July run
+sections/05_meta_analysis/*.qmd	F	0.181	causal P_het, July run
+sections/05_meta_analysis/*.qmd	F	4.5%	share with P_het < 0.05, July run
+sections/05_meta_analysis/*.qmd	F	12.7%	share with I2 > 50%, July run
+sections/05_meta_analysis/*.qmd	F	73,581	allele flips, July run
+sections/05_meta_analysis/*.qmd	F	37,738	AFR allele flips, July run
+sections/05_meta_analysis/*.qmd	F	35,843	EAS allele flips, July run
+sections/05_meta_analysis/*.qmd	F	1,916	strand-ambiguous variants, July run
+sections/05_meta_analysis/*.qmd	F	fewer than 320	strata are 286 to 611
+sections/05_meta_analysis/*.qmd	F	Thirteen orders	gain at the causal variant, July run
+sections/05_meta_analysis/*.qmd	F	highest heterogeneity	the causal variant no longer has the highest I2
+sections/06_finemapping_annotation/*.qmd	F	41.5%	causal I2, July run
+sections/06_finemapping_annotation/*.qmd	F	than 320 individuals	strata are 286 to 611
+sections/06_finemapping_annotation/*.qmd	F	posterior probability 0.24	top PP, July run
+sections/06_finemapping_annotation/*.qmd	F	**0.43**	combined top PP, July run
+sections/06_finemapping_annotation/*.qmd	F	nearly doubles	causal posterior rises 0.13 to 0.37
+sections/06_finemapping_annotation/*.qmd	F	**highest**	the causal variant no longer has the highest I2
+sections/07_linkage_disequilibrium/*.qmd	E	\b288\b	AFR individuals, July run (now 286)
+sections/07_linkage_disequilibrium/*.qmd	E	\b608\b	EUR individuals, July run (now 611)
+sections/07_linkage_disequilibrium/*.qmd	F	0.272	EUR mean r2 0-10 kb, July run
+sections/07_linkage_disequilibrium/*.qmd	F	0.344	EAS mean r2 0-10 kb, July run
