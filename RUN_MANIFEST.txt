@@ -1,11 +1,11 @@
 Canonical run manifest
 ======================
 
-started        2026-11-22T18:09:10Z
-finished       2026-11-22T18:19:43Z
+started        2026-11-22T19:43:51Z
+finished       2026-11-22T19:54:28Z
 host           bio-plink3
 user           manuel
-commit         6be6fb29c4896ca6aee7f1212133c74bf12176e1
+commit         78b16558b73e59324fdab7dbd29ef4bf16e8d6da
 branch         main
 data release   v0.3-data
 steps          41
