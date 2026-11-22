@@ -56,6 +56,11 @@ sections/**/results/*.tsv.gz
 sections/**/results/*.vcor
 sections/**/results/pdac_demo_07_ibd_pi_hat_annotated.tsv
 sections/**/results/pdac_demo_07_king_vs_pihat_comparison.tsv
+# Section 4B: genome-wide Cox table (~36 MB). The page uses the summary, top
+# hits, lambda and the 5,000-variant calibration subset, which are committed.
+sections/**/results/pdac_demo_04B_cox.tsv
+# Section 4C: REGENIE step 2 genome-wide output (~35 MB each).
+sections/**/results/*.regenie
 
 # Checkpoint bundles: release artefacts built by scripts/dev/make_checkpoints.sh,
 # distributed as tagged releases rather than committed.
