@@ -91,16 +91,34 @@ est$or <- exp(est$beta)
 est$lo <- exp(est$beta - 1.96 * est$se)
 est$hi <- exp(est$beta + 1.96 * est$se)
 
+# The simulated truth for the plotted variant, read from the released truth
+# table rather than from a constant, and drawn only when the plotted variant is
+# itself a causal variant. An earlier version of this script drew a line at a
+# value the released data do not contain, labelled it the truth, and put it
+# outside the plotting range, so the legend described a line nobody could see.
+truth_or <- NA_real_
+if (file.exists("demo_data/truth.tsv")) {
+  tr <- read.delim("demo_data/truth.tsv", stringsAsFactors = FALSE)
+  tr <- tr[grepl(":", tr$variant), ]
+  k <- match(lead$ID, tr$variant)
+  if (!is.na(k)) {
+    # Put the truth on the scale of the plotted estimates. These are per copy
+    # of A1; the generative odds ratio is per copy of the risk allele.
+    truth_or <- tr$generative_OR[k]
+    if (median(est$or) < 1) truth_or <- 1 / truth_or
+  }
+}
+
 png(file.path(out_dir, "pdac_demo_05_forest.png"),
     width = 1700, height = 1000, res = 200)
 par(mar = c(4.5, 10, 3.5, 2))
 yy <- rev(seq_len(nrow(est)))
-xlim <- range(c(est$lo, est$hi, 1)) * c(0.9, 1.05)
+xlim <- range(c(est$lo, est$hi, 1, truth_or), na.rm = TRUE) * c(0.9, 1.05)
 plot(NA, xlim = xlim, ylim = c(0.5, nrow(est) + 0.5), log = "x",
      yaxt = "n", ylab = "", xlab = "Odds ratio (log scale)",
      main = sprintf("%s, by ancestry stratum", lead$ID))
 abline(v = 1, col = "grey60", lty = 3)
-abline(v = 2.40, col = "#009E73", lty = 2)     # the simulated truth
+if (!is.na(truth_or)) abline(v = truth_or, col = "#009E73", lty = 2)
 for (i in seq_len(nrow(est))) {
   y <- yy[i]
   segments(est$lo[i], y, est$hi[i], y, col = est$col[i], lwd = 2)
@@ -110,14 +128,26 @@ for (i in seq_len(nrow(est))) {
 axis(2, at = yy, labels = est$label, las = 1, tick = FALSE, cex.axis = 0.85)
 mtext(sprintf("I2 = %.0f%%,  P heterogeneity = %.2f", lead$I2, lead$P_het),
       side = 3, line = 0.2, cex = 0.8)
-legend("bottomright", bty = "n", cex = 0.75, lty = 2, col = "#009E73",
-       legend = "simulated true OR = 2.40")
+if (!is.na(truth_or)) {
+  legend("bottomright", bty = "n", cex = 0.75, lty = 2, col = "#009E73",
+         legend = sprintf("simulated true OR = %.2f, on the plotted allele", truth_or))
+} else {
+  legend("bottomright", bty = "n", cex = 0.75,
+         legend = sprintf("%s is not one of the simulated causal variants", lead$ID))
+}
 dev.off()
 
 # --- 4. heterogeneity in the top region --------------------------------------
-# The causal variant and its correlated neighbours, coloured by I^2. The pattern
-# is the point: the causal variant behaves the same in every population, while
-# the variants that merely tag it do not, because linkage disequilibrium differs.
+# The lead variant and its correlated neighbours, coloured by I^2. Read the
+# figure rather than expecting a pattern. An earlier version of this comment
+# asserted that the causal variant would show the least heterogeneity and the
+# variants that merely tag it the most, because linkage disequilibrium differs
+# between populations. In the current data it does not hold, and the reason is
+# the more useful lesson: with three strata of a few hundred participants each,
+# I^2 is estimated from very few degrees of freedom, so it describes the scatter
+# of three estimates rather than any property of the variant. Heterogeneity
+# statistics computed on a handful of small strata are not evidence about
+# biology, and a low I^2 is not a credential.
 reg <- d[d$CHROM == lead$CHROM &
          d$POS > lead$POS - 250000 & d$POS < lead$POS + 250000, ]
 reg <- reg[order(reg$POS), ]

@@ -100,9 +100,59 @@ cat("\nWritten:\n")
 cat("  ", file.path(out_dir, "pdac_demo_04A_top_hits.tsv"), "\n")
 cat("  ", file.path(out_dir, "pdac_demo_04A_regional.png"), "\n")
 cat("  ", file.path(out_dir, "pdac_demo_04A_summary.txt"), "\n")
-cat("\nA note on the effect estimate. In this demonstration the true simulated\n")
-cat("odds ratio at the causal variant is 2.40. The value recovered above is\n")
-cat("larger. That is the winner's curse: reading an effect size from the same\n")
-cat("underpowered scan that discovered it selects for upward fluctuations.\n")
-cat("Effect sizes for follow-up should come from replication or from a\n")
-cat("combined analysis, never from discovery alone.\n\n")
+# --- comparison with the simulated truth -------------------------------------
+# Read from the released truth table, not from a constant. A generative
+# parameter written into a script goes stale the moment the phenotype is
+# regenerated, which is how an earlier version of this file came to assert an
+# odds ratio that the released data do not contain, and to draw a conclusion
+# from it that its own output contradicted.
+truth_f <- "demo_data/truth.tsv"
+if (!file.exists(truth_f)) {
+  cat("\ndemo_data/truth.tsv not found, so the comparison with the simulated\n")
+  cat("truth is not shown. Fetch the data release to enable it.\n\n")
+} else {
+  truth <- read.delim(truth_f, stringsAsFactors = FALSE)
+  truth <- truth[grepl(":", truth$variant), ]
+
+  # Express an estimate per copy of the allele that raises risk, so that it is
+  # on the same scale as the generative odds ratio, which is above 1 by
+  # construction. Which allele that is follows from the estimate itself, so
+  # nothing here depends on remembering how the dataset was built.
+  risk_or <- function(or) if (is.na(or)) NA_real_ else max(or, 1 / or)
+
+  cat("\nCOMPARISON WITH THE SIMULATED TRUTH\n\n")
+  for (i in seq_len(nrow(truth))) {
+    v <- truth$variant[i]
+    g <- truth$generative_OR[i]
+    j <- match(v, d$ID)
+    cat(sprintf("  %s  (%s)\n", v, truth$locus[i]))
+    cat(sprintf("    generative OR                 %.2f\n", g))
+    if (is.na(j)) {
+      cat("    not present in this analysis, so there is nothing to compare\n\n")
+      next
+    }
+    cat(sprintf("    PLINK reports A1 = %s, OR %.3f\n", d$A1[j], d$OR[j]))
+    cat(sprintf("    per risk-raising allele       %.2f   (P = %s)\n",
+                risk_or(d$OR[j]), format(d$P[j], digits = 3)))
+    cat(sprintf("    estimate / truth, log odds    %.2f\n",
+                log(risk_or(d$OR[j])) / log(g)))
+    if (identical(v, lead$ID)) {
+      cat("    this variant is the lead\n\n")
+    } else {
+      cat(sprintf("    not the lead: %s is, %.1f kb away\n\n",
+                  lead$ID, abs(d$POS[j] - lead$POS) / 1000))
+    }
+  }
+
+  cat("Two biases act on a discovery estimate, in opposite directions, and both\n")
+  cat("are visible above. Selecting a variant because it passed a significance\n")
+  cat("threshold biases its estimate away from the null, the winner's curse,\n")
+  cat("and that bias shrinks as power rises; where power is high there is\n")
+  cat("little of it to see. Reading the estimate at a lead variant that is a\n")
+  cat("proxy rather than the causal one biases it toward the null instead, in\n")
+  cat("proportion to how incompletely the proxy is correlated with the causal\n")
+  cat("variant. The ratio printed above mixes the two and should not be read as\n")
+  cat("a measure of either. Neither is a reason to reuse a discovery estimate\n")
+  cat("downstream: effect sizes for follow-up come from replication or from a\n")
+  cat("combined analysis, never from discovery alone.\n\n")
+}
