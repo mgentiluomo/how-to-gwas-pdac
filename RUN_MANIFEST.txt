@@ -1,14 +1,14 @@
 Canonical run manifest
 ======================
 
-started        2026-11-22T14:53:18Z
-finished       2026-11-22T15:03:31Z
+started        2026-11-22T17:04:00Z
+finished       2026-11-22T17:29:19Z
 host           bio-plink3
 user           manuel
-commit         f9a21d516d774c86e396c65786941c252cc04761
+commit         c92ee86421066d2dcf80edb86b522ec022add8b8
 branch         main
 data release   v0.3-data
-steps          35
+steps          36
 
 PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025)
 PLINK v1.90b6.25 64-bit (5 Mar 2022)

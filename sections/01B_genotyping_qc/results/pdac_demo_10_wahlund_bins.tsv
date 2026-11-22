@@ -1,0 +1,4 @@
+bin	variants	observed_failures	expected_failures_wahlund	expected_failures_null
+F_ST < 0.05	270363	13	8.2	0.27
+0.05 <= F_ST < 0.10	82521	503	452.9	0.08
+F_ST >= 0.10	56227	14383	16748.1	0.06

@@ -115,8 +115,18 @@ args <- commandArgs(TRUE); out <- args[1]; pages <- args[-1]
 suppressMessages(library(knitr))
 knitr::pat_md(); opts_knit$set(progress = FALSE)
 bad <- 0L
+# Inspect the values the inline expressions produce, not the page text, which
+# may legitimately contain words such as NaN.
+na_vals <- character()
+default_inline <- knit_hooks$get("inline")
+knit_hooks$set(inline = function(x) {
+  if (length(x) == 0L || any(is.na(x)) || any(trimws(as.character(x)) %in% c("NA", "NaN", "Inf", "-Inf", "")))
+    na_vals <<- c(na_vals, paste(format(x), collapse = " "))
+  default_inline(x)
+})
 for (p in pages) {
   o <- file.path(out, paste0(gsub("[/.]", "_", p), ".md"))
+  na_vals <- character()
   owd <- setwd(dirname(p))
   msg <- tryCatch({ suppressMessages(knit(basename(p), output = o, quiet = TRUE, envir = new.env())); NULL },
                   error = function(e) conditionMessage(e))
@@ -126,11 +136,9 @@ for (p in pages) {
   }
   x <- readLines(o, warn = FALSE)
   left <- grep("`r [^`]+`", x)
-  na <- grep("(^|[^[:alnum:]])(NA|NaN|Inf)([^[:alnum:]]|$)", x)
-  na <- setdiff(na, grep("^\\|.*\\| NA \\|", x))   # NA as a table entry is a value
   for (i in left) cat(sprintf("%s\n    unevaluated inline code in output line %d\n", p, i))
-  for (i in na)   cat(sprintf("%s\n    NA/NaN/Inf in output line %d: %s\n", p, i, trimws(x[i])))
-  bad <- bad + length(left) + length(na)
+  for (v in na_vals) cat(sprintf("%s\n    an inline figure evaluated to NA/NaN/Inf or empty: '%s'\n", p, v))
+  bad <- bad + length(left) + length(na_vals)
 }
 quit(status = if (bad > 0L) 1L else 0L)
 RSCRIPT
