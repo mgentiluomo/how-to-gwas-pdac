@@ -21,7 +21,7 @@ produced the published results; do not edit by hand.
 | plink2 | `/usr/bin/plink2` | `47a67647af6c9160c9443f8cbd2df017` |  |
 | plink | `/usr/local/bin/plink19` | `d5f949f706d8ab017cf9a05426e18b3b` | PLINK 1.9 |
 | regenie | `tools/micromamba-root/envs/regenie_env/bin/regenie` | `cca7fc19f2b6aa83106dd96c983df34b` | binary run by the tools/bin/regenie wrapper |
-| metal | not found | | not used by the canonical run |
+| metal | not used | | the meta-analysis in Section 5 is base R; METAL is never called |
 | Rscript | `/usr/bin/Rscript` | `2e423d4fe873986b71010b707d38b2d0` |  |
 
 ## R packages

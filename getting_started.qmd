@@ -7,7 +7,7 @@ description: "Get your computer ready to run the GWAS pipeline"
 This page gets your computer ready and walks you through your **first GWAS QC command**. By the end you will have:
 - Set up a portable project folder
 - Downloaded the demo dataset  
-- Installed the required tools (currently PLINK2, PLINK1.9, METAL, REGENIE, and R)
+- Installed the required tools (currently PLINK2, PLINK1.9, REGENIE, and R)
 - Run your first test script that confirms everything works
 
 ::: {.callout-note title="What you will need"}
@@ -407,7 +407,10 @@ If any file fails verification, the script will tell you which one and suggest r
 
 ## Step 5: Install dependencies {#sec-install}
 
-Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, METAL, REGENIE, and R.
+Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, REGENIE, and R.
+No section uses METAL: the meta-analysis in Section 5 is written out in base R, so that the
+arithmetic can be read rather than trusted. The setup script still downloads METAL for readers who
+want to compare, and nothing in this guide depends on it.
 
 ::: {.panel-tabset}
 
@@ -443,7 +446,7 @@ This script will:
 - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon)
 - Check whether R is available and try to install it if it is missing
 - Download the correct PLINK2 and PLINK1.9 binaries from official sources
-- Download the official precompiled METAL binary for Linux/WSL or macOS
+- Download the official precompiled METAL binary for Linux/WSL or macOS (optional; no section uses it)
 - Install micromamba into `tools/micromamba/`
 - Install REGENIE into a micromamba environment named `regenie_env`
 - Extract and organize command-line tools in `tools/plink2/`, `tools/plink1.9/`, `tools/metal/`, `tools/micromamba/`, and `tools/regenie/`
@@ -458,7 +461,6 @@ Detected: OS=Linux, Architecture=x86_64_avx2
   ✓ R found
   ✓ PLINK2: PLINK v2...
   ✓ PLINK1.9: PLINK v1.9...
-  ✓ METAL
   ✓ REGENIE: regenie v...
 ```
 
@@ -551,7 +553,9 @@ unzip plink_*.zip
 cd ../..
 ```
 
-#### 4. Download METAL
+#### 4. Download METAL (optional)
+
+No section of this guide uses METAL; skip this step unless you want it for your own comparisons.
 
 Visit: <https://csg.sph.umich.edu/abecasis/Metal/download/>
 

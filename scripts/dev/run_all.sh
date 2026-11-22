@@ -203,7 +203,7 @@ EXE_TABLE="$(
   exe_row plink2  "$(resolve plink2)"  ""
   exe_row plink   "$(resolve plink)"   "PLINK 1.9"
   exe_row regenie "$REGENIE_BIN"       "binary run by the tools/bin/regenie wrapper"
-  exe_row metal   "$(resolve metal)"   "not used by the canonical run"
+  printf '| metal | not used | | the meta-analysis in Section 5 is base R; METAL is never called |\n'
   exe_row Rscript "$(resolve Rscript)" ""
 )"
 say ""
