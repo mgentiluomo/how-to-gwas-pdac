@@ -56,3 +56,7 @@ sections/**/results/*.tsv.gz
 sections/**/results/*.vcor
 sections/**/results/pdac_demo_07_ibd_pi_hat_annotated.tsv
 sections/**/results/pdac_demo_07_king_vs_pihat_comparison.tsv
+
+# Checkpoint bundles: release artefacts built by scripts/dev/make_checkpoints.sh,
+# distributed as tagged releases rather than committed.
+/checkpoints/

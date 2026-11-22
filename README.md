@@ -68,7 +68,6 @@ This dataset teaches GWAS under realistic, difficult conditions on purpose, it i
 how-to-gwas-pdac/
 ├── README.md                you are here
 ├── CONTRIBUTING.md          workflow for contributors, branches, PRs, review
-├── PROJECT_STATE.md         what is built, what the canonical run measured, what remains
 ├── RUN_MANIFEST.txt         what the canonical run executed, and from which commit
 ├── LICENSE                  MIT for code, manuscript text CC-BY-4.0
 ├── index.qmd                companion website home page
