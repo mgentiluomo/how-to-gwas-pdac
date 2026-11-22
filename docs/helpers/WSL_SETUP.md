@@ -71,7 +71,7 @@ The short video below shows how to open Ubuntu from Windows Terminal:
 
 ## Basic WSL Preparation
 
-Once you're in the WSL terminal, run these commands **once** to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, METAL, micromamba, and REGENIE are checked or installed later by `bash scripts/dev/tools_setup.sh`.
+Once you're in the WSL terminal, run these commands **once** to prepare Ubuntu. These commands install only the basic utilities needed to download and run the tutorial setup scripts. R, PLINK2, PLINK1.9, micromamba, and REGENIE are checked or installed later by `bash scripts/dev/tools_setup.sh`.
 
 ### Step 1: Update Package Manager
 

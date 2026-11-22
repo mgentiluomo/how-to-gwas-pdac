@@ -11,7 +11,6 @@
 # Creates:
 #   - tools/bin/plink2 (symlink to PLINK2 binary)
 #   - tools/bin/plink  (symlink to PLINK1.9 binary)
-#   - tools/bin/metal  (symlink to METAL binary)
 #   - tools/bin/regenie (wrapper for the micromamba REGENIE environment)
 #   - Checks/install R as a system tool when possible
 #   - scripts/dev/tool_manifest.tsv (tools checked by test.sh)
@@ -36,7 +35,6 @@ NC='\033[0m' # No Color
 mkdir -p tools/bin
 mkdir -p tools/plink2
 mkdir -p tools/plink1.9
-mkdir -p tools/metal
 mkdir -p tools/regenie
 mkdir -p tools/micromamba
 mkdir -p tools/micromamba-root
@@ -216,10 +214,9 @@ check_requirements() {
         echo "  CentOS/RHEL:   sudo yum install -y wget unzip tar bzip2"
         echo "  macOS:         brew install wget unzip bzip2"
         echo ""
-        echo "Alternatively, you can download PLINK2, PLINK1.9, and METAL manually and place them in:"
+        echo "Alternatively, you can download PLINK2 and PLINK1.9 manually and place them in:"
         echo "  • tools/plink2/plink2"
         echo "  • tools/plink1.9/plink"
-        echo "  • tools/metal/metal"
         echo ""
         return 1
     fi
@@ -329,7 +326,6 @@ register_default_tools() {
     # Use project for tools installed into tools/bin/. Use path for system tools such as R.
     register_tool "plink2" "PLINK2" "required" "--version" "Run bash scripts/dev/tools_setup.sh" "project"
     register_tool "plink" "PLINK1.9" "required" "--version" "Run bash scripts/dev/tools_setup.sh" "project"
-    register_tool "metal" "METAL" "required" "-" "Run bash scripts/dev/tools_setup.sh" "project"
     register_tool "regenie" "REGENIE" "required" "--version" "Run bash scripts/dev/tools_setup.sh" "project"
     register_tool "R" "R" "required" "--version" "Install R, then run bash scripts/dev/tools_setup.sh again" "path"
 }
@@ -347,7 +343,7 @@ write_tool_manifest() {
 
 verify_tool_manifest() {
     echo ""
-    echo -e "${BLUE}Step 9: Verifying tools from manifest${NC}"
+    echo -e "${BLUE}Step 8: Verifying tools from manifest${NC}"
     echo ""
 
     local TOOLS_OK=true
@@ -375,7 +371,7 @@ verify_tool_manifest() {
         INSTALL_HINT=${INSTALL_HINT%$'\r'}
         CHECK_SCOPE=${CHECK_SCOPE%$'\r'}
         case "$COMMAND" in
-            plink2|plink|metal|regenie)
+            plink2|plink|regenie)
                 CHECK_SCOPE=${CHECK_SCOPE:-project}
                 ;;
             *)
@@ -614,71 +610,6 @@ install_plink1_9() {
 }
 
 # ============================================================================
-# Download and extract METAL
-# ============================================================================
-install_metal() {
-    local OS=$1
-
-    echo ""
-    echo -e "${BLUE}Step 4: Installing METAL${NC}"
-    echo "  OS: $OS"
-    echo ""
-
-    local URL
-    local FILENAME
-
-    if [[ "$OS" == "Linux" ]]; then
-        FILENAME="Linux-metal.tar.gz"
-        URL="https://csg.sph.umich.edu/abecasis/Metal/download/Linux-metal.tar.gz"
-    elif [[ "$OS" == "macOS" ]]; then
-        FILENAME="Darwin-metal.tar.gz"
-        URL="https://csg.sph.umich.edu/abecasis/Metal/download/Darwin-metal.tar.gz"
-    else
-        echo -e "${RED}✗ Unsupported OS for METAL: $OS${NC}"
-        return 1
-    fi
-
-    echo "  Downloading: $FILENAME"
-    pushd tools/metal >/dev/null
-
-    find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-    if download_file "$URL" "$FILENAME"; then
-        echo -e "  ${GREEN}✓${NC} Downloaded successfully"
-
-        echo "  Extracting..."
-        tar -xzf "$FILENAME"
-        rm "$FILENAME"
-
-        local METAL_BINARY
-        METAL_BINARY="$(find . -type f | while IFS= read -r file; do
-            case "$(basename "$file")" in
-                metal|METAL)
-                    printf '%s\n' "$file"
-                    break
-                    ;;
-            esac
-        done)"
-
-        if [ -n "$METAL_BINARY" ]; then
-            chmod +x "$METAL_BINARY"
-            METAL_BINARY=${METAL_BINARY#./}
-            echo "$METAL_BINARY" > .metal_binary_path
-            echo -e "  ${GREEN}✓${NC} METAL ready"
-        else
-            echo -e "  ${RED}✗${NC} metal binary not found after extraction"
-            popd >/dev/null
-            return 1
-        fi
-    else
-        echo -e "  ${RED}✗${NC} Download failed. Check URL and internet connection."
-        popd >/dev/null
-        return 1
-    fi
-
-    popd >/dev/null
-}
-
-# ============================================================================
 # Download and install micromamba
 # ============================================================================
 detect_micromamba_platform() {
@@ -711,7 +642,7 @@ detect_micromamba_platform() {
 
 install_micromamba() {
     echo ""
-    echo -e "${BLUE}Step 5: Installing micromamba${NC}"
+    echo -e "${BLUE}Step 4: Installing micromamba${NC}"
     echo "  Location: tools/micromamba/"
     echo ""
 
@@ -757,7 +688,7 @@ install_micromamba() {
 # ============================================================================
 install_regenie() {
     echo ""
-    echo -e "${BLUE}Step 6: Installing REGENIE with micromamba${NC}"
+    echo -e "${BLUE}Step 5: Installing REGENIE with micromamba${NC}"
     echo "  Environment: $REGENIE_ENV_NAME"
     echo "  Environment root: tools/micromamba-root/"
     echo ""
@@ -794,22 +725,14 @@ EOF
 # ============================================================================
 create_symlinks() {
     echo ""
-    echo -e "${BLUE}Step 7: Creating symbolic links${NC}"
+    echo -e "${BLUE}Step 6: Creating symbolic links${NC}"
 
     # Remove old symlinks if they exist
-    rm -f tools/bin/plink2 tools/bin/plink tools/bin/metal tools/bin/regenie
+    rm -f tools/bin/plink2 tools/bin/plink tools/bin/regenie
 
     # Create symlinks
     ln -s ../plink2/plink2 tools/bin/plink2
     ln -s ../plink1.9/plink tools/bin/plink
-    if [ -f tools/metal/.metal_binary_path ]; then
-        local METAL_BINARY
-        METAL_BINARY="$(cat tools/metal/.metal_binary_path)"
-        ln -s "../metal/$METAL_BINARY" tools/bin/metal
-    else
-        echo -e "  ${RED}✗${NC} METAL binary path not found"
-        return 1
-    fi
     ln -s ../regenie/regenie tools/bin/regenie
 
     echo -e "  ${GREEN}✓${NC} Symlinks created in tools/bin/"
@@ -820,7 +743,7 @@ create_symlinks() {
 # ============================================================================
 add_to_path() {
     echo ""
-    echo -e "${BLUE}Step 8: Configuring PATH${NC}"
+    echo -e "${BLUE}Step 7: Configuring PATH${NC}"
 
     local TOOLS_BIN="$(cd tools/bin && pwd)"
     local PROFILE_FILE="$HOME/.bashrc"
@@ -875,7 +798,6 @@ main() {
     install_r || exit 1
     install_plink2 "$OS" "$ARCH" || exit 1
     install_plink1_9 "$OS" "$ARCH" || exit 1
-    install_metal "$OS" || exit 1
     install_micromamba || exit 1
     install_regenie || exit 1
 

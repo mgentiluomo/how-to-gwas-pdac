@@ -82,11 +82,9 @@ gwas_tutorial/
 │   ├── bin/                         # Command links used by the tutorial
 │   │   ├── plink
 │   │   ├── plink2
-│   │   ├── metal
 │   │   └── regenie
 │   ├── plink1.9/
 │   ├── plink2/
-│   ├── metal/
 │   ├── micromamba/
 │   ├── micromamba-root/
 │   └── regenie/
@@ -168,7 +166,7 @@ This structure is **fully portable** because:
 | `scripts/01B_genotyping_qc/` | QC pipeline scripts |
 | `scripts/<section>/` | Section scripts copied from `sections/<section>/scripts/` |
 | `demo_data/` | Demo dataset (7 files) |
-| `tools/bin/` | Command links for PLINK1.9, PLINK2, METAL, REGENIE, and future tools |
+| `tools/bin/` | Command links for PLINK1.9, PLINK2, REGENIE, and future tools |
 | `tools/micromamba/` | Project-local micromamba executable |
 | `tools/micromamba-root/` | Project-local environments such as `regenie_env` |
 | `data_processed/` | Intermediate outputs |

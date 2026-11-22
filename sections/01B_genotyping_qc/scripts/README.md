@@ -41,7 +41,7 @@ See [`../../WSL_SETUP.md`](../../WSL_SETUP.md) for detailed Windows/WSL instruct
 
 ### Linux/Mac Users
 
-Run `bash scripts/dev/tools_setup.sh` from the tutorial project root to install/check PLINK2, PLINK1.9, METAL, REGENIE, and R.
+Run `bash scripts/dev/tools_setup.sh` from the tutorial project root to install/check PLINK2, PLINK1.9, REGENIE, and R.
 
 ## Running the Full Pipeline
 

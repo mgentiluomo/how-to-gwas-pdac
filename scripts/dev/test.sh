@@ -124,7 +124,7 @@ if [ -f "$TOOL_MANIFEST" ]; then
         install_hint=${install_hint%$'\r'}
         check_scope=${check_scope%$'\r'}
         case "$tool_command" in
-            plink2|plink|metal|regenie)
+            plink2|plink|regenie)
                 check_scope=${check_scope:-project}
                 ;;
             *)

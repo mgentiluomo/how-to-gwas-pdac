@@ -409,8 +409,7 @@ If any file fails verification, the script will tell you which one and suggest r
 
 Install the required tools for the current tutorial sections. At this stage that means PLINK2, PLINK1.9, REGENIE, and R.
 No section uses METAL: the meta-analysis in Section 5 is written out in base R, so that the
-arithmetic can be read rather than trusted. The setup script still downloads METAL for readers who
-want to compare, and nothing in this guide depends on it.
+arithmetic can be read rather than trusted.
 
 ::: {.panel-tabset}
 
@@ -446,12 +445,11 @@ This script will:
 - Detect your OS and CPU architecture automatically (Linux x86_64/i686, macOS Intel/Apple Silicon)
 - Check whether R is available and try to install it if it is missing
 - Download the correct PLINK2 and PLINK1.9 binaries from official sources
-- Download the official precompiled METAL binary for Linux/WSL or macOS (optional; no section uses it)
 - Install micromamba into `tools/micromamba/`
 - Install REGENIE into a micromamba environment named `regenie_env`
-- Extract and organize command-line tools in `tools/plink2/`, `tools/plink1.9/`, `tools/metal/`, `tools/micromamba/`, and `tools/regenie/`
+- Extract and organize command-line tools in `tools/plink2/`, `tools/plink1.9/`, `tools/micromamba/`, and `tools/regenie/`
 - Create symlinks in `tools/bin/` for easy access
-- Update your PATH so you can run `plink2`, `plink`, `metal`, and `regenie` from anywhere
+- Update your PATH so you can run `plink2`, `plink`, and `regenie` from anywhere
 - Write `scripts/dev/tool_manifest.tsv`, which lists the tools checked by `test.sh`
 - Check for basic helper tools such as `wget`, `unzip`, `tar`, and `bzip2`
 
@@ -553,28 +551,7 @@ unzip plink_*.zip
 cd ../..
 ```
 
-#### 4. Download METAL (optional)
-
-No section of this guide uses METAL; skip this step unless you want it for your own comparisons.
-
-Visit: <https://csg.sph.umich.edu/abecasis/Metal/download/>
-
-Choose the precompiled binary for your system:
-- **Linux/WSL:** `Linux-metal.tar.gz`
-- **macOS:** `Darwin-metal.tar.gz`
-
-Extract it in your tools folder:
-
-```bash
-mkdir -p tools/metal
-cd tools/metal
-# Download the Linux/WSL or macOS archive here
-tar -xzf *-metal.tar.gz
-find . -type f \( -name "metal" -o -name "METAL" \) -exec chmod +x {} \;
-cd ../..
-```
-
-#### 5. Install micromamba and REGENIE
+#### 4. Install micromamba and REGENIE
 
 The automated setup installs micromamba for you. If you are doing this manually, first download micromamba.
 
@@ -618,7 +595,7 @@ EOF
 chmod +x tools/regenie/regenie
 ```
 
-#### 6. Create symbolic links
+#### 5. Create symbolic links
 
 Create convenient shortcuts in `tools/bin/`:
 
@@ -626,12 +603,10 @@ Create convenient shortcuts in `tools/bin/`:
 mkdir -p tools/bin
 ln -s ../plink2/plink2 tools/bin/plink2
 ln -s ../plink1.9/plink tools/bin/plink
-METAL_BIN=$(find tools/metal -type f \( -name "metal" -o -name "METAL" \) | head -n 1)
-ln -s "../../$METAL_BIN" tools/bin/metal
 ln -s ../regenie/regenie tools/bin/regenie
 ```
 
-#### 7. Update PATH
+#### 6. Update PATH
 
 Add the tools folder to your PATH:
 
@@ -677,7 +652,6 @@ You can also check the project-local tool links directly. These commands use `./
 ls -l tools/bin/
 ./tools/bin/plink2 --version
 ./tools/bin/plink --version
-test -x ./tools/bin/metal && echo "METAL executable found: ./tools/bin/metal"
 ./tools/bin/regenie --version
 R --version
 ```
@@ -693,7 +667,7 @@ Most installation problems are caused by the shell not being in the right folder
 | `Could not get lock /var/lib/apt/lists/lock` | Another `apt-get` process is running | Wait, or inspect the process with `ps -fp <PID>` shown in the error |
 | `Unable to locate package r-base` | Package lists are stale, `universe` is disabled, or the Ubuntu release is unusual | See the R commands in the Manual tab; for persistent problems, use an Ubuntu LTS WSL release |
 | `404: command not found` after running a downloaded script | A GitHub 404 page was saved instead of a script | Delete the file and repeat the current download command from this guide |
-| `plink`, `plink2`, `metal`, or `regenie`: command not found | Tools were not installed or `tools/bin` is not on PATH | Run `bash scripts/dev/tools_setup.sh` again, then check `ls tools/bin/` |
+| `plink`, `plink2`, or `regenie`: command not found | Tools were not installed or `tools/bin` is not on PATH | Run `bash scripts/dev/tools_setup.sh` again, then check `ls tools/bin/` |
 | REGENIE or micromamba fails during environment creation | Usually a network, proxy, or conda-channel access problem | Confirm `curl -I https://github.com` works and retry `bash scripts/dev/tools_setup.sh` |
 
 If automatic R installation fails because Ubuntu cannot find `r-base`, enable the `universe` repository and refresh the package list:
@@ -778,7 +752,7 @@ brew install wget
 ```
 :::
 
-::: {.callout-warning collapse="true" title="`plink`, `plink2`, `metal`, or `regenie`: command not found"}
+::: {.callout-warning collapse="true" title="`plink`, `plink2`, or `regenie`: command not found"}
 One of the installed tools is not found in your PATH.
 
 **Solution 1: Run the setup script again**
@@ -796,7 +770,6 @@ If the script completed but PATH isn't set, manually add it:
 # Check if tools exist
 ls tools/bin/plink
 ls tools/bin/plink2
-ls tools/bin/metal
 ls tools/bin/regenie
 
 # Add to current session
@@ -805,7 +778,6 @@ export PATH="$(cd tools/bin && pwd):$PATH"
 # Verify
 plink --version
 plink2 --version
-command -v metal && echo "metal is on PATH"
 regenie --version
 
 ```
@@ -830,7 +802,6 @@ If PATH setup is tricky, use the full path directly:
 ```bash
 ./tools/bin/plink2 --version
 ./tools/bin/plink --version
-test -x ./tools/bin/metal && echo "metal is available"
 ./tools/bin/regenie --version
 ```
 :::
