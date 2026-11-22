@@ -1,59 +1,75 @@
 #!/usr/bin/env Rscript
 
 ################################################################################
-# Section 4B: Association testing — survival (Cox proportional hazards)
+# Section 4B: Association testing, survival (Cox proportional hazards)
 #
 # PURPOSE
 #   Run a genome-wide time-to-event scan in the European case series, using Cox
-#   proportional hazards regression, and establish that the scan is calibrated
-#   before reporting anything from it.
+#   proportional hazards regression, and report how well calibrated the scan
+#   is alongside anything read from it.
 #
 # WHY THIS SECTION EXISTS
 #   Section 03B computes the power available for a survival scan and finds it
-#   very low: with 166 events, the smallest hazard ratio detectable at 80%
-#   power and genome-wide significance is 2.12 at a minor allele frequency of
-#   0.30. Running the scan anyway is not futile, because the point is to show
-#   what an honest underpowered survival analysis looks like and how it should
-#   be reported. A null scan is the expected outcome; an *uncontrolled* null
-#   scan is not the same thing and must not be reported as one.
+#   very low: with the event count of this case series, the smallest hazard
+#   ratio detectable at 80% power and genome-wide significance is above 2 even
+#   at a minor allele frequency of 0.30 (pdac_demo_07_survival_power.txt). The
+#   scan is run anyway to show what an honest underpowered survival analysis
+#   looks like and how it should be reported. In the demonstration data the
+#   scan is null by construction: the simulation gives no variant, and no
+#   covariate, an effect on survival (demo_dataset/scripts/04_simulate_phenotype.R).
 #
-# WHAT CHANGED IN THIS REVISION, AND WHY
-#   The first version of this script reused the principal components built for
-#   Section 4A. Those were estimated across all 610 Europeans, cases and
-#   controls together. This analysis uses the 217 cases only, and the structure
-#   within that subset does not have to lie along the axes estimated in the
-#   larger sample. The consequence was measurable: lambda = 1.12 across the
-#   whole scan.
+# WHAT THE INFLATION IS, AND WHAT IT IS NOT
+#   The primary scan returns a genomic inflation factor above 1 (about 1.11 in
+#   the canonical run of 22 November 2026). An earlier revision of this header
+#   attributed it to confounding, on the grounds that it was flat across
+#   allele frequency and that the Section 4A components were estimated in a
+#   different sample. Diagnostics run on 22 November 2026, on the canonical
+#   run's files, do not support that reading:
 #
-#   Three diagnostics ruled out the alternatives. The Wald and likelihood-ratio
-#   tests agreed to three decimal places (1.2168 against 1.2154 on a 5,000
-#   variant subsample), so the inflation was not an artefact of the Wald
-#   statistic at low event counts. Lambda was flat across the frequency
-#   spectrum (1.121, 1.121, 1.122, 1.110, 1.130 from MAF 0.05 to 0.50), so it
-#   was not the asymptotic approximation failing where information is thin;
-#   that failure mode rises steeply as frequency falls. Flat inflation across
-#   frequency is the signature of confounding.
+#   - The outcome does not depend on ancestry: neither on ancestry group among
+#     all cases nor on the within-set components or the Section 4A ones.
+#   - Permuting (TIME, EVENT) jointly across individuals, which removes any
+#     link between outcome and genotype or structure while keeping both,
+#     leaves lambda where it is: 20 permutations with the primary covariates
+#     give a mean of about 1.10, and the observed value is an ordinary draw
+#     from that distribution. Confounding cannot survive a permutation; this
+#     inflation does.
+#   - Lambda is flat across allele frequency in the permuted scans as well, so
+#     flatness does not distinguish confounding from miscalibration here.
+#   - Without principal components lambda is about 1.03. The Wald,
+#     likelihood-ratio and score tests are inflated together
+#     (02_test_calibration.R).
 #
-#   The components are therefore recomputed here, inside the survival set. That
-#   has to happen in this script rather than upstream, because the survival set
-#   is defined by the intersection of European assignment, case status and
-#   available follow-up, and does not exist as a group before this point.
+#   The inflation is therefore a small-sample property of the Cox tests with
+#   this covariate set (13 parameters at about 13 events per parameter), not
+#   population structure and not signal. Two consequences for reporting:
+#   lambda here must be read against a permutation null rather than against
+#   1.00, and a single lambda from about 240,000 correlated variants is noisy
+#   (the standard deviation across permutations is about 0.03, several times
+#   the value an independence formula gives). Remedies are fewer covariates
+#   or permutation-calibrated thresholds, not more components.
+#   Diagnostic scripts and outputs: ../diagnostics_4B_20261122/ (outside the
+#   repository); summary in the run notes.
+#
+#   The components are still recomputed inside the survival set, because the
+#   survival set is defined by the intersection of European assignment, case
+#   status and available follow-up and does not exist as a group before this
+#   point. The Section 4A components are fitted alongside for comparison.
 #
 # WHAT GOVERNS POWER
-#   The number of events, not the number of individuals. A survival scan on
-#   217 people with 166 events carries roughly the information of a
-#   case-control scan with 166 cases. It also constrains the covariate count:
-#   166 events against 13 parameters is 12.8 events per parameter, at the
-#   conventional floor, which is why the script fits a second model with fewer
-#   components and reports the comparison rather than assuming ten are safe.
+#   The number of events, not the number of individuals. A survival scan
+#   carries roughly the information of a case-control scan with as many cases
+#   as there are events. The event count also constrains the covariate count:
+#   events per parameter are reported in the summary, and the script fits a
+#   second model with fewer components and reports the comparison rather than
+#   assuming ten are affordable.
 #
 # COMPARISONS PERFORMED
-#   1. Components estimated within the 217 cases, against those estimated in
-#      the 610-person Section 4A sample. Same individuals, same variants, same
-#      outcome; only the covariate axes differ. Answers whether the inflation
-#      was caused by borrowing components from a different sample.
+#   1. Components estimated within the survival set, against those estimated
+#      in the Section 4A analysis set. Same individuals, same variants, same
+#      outcome; only the covariate axes differ.
 #   2. Ten components against a smaller number, both within-set. Answers
-#      whether ten can be afforded at 12.8 events per parameter.
+#      whether ten can be afforded at the available events per parameter.
 #   The primary scan is the within-set PCA at N_PC components. The other two
 #   fits are reported alongside it, not instead of it.
 #
