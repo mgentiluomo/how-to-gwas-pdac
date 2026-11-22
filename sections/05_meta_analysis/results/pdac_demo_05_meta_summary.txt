@@ -1,5 +1,5 @@
 Meta-analysis summary
-Generated: 2026-11-22 14:45:20
+Generated: 2026-11-22 15:02:03
 
 Variants meta-analysed: 311843
 Strata: eur, afr, eas
