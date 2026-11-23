@@ -20,7 +20,9 @@
 #      case status and prints the result. Passing all ten components regardless
 #      makes that screen decorative. This script now fits both models:
 #
-#        primary     SEX, AGE, PC1-PC10        the conventional choice
+#        primary     SEX, AGE, PC1-PCk         k chosen by step 01b (the guide's
+#                                              three-part procedure), read from
+#                                              pdac_demo_04A_npc_chosen.txt
 #        screened    SEX, AGE, associated PCs  the components the screen kept
 #
 #      Neither is automatically correct. Ten components in a few hundred
@@ -92,7 +94,18 @@ IN="${1:-results/pca/pdac_demo_02_hwe_filt}"
 KEEP="${2:-results/pca/pdac_demo_02_eur_keep.txt}"
 PHENO="${3:-demo_data/phenotype.txt}"
 OUT_DIR="${4:-results/assoc}"
-NPC_PRIMARY="${5:-10}"
+# Number of components of the primary model: argument 5 if given, otherwise
+# the number chosen by step 01b. No silent default: if neither exists, stop.
+NPC_CHOSEN_FILE="${OUT_DIR}/pdac_demo_04A_npc_chosen.txt"
+if [ -n "${5:-}" ]; then
+  NPC_PRIMARY="$5"
+elif [ -s "$NPC_CHOSEN_FILE" ]; then
+  NPC_PRIMARY=$(awk '$1 == "chosen_n_pcs" { print $2 }' "$NPC_CHOSEN_FILE")
+else
+  echo "X number of components not given and ${NPC_CHOSEN_FILE} missing: run 01b_choose_n_pcs.R" >&2
+  exit 1
+fi
+echo "Primary model: SEX, AGE and ${NPC_PRIMARY} components"
 COVAR="${OUT_DIR}/pdac_demo_04A_covar.txt"
 SCREEN="${OUT_DIR}/pdac_demo_04A_pc_screen.tsv"
 OUT_PRIMARY="${OUT_DIR}/pdac_demo_04A_gwas"

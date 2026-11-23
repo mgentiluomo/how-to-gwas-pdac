@@ -121,7 +121,7 @@ plink2 \
   --bfile "$IN" \
   --keep "$KEEP" \
   --extract "${PRUNE}.prune.in" \
-  --pca 10 \
+  --pca 20 \
   --out "$OUT_PREFIX"
 
 # A scree plot for the within-group PCA. Compare it with the one from Step 03:
@@ -150,9 +150,9 @@ echo "ancestry, and the comparison is worth recording."
 echo ""
 echo "How many components to carry forward is decided in Section 4A, from this"
 echo "scree plot, from testing each component against case status, and from"
-echo "checking that the results are stable across a range of counts. Note that"
-echo "--pca 10 above caps extraction at ten components: raise it if the"
-echo "sensitivity check calls for comparing 5, 10 and 20."
+echo "checking that the results are stable across 2, 5, 10 and 20 components"
+echo "(04A step 01b). Twenty are extracted here so that the comparison can be"
+echo "made; the variance shares above are shares of those twenty."
 echo ""
 echo "=== NEXT STEP ==="
 echo ""

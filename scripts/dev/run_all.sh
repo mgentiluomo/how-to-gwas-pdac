@@ -322,6 +322,9 @@ STEPS=(
   "01B_genotyping_qc/scripts/10_pooled_diagnostics.R"
 
   "04A_association_binary/scripts/01_make_covariates.R"
+  # Number of components: scree, association with status, stability at
+  # 2/5/10/20. Steps 02, 06 and Section 5 (European stratum) read the choice.
+  "04A_association_binary/scripts/01b_choose_n_pcs.R"
   "04A_association_binary/scripts/02_association.sh"
   "04A_association_binary/scripts/03_qq_lambda.R"
   "04A_association_binary/scripts/04_manhattan.R"
@@ -357,6 +360,11 @@ STEPS=(
   "06_finemapping_annotation/scripts/01_region_and_ld.sh"
   "06_finemapping_annotation/scripts/02_finemap_abf.R"
   "06_finemapping_annotation/scripts/03_finemap_plots.R"
+  # Conditional analysis on the ABO lead (individual genotypes), and SuSiE
+  # with in-sample LD (L = 5) as a comparison with the ABF. susieR is loaded
+  # from its own library (SUSIE_LIB); the step records it if unavailable.
+  "06_finemapping_annotation/scripts/04_conditional.R"
+  "06_finemapping_annotation/scripts/05_susie.R"
 
   "07_linkage_disequilibrium/scripts/01_ld_decay.sh"
 )
@@ -448,6 +456,8 @@ FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo "steps          ${#STEPS[@]}"
   echo "4B permutation null   n_perm $GWAS_4B_N_PERM   seed $GWAS_4B_PERM_SEED"
   echo "long-range LD regions data_processed/highLD_b38.bed, md5 $LRLD_MD5 (scripts/dev/make_lrld_bed.sh)"
+  echo "susieR (06 step 05, own library) $(Rscript -e 'l <- Sys.getenv("SUSIE_LIB", path.expand("~/R/susie-lib-4.5")); if (dir.exists(l)) .libPaths(c(l, .libPaths())); cat(tryCatch(paste(as.character(packageVersion("susieR")), "from", dirname(system.file(package = "susieR"))), error = function(e) "not available: step 05 skipped"))' 2>/dev/null)"
+  echo "4A components chosen  $(awk '$1 == "chosen_n_pcs" { print $2 }' results/assoc/pdac_demo_04A_npc_chosen.txt 2>/dev/null) (04A step 01b)"
   echo
   echo "$PLINK_V"
   echo "$PLINK1_V"

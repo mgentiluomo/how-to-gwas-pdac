@@ -82,7 +82,13 @@ PRUNE_MAF="${7:-0.05}"
 # holding the current user's Unix group IDs; assigning to it fails silently and
 # the loop below would iterate over a group ID instead of an ancestry label.
 STRATA="eur afr eas"
-NPC=5   # see the note below
+NPC_OTHER=5   # African and East Asian strata; see the note below
+NPC_CHOSEN_FILE="results/assoc/pdac_demo_04A_npc_chosen.txt"
+if [ ! -s "$NPC_CHOSEN_FILE" ]; then
+  echo "X ${NPC_CHOSEN_FILE} missing: run 04A step 01b first" >&2
+  exit 1
+fi
+NPC_EUR=$(awk '$1 == "chosen_n_pcs" { print $2 }' "$NPC_CHOSEN_FILE")
 
 mkdir -p "$OUT_DIR"
 
@@ -128,16 +134,16 @@ COUNTS="${OUT_DIR}/pdac_demo_05_strata_counts.tsv"
 echo -e "stratum\tindividuals\tcases\tcontrols\teffective_n\tpca_variants" > "$COUNTS"
 
 # A note on the number of components.
-#   Section 4A fits the European stratum, of about 600 individuals, with ten
-#   components and again with the subset that its screen retained. The African
-#   and East Asian strata here have fewer than 320 each. Ten components
-#   estimated in 300 people is a large number of parameters for the information
-#   available, and over-adjustment costs power. Five is used for every stratum,
-#   so that the strata are treated identically and the meta-analysis combines
-#   like with like. Step 03 reports the inflation factor per stratum, which is
-#   the check that five was enough.
+#   The European stratum uses the number chosen in Section 4A (step 01b, the
+#   guide's three-part procedure), so that the stratum and the primary scan
+#   are adjusted alike. The African and East Asian strata have fewer than 320
+#   individuals each and no such procedure was run for them; they use five,
+#   a fixed choice of ours, because many components estimated in 300 people
+#   cost power. Step 03 reports the inflation factor per stratum, which is the
+#   check that five was enough there.
 
 for G in $STRATA; do
+  if [ "$G" = "eur" ]; then NPC=$NPC_EUR; else NPC=$NPC_OTHER; fi
   echo ""
   echo "############################################################"
   echo "###  Stratum: ${G}"

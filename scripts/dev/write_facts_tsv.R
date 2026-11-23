@@ -57,6 +57,8 @@ add("run.steps", mget1("^steps +"), "RUN_MANIFEST.txt")
 pl <- mget1("^4B permutation null +")
 add("run.4b_n_perm", sub(".*n_perm +([0-9]+).*", "\\1", pl), "RUN_MANIFEST.txt")
 add("run.4b_perm_seed", sub(".*seed +([0-9]+).*", "\\1", pl), "RUN_MANIFEST.txt")
+add("run.susier", mget1("^susieR "), "RUN_MANIFEST.txt")
+add("run.4a_components_chosen", sub(" .*", "", mget1("^4A components chosen +")), "RUN_MANIFEST.txt")
 add("run.lrld_bed_md5", sub(".*md5 ([0-9a-f]{32}).*", "\\1", mget1("^long-range LD regions ")), "RUN_MANIFEST.txt")
 add("run.plink2_version", grep("^PLINK v2", man, value = TRUE)[1], "RUN_MANIFEST.txt")
 add("run.plink19_version", grep("^PLINK v1", man, value = TRUE)[1], "RUN_MANIFEST.txt")
@@ -81,6 +83,8 @@ tables <- list(
   list("pca",  S("02_population_stratification", "pdac_demo_02_pca_variance.tsv"), "rows", NA),
   list("power", S("03B_statistical_power", "pdac_demo_07_power_table.tsv"), "rows", "MAF"),
   list("assoc", S("04A_association_binary", "pdac_demo_04A_lambda.tsv"), "kv"),
+  list("assoc", S("04A_association_binary", "pdac_demo_04A_npc_scans.tsv"), "rows", "n_pcs"),
+  list("assoc", S("04A_association_binary", "pdac_demo_04A_npc_criteria.tsv"), "kv"),
   list("assoc", S("04A_association_binary", "pdac_demo_04A_pc_model_comparison.tsv"), "rows", NA),
   list("assoc", S("04A_association_binary", "pdac_demo_04A_sens_relatedness.tsv"), "rows", "rule"),
   list("assoc", S("04A_association_binary", "pdac_demo_04A_sens_prune_r2.tsv"), "rows", "r2"),
@@ -93,17 +97,27 @@ tables <- list(
   list("surv", S("04B_association_survival", "pdac_demo_04B_ancestry_dependence.tsv"), "rows", "test"),
   list("surv", S("04B_association_survival", "pdac_demo_04B_ancestry_dependence_groups.tsv"), "rows", "group"),
   list("regenie", S("04C_association_other", "pdac_demo_regenie_comparison.tsv"), "rows", "analysis"),
-  list("meta", S("05_meta_analysis", "pdac_demo_05_strata_counts.tsv"), "rows", "stratum")
+  list("meta", S("05_meta_analysis", "pdac_demo_05_strata_counts.tsv"), "rows", "stratum"),
+  list("finemap", S("06_finemapping_annotation", "pdac_demo_06_conditional.tsv"), "rows", "conditioned_on"),
+  list("finemap", S("06_finemapping_annotation", "pdac_demo_06_susie_summary.tsv"), "kv", optional = TRUE),
+  list("finemap", S("06_finemapping_annotation", "pdac_demo_06_susie_cs.tsv"), "rows", "cs", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_power.tsv"), "rows", c("locus", "analysis"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_winners_curse.tsv"), "rows", c("locus", "analysis"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_finemap.tsv"), "rows", c("locus", "analysis"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_i2.tsv"), "rows", "locus", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_lambda_summary.tsv"), "rows", "lambda", optional = TRUE)
 )
 for (t in tables) {
-  sec <- t[[1]]; f <- t[[2]]; need(f)
+  sec <- t[[1]]; f <- t[[2]]
+  if (!file.exists(f) && isTRUE(t$optional)) { message("optional table absent, no keys: ", f); next }
+  need(f)
   d <- rd(f); stem <- san(sub("^pdac_demo_", "", sub("\\.tsv$", "", basename(f))))
   if (t[[3]] == "kv") {
     for (i in seq_len(nrow(d))) add(paste(sec, stem, san(d[i, 1]), sep = "."), d[i, 2], f)
   } else {
-    idc <- if (is.na(t[[4]])) names(d)[1] else t[[4]]
+    idc <- if (is.na(t[[4]][1])) names(d)[1] else t[[4]]
     for (i in seq_len(nrow(d))) for (cn in setdiff(names(d), idc))
-      add(paste(sec, stem, san(d[i, idc]), san(cn), sep = "."), d[i, cn], f)
+      add(paste(sec, stem, paste(san(unlist(d[i, idc])), collapse = "."), san(cn), sep = "."), d[i, cn], f)
   }
 }
 
