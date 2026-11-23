@@ -1,5 +1,5 @@
 Association summary, European analysis set
-Generated: 2026-11-22 19:46:17
+Generated: 2026-11-23 11:13:32
 
 Cases: 219   Controls: 392
 Variants tested: 405004

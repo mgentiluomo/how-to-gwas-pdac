@@ -1,5 +1,5 @@
 Power for a time-to-event scan
-Generated: 2026-11-22 19:53:37
+Generated: 2026-11-23 14:40:43
 
 Restricted to the European analysis set.
   individuals with survival information: 219

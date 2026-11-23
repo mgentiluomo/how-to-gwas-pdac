@@ -1,5 +1,5 @@
 Cox proportional hazards survival scan
-Generated: 2026-11-22 19:46:20
+Generated: 2026-11-23 11:13:35
 
 ANALYSIS SET
   European cases with follow-up, sex and age: 219
@@ -33,23 +33,26 @@ COVARIATE COMPARISON
   within-set PCs, PC1-PC5              8 par   20.9 ev/par  lambda 1.0679  suggestive 8
   Section 4A PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1321  suggestive 9
 
-  The two sets of components leave similar inflation, so borrowing them
-  from Section 4A was not the source of the problem. If lambda remains
-  above about 1.05, look elsewhere: a frequency floor set by events
-  rather than by sample size, or cryptic relatedness within the cases.
+  The two sets of components give similar lambdas, so borrowing them
+  from Section 4A is not the source of any inflation. Read lambda against
+  the permutation null (04_permutation_null.R) before attributing it to
+  structure: at this event count the Cox tests are inflated under the null.
 
 HOW TO READ THIS SCAN
   Section 03B gives the detectable effect sizes for 167 events. A null
   result at this event count is the expected outcome, not a failure of the
   analysis. But a null scan and an uncontrolled scan are different things:
-  an excess of suggestive results is only interpretable once lambda is near
-  one. Report the event count, the covariates, lambda and the minimum
+  lambda and the suggestive count are interpretable only against the lambda
+  this test gives when the null holds by construction, which
+  04_permutation_null.R measures by permuting the outcome. Report the event
+  count, the covariates, lambda, its permutation null and the minimum
   detectable hazard ratio together, so that a reader can tell an
   uninformative scan from a negative one.
 
-  WARNING: lambda is 1.113. The suggestive count above is
-  not yet interpretable as signal. Resolve the inflation before reporting.
+  NOTE: lambda is 1.113. Do not read it against 1.00: compare
+  it with the permutation null in pdac_demo_04B_perm_summary.txt
+  (04_permutation_null.R) before reading the suggestive count as signal.
 
 RESOURCES USED
   cores: 31 (detectCores)   chunk: 25000 variants
-  elapsed: 3.6 min
+  elapsed: 3.5 min

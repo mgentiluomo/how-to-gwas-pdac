@@ -1,0 +1,18 @@
+SECTION 4B: PERMUTATION NULL OF THE COX SCAN
+  permutations: 100   seed: 20261122   (canonical settings)
+  survival set: 219 individuals, 167 events; 239881 variants (MAF >= 0.05 within the set)
+  validation: refitted primary scan matches 01_cox_survival.R on 239881 of 239881 variants, max |P difference| 5.55e-16
+
+  primary observed lambda 1.1131 | permutation null: mean 1.1013, sd 0.0268, range 1.0299 to 1.1745
+          32 of 100 permutations at or above the observed value; empirical P 0.3267
+  no_pc   observed lambda 1.0300 | permutation null: mean 1.0242, sd 0.0163, range 0.9786 to 1.0685
+          37 of 100 permutations at or above the observed value; empirical P 0.3762
+
+HOW TO READ THIS
+  The permuted outcome carries no confounding and no signal, so the
+  permutation mean is the lambda this test gives under the null with this
+  covariate set. Read the observed lambda against it, not against 1.00.
+  The standard deviation across permutations is the noise of a single
+  lambda from these correlated variants.
+
+  elapsed: 198.8 min on 32 cores
