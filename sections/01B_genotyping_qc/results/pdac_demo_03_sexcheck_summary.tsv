@@ -1,0 +1,11 @@
+quantity	value
+max_female_xf (convention, PLINK 1.9 default)	0.2
+min_male_xf (convention, PLINK 1.9 default)	0.8
+reported males	736
+reported females	700
+reported males with F >= min_male_xf	735
+reported females with F <= max_female_xf	697
+samples with F between the thresholds (no call)	0
+lowest F among reported males called male	1.000
+highest F among reported females called female	0.064
+discordant (STATUS PROBLEM)	4

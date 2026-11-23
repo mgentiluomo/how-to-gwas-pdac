@@ -1,0 +1,4 @@
+conditioned_on	n_pcs	variants_tested	variants_no_p	min_p	min_p_id	n_p_lt_5e8	n_p_lt_1e5	n_p_lt_0.001	causal_p	lead_p
+none	2	204	3	2e-09	9:133266804:G:T	11	13	22	5.09e-09	2e-09
+lead 9:133266804:G:T	2	201	5	0.0152	9:133533953:A:G	0	0	0	NA (VIF_TOO_HIGH)	NA
+causal 9:133273682:A:T	2	201	5	0.0162	9:133532712:A:G	0	0	0	NA	NA (VIF_TOO_HIGH)

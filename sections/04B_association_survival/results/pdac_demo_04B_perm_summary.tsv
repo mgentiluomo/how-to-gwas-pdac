@@ -1,3 +1,3 @@
 model	n_perm	seed	lambda_observed	perm_mean	perm_sd	perm_min	perm_max	n_perm_at_or_above_observed	empirical_P
-primary	100	20261122	1.1131	1.1013	0.0268	1.0299	1.1745	32	0.3267
+primary	100	20261122	1.1143	1.1013	0.0265	1.0332	1.1712	30	0.3069
 no_pc	100	20261122	1.03	1.0242	0.0163	0.9786	1.0685	37	0.3762

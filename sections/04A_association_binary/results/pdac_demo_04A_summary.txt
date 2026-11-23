@@ -1,16 +1,16 @@
 Association summary, European analysis set
-Generated: 2026-11-23 11:13:32
+Generated: 2026-11-23 14:51:00
 
 Cases: 219   Controls: 392
 Variants tested: 405004
-lambda GC: 1.0199   lambda_1000: 1.0709
+lambda GC: 1.006   lambda_1000: 1.0212
 
-P < 5e-8: 10 variants
-P < 1e-5: 14 variants
+P < 5e-8: 11 variants
+P < 1e-5: 15 variants
 
 Lead variant: 9:133266804:G:T
   effect allele: T   frequency: 0.3855
-  OR: 0.415 (95% CI 0.312 to 0.553)
-  P:  1.753e-09
+  OR: 0.429 (95% CI 0.325 to 0.566)
+  P:  1.998e-09
 
 Variants within 250 kb of the lead variant: 142

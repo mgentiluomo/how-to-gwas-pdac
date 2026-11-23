@@ -1,0 +1,22 @@
+SECTION 4A: SENSITIVITY OF THE PRIMARY SCAN TO TWO PIPELINE CHOICES
+
+validation: baseline (phenotype-aware pruning, r2 0.2) against the canonical run
+  lambda 1.0060 against 1.0060; ABO P 5.09e-09 against 5.09e-09; eigenvalues max diff 0 pooled, 0 European
+  reproduced
+
+1. RELATEDNESS RULE, KING kinship > 0.0884 in both
+  phenotype-aware (pipeline)               removed 199 (30 cases, 169 controls); European set 219 cases, 392 controls, N_eff 562.0;
+                                           lambda 1.0060, lambda_1000 1.0212; ABO OR 2.272 per A, P 5.09e-09
+  PLINK 2 --king-cutoff 0.0884 (default)   removed 167 (70 cases, 97 controls); European set 197 cases, 437 controls, N_eff 543.1;
+                                           lambda 1.0037, lambda_1000 1.0137; ABO OR 2.314 per A, P 4.27e-09
+
+2. PRUNING r2 BEFORE PCA (variance shares are of the variance captured by the 10 extracted components)
+  r2 0.2  kept 121052 pooled, 84817 European; pooled PC1-3 50.2/39.5/2.2%; European PC1-6 14.6/6.8/6.3/5.3/4.6/4.5%;
+          lambda 1.0060; ABO OR 2.272 per A, P 5.09e-09
+  r2 0.1  kept 71150 pooled, 51925 European; pooled PC1-3 49.9/39.1/2.3%; European PC1-6 14.2/6.7/6.2/5.2/4.6/4.5%;
+          lambda 1.0057; ABO OR 2.273 per A, P 5.01e-09
+
+HOW TO READ THIS
+  A choice mattered if changing it moves lambda or the ABO result by more than
+  the difference between defensible analyses elsewhere in the guide. Each row
+  changes one choice and repeats everything downstream of it.

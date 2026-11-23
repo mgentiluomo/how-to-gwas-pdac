@@ -1,0 +1,14 @@
+SECTION 6: CONDITIONAL ANALYSIS AT ABO (individual genotypes, plink2 --condition)
+region chr9:132900000-133600000, European analysis set, SEX + AGE + 2 PCs
+
+conditioned on                           variants      min P at                 P<5e-8 P<1e-5  P<0.001
+none                                          204      2e-09 9:133266804:G:T        11     13       22
+lead 9:133266804:G:T                          201     0.0152 9:133533953:A:G         0      0        0
+causal 9:133273682:A:T                        201     0.0162 9:133532712:A:G         0      0        0
+
+P of the causal variant after conditioning on the lead: NA (VIF_TOO_HIGH); P of the lead after conditioning on the causal: NA (VIF_TOO_HIGH)
+
+HOW TO READ THIS
+  No variant at genome-wide significance after conditioning on the lead means
+  the region holds one detectable signal in this sample. The simulation has one
+  causal variant here, so a residual signal would be a false second signal.

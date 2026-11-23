@@ -2,5 +2,5 @@ quantity	value
 variants_tested	405004
 cases	219
 controls	392
-lambda_gc	1.0199
-lambda_1000	1.0709
+lambda_gc	1.006
+lambda_1000	1.0212

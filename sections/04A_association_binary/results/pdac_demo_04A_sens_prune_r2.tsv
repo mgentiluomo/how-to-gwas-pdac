@@ -1,0 +1,3 @@
+r2	pruned_variants_pooled	pruned_variants_eur	pooled_PC1	pooled_PC2	pooled_PC3	eur_PC1	eur_PC2	eur_PC3	eur_PC4	eur_PC5	eur_PC6	lambda	causal_or_risk_A	causal_p
+0.2	121052	84817	50.2	39.5	2.2	14.6	6.8	6.3	5.3	4.6	4.5	1.006	2.272	5.09e-09
+0.1	71150	51925	49.9	39.1	2.3	14.2	6.7	6.2	5.2	4.6	4.5	1.0057	2.273	5.01e-09

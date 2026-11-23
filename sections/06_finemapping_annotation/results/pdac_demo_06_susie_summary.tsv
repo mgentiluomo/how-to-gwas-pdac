@@ -1,0 +1,16 @@
+quantity	value
+susieR_version	0.14.2
+L	5
+n	608
+variants	204
+credible_sets	1
+cs1_size	10
+causal_pip	0.1561
+causal_rank_pip	3
+causal_in_a_cs	TRUE
+top_pip_id	9:133266804:G:T
+top_pip	0.3596
+converged	TRUE
+abf_credible_set_size	11
+abf_causal_pp	0.1432
+abf_causal_rank	3

@@ -1,0 +1,14 @@
+SECTION 4A: NUMBER OF PRINCIPAL COMPONENTS
+
+European analysis set: 219 cases, 392 controls
+(a) scree: largest ratio of consecutive eigenvalues among the first ten is after PC1 (ratio 2.15); floor e = 1
+    variance shares of the 20 extracted components, PC1-PC6: 14.6, 6.8, 6.3, 5.3, 4.6, 4.5 %
+(b) association with case status given SEX and AGE, threshold P < 0.0025: none; floor a = 0
+    nominal P < 0.05, not used for the rule: PC2, PC9, PC10
+(c) scans:
+     2 PCs  lambda 1.0060  lambda_1000 1.0212  P<5e-8 11  P<1e-5 15  lead 9:133266804:G:T (P 2e-09)  top-10 shared with 20 PCs 10  stable TRUE
+     5 PCs  lambda 1.0096  lambda_1000 1.0340  P<5e-8 9  P<1e-5 14  lead 9:133266804:G:T (P 3.13e-09)  top-10 shared with 20 PCs 10  stable TRUE
+    10 PCs  lambda 1.0219  lambda_1000 1.0779  P<5e-8 10  P<1e-5 14  lead 9:133266804:G:T (P 2.24e-09)  top-10 shared with 20 PCs 10  stable TRUE
+    20 PCs  lambda 1.0378  lambda_1000 1.1346  P<5e-8 9  P<1e-5 17  lead 9:133266804:G:T (P 2.66e-09)  top-10 shared with 20 PCs 10  stable TRUE
+
+CHOSEN: 2 components (smallest candidate >= max(e, a) = 1 that is stable: no larger candidate lowers lambda by more than 0.01 or changes the lead or the top 10)

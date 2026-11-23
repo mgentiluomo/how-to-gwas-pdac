@@ -1,0 +1,12 @@
+SECTION 6: SuSiE WITH IN-SAMPLE LD (comparison with the single-signal ABF)
+susieR 0.14.2, L = 5, coverage 0.95, n = 608, 204 variants in chr9:132.9-133.6 Mb
+
+credible sets: 1
+  set 1: 10 variants, min |r| 0.917, top 9:133266804:G:T, contains the causal variant: TRUE
+causal 9:133273682:A:T: PIP 0.156, rank 3
+ABF (step 02): credible set 11 variants, causal PP 0.143, rank 3
+
+HOW TO READ THIS
+  One credible set means the multi-signal model finds what the single-signal
+  model assumed. PIPs and ABF posterior probabilities answer the same question
+  under different priors; agreement in the ranking matters more than the values.

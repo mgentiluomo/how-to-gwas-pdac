@@ -1,0 +1,43 @@
+SECTION 4B: DOES THE SIMULATED SURVIVAL DEPEND ON ANCESTRY?
+
+1. ALL CASES WITH SURVIVAL DATA (demo_data, before QC)
+   n 542, events 423; case status of these individuals: 2 542 (2 = case)
+   afr  n 154  events 122 (79.2%)  median time 11.1  mean time 13.6
+   eas  n 149  events 118 (79.2%)  median time 12.3  mean time 13.0
+   eur  n 239  events 183 (76.6%)  median time 13.1  mean time 13.8
+   Cox on ancestry group: LR chi2 0.541, 2 df, P 0.763
+     HR eas      1.037 (95% CI 0.805 to 1.336), reference afr
+     HR eur      0.952 (95% CI 0.757 to 1.198), reference afr
+   ancestry group given SEX and AGE: LR chi2 0.481, 2 df, P 0.786
+     SEX: HR 0.9868, P 0.892
+     AGE: HR 0.9962, P 0.448
+   log-rank across groups: chi2 0.537, 2 df, P 0.765
+
+2. THE EUROPEAN SURVIVAL SET OF 01_cox_survival.R
+   n 219, events 167
+   within-set PC1-PC10 jointly, given SEX and AGE: LR chi2 10.242, 10 df, P 0.42
+   each component alone, given SEX and AGE (Wald):
+     PC1  P 0.616
+     PC2  P 0.986
+     PC3  P 0.479
+     PC4  P 0.43
+     PC5  P 0.0971
+     PC6  P 0.314
+     PC7  P 0.463
+     PC8  P 0.774
+     PC9  P 0.557
+     PC10 P 0.0817
+   SEX: HR 0.9129, P 0.56
+   AGE: HR 0.9874, P 0.147
+   Section 4A PC1-PC10 jointly, given SEX and AGE (n 219): LR chi2 9.395, 10 df, P 0.495
+
+3. CENSORING PATTERN OF THE EUROPEAN SURVIVAL SET
+   distinct times among 219 individuals: 158
+   events sharing their time with another event: 77
+   times equal to zero: 0
+
+HOW TO READ THIS
+  Large P values in sections 1 and 2 mean the outcome carries no detectable
+  ancestry structure, at the group level or along the components. Inflation
+  of the Cox scan then cannot be confounding by ancestry, and components
+  added to the model remove nothing; compare 04_permutation_null.R.

@@ -1,15 +1,18 @@
 Canonical run manifest
 ======================
 
-started        2026-11-23T11:10:41Z
-finished       2026-11-23T14:41:42Z
+started        2026-11-23T14:47:05Z
+finished       2026-11-23T17:42:32Z
 host           bio-plink3
 user           manuel
-commit         6ee20f83e0e18fcea368cfaff2e4cc377fa64ad4
+commit         d61125d0f3a9065019fb06be770b1b16d7f431bc
 branch         main
 data release   v0.3-data
-steps          42
+steps          47
 4B permutation null   n_perm 100   seed 20261122
+long-range LD regions data_processed/highLD_b38.bed, md5 e87ff535111c6d03ef42d3fdd80662c9 (scripts/dev/make_lrld_bed.sh)
+susieR (06 step 05, own library) 0.14.2 from /plink3/manuel/home_rstudio/manuel/R/susie-lib-4.5
+4A components chosen  2 (04A step 01b)
 
 PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025)
 PLINK v1.90b6.25 64-bit (5 Mar 2022)

@@ -1,5 +1,5 @@
 Fine mapping summary, approximate Bayes factor, single causal variant
-Generated: 2026-11-23 14:41:18
+Generated: 2026-11-23 17:41:46
 Prior variance W = 0.04;  coverage = 0.95
 
 REGION
@@ -8,15 +8,15 @@ REGION
 
 EUROPEAN ANALYSIS SET
   variants in the 95% credible set: 11
-  top variant: 9:133266804:G:T  PP = 0.256
+  top variant: 9:133266804:G:T  PP = 0.254
   simulated causal variant in the set: YES
-  its posterior probability: 0.131   rank 3
+  its posterior probability: 0.143   rank 3
 
 THREE STRATA COMBINED
   variants in the 95% credible set: 9
-  top variant: 9:133273682:A:T  PP = 0.367
+  top variant: 9:133273682:A:T  PP = 0.377
   simulated causal variant in the set: YES
-  its posterior probability: 0.367   rank 1
+  its posterior probability: 0.377   rank 1
 
   The comparison is the point of this section. Combining the strata does
   not merely lower the P value; it changes how well the signal can be
@@ -25,14 +25,14 @@ THREE STRATA COMBINED
 
 CREDIBLE SET, EUROPEAN ANALYSIS SET
 CHROM	POS	ID	A1	A1_FREQ	OR	P	PP	is_causal
-9	133266804	9:133266804:G:T	T	0.386	0.415	1.75e-09	0.2559	
-9	133263862	9:133263862:A:C	C	0.387	0.426	4.07e-09	0.1569	
-9	133273682	9:133273682:A:T	T	0.380	0.428	5.31e-09	0.1307	yes
-9	133261662	9:133261662:G:A	A	0.360	0.440	1.38e-08	0.0731	
-9	133267960	9:133267960:T:C	C	0.358	0.443	1.69e-08	0.0657	
-9	133270074	9:133270074:T:A	A	0.357	0.445	2.12e-08	0.0563	
-9	133261703	9:133261703:A:G	G	0.359	0.446	2.21e-08	0.0553	
-9	133271249	9:133271249:A:T	T	0.357	0.449	2.63e-08	0.0501	
-9	133270565	9:133270565:G:A	A	0.355	0.447	2.58e-08	0.0493	
-9	133269828	9:133269828:T:C	C	0.356	0.452	3.77e-08	0.0390	
-9	133273813	9:133273813:C:T	T	0.352	0.456	5.10e-08	0.0327	
+9	133266804	9:133266804:G:T	T	0.386	0.429	2.00e-09	0.2542	
+9	133263862	9:133263862:A:C	C	0.387	0.441	4.86e-09	0.1506	
+9	133273682	9:133273682:A:T	T	0.380	0.440	5.09e-09	0.1432	yes
+9	133261662	9:133261662:G:A	A	0.360	0.452	1.51e-08	0.0705	
+9	133267960	9:133267960:T:C	C	0.358	0.455	1.66e-08	0.0684	
+9	133270074	9:133270074:T:A	A	0.357	0.456	1.92e-08	0.0623	
+9	133271249	9:133271249:A:T	T	0.357	0.461	2.90e-08	0.0481	
+9	133261703	9:133261703:A:G	G	0.359	0.461	2.91e-08	0.0478	
+9	133270565	9:133270565:G:A	A	0.355	0.461	3.33e-08	0.0423	
+9	133269828	9:133269828:T:C	C	0.356	0.463	3.64e-08	0.0409	
+9	133273813	9:133273813:C:T	T	0.352	0.466	4.64e-08	0.0352	

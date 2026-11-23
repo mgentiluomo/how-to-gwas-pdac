@@ -1,5 +1,5 @@
 Cox proportional hazards survival scan
-Generated: 2026-11-23 11:13:35
+Generated: 2026-11-23 14:52:15
 
 ANALYSIS SET
   European cases with follow-up, sex and age: 219
@@ -7,7 +7,7 @@ ANALYSIS SET
   minor allele frequency floor, evaluated in this set: 0.05
 
 COVARIATES
-  components computed within this set, on 86321 pruned variants
+  components computed within this set, on 86088 pruned variants
   primary model: SEX, AGE, PC1-PC10  (13 parameters)
   events per parameter: 12.8
 
@@ -15,23 +15,23 @@ COVARIATES
 
 SCAN
   variants tested: 239881
-  variants with a valid P: 239881
-  skipped (monomorphic in this set, or the fit failed): 0
-  genomic inflation factor lambda: 1.1131
-  lambda per 1000 events: 1.6773
+  variants with a valid P: 239880
+  skipped (monomorphic in this set, or the fit failed): 1
+  genomic inflation factor lambda: 1.1143
+  lambda per 1000 events: 1.6845
 
   genome-wide significant (P < 5e-8): 0
-  suggestive (P < 1e-5): 9
+  suggestive (P < 1e-5): 10
   expected under the null at 1e-5: 2.4
-  lead variant: 15:71619612:T:C  HR 0.470  P 5.27e-07
+  lead variant: 15:71619612:T:C  HR 0.465  P 3.69e-07
 
 COVARIATE COMPARISON
   Same 219 individuals, same 239881 variants, same outcome.
   Only the covariate axes differ, so any difference in lambda is theirs.
 
-  within-set PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1131  suggestive 9
-  within-set PCs, PC1-PC5              8 par   20.9 ev/par  lambda 1.0679  suggestive 8
-  Section 4A PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1321  suggestive 9
+  within-set PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1143  suggestive 10
+  within-set PCs, PC1-PC5              8 par   20.9 ev/par  lambda 1.0692  suggestive 8
+  Section 4A PCs, PC1-PC10            13 par   12.8 ev/par  lambda 1.1348  suggestive 10
 
   The two sets of components give similar lambdas, so borrowing them
   from Section 4A is not the source of any inflation. Read lambda against
@@ -49,10 +49,10 @@ HOW TO READ THIS SCAN
   detectable hazard ratio together, so that a reader can tell an
   uninformative scan from a negative one.
 
-  NOTE: lambda is 1.113. Do not read it against 1.00: compare
+  NOTE: lambda is 1.114. Do not read it against 1.00: compare
   it with the permutation null in pdac_demo_04B_perm_summary.txt
   (04_permutation_null.R) before reading the suggestive count as signal.
 
 RESOURCES USED
   cores: 31 (detectCores)   chunk: 25000 variants
-  elapsed: 3.5 min
+  elapsed: 3.6 min

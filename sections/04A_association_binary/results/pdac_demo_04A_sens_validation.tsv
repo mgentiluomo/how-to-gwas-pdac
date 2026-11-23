@@ -1,0 +1,5 @@
+quantity	canonical	baseline_here	ok
+lambda	1.006	1.00596615151967	TRUE
+causal ABO P	5.08524e-09	5.08524e-09	TRUE
+max |eigenvalue diff|, pooled	0	0	TRUE
+max |eigenvalue diff|, European	0	0	TRUE

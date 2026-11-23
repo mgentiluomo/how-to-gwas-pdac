@@ -1,13 +1,13 @@
                       analysis cases controls  neff variants lambda sig_5e8
-              A pruned, plink2   219      392 562.0   401126 1.0216      10
-            B unpruned, plink2   233      501 636.1   401126 0.9984      13
-           C unpruned, REGENIE   233      501 636.1   401126 1.0382      14
- D unpruned, REGENIE no offset   233      501 636.1   401126 0.9999      13
+              A pruned, plink2   219      392 562.0   401126 1.0238      10
+            B unpruned, plink2   233      501 636.1   401126 0.9980      13
+           C unpruned, REGENIE   233      501 636.1   401126 1.0358      14
+ D unpruned, REGENIE no offset   233      501 636.1   401126 1.0002      13
  sugg_1e5 P_causal
-       14 5.31e-09
-       18 4.66e-12
-       22 4.39e-12
-       18 5.26e-13
+       14 6.75e-09
+       18 4.82e-12
+       22 3.55e-12
+       18 5.49e-13
 
 How to read this table.
   A vs B  the whole pruning decision. The sets differ in size and in

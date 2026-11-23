@@ -5,8 +5,8 @@ produced the published results; do not edit by hand.
 
 | Item | Value |
 |---|---|
-| Run started | 2026-11-23T11:10:41Z |
-| Commit | `6ee20f83e0e18fcea368cfaff2e4cc377fa64ad4` |
+| Run started | 2026-11-23T14:47:05Z |
+| Commit | `d61125d0f3a9065019fb06be770b1b16d7f431bc` |
 | Data release | `v0.3-data` |
 | Operating system | Ubuntu 20.04.4 LTS |
 | PLINK 2 | PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025) |
