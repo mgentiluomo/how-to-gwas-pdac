@@ -1,4 +1,4 @@
-# Section 4B: Association testing (continuous)
+# Section 4B: Association testing, survival outcome
 
 **Lead:** Pelin Ünal
 
