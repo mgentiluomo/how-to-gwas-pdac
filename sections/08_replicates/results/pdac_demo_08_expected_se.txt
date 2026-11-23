@@ -1,0 +1,20 @@
+SECTION 8: STANDARD ERROR OF THE CAUSAL LOG OR, EUROPEAN SCAN
+200 replicates; power at P < 5e-08 with the generative OR
+
+          OR  Section 3B formula           expected information         realised SE    realised power
+  G1    2.60  SE 0.1252  power  98.5%      SE 0.1475  power  84.8%      0.1504 (sd 0.1532)   83.0%
+  G2    1.50  SE 0.1216  power   1.7%      SE 0.1297  power   1.0%      0.1255 (sd 0.1133)    0.0%
+  G3    1.97  SE 0.1263  power  46.7%      SE 0.1451  power  21.8%      0.1462 (sd 0.1392)   12.5%
+
+HOW TO READ THIS
+  The Section 3B formula gives the information at the null with every
+  individual at the average risk. Under the generator, risk varies with the
+  three loci, sex and age, and individuals far from a probability of one
+  half carry less information. The expected-information standard error
+  matches the realised one; the formula's is smaller, so its power is
+  optimistic. The expected-information power assumes z ~ N(log OR / SE, 1).
+  Across replicates the realised z has the mean and SD below; an SD under 1
+  puts less mass above the threshold when the mean is below it.
+  G1   realised z mean 6.23, SD 0.83
+  G2   realised z mean 2.14, SD 0.89
+  G3   realised z mean 4.57, SD 0.83

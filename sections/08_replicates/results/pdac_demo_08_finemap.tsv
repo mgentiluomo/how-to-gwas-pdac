@@ -1,0 +1,7 @@
+locus	analysis	coverage_all	coverage_all_l95	coverage_all_u95	n_region_significant	coverage_region_significant	coverage_sig_l95	coverage_sig_u95	median_cs_size	median_cs_size_significant	causal_rank1	median_causal_rank	causal_rank1_significant
+G1	eur_4a	0.97	0.9361	0.9862	175	0.9657	0.9272	0.9842	11	11	0.425	2	0.4343
+G2	eur_4a	0.955	0.9167	0.9761	0	NA	NA	NA	187	NA	0.17	6	NA
+G3	eur_4a	1	0.9812	1	25	1	0.8668	1	72.5	1	0.99	1	1
+G1	meta	1	0.9812	1	200	1	0.9812	1	4	4	0.84	1	0.84
+G2	meta	0.995	0.9722	0.9991	10	1	0.7225	1	49	1	0.81	1	1
+G3	meta	1	0.9812	1	190	1	0.9802	1	1	1	1	1	1

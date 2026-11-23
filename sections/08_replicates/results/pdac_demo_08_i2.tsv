@@ -1,0 +1,4 @@
+locus	replicates	i2_mean	i2_median	i2_q025	i2_q975	frac_i2_zero	frac_i2_gt_50	frac_phet_lt_0.05	frac_random_weaker
+G1	200	17.52	0	0	77.87	0.585	0.17	0.06	0.415
+G2	200	25.73	8.582	0	77.95	0.48	0.285	0.15	0.52
+G3	200	15.85	0	0	76.23	0.625	0.145	0.065	0.375
