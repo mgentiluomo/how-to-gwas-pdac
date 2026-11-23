@@ -1,4 +1,4 @@
-# Section 2 — Population stratification
+# Section 2: Population stratification
 
 **Lead:** Elif Öz
 
@@ -7,9 +7,9 @@ principal components used as covariates in Section 4A.
 
 ## Contents
 
-- `02_population_stratification.qmd` — the website tutorial page.
-- `scripts/` — one script per step, PLINK 2 and base R.
-- `results/` — outputs of one locked-in run on `pdac_demo`, displayed on the page.
+- `02_population_stratification.qmd`: the website tutorial page.
+- `scripts/`: one script per step, PLINK 2 and base R.
+- `results/`: outputs of one locked-in run on `pdac_demo`, displayed on the page.
 
 ## Manuscript code tags
 

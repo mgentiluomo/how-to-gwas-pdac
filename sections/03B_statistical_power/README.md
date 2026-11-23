@@ -9,9 +9,9 @@ exists to be interpreted.
 
 ## Contents
 
-- `03B_statistical_power.qmd` — the website tutorial page.
-- `scripts/` — two steps, base R only.
-- `results/` — outputs of one locked-in run.
+- `03B_statistical_power.qmd`: the website tutorial page.
+- `scripts/`: two steps, base R only.
+- `results/`: outputs of one locked-in run.
 
 ## Manuscript code tags
 

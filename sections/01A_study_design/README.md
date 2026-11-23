@@ -1,4 +1,4 @@
-# Section 1A — Genotyping technologies and file formats
+# Section 1A: Genotyping technologies and file formats
 
 **Lead:** Bogdan Ungureanu, Anca Riza Costache
 
@@ -8,10 +8,10 @@ genotyped on several platforms needs a decision taken at the design stage.
 
 ## Contents
 
-- `01A_study_design.qmd` — the website tutorial page.
-- `scripts/` — four steps, PLINK 1.9, PLINK 2 and base R.
-- `example_data/` — a real Illumina Final Report excerpt (see its README).
-- `results/` — outputs of one locked-in run.
+- `01A_study_design.qmd`: the website tutorial page.
+- `scripts/`: four steps, PLINK 1.9, PLINK 2 and base R.
+- `example_data/`: a real Illumina Final Report excerpt (see its README).
+- `results/`: outputs of one locked-in run.
 
 ## Manuscript code tags
 

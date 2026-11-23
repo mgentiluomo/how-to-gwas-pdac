@@ -512,7 +512,7 @@ Example relatedness summary:
 | First degree | `r rl("First_degree","n_pairs")` | `r rl("First_degree","n_unique_samples")` |
 | Second degree | `r rl("Second_degree","n_pairs")` | `r rl("Second_degree","n_unique_samples")` |
 | Third degree | `r rl("Third_degree","n_pairs")` | `r rl("Third_degree","n_unique_samples")` |
-| Total samples before relatedness filter | NA | `r rl("Total_samples_before_relatedness_filter","n_unique_samples")` |
+| Total samples before relatedness filter | | `r rl("Total_samples_before_relatedness_filter","n_unique_samples")` |
 
 Example pruning diagnostics:
 

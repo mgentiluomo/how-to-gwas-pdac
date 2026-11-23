@@ -99,8 +99,8 @@ how-to-gwas-pdac/
 | 6 | Fine mapping | Burçak Otlu, Erdi Kılıç | `sections/06_finemapping_annotation/` |
 | 6.5 | Functional annotation | Chiara Corradi | `sections/06.5_gwas_annotations/` |
 | 7 | Reporting, replication, FAIR data | Manuel Gentiluomo | `sections/07_reporting_fair/` |
-| — | Linkage disequilibrium and what it decides | Manuel Gentiluomo | `sections/07_linkage_disequilibrium/` |
-| — | Shared helper scripts, not a manuscript section | Murat Güler | `sections/08_helper_scripts/` |
+|  | Linkage disequilibrium and what it decides | Manuel Gentiluomo | `sections/07_linkage_disequilibrium/` |
+|  | Shared helper scripts, not a manuscript section | Murat Güler | `sections/08_helper_scripts/` |
 
 Code production: Riccardo Farinella and Murat Güler. Final code review and standardisation: Manuel Gentiluomo.
 

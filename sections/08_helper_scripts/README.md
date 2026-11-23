@@ -1,4 +1,4 @@
-# Section 8 — Helper scripts
+# Section 8: Helper scripts
 
 **Lead:** add by Murat
 

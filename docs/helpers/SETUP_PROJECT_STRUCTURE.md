@@ -150,11 +150,11 @@ The **manual approach** is detailed in `getting_started.qmd` Step 2-6.
 
 This structure is **fully portable** because:
 
-1. **No hard-coded paths** — All paths are relative (e.g., `./scripts/01B_genotyping_qc/`)
-2. **Manifest-based checks** — `section_manifest.txt`, `script_manifest.txt`, and `tool_manifest.tsv` tell the setup test what should exist
-3. **Local tools** — Tools are installed or linked under `./tools/`, not system-wide
-4. **Works anywhere** — Folder can be on Desktop, Documents, USB drive, etc.
-5. **Easy backups** — Entire folder is self-contained, except for large downloaded files you may choose to regenerate
+1. **No hard-coded paths**: all paths are relative (e.g., `./scripts/01B_genotyping_qc/`)
+2. **Manifest-based checks**: `section_manifest.txt`, `script_manifest.txt`, and `tool_manifest.tsv` tell the setup test what should exist
+3. **Local tools**: tools are installed or linked under `./tools/`, not system-wide
+4. **Works anywhere**: folder can be on Desktop, Documents, USB drive, etc.
+5. **Easy backups**: entire folder is self-contained, except for large downloaded files you may choose to regenerate
 
 ---
 

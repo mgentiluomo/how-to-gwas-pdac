@@ -1,4 +1,4 @@
-# Section 5 — Meta-analysis
+# Section 5: Meta-analysis
 
 **Lead:** Pelin Ünal
 
@@ -7,9 +7,9 @@ fixed- and random-effects meta-analysis with heterogeneity.
 
 ## Contents
 
-- `05_meta_analysis.qmd` — the website tutorial page.
-- `scripts/` — four steps, PLINK 2 and base R.
-- `results/` — outputs of one locked-in run on `pdac_demo`.
+- `05_meta_analysis.qmd`: the website tutorial page.
+- `scripts/`: four steps, PLINK 2 and base R.
+- `results/`: outputs of one locked-in run on `pdac_demo`.
 
 ## Scope and honesty note
 

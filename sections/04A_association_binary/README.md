@@ -1,4 +1,4 @@
-# Section 4A — Association testing (binary outcome)
+# Section 4A: Association testing (binary outcome)
 
 **Lead:** Elif Öz
 
@@ -7,9 +7,9 @@ in Section 2, with the diagnostics needed before any result is interpreted.
 
 ## Contents
 
-- `04A_association_binary.qmd` — the website tutorial page.
-- `scripts/` — one script per step, PLINK 2 and base R.
-- `results/` — outputs of one locked-in run on `pdac_demo`, displayed on the page.
+- `04A_association_binary.qmd`: the website tutorial page.
+- `scripts/`: one script per step, PLINK 2 and base R.
+- `results/`: outputs of one locked-in run on `pdac_demo`, displayed on the page.
 
 ## Manuscript code tags
 

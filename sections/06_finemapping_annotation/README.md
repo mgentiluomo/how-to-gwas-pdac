@@ -1,4 +1,4 @@
-# Section 6 — Fine mapping
+# Section 6: Fine mapping
 
 **Lead:** Burçak Otlu, Erdi Kılıç
 
@@ -7,9 +7,9 @@ resolution scored against a known truth.
 
 ## Contents
 
-- `06_finemapping_annotation.qmd` — the website tutorial page.
-- `scripts/` — three steps, PLINK 2 and base R.
-- `results/` — outputs of one locked-in run.
+- `06_finemapping_annotation.qmd`: the website tutorial page.
+- `scripts/`: three steps, PLINK 2 and base R.
+- `results/`: outputs of one locked-in run.
 
 ## Method note
 

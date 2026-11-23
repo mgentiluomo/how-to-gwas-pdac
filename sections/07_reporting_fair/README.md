@@ -1,10 +1,10 @@
-# Section 7 — Reporting, replication & FAIR data
+# Section 7: Reporting, replication & FAIR data
 
 **Lead:** Manuel Gentiluomo
 
 
 ## What goes in this folder
-- `*.md` — the narrative text for this section (Markdown).
+- `*.md`: the narrative text for this section (Markdown).
 - annotated `*.R` / `*.sh` scripts demonstrating the step on the demo dataset
   (`../../demo_dataset/`).
 - any small inputs needed to reproduce the example (no large genotype files).

@@ -6,14 +6,14 @@
 # Pre-publication check that the pages show the figures of the canonical run.
 # Three checks, each of which can fail the script:
 #
-#   1. Markers. No .qmd page may contain "PENDING RERUN", a figure not yet
+#   1. Markers. No page (.qmd or .md) may contain "PENDING RERUN", a figure not yet
 #      filled in from the canonical run.
 #   2. Superseded values. No page may contain a figure listed in
 #      scripts/dev/superseded_values.tsv, i.e. one that an earlier run put on
 #      the page and a later run replaced. Removing the marker is not enough;
 #      the old number must be gone too.
-#   2b. Forbidden characters. No page may contain an em dash (U+2014), which
-#      the house style excludes.
+#   2b. Forbidden characters. No page (.qmd or .md) may contain an em dash
+#      (U+2014), which the house style excludes.
 #   3. Inline figures. Pages that read their figures from the results files
 #      (`r ...` with R/facts.R) are knitted into a temporary directory. A
 #      missing results file, a renamed key or an expression left unevaluated
@@ -49,8 +49,10 @@ done
 FAIL=0
 LIST="$SCRIPT_DIR/superseded_values.tsv"
 
-# Every page Quarto would render, excluding build and cache directories.
-mapfile -t PAGES < <(find . -name '*.qmd' \
+# Every .qmd and .md file in the repository, excluding build and cache
+# directories: Quarto renders the .qmd pages and some .md files (CONTRIBUTING,
+# docs/), and the READMEs are what GitHub shows.
+mapfile -t PAGES < <(find . \( -name '*.qmd' -o -name '*.md' \) \
   -not -path './.git/*' -not -path './_freeze/*' -not -path './_site/*' \
   -not -path './.quarto/*' -not -path './tools/*' | sed 's|^\./||' | sort)
 
@@ -61,11 +63,11 @@ if [ -n "$HITS" ]; then
   N="$(printf '%s\n' "$HITS" | wc -l | tr -d ' ')"
   N_FILES="$(printf '%s\n' "$HITS" | cut -d: -f1 | sort -u | wc -l | tr -d ' ')"
   printf '%s\n' "$HITS"
-  printf 'FAILED: %s line(s) in %s .qmd file(s) still contain "%s".\n\n' \
+  printf 'FAILED: %s line(s) in %s .qmd/.md file(s) still contain "%s".\n\n' \
     "$N" "$N_FILES" "$MARKER" >&2
   FAIL=1
 else
-  printf 'OK: no "%s" markers in .qmd files.\n' "$MARKER"
+  printf 'OK: no "%s" markers in .qmd or .md files.\n' "$MARKER"
 fi
 
 # --------------------------------------------------- 2. superseded values ----
@@ -110,11 +112,12 @@ if [ -n "$HITS" ]; then
     "$(printf '%s\n' "$HITS" | wc -l | tr -d ' ')" >&2
   FAIL=1
 else
-  printf 'OK: no em dashes in .qmd files.\n'
+  printf 'OK: no em dashes in .qmd or .md files.\n'
 fi
 
 # ------------------------------------------------------ 3. inline figures ----
-mapfile -t INLINE < <(grep -lE '`r [^`]+`' "${PAGES[@]}" || true)
+# Only .qmd pages are knitted; a .md file never evaluates inline R.
+mapfile -t INLINE < <(printf '%s\n' "${PAGES[@]}" | grep '\.qmd$' | tr '\n' '\0' | xargs -0 grep -lE '`r [^`]+`' || true)
 if [ "$KNIT" -eq 0 ]; then
   printf 'SKIPPED: knitting %s page(s) with inline figures (--no-knit).\n' "${#INLINE[@]}"
 elif [ "${#INLINE[@]}" -eq 0 ]; then

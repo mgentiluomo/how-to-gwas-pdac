@@ -9,9 +9,9 @@ that no amount of statistical care could have made smaller in this sample.
 
 ## Contents
 
-- `07_linkage_disequilibrium.qmd` — the website tutorial page.
-- `scripts/01_ld_decay.sh` — one step, PLINK 2 only.
-- `results/` — outputs of the canonical run.
+- `07_linkage_disequilibrium.qmd`: the website tutorial page.
+- `scripts/01_ld_decay.sh`: one step, PLINK 2 only.
+- `results/`: outputs of the canonical run.
 
 ## Key numbers from the demonstration run
 

@@ -4,7 +4,7 @@ Thank you for contributing to the GWAS guide. This file explains **how we work
 together** so that everyone builds on the same, consistent base of files.
 
 The golden rule: **`main` is protected.** It always reflects the agreed,
-harmonised version. You never commit directly to it — you propose changes
+harmonised version. You never commit directly to it: you propose changes
 through a Pull Request (PR), which a maintainer reviews and merges.
 
 Maintainers (the only people who merge to `main`):
@@ -65,8 +65,8 @@ or fork the repository and open PRs from your fork.
 ## 3. Code style (kept uniform on purpose)
 
 - **Languages/tools:** PLINK 2 and R only, unless agreed otherwise.
-- **One step = one script**, numbered, self-contained, and **heavily commented**
-  — remember the audience has no bioinformatics background. A reader should
+- **One step = one script**, numbered, self-contained, and **heavily commented**;
+  remember the audience has no bioinformatics background. A reader should
   understand *why* each flag/option is used, not just *what* it does.
 - Every script **prints the command for the next step** at the end.
 - Use the demo dataset (`demo_dataset/`) as the running example so all sections
