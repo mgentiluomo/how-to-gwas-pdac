@@ -183,6 +183,14 @@ add("meta.n_i2_gt_50", sum(m$I2 > 50, na.rm = TRUE), mf)
 add("meta.n_phet_lt_0.05", sum(m$P_het < 0.05, na.rm = TRUE), mf)
 add("meta.lambda", median(qchisq(m$P[is.finite(m$P) & m$P > 0], 1, lower.tail = FALSE)) / qchisq(0.5, 1), mf)
 })
+# lambda per stratum and of the meta-analysis as the meta-analysis step printed them
+local({
+  sf <- S("05_meta_analysis", "pdac_demo_05_meta_summary.txt")
+  if (!file.exists(sf) && ALLOW_MISSING) return(invisible())
+  need(sf)
+  l <- regmatches(readLines(sf), regexec("^\\s+(eur|afr|eas|meta)\\s+lambda = ([0-9.]+)", readLines(sf)))
+  for (x in l[lengths(l) == 3]) add(paste0("meta.printed_lambda.", x[2]), x[3], sf)
+})
 
 block({
 # within-European PCA: variance share of each extracted component
