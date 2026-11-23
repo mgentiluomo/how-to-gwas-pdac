@@ -4,9 +4,10 @@
 
 [![Companion website](https://img.shields.io/badge/companion%20site-live-blue)](https://mgentiluomo.github.io/how-to-gwas-pdac/)
 [![Demo dataset](https://img.shields.io/badge/demo%20dataset-v0.3--data-green)](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.3-data)
-[![License: MIT](https://img.shields.io/badge/code-MIT-lightgrey)](LICENSE)
+[![Code licence: MIT](https://img.shields.io/badge/code-MIT-lightgrey)](LICENSE)
+[![Content licence: CC BY 4.0](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CC-BY-4.0)
 
-This repository is the companion resource for the methodology manuscript developed within the **TRANSPAN COST Action (CA21116), Working Group 1**; target journal to be defined. It pairs a narrative on how to design and run a GWAS of a rare, genetically complex trait such as pancreatic cancer with an annotated PLINK 2 and R pipeline, demonstrated on a purpose-built demonstration dataset.
+This repository is the companion resource for the methodology manuscript developed within the **TRANSPAN COST Action (CA21116), Working Group 1**; target journal Human Genetics. It pairs a narrative on how to design and run a GWAS of a rare, genetically complex trait such as pancreatic cancer with an annotated PLINK 2 and R pipeline, demonstrated on a purpose-built demonstration dataset.
 
 The manuscript explains why each decision is made and when an analysis is or is not legitimate given the data in hand. This repository shows how each step is actually run. Neither replaces the other; they are intended to be used together.
 
@@ -69,7 +70,8 @@ how-to-gwas-pdac/
 ├── README.md                you are here
 ├── CONTRIBUTING.md          workflow for contributors, branches, PRs, review
 ├── RUN_MANIFEST.txt         what the canonical run executed, and from which commit
-├── LICENSE                  MIT for code, manuscript text CC-BY-4.0
+├── LICENSE                  MIT, for the code
+├── LICENSE-CC-BY-4.0        CC BY 4.0, for site content, figures and demo data
 ├── index.qmd                companion website home page
 ├── getting_started.qmd      setup, project structure, tool install, first command
 ├── _quarto.yml              website navigation and build configuration
@@ -140,13 +142,18 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the branch and pull request workflo
 
 If you use this guide, the demonstration dataset or the accompanying scripts, please cite:
 
-> Gentiluomo M, Campa D, Farinella R, et al. How to carry out a genome-wide association study of a rare and complex trait: a decision-focused, reproducible guide using pancreatic ductal adenocarcinoma as a worked example. Target journal to be defined. In preparation.
+> Gentiluomo M, Campa D, Farinella R, et al. How to carry out a genome-wide association study of a rare and complex trait: a decision-focused, reproducible guide using pancreatic ductal adenocarcinoma as a worked example. Human Genetics, in preparation.
 
 A citable Zenodo archive of the code and demonstration dataset will be linked here on publication.
 
-## License
+## Licence
 
-Code is released under the [MIT License](LICENSE). Manuscript text and figures are released under CC-BY-4.0.
+Two licences apply, by kind of material:
+
+* **MIT** ([`LICENSE`](LICENSE)): the code, that is every script and program in the repository (the shell and R scripts under `scripts/`, `R/`, `docs/` and `sections/*/scripts/`), together with the files that configure and style the website (`_quarto.yml`, `styles.css`).
+* **CC BY 4.0** ([`LICENSE-CC-BY-4.0`](LICENSE-CC-BY-4.0)): the content of the companion website (the text of the `.qmd` and `.md` pages), the figures, and the demonstration dataset (`demo_dataset/` and the files attached to the `v*-data` and `v*-checkpoints` releases).
+
+The manuscript itself is not part of this repository; its licence will be that of the published article.
 
 ## Acknowledgement
 
