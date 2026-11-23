@@ -322,6 +322,8 @@ STEPS=(
   # Permutation null of the Cox scan: hours, not minutes, at the default
   # GWAS_4B_N_PERM. Reads the within-set components 01_cox_survival.R wrote.
   "04B_association_survival/04_permutation_null.R"
+  # Does the simulated survival depend on ancestry? Deterministic, seconds.
+  "04B_association_survival/05_ancestry_dependence.R"
   "04C_association_other/01_regenie_wgr.sh"
 
   "05_meta_analysis/scripts/01_stratified_gwas.sh"
