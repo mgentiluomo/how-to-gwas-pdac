@@ -55,8 +55,9 @@
 #   permutations is about 0.03, several times the value an independence
 #   formula gives. The corrective is a permutation-calibrated threshold, or
 #   fewer covariates, not more components.
-#   Diagnostic scripts and outputs: ../diagnostics_4B_20261122/ (outside the
-#   repository, not yet part of the canonical run).
+#   Those diagnostics ran outside the repository. The canonical run now
+#   computes the permutation null itself, for both models, in
+#   04_permutation_null.R (pdac_demo_04B_perm_summary.tsv).
 #
 #   The components are still recomputed inside the survival set, because the
 #   survival set is defined by the intersection of European assignment, case
@@ -578,15 +579,14 @@ w("")
 if ("pc_from_4A" %in% names(alt_df)) {
   d <- lam(alt_df$pc_from_4A) - lambda
   if (is.finite(d) && d > 0.03) {
-    w("  The components borrowed from Section 4A leave more inflation than those")
-    w("  computed here. They were estimated across cases and controls together,")
-    w("  and describe axes of variation in that larger sample rather than in")
-    w("  this one. Structure specific to the case series is not on those axes.")
+    w("  The components borrowed from Section 4A give a higher lambda than those")
+    w("  computed here. Whether the difference reflects structure is judged")
+    w("  against the permutation null (04_permutation_null.R), not against 1.00.")
   } else if (is.finite(d)) {
-    w("  The two sets of components leave similar inflation, so borrowing them")
-    w("  from Section 4A was not the source of the problem. If lambda remains")
-    w("  above about 1.05, look elsewhere: a frequency floor set by events")
-    w("  rather than by sample size, or cryptic relatedness within the cases.")
+    w("  The two sets of components give similar lambdas, so borrowing them")
+    w("  from Section 4A is not the source of any inflation. Read lambda against")
+    w("  the permutation null (04_permutation_null.R) before attributing it to")
+    w("  structure: at this event count the Cox tests are inflated under the null.")
   }
 }
 w("")
@@ -618,14 +618,17 @@ w("HOW TO READ THIS SCAN")
 w("  Section 03B gives the detectable effect sizes for ", n_event, " events. A null")
 w("  result at this event count is the expected outcome, not a failure of the")
 w("  analysis. But a null scan and an uncontrolled scan are different things:")
-w("  an excess of suggestive results is only interpretable once lambda is near")
-w("  one. Report the event count, the covariates, lambda and the minimum")
+w("  lambda and the suggestive count are interpretable only against the lambda")
+w("  this test gives when the null holds by construction, which")
+w("  04_permutation_null.R measures by permuting the outcome. Report the event")
+w("  count, the covariates, lambda, its permutation null and the minimum")
 w("  detectable hazard ratio together, so that a reader can tell an")
 w("  uninformative scan from a negative one.")
 w("")
 if (is.finite(lambda) && lambda > 1.05) {
-  w("  WARNING: lambda is ", sprintf("%.3f", lambda), ". The suggestive count above is")
-  w("  not yet interpretable as signal. Resolve the inflation before reporting.")
+  w("  NOTE: lambda is ", sprintf("%.3f", lambda), ". Do not read it against 1.00: compare")
+  w("  it with the permutation null in pdac_demo_04B_perm_summary.txt")
+  w("  (04_permutation_null.R) before reading the suggestive count as signal.")
 }
 w("")
 w("RESOURCES USED")
