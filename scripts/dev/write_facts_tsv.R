@@ -26,8 +26,13 @@ suppressPackageStartupMessages(library(utils))
 args_all <- commandArgs(trailingOnly = FALSE)
 file_arg <- grep("^--file=", args_all, value = TRUE)
 here <- if (length(file_arg)) normalizePath(dirname(sub("^--file=", "", file_arg[1]))) else getwd()
-root <- normalizePath(file.path(here, "..", ".."))
+root <- Sys.getenv("FACTS_ROOT", normalizePath(file.path(here, "..", "..")))
 setwd(root)
+# FACTS_ALLOW_MISSING=1 is for comparisons with an earlier run checked out from
+# git, which lacks the intermediate files in results/: keys that need them are
+# skipped with a message. A canonical facts table is never written with it.
+ALLOW_MISSING <- Sys.getenv("FACTS_ALLOW_MISSING") == "1"
+block <- function(expr) if (ALLOW_MISSING) tryCatch(expr, error = function(e) message("skipped: ", conditionMessage(e))) else expr
 
 if (!file.exists("RUN_MANIFEST.txt")) stop("RUN_MANIFEST.txt not found: run scripts/dev/run_all.sh first")
 man <- readLines("RUN_MANIFEST.txt")
@@ -109,7 +114,7 @@ tables <- list(
 )
 for (t in tables) {
   sec <- t[[1]]; f <- t[[2]]
-  if (!file.exists(f) && isTRUE(t$optional)) { message("optional table absent, no keys: ", f); next }
+  if (!file.exists(f) && (isTRUE(t$optional) || ALLOW_MISSING)) { message("table absent, no keys: ", f); next }
   need(f)
   d <- rd(f); stem <- san(sub("^pdac_demo_", "", sub("\\.tsv$", "", basename(f))))
   if (t[[3]] == "kv") {
@@ -130,6 +135,7 @@ for (i in seq_len(nrow(truth))) {
 }
 causal <- c(abo = "9:133273682:A:T", tert = "5:1286401:C:A")
 
+block({
 # 04A primary scan at the two causal variants (risk allele = reference at both)
 gf <- Sys.glob("results/assoc/pdac_demo_04A_gwas.*.glm.logistic.hybrid")[1]; need(gf)
 g <- rd(gf); if ("TEST" %in% names(g)) g <- g[g$TEST == "ADD", ]
@@ -149,7 +155,9 @@ add("assoc.lead.id", th$ID[1], S("04A_association_binary", "pdac_demo_04A_top_hi
 add("assoc.lead.p", th$P[1], S("04A_association_binary", "pdac_demo_04A_top_hits.tsv"))
 add("assoc.n_p_lt_5e8", sum(g$P < 5e-8, na.rm = TRUE), gf)
 add("assoc.n_p_lt_1e5", sum(g$P < 1e-5, na.rm = TRUE), gf)
+})
 
+block({
 # meta-analysis at the causal variants and genome-wide heterogeneity
 mf <- "results/meta/pdac_demo_05_meta.tsv.gz"; need(mf)
 m <- read.delim(gzfile(mf), check.names = FALSE, stringsAsFactors = FALSE)
@@ -173,11 +181,14 @@ add("meta.n_p_lt_5e8", sum(m$P < 5e-8, na.rm = TRUE), mf)
 add("meta.n_i2_gt_50", sum(m$I2 > 50, na.rm = TRUE), mf)
 add("meta.n_phet_lt_0.05", sum(m$P_het < 0.05, na.rm = TRUE), mf)
 add("meta.lambda", median(qchisq(m$P[is.finite(m$P) & m$P > 0], 1, lower.tail = FALSE)) / qchisq(0.5, 1), mf)
+})
 
+block({
 # within-European PCA: variance share of each extracted component
 ef <- "results/pca/pdac_demo_02_pca_eur.eigenval"; need(ef)
 ev <- scan(ef, quiet = TRUE)
 for (i in seq_along(ev)) add(sprintf("pca.eur.pc%d.variance_explained_pct_of_extracted", i), 100 * ev[i] / sum(ev), ef)
+})
 
 # fine-mapping: credible sets and the rank of the causal variant
 for (set in c("eur", "meta")) {
@@ -208,6 +219,7 @@ for (cn in grep("^P_", names(cal), value = TRUE)) {
 out_d <- do.call(rbind, rows)
 dup <- out_d$key[duplicated(out_d$key)]
 if (length(dup)) stop("duplicate keys: ", paste(unique(dup), collapse = ", "))
+if (ALLOW_MISSING) message("FACTS_ALLOW_MISSING=1: comparison table only, not a canonical facts table")
 if (any(is.na(out_d$value) | out_d$value == "NA"))
   warning(sum(is.na(out_d$value) | out_d$value == "NA"), " keys have NA values; see the table")
 write.table(out_d, out, sep = "\t", quote = FALSE, row.names = FALSE)
