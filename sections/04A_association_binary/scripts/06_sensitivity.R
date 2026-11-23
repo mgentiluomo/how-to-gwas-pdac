@@ -213,7 +213,7 @@ prow <- function(x) data.frame(r2 = x$r2, pruned_variants_pooled = x$pruned_all,
   lambda = round(x$lambda, 4), causal_or_risk_A = round(x$causal_or_risk, 3), causal_p = signif(x$causal_p, 3))
 pr <- rbind(prow(base), prow(r01))
 write.table(pr, file.path(OUT_DIR, "pdac_demo_04A_sens_prune_r2.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
-w("2. PRUNING r2 BEFORE PCA (variance shares are of the variance captured by the 10 extracted components)")
+w(sprintf("2. PRUNING r2 BEFORE PCA (variance shares are of the variance captured by the extracted components: %d pooled, %d European)", N_PCA_ALL, N_PCA_EUR))
 for (i in seq_len(nrow(pr))) with(pr[i, ], w(sprintf(
   "  r2 %.1f  kept %d pooled, %d European; pooled PC1-3 %.1f/%.1f/%.1f%%; European PC1-6 %.1f/%.1f/%.1f/%.1f/%.1f/%.1f%%;\n          lambda %.4f; ABO OR %.3f per A, P %.3g",
   r2, pruned_variants_pooled, pruned_variants_eur, pooled_PC1, pooled_PC2, pooled_PC3,
