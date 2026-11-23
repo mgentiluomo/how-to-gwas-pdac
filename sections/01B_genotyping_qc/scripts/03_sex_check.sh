@@ -14,8 +14,12 @@
 #   - pdac_demo_02_filt.bed/bim/fam (from Step 02, sample call rate filtered)
 #
 # OUTPUT:
-#   - pdac_demo.03_sexcheck.sexcheck — sex concordance report
-#   - pdac_demo.03_sexcheck_discordant.txt — list of discordant samples to remove
+#   - pdac_demo_03_sexcheck.sexcheck — sex concordance report
+#   - pdac_demo_03_sexcheck_discordant.txt — list of discordant samples to remove
+#   - pdac_demo_03_sexcheck_summary.tsv — thresholds, counts by reported sex,
+#     and the samples between the two thresholds
+#   - pdac_demo_03_sexcheck_F.png — distribution of X F by reported sex,
+#     with the two thresholds drawn
 #
 # METHOD:
 #   Compute X chromosome heterozygosity (F statistic on chrX).
@@ -26,7 +30,19 @@
 # NOTES:
 #   - Requires sex information in .fam file (column 4: 1=M, 2=F)
 #   - Our demo dataset has simulated chrX; real data uses genotyped chrX
-#   - Standard thresholds: F_LOW < 0.2 (females), F_HIGH > 0.8 (males)
+#   - Thresholds are passed explicitly: max-female-xf 0.2, min-male-xf 0.8.
+#     These are the PLINK 1.9 defaults, a CONVENTION, not an evaluated
+#     threshold. PLINK 2 has no defaults: without them it warns, sets
+#     min-male-xf to 1 and no female threshold, and asks for thresholds read
+#     from the data. The script therefore checks the convention against the
+#     observed distribution: it counts the samples falling between 0.2 and
+#     0.8, and draws the distribution by reported sex with both lines. Where
+#     samples sit between the thresholds, read the plot and decide before
+#     excluding anyone.
+#   - The pseudo-autosomal regions are split off first (--split-par hg38):
+#     left on X, they are diploid in males and pull the male F towards the
+#     female range. In the demo data all X variants are outside the PARs, so
+#     the split moves none; the step is kept because real data need it.
 #
 ################################################################################
 
@@ -68,9 +84,21 @@ echo ""
 #   If a sample labeled "female" shows high F (close to 1), it's likely mislabeled
 #   or swapped. Conversely, a sample labeled "male" with low F is suspicious.
 
+MAX_FEMALE_XF="0.2"   # convention: PLINK 1.9 default
+MIN_MALE_XF="0.8"     # convention: PLINK 1.9 default
+
+# Split the pseudo-autosomal regions off X (GRCh38 boundaries 2,781,479 and
+# 155,701,383) before computing F on X.
 plink2 \
   --bfile "${DATASET_INPUT}/${DATASET_NAME}_02_filt" \
-  --check-sex \
+  --split-par hg38 \
+  --make-bed \
+  --out "${OUT_DIR}/${DATASET_NAME}_03_splitpar"
+grep -i "split-par" "${OUT_DIR}/${DATASET_NAME}_03_splitpar.log" | grep -iv "^  --" || true
+
+plink2 \
+  --bfile "${OUT_DIR}/${DATASET_NAME}_03_splitpar" \
+  --check-sex max-female-xf="${MAX_FEMALE_XF}" min-male-xf="${MIN_MALE_XF}" \
   --out "${OUT_DIR}/${DATASET_NAME}_03_sexcheck"
 
 echo "✓ Sex check complete: ${OUT_DIR}/${DATASET_NAME}_03_sexcheck.sexcheck"
@@ -82,10 +110,8 @@ echo ""
 echo "=== Identifying sex-discordant samples ==="
 echo ""
 
-# Extract discordant samples (STATUS = "PROBLEM")
-# Standard thresholds:
-#   - Females (reported sex 2): F should be < 0.2 (mostly heterozygous on X)
-#   - Males (reported sex 1): F should be > 0.8 (mostly homozygous on X, haploid)
+# Extract discordant samples (STATUS = "PROBLEM"): reported sex differs from
+# the sex called with the thresholds above, or F lies between them (no call).
 
 awk '
   NR == 1 {
@@ -119,18 +145,69 @@ echo ""
 
 if [ -s "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt" ]; then
   plink2 \
-    --bfile "${DATASET_INPUT}/${DATASET_NAME}_02_filt" \
+    --bfile "${OUT_DIR}/${DATASET_NAME}_03_splitpar" \
     --remove "${OUT_DIR}/${DATASET_NAME}_03_sexcheck_discordant.txt" \
     --make-bed \
     --out "${OUT_DIR}/${DATASET_NAME}_03_filt"
 else
   plink2 \
-    --bfile "${DATASET_INPUT}/${DATASET_NAME}_02_filt" \
+    --bfile "${OUT_DIR}/${DATASET_NAME}_03_splitpar" \
     --make-bed \
     --out "${OUT_DIR}/${DATASET_NAME}_03_filt"
 fi
 
 echo "✓ Sex-filtered dataset: ${OUT_DIR}/${DATASET_NAME}_03_filt.bed/bim/fam"
+rm -f "${OUT_DIR}/${DATASET_NAME}_03_splitpar".{bed,bim,fam}
+
+# ============================================================================
+# STEP 4: Check the conventional thresholds against the observed distribution
+# ============================================================================
+echo ""
+echo "=== Thresholds against the observed X F distribution ==="
+echo ""
+Rscript --vanilla - "${OUT_DIR}/${DATASET_NAME}_03_sexcheck.sexcheck" \
+  "${OUT_DIR}/${DATASET_NAME}_03_sexcheck" "$MAX_FEMALE_XF" "$MIN_MALE_XF" <<'RSCRIPT'
+a <- commandArgs(trailingOnly = TRUE)
+d <- read.table(a[1], header = TRUE, comment.char = "", check.names = FALSE)
+names(d)[1] <- sub("^#", "", names(d)[1])
+lo <- as.numeric(a[3]); hi <- as.numeric(a[4])
+rep_sex <- ifelse(d$PEDSEX == 1, "male", ifelse(d$PEDSEX == 2, "female", "unknown"))
+q <- function(x) if (length(x)) sprintf("%.3f", x) else "NA"
+s <- data.frame(
+  quantity = c("max_female_xf (convention, PLINK 1.9 default)", "min_male_xf (convention, PLINK 1.9 default)",
+               "reported males", "reported females",
+               "reported males with F >= min_male_xf", "reported females with F <= max_female_xf",
+               "samples with F between the thresholds (no call)",
+               "lowest F among reported males called male", "highest F among reported females called female",
+               "discordant (STATUS PROBLEM)"),
+  value = c(lo, hi, sum(rep_sex == "male"), sum(rep_sex == "female"),
+            sum(rep_sex == "male" & d$F >= hi), sum(rep_sex == "female" & d$F <= lo),
+            sum(d$F > lo & d$F < hi),
+            q(min(d$F[rep_sex == "male" & d$SNPSEX == 1])), q(max(d$F[rep_sex == "female" & d$SNPSEX == 2])),
+            sum(d$STATUS == "PROBLEM")))
+write.table(s, paste0(a[2], "_summary.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
+print(s, row.names = FALSE)
+png(paste0(a[2], "_F.png"), width = 1600, height = 1000, res = 200)
+br <- seq(min(-0.2, min(d$F)), max(1.05, max(d$F)) + 0.05, by = 0.025)
+hf <- hist(d$F[rep_sex == "female"], breaks = br, plot = FALSE)
+hm <- hist(d$F[rep_sex == "male"], breaks = br, plot = FALSE)
+ymax <- max(c(hf$counts, hm$counts, 1))
+plot(hf, col = adjustcolor("#D55E00", 0.6), border = NA, ylim = c(0, ymax),
+     xlab = "X-chromosome inbreeding coefficient F", ylab = "Samples",
+     main = "Sex check: X F by reported sex")
+plot(hm, col = adjustcolor("#0072B2", 0.6), border = NA, add = TRUE)
+abline(v = c(lo, hi), lty = 2)
+text(c(lo, hi), ymax * 0.95, c(paste("max female", lo), paste("min male", hi)), pos = c(4, 2), cex = 0.8)
+pr <- d[d$STATUS == "PROBLEM", ]
+if (nrow(pr)) rug(pr$F, col = "black", lwd = 2)
+legend(x = 0.32, y = ymax * 0.6, c("reported female", "reported male", "discordant (rug)"),
+       fill = c(adjustcolor("#D55E00", 0.6), adjustcolor("#0072B2", 0.6), NA),
+       border = NA, lty = c(NA, NA, 1), bty = "n", cex = 0.8)
+invisible(dev.off())
+n_mid <- sum(d$F > lo & d$F < hi)
+cat(if (n_mid == 0) "\nNo sample lies between the thresholds: on these data the convention and the\ndistribution agree, and the calls do not depend on where inside the gap the lines sit.\n"
+    else sprintf("\n%d sample(s) lie between the thresholds: inspect the plot before excluding.\n", n_mid))
+RSCRIPT
 
 # ============================================================================
 # SUMMARY & NEXT STEP

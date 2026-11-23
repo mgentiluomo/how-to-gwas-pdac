@@ -271,6 +271,19 @@ EOF
 say ""
 say "  wrote env/software_versions.md"
 
+# ------------------------------------------------------- 3b. LD regions --
+# The long-range LD region file is written by scripts/dev/make_lrld_bed.sh
+# from the table embedded in it (Price et al. 2008, 24 regions, NCBI36 ->
+# GRCh38), never kept by hand and without network access. Its MD5 goes into
+# the manifest. `make_lrld_bed.sh --derive` re-checks the mapping and is not
+# part of the run.
+say ""
+say "--- Long-range LD regions ---"
+bash scripts/dev/make_lrld_bed.sh data_processed/highLD_b38.bed demo_data/pdac_demo.bim \
+  | tee -a "$MASTER_LOG" || die "make_lrld_bed.sh failed"
+LRLD_MD5="$(md5sum data_processed/highLD_b38.bed | cut -d' ' -f1)"
+say "  md5        $LRLD_MD5"
+
 # ------------------------------------------------------------------ 4. run --
 # Dependency order. Entries may carry arguments; most scripts need none because
 # their defaults already chain together. Two R scripts are absent on purpose:
@@ -313,6 +326,9 @@ STEPS=(
   "04A_association_binary/scripts/03_qq_lambda.R"
   "04A_association_binary/scripts/04_manhattan.R"
   "04A_association_binary/scripts/05_summary.R"
+  # Sensitivity: default --king-cutoff against phenotype-aware pruning, and
+  # PCA pruning at r2 0.1 against 0.2. Repeats the chain downstream of each.
+  "04A_association_binary/scripts/06_sensitivity.R"
 
   # Survival among cases, and whole-genome regression against PLINK 2. Both
   # read the analysis set and covariates written above, so they run here.
@@ -431,6 +447,7 @@ FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo "data release   $DATA_TAG"
   echo "steps          ${#STEPS[@]}"
   echo "4B permutation null   n_perm $GWAS_4B_N_PERM   seed $GWAS_4B_PERM_SEED"
+  echo "long-range LD regions data_processed/highLD_b38.bed, md5 $LRLD_MD5 (scripts/dev/make_lrld_bed.sh)"
   echo
   echo "$PLINK_V"
   echo "$PLINK1_V"
