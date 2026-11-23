@@ -17,6 +17,15 @@
 #   DATA_TAG   release tag to fetch the demonstration data from.
 #              Default: v0.3-data
 #
+# SETTINGS (environment variables)
+#   GWAS_4B_N_PERM      permutations in the Section 4B permutation null
+#                       (04_permutation_null.R). Default: 100
+#   GWAS_4B_PERM_SEED   seed of those permutations. Default: 20261122
+#   Both are written to RUN_MANIFEST.txt. A run with any value other than the
+#   default is NOT a canonical run: the log and the manifest say so, and its
+#   results must not be committed as canonical. Smaller values are for quick
+#   checks only.
+#
 # WHAT IT DOES
 #   1. Refuses to run on a dirty working tree, so the recorded commit is true.
 #   2. Downloads the demonstration data from the release and verifies every
@@ -36,6 +45,18 @@
 set -euo pipefail
 
 DATA_TAG="${1:-v0.3-data}"
+
+# Section 4B permutation null. The defaults are the canonical settings.
+N_PERM_DEFAULT=100
+PERM_SEED_DEFAULT=20261122
+GWAS_4B_N_PERM="${GWAS_4B_N_PERM:-$N_PERM_DEFAULT}"
+GWAS_4B_PERM_SEED="${GWAS_4B_PERM_SEED:-$PERM_SEED_DEFAULT}"
+export GWAS_4B_N_PERM GWAS_4B_PERM_SEED
+NONCANONICAL=""
+if [ "$GWAS_4B_N_PERM" != "$N_PERM_DEFAULT" ] || [ "$GWAS_4B_PERM_SEED" != "$PERM_SEED_DEFAULT" ]; then
+  NONCANONICAL="GWAS_4B_N_PERM=$GWAS_4B_N_PERM GWAS_4B_PERM_SEED=$GWAS_4B_PERM_SEED \
+(canonical: $N_PERM_DEFAULT and $PERM_SEED_DEFAULT)"
+fi
 REPO="mgentiluomo/how-to-gwas-pdac"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -86,12 +107,18 @@ say() { printf '%s\n' "$*" | tee -a "$MASTER_LOG"; }
 die() { printf '\nFAILED: %s\n' "$*" | tee -a "$MASTER_LOG" >&2; exit 1; }
 
 say "==============================================================="
-say " Canonical run"
+if [ -n "$NONCANONICAL" ]; then
+  say " NOT A CANONICAL RUN: $NONCANONICAL"
+  say " Its results must not be committed as the canonical results."
+else
+  say " Canonical run"
+fi
 say " started        $STARTED"
 say " host           $(hostname)"
 say " user           $(whoami)"
 say " project root   $PROJECT_ROOT"
 say " data release   $DATA_TAG"
+say " 4B permutations $GWAS_4B_N_PERM, seed $GWAS_4B_PERM_SEED"
 say "==============================================================="
 
 
@@ -292,6 +319,9 @@ STEPS=(
   "04B_association_survival/01_cox_survival.R"
   "04B_association_survival/02_test_calibration.R"
   "04B_association_survival/03_covariate_cost.R"
+  # Permutation null of the Cox scan: hours, not minutes, at the default
+  # GWAS_4B_N_PERM. Reads the within-set components 01_cox_survival.R wrote.
+  "04B_association_survival/04_permutation_null.R"
   "04C_association_other/01_regenie_wgr.sh"
 
   "05_meta_analysis/scripts/01_stratified_gwas.sh"
@@ -381,8 +411,14 @@ say "  survival  -> $SURV_DST  ($n_surv files, moved out of 4A)"
 # -------------------------------------------------------------- 6. manifest --
 FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
 {
-  echo "Canonical run manifest"
-  echo "======================"
+  if [ -n "$NONCANONICAL" ]; then
+    echo "NOT A CANONICAL RUN: $NONCANONICAL"
+    echo "Do not commit these results as the canonical results."
+    echo "======================================================"
+  else
+    echo "Canonical run manifest"
+    echo "======================"
+  fi
   echo
   echo "started        $STARTED"
   echo "finished       $FINISHED"
@@ -392,6 +428,7 @@ FINISHED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   echo "branch         $BRANCH"
   echo "data release   $DATA_TAG"
   echo "steps          ${#STEPS[@]}"
+  echo "4B permutation null   n_perm $GWAS_4B_N_PERM   seed $GWAS_4B_PERM_SEED"
   echo
   echo "$PLINK_V"
   echo "$PLINK1_V"
@@ -415,5 +452,10 @@ say " Wrote  $MANIFEST"
 say "        env/software_versions.md"
 say "        $LOG_DIR/  (one log per step)"
 say ""
-say " Next:  git status, review the diff, then commit."
+if [ -n "$NONCANONICAL" ]; then
+  say " NOT A CANONICAL RUN: $NONCANONICAL"
+  say " Do not commit these results as the canonical results."
+else
+  say " Next:  git status, review the diff, then commit."
+fi
 say "==============================================================="
