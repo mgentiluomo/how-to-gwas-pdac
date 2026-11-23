@@ -151,7 +151,7 @@ A citable Zenodo archive of the code and demonstration dataset will be linked he
 Two licences apply, by kind of material:
 
 * **MIT** ([`LICENSE`](LICENSE)): the code, that is every script and program in the repository (the shell and R scripts under `scripts/`, `R/`, `docs/` and `sections/*/scripts/`), together with the files that configure and style the website (`_quarto.yml`, `styles.css`).
-* **CC BY 4.0** ([`LICENSE-CC-BY-4.0`](LICENSE-CC-BY-4.0)): the content of the companion website (the text of the `.qmd` and `.md` pages), the figures, and the demonstration dataset (`demo_dataset/` and the files attached to the `v*-data` and `v*-checkpoints` releases).
+* **CC BY 4.0** ([`LICENSE-CC-BY-4.0`](LICENSE-CC-BY-4.0)): the content of the companion website (the text of the `.qmd` and `.md` pages), the figures, the result tables in `sections/*/results/`, the logs of the canonical run (`logs/`, written locally and not tracked in git, and `RUN_MANIFEST.txt`), and the demonstration dataset (`demo_dataset/` and the files attached to the `v*-data` and `v*-checkpoints` releases).
 
 The manuscript itself is not part of this repository; its licence will be that of the published article.
 
