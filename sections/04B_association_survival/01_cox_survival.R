@@ -19,37 +19,44 @@
 #   covariate, an effect on survival (demo_dataset/scripts/04_simulate_phenotype.R).
 #
 # WHAT THE INFLATION IS, AND WHAT IT IS NOT
-#   The primary scan returns a genomic inflation factor above 1 (about 1.11 in
-#   the canonical run of 22 November 2026). An earlier revision of this header
-#   attributed it to confounding, on the grounds that it was flat across
-#   allele frequency and that the Section 4A components were estimated in a
-#   different sample. Diagnostics run on 22 November 2026, on the canonical
-#   run's files, do not support that reading:
+#   The primary scan returns a genomic inflation factor above 1 (1.113 in the
+#   canonical run of 22 November 2026, pdac_demo_04B_summary.txt). None of the
+#   specific lambdas of this scan is a finding. What the scan shows is that
+#   it is null, and that its inflation has to be read against a permutation
+#   null, not against 1.00.
+#
+#   An earlier revision of this header attributed the inflation to the
+#   components borrowed from Section 4A (lambda flat at 1.121 to 1.130, 217
+#   cases, 166 events, 610 Europeans). Those figures are superseded, and the
+#   explanation does not hold: the primary scan already uses components
+#   computed within the survival set and is still inflated. Diagnostics run
+#   on 22 November 2026, on the canonical run's files, show:
 #
 #   - The outcome does not depend on ancestry: neither on ancestry group among
 #     all cases nor on the within-set components or the Section 4A ones.
-#   - Permuting (TIME, EVENT) jointly across individuals, which removes any
-#     link between outcome and genotype or structure while keeping both,
-#     leaves lambda where it is: 20 permutations with the primary covariates
-#     give a mean of about 1.10, and the observed value is an ordinary draw
-#     from that distribution. Confounding cannot survive a permutation; this
+#   - Permuting (TIME, EVENT) jointly across individuals removes any link
+#     between outcome and genotype or structure while keeping both. With SEX,
+#     AGE and ten within-set components, 20 permutations give a null lambda
+#     of about 1.10; with SEX and AGE only, about 1.03. In both models the
+#     observed lambda (1.113 and 1.030) is an ordinary draw from its own
+#     permutation null. Confounding cannot survive a permutation; this
 #     inflation does.
-#   - Lambda is flat across allele frequency in the permuted scans as well, so
+#   - Lambda is flat across allele frequency, observed and permuted, so
 #     flatness does not distinguish confounding from miscalibration here.
-#   - Without principal components lambda is about 1.03. The Wald,
-#     likelihood-ratio and score tests are inflated together
-#     (02_test_calibration.R).
+#   - The Wald, likelihood-ratio and score tests are inflated together
+#     (02_test_calibration.R), so the Wald test is not the cause.
 #
-#   The inflation is therefore a small-sample property of the Cox tests with
-#   this covariate set (13 parameters at about 13 events per parameter), not
-#   population structure and not signal. Two consequences for reporting:
-#   lambda here must be read against a permutation null rather than against
-#   1.00, and a single lambda from about 240,000 correlated variants is noisy
-#   (the standard deviation across permutations is about 0.03, several times
-#   the value an independence formula gives). Remedies are fewer covariates
-#   or permutation-calibrated thresholds, not more components.
+#   The inflation is therefore a small-sample property of the Cox tests at
+#   this event count with this covariate set (13 parameters, 12.8 events per
+#   parameter), not population structure and not signal. The ten components
+#   add about 0.07 to the null lambda and buy no reduction in confounding,
+#   because there is none to remove. A single lambda from about 240,000
+#   correlated variants is also noisy: the standard deviation across
+#   permutations is about 0.03, several times the value an independence
+#   formula gives. The corrective is a permutation-calibrated threshold, or
+#   fewer covariates, not more components.
 #   Diagnostic scripts and outputs: ../diagnostics_4B_20261122/ (outside the
-#   repository); summary in the run notes.
+#   repository, not yet part of the canonical run).
 #
 #   The components are still recomputed inside the survival set, because the
 #   survival set is defined by the intersection of European assignment, case
