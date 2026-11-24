@@ -3,25 +3,25 @@ SECTION 8: REPLICATES OF THE SIMULATED PHENOTYPE
 realised ORs on all 1,461 (mean over replicates): ABO 2.494, TERT 1.515, 13q22.1 1.811
 
 POWER, realised (95% CI) against predicted
-  G1  eur_4a  predicted  98.5%  realised  83.0% (77.2 to 87.6)
+  G1  eur_4a  predicted  98.5%  realised  86.5% (81.1 to 90.5)
   G2  eur_4a  predicted   1.7%  realised   0.0% (0.0 to 1.9)
-  G3  eur_4a  predicted  46.7%  realised  12.5% (8.6 to 17.8)
+  G3  eur_4a  predicted  46.7%  realised  11.0% (7.4 to 16.1)
   G1  meta    predicted 100.0%  realised 100.0% (98.1 to 100.0)
   G2  meta    predicted  26.2%  realised   5.0% (2.7 to 9.0)
   G3  meta    predicted  99.0%  realised  95.0% (91.0 to 97.3)
 
 WINNER'S CURSE: estimated / generative OR (mean)
-  G1  eur_4a  all 0.997   given P < 5e-8 1.040 (n 166)   not significant 0.788
-  G2  eur_4a  all 0.879   given P < 5e-8 NA (n 0)   not significant 0.879
-  G3  eur_4a  all 1.003   given P < 5e-8 1.272 (n 25)   not significant 0.964
+  G1  eur_4a  all 0.965   given P < 5e-8 0.997 (n 173)   not significant 0.761
+  G2  eur_4a  all 0.877   given P < 5e-8 NA (n 0)   not significant 0.877
+  G3  eur_4a  all 0.973   given P < 5e-8 1.232 (n 22)   not significant 0.941
   G1  meta    all 1.005   given P < 5e-8 1.005 (n 200)   not significant NA
   G2  meta    all 0.962   given P < 5e-8 1.125 (n 10)   not significant 0.954
   G3  meta    all 1.010   given P < 5e-8 1.019 (n 190)   not significant 0.829
 
 ABF 95% CREDIBLE SETS: coverage of the causal variant
-  G1  eur_4a  all 0.970   region significant 0.966 (n 175)   median size 11   causal ranked first 0.42
-  G2  eur_4a  all 0.955   region significant NA (n 0)   median size 187   causal ranked first 0.17
-  G3  eur_4a  all 1.000   region significant 1.000 (n 25)   median size 72.5   causal ranked first 0.99
+  G1  eur_4a  all 0.970   region significant 0.966 (n 178)   median size 11   causal ranked first 0.47
+  G2  eur_4a  all 0.980   region significant NA (n 0)   median size 187   causal ranked first 0.23
+  G3  eur_4a  all 1.000   region significant 1.000 (n 22)   median size 72.5   causal ranked first 0.97
   G1  meta    all 1.000   region significant 1.000 (n 200)   median size 4   causal ranked first 0.84
   G2  meta    all 0.995   region significant 1.000 (n 10)   median size 49   causal ranked first 0.81
   G3  meta    all 1.000   region significant 1.000 (n 190)   median size 1   causal ranked first 1.00
@@ -32,7 +32,7 @@ I-SQUARED AT THE CAUSAL VARIANTS (identical effect in the three strata by constr
   G3  median 0.0%  95% range 0.0 to 76.2%  I2 = 0 in 0.62  I2 > 50% in 0.14  P_het < 0.05 in 0.07
 
 LAMBDA, LD-pruned set
-  lambda_eur_4a        mean 1.0420  sd 0.0086  2.5-97.5% 1.0260 to 1.0600
+  lambda_eur_4a        mean 1.0110  sd 0.0090  2.5-97.5% 0.9936 to 1.0280
   lambda_meta          mean 1.0010  sd 0.0086  2.5-97.5% 0.9855 to 1.0190
   lambda_eur_stratum   mean 1.0110  sd 0.0090  2.5-97.5% 0.9933 to 1.0280
   lambda_afr           mean 1.0260  sd 0.0109  2.5-97.5% 1.0060 to 1.0490

@@ -111,7 +111,9 @@ tables <- list(
   list("rep", S("08_replicates", "pdac_demo_08_finemap.tsv"), "rows", c("locus", "analysis"), optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_i2.tsv"), "rows", "locus", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_lambda_summary.tsv"), "rows", "lambda", optional = TRUE),
-  list("rep", S("08_replicates", "pdac_demo_08_expected_se.tsv"), "rows", "locus", optional = TRUE)
+  list("rep", S("08_replicates", "pdac_demo_08_expected_se.tsv"), "rows", "locus", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_genotype_r.tsv"), "rows", c("stratum", "pair"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_tert_adjusted.tsv"), "rows", c("data", "model"), optional = TRUE)
 )
 for (t in tables) {
   sec <- t[[1]]; f <- t[[2]]

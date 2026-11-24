@@ -1,20 +1,53 @@
-SECTION 8: STANDARD ERROR OF THE CAUSAL LOG OR, EUROPEAN SCAN
-200 replicates; power at P < 5e-08 with the generative OR
+SECTION 8: STANDARD ERROR, POWER AND BIAS OF THE CAUSAL ESTIMATES, EUROPEAN SCAN
+200 replicates; European set 611 individuals; scan model SEX, AGE, PC1-PC2; P < 5e-08
 
-          OR  Section 3B formula           expected information         realised SE    realised power
-  G1    2.60  SE 0.1252  power  98.5%      SE 0.1475  power  84.8%      0.1504 (sd 0.1532)   83.0%
-  G2    1.50  SE 0.1216  power   1.7%      SE 0.1297  power   1.0%      0.1255 (sd 0.1133)    0.0%
-  G3    1.97  SE 0.1263  power  46.7%      SE 0.1451  power  21.8%      0.1462 (sd 0.1392)   12.5%
+1. STANDARD ERROR OF THE LOG OR AND POWER
+   (a) Section 3B formula  (b) expected information, joint generative model
+   (c) expected information, model fitted by the scan (one locus, other loci omitted)
+
+  ABO           OR 2.60  SE (a) 0.1252  (b) 0.1475  (c) 0.1429  realised 0.1442 (SD of log OR 0.1425)
+                power (a)  98.5%  (b)  84.8%  (c)  78.7%  realised  86.5%;  OR of the fitted model (c) 2.442, realised mean log OR 0.910 (generative 0.956); realised z mean 6.29, SD 0.81
+  TERT/CLPTM1L  OR 1.50  SE (a) 0.1216  (b) 0.1297  (c) 0.1201  realised 0.1207 (SD of log OR 0.1051)
+                power (a)   1.7%  (b)   1.0%  (c)   0.1%  realised   0.0%;  OR of the fitted model (c) 1.319, realised mean log OR 0.269 (generative 0.405); realised z mean 2.23, SD 0.86
+  13q22.1       OR 1.97  SE (a) 0.1263  (b) 0.1451  (c) 0.1411  realised 0.1416 (SD of log OR 0.1331)
+                power (a)  46.7%  (b)  21.8%  (c)  20.5%  realised  11.0%;  OR of the fitted model (c) 1.921, realised mean log OR 0.641 (generative 0.678); realised z mean 4.51, SD 0.83
+
+2. CORRELATION OF RISK-ALLELE COUNTS WITHIN STRATA (non-missing genotypes)
+  eur  ABO x TERT/CLPTM1L           n  606  r -0.089
+  eur  ABO x 13q22.1                n  607  r +0.028
+  eur  TERT/CLPTM1L x 13q22.1       n  606  r -0.021
+  afr  ABO x TERT/CLPTM1L           n  284  r +0.072
+  afr  ABO x 13q22.1                n  283  r +0.012
+  afr  TERT/CLPTM1L x 13q22.1       n  283  r +0.100
+  eas  ABO x TERT/CLPTM1L           n  309  r +0.062
+  eas  ABO x 13q22.1                n  313  r +0.099
+  eas  TERT/CLPTM1L x 13q22.1       n  312  r +0.071
+
+3. TERT/CLPTM1L, EUROPEAN SET: estimated / generative OR (1.50)
+  replicates          unadjusted        OR ratio 0.878  log OR 0.269 (generative 0.405)
+  released_phenotype  unadjusted        OR ratio 0.776  log OR 0.152 (generative 0.405)
+  replicates          adjusted_abo      OR ratio 0.970  log OR 0.368 (generative 0.405)
+  released_phenotype  adjusted_abo      OR ratio 0.835  log OR 0.225 (generative 0.405)
+  replicates          adjusted_abo_13q  OR ratio 1.001  log OR 0.399 (generative 0.405)
+  released_phenotype  adjusted_abo_13q  OR ratio 0.836  log OR 0.226 (generative 0.405)
 
 HOW TO READ THIS
-  The Section 3B formula gives the information at the null with every
-  individual at the average risk. Under the generator, risk varies with the
-  three loci, sex and age, and individuals far from a probability of one
-  half carry less information. The expected-information standard error
-  matches the realised one; the formula's is smaller, so its power is
-  optimistic. The expected-information power assumes z ~ N(log OR / SE, 1).
-  Across replicates the realised z has the mean and SD below; an SD under 1
-  puts less mass above the threshold when the mean is below it.
-  G1   realised z mean 6.23, SD 0.83
-  G2   realised z mean 2.14, SD 0.89
-  G3   realised z mean 4.57, SD 0.83
+  (a) is the information at the null with every individual at the average
+  risk. Under the generator risk varies with the loci, sex and age, and
+  individuals far from risk one half carry less information: (b) and (c) are
+  larger than (a). (c) is the standard error of the model the scan fits; its
+  coefficient is the limit of that model, which omits the other causal loci
+  and so differs from the generative log OR (non-collapsibility, and chance
+  correlation with the omitted loci, section 2). The realised z has SD below
+  1 mainly because the Wald standard error of a logistic coefficient grows
+  with the estimate (correlation of estimate and SE below), so z varies less
+  than the estimate; power computed as if z ~ N(mean, 1) is then too low
+  when the mean is above the threshold and too high when it is below.
+  Section 3: a negative correlation between the TERT and ABO risk alleles
+  in the European set biases the single-locus TERT estimate toward the null.
+  Over the replicates, adjusting for ABO and 13q22.1 removes the shortfall;
+  in the released phenotype it removes part of it, the rest being the
+  sampling error of one draw.
+  ABO           correlation of estimate and SE over replicates 0.854
+  TERT/CLPTM1L  correlation of estimate and SE over replicates 0.358
+  13q22.1       correlation of estimate and SE over replicates 0.814

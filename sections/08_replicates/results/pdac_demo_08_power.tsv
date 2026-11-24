@@ -1,7 +1,7 @@
 locus	analysis	replicates	predicted_power_mean	realised_power	realised_l95	realised_u95
-G1	eur_4a	200	0.985	0.83	0.7718	0.8757
+G1	eur_4a	200	0.985	0.865	0.8107	0.9055
 G2	eur_4a	200	0.0173	0	0	0.01885
-G3	eur_4a	200	0.467	0.125	0.08612	0.178
+G3	eur_4a	200	0.467	0.11	0.07377	0.1609
 G1	meta	200	1	1	0.9812	1
 G2	meta	200	0.2619	0.05	0.02738	0.08958
 G3	meta	200	0.99	0.95	0.9104	0.9726

@@ -25,6 +25,13 @@
 #   lambda, as agreed) plus every variant within 350 kb of each causal
 #   variant (for power, effect sizes and fine-mapping).
 #
+# HISTORY
+#   Until 24 November 2026 (results of 01e7f98) the European scan passed all
+#   20 component columns of pdac_demo_04A_covar.txt: k was read and not used.
+#   Found by the manuscript session (checks/diag_replicates_20261124). Fixed:
+#   the scan now uses PC1..PCk; the strata of the meta-analysis use the
+#   components of their own covar.txt, as before.
+#
 # OUTPUT (sections/08_replicates/results/)
 #   pdac_demo_08_per_replicate.tsv   one row per replicate x locus x analysis
 #   pdac_demo_08_lambda.tsv          one row per replicate
@@ -74,6 +81,11 @@ system2("plink2", c("--bfile", "demo_data/pdac_demo", "--extract", file.path(tmp
 hdr <- names(read.table(file.path(tmp, "c.raw"), header = TRUE, check.names = FALSE, nrows = 1))
 counted <- sapply(CAUSAL, function(id) sub(".*_", "", grep(paste0("^", gsub("([.:])", "\\\\\\1", id), "_"), hdr, value = TRUE)))
 cov_e <- rd(EUR_COV)
+# the European scan of Section 4A adjusts for SEX, AGE and PC1..PCk, k chosen by
+# 04A step 01b; the covariate file carries all 20 extracted components
+pc_all <- grep("^PC[0-9]+$", names(cov_e), value = TRUE)
+if (k < 1 || k > length(pc_all)) stop("chosen number of components ", k, " outside 1..", length(pc_all))
+cov_e <- cov_e[, c(setdiff(names(cov_e), pc_all), paste0("PC", seq_len(k)))]
 cov_s <- lapply(setNames(STRATA, STRATA), function(g) rd(file.path("results/meta", g, "covar.txt")))
 
 lam <- function(p) { p <- p[is.finite(p) & p > 0]; median(qchisq(p, 1, lower.tail = FALSE)) / qchisq(0.5, 1) }
@@ -163,7 +175,7 @@ one <- function(f) {
 }
 
 t0 <- Sys.time()
-cat(sprintf("%d replicates, %d in parallel, %d threads each, %d variants (%d pruned + windows)\n",
+cat(sprintf("European scan: SEX, AGE, PC1-PC%d\n", k)); cat(sprintf("%d replicates, %d in parallel, %d threads each, %d variants (%d pruned + windows)\n",
             length(reps), N_PAR, THREADS, length(V), length(pruned)))
 res <- mclapply(reps, function(f) tryCatch(one(f), error = function(e) e), mc.cores = N_PAR, mc.preschedule = FALSE)
 bad <- which(sapply(res, inherits, "error"))

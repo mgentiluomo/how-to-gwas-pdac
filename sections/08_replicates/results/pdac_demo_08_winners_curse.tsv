@@ -1,7 +1,7 @@
 locus	analysis	generative_or	mean_ratio_all	median_ratio_all	n_significant	mean_ratio_significant	median_ratio_significant	mean_logratio_significant	mean_ratio_not_significant
-G1	eur_4a	2.6	0.997	0.9842	166	1.04	1.016	1.033	0.7884
-G2	eur_4a	1.5	0.8787	0.8753	0	NA	NA	NA	0.8787
-G3	eur_4a	1.97	1.003	0.9902	25	1.272	1.289	1.352	0.964
+G1	eur_4a	2.6	0.9649	0.9519	173	0.9967	0.9734	0.9895	0.7615
+G2	eur_4a	1.5	0.8774	0.8773	0	NA	NA	NA	0.8774
+G3	eur_4a	1.97	0.9727	0.9647	22	1.232	1.254	1.305	0.9406
 G1	meta	2.6	1.005	0.996	200	1.005	0.996	1	NA
 G2	meta	1.5	0.9623	0.9646	10	1.125	1.118	1.289	0.9538
 G3	meta	1.97	1.01	1.01	190	1.019	1.018	1.023	0.8291
