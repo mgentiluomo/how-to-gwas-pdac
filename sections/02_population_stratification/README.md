@@ -25,12 +25,12 @@ principal components used as covariates in Section 4A.
 
 | | |
 |---|---|
-| Variants after LD pruning | 222,338 of 414,662 |
-| Variance explained, PC1 / PC2 / PC3 | 47.7% / 38.3% / 3.5% |
-| QC-passed by group | 611 EUR, 317 EAS, 287 AFR |
+| Variants after LD pruning, pooled sample | 121,052 of the 262,314 that entered pruning |
+| Share of the variance of the extracted components, PC1 / PC2 / PC3 | 50.2% / 39.5% / 2.2% |
+| QC-passed by group | 611 EUR, 316 EAS, 286 AFR |
 | Analysis set | 611 European: 219 cases, 392 controls |
 | Effective sample size | 562.0 |
-| Variance explained within EUR, PC1 / PC2 | 23.9% / 11.8% |
+| Within EUR, share of the variance of the 20 extracted components, PC1 / PC2 | 14.6% / 6.8% |
 
 ## Conventions
 

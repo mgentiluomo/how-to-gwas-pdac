@@ -36,15 +36,15 @@ where it demonstrably is.
 | Region | chr9:132.9–133.6 Mb, 204 variants |
 | Prior variance on the log odds ratio | W = 0.04; coverage 95% |
 | European set, credible set size | 11 variants spanning 12.2 kb |
-| European set, top variant | `9:133266804:G:T`, posterior probability 0.24, **not the causal one** |
-| European set, causal variant | ranked **third**, posterior probability 0.13 |
+| European set, top variant | `9:133266804:G:T`, posterior probability 0.25, **not the causal one** |
+| European set, causal variant | ranked **third**, posterior probability 0.14 |
 | Three strata combined, credible set size | 9 variants |
-| Three strata combined, top variant | `9:133273682:A:T`, posterior probability 0.43, **the causal one** |
+| Three strata combined, top variant | `9:133273682:A:T`, posterior probability 0.38, **the causal one** |
 | Scored against the simulated truth | present in both sets; promoted from third to first by combining ancestries |
 
 The section's central result is the change in **ranking**, not in size: the set
 shrinks only from eleven variants to nine, while the causal variant moves from third
-place to first and its posterior nearly doubles. Linkage disequilibrium differs
+place to first and its posterior rises from 0.14 to 0.38. Linkage disequilibrium differs
 between populations, so variants that cannot be distinguished within one ancestry are
 distinguished by disagreement between ancestries. More samples of the same ancestry
 would have sharpened the P value without necessarily changing the order.

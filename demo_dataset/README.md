@@ -101,8 +101,8 @@ precisely why the generative effects remain recoverable from the sample.
 **The risk allele is the reference allele**, the first of the two in the
 `chr:pos:ref:alt` identifier, and at *ABO* it is the **major** allele at
 frequency 0.61. This matters when reading any association output: PLINK reports
-the effect of the other allele, so at *ABO* it prints an odds ratio near 0.43,
-whose reciprocal is 2.3. A reader who compares 0.43 with the generative 2.60
+the effect of the other allele, so at *ABO* it prints an odds ratio near 0.44,
+whose reciprocal is 2.3. A reader who compares 0.44 with the generative 2.60
 without knowing this will conclude the dataset is wrong. Allele orientation is
 listed in Section 5 among the most treacherous errors in a meta-analysis, and
 this is what it looks like in practice.
@@ -117,15 +117,15 @@ concealed.
 The second is the second most replicated pancreatic cancer locus, at an effect
 size at the upper end of what the literature reports for cancer susceptibility
 variants. The European scan misses it, and so does the meta-analysis. Combining
-the three strata raises its power from 2% to 29% and moves it from *P* = 0.16 to
-*P* = 0.02, a large relative gain that still leaves it far short of genome-wide
+the three strata raises its power from 2% to 29% and moves it from *P* = 0.20 to
+*P* = 0.04, a large relative gain that still leaves it far short of genome-wide
 significance.
 
 That is a more useful lesson than a rescue would have been. The effect is known
 to be real, because it was simulated, and the study still does not find it in
 either analysis. Meta-analysis is not a remedy for an underpowered scan; it is
 the only lever available, and this dataset shows how much more of it would be
-needed. Note also that the East Asian stratum alone reaches *P* = 0.007 while
+needed. Note also that the East Asian stratum alone reaches *P* = 0.006 while
 the combined result is weaker, because the African stratum happens to point the
 other way: with roughly 350 people per group, that is sampling noise, and it is
 worth showing rather than hiding.
@@ -178,22 +178,38 @@ the guide obtains and which is subject to selection bias. Note that the lead
 variant of the scan is not the causal variant: the causal one ranks third in the
 European credible set and first once the strata are combined.
 
+<!-- Values of the canonical run at d61125d, finished 2026-11-23, read from
+../facts_20261123.tsv (written by scripts/dev/write_facts_tsv.R). Keys, in the
+order of the rows:
+qc.09_qc_counts.maf_filter.samples; qc.09_qc_counts.maf_filter.variants;
+assoc.04a_lambda.cases, assoc.04a_lambda.controls;
+pca.02_analysis_set.analysis_set_effective_n; assoc.04a_lambda.variants_tested;
+assoc.04a_lambda.lambda_gc; assoc.n_p_lt_5e8; assoc.lead.id; assoc.lead.p;
+assoc.causal.abo.p, assoc.causal.abo.or_risk_allele (PLINK prints its reciprocal);
+assoc.causal.tert.p; meta.causal.tert.p; meta.causal.abo.p,
+meta.causal.abo.or_risk_fixed; finemap.eur.credible_set_size,
+finemap.eur.causal_rank; finemap.meta.credible_set_size, finemap.meta.causal_rank.
+The four power values have no key: they are printed in
+sections/03B_statistical_power/results/pdac_demo_07_power_summary.txt. -->
+
 | Quantity | Value |
 |---|---|
-| Samples after quality control | 1,215 |
-| Variants after quality control | 414,662 |
+| Samples after quality control | 1,213 |
+| Variants after quality control | 414,667 |
 | European analysis set | 219 cases, 392 controls |
 | Effective sample size | 562 |
-| Genomic inflation factor | 1.016 |
+| Variants tested in the European scan | 405,004 |
+| Genomic inflation factor | 1.006 |
 | Variants at *P* < 5e-8 | 11, all at *ABO* |
 | Lead variant | `9:133266804:G:T` |
-| *P* at the lead variant | 1.4e-9 |
-| Causal variant `9:133273682:A:T` | *P* = 4.4e-9, OR 0.43 |
+| *P* at the lead variant | 2.0e-9 |
+| Causal variant `9:133273682:A:T` | *P* = 5.1e-9, OR 0.44 (2.27 per risk allele) |
+| *P* at TERT/CLPTM1L, Europeans | 0.20 |
+| *P* at TERT/CLPTM1L, three strata | 0.037 |
+| Causal variant, three strata | *P* = 1.2e-18, OR 2.40 per risk allele |
 | Power at *ABO*, analysis set | 99.1% |
-| *P* at TERT/CLPTM1L, Europeans | 0.16 |
-| *P* at TERT/CLPTM1L, three strata | 0.02 |
 | Power at TERT/CLPTM1L, analysis set | 2.0% |
-| Power at TERT/CLPTM1L, three strata | 28.6% |
+| Power at TERT/CLPTM1L, three strata | 28.5% |
 | *ABO* credible set, Europeans | 11 variants, causal one ranked 3rd |
 | *ABO* credible set, three strata | 9 variants, causal one ranked 1st |
 

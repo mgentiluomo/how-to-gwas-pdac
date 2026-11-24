@@ -56,7 +56,7 @@ welcome.
 | Injected artefacts | 8,480 low-call-rate variants, 25 low-call-rate samples, 4 sex discordances |
 | Causal variants | two: *ABO* (9q34.2) at OR 2.60, and TERT/CLPTM1L (5p15.33) at OR 1.50; no polygenic background |
 | Cases and controls | 542 and 919 overall; 239 and 523 among Europeans before QC |
-| After QC | 1,215 individuals retained (83.2%) and 414,662 variants retained (96.4%) |
+| After QC | 1,213 individuals retained (83.0%) and 414,667 variants retained (96.4%) |
 | European analysis set | 219 cases, 392 controls; effective sample size 562 |
 
 Genotypes and phenotypes are not stored in git, see `.gitignore`. Download them with `bash scripts/dev/download_demo_data.sh`, or from the [release page](https://github.com/mgentiluomo/how-to-gwas-pdac/releases/tag/v0.3-data). Full provenance, construction scripts and the didactic rationale for the dataset design are in [`demo_dataset/README.md`](demo_dataset/README.md).
