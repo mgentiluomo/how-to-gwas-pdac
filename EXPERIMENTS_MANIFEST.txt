@@ -3,9 +3,9 @@ Experiments manifest (Section 8 and 4B step 06; not the canonical run)
 
 mode           manifest only: no step was run by this invocation; the
                checksums describe the result files found in the section folders
-written        2026-11-24T17:09:04Z
+written        2026-11-24T17:13:15Z
 host           bio-plink3
-commit         91236e681b9c2e598dcb93e0b5c1ddbc2287101a
+commit         0be47f82aade8fe69d01fcbaab3e07be3903215e
 working tree   clean
 branch         main
 
