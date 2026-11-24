@@ -3,9 +3,9 @@ Experiments manifest (Section 8 and 4B step 06; not the canonical run)
 
 mode           manifest only: no step was run by this invocation; the
                checksums describe the result files found in the section folders
-written        2026-11-24T16:29:45Z
+written        2026-11-24T17:09:04Z
 host           bio-plink3
-commit         c3162f50afb8d8b0a3a6785bcc16a0ab8c0889b1
+commit         91236e681b9c2e598dcb93e0b5c1ddbc2287101a
 working tree   clean
 branch         main
 
@@ -27,6 +27,7 @@ steps
   sections/08_replicates/scripts/08_expected_gain.R
   sections/08_replicates/scripts/09_set_composition.R
   sections/08_replicates/scripts/10_simulated_detectable_or.R
+  sections/08_replicates/scripts/11_plink2_variant_set.R
   sections/04B_association_survival/06_random_covariate_null.R
 
 seeds and sizes
@@ -56,6 +57,7 @@ result checksums (MD5)
   2b59417e7e4d77d19d32b093fc59d309  sections/08_replicates/results/pdac_demo_08_genotype_r.tsv
   b78861c39017ab320de771faeed750cd  sections/08_replicates/results/pdac_demo_08_i2.png
   161ecc58351afd8da3f2b69755748495  sections/08_replicates/results/pdac_demo_08_i2.tsv
+  aa253a092a86b2b9b5330696cde2e71d  sections/08_replicates/results/pdac_demo_08_label_rule.tsv
   e6ebb1409c06e7217ae72c96547432c1  sections/08_replicates/results/pdac_demo_08_lambda.tsv
   28901c0f13f2b485340ce88f1dd4b3e5  sections/08_replicates/results/pdac_demo_08_lambda_summary.tsv
   d210bbf9e47911e7f64d844c0dc1273a  sections/08_replicates/results/pdac_demo_08_npc_per_replicate.tsv
@@ -65,13 +67,16 @@ result checksums (MD5)
   4000f0dbb15579a01a62f79dbe90a0fa  sections/08_replicates/results/pdac_demo_08_npc_summary.tsv
   51b2c3ab88cf420457bac40e608f6253  sections/08_replicates/results/pdac_demo_08_npc_summary.txt
   342f5363c846b54de30bcfc1997ca504  sections/08_replicates/results/pdac_demo_08_per_replicate.tsv
+  cebc2cf14f298e2715ab33c68bd590f7  sections/08_replicates/results/pdac_demo_08_plink2_variant_set.tsv
+  6880388732cc97243304d0effdfc5483  sections/08_replicates/results/pdac_demo_08_plink2_variant_set.txt
   5594c875572c58507214ddac46d1e23d  sections/08_replicates/results/pdac_demo_08_power.tsv
   b57cc7dc9cb843646bd2cf63e0d8ee12  sections/08_replicates/results/pdac_demo_08_randcov_per_replicate.tsv
   37dc7b05fed15c4b2a77adf783aee9d2  sections/08_replicates/results/pdac_demo_08_randcov_summary.tsv
   1c7c8cd16d396469c3e776653a99d304  sections/08_replicates/results/pdac_demo_08_randcov_summary.txt
   1ef72033108cf5df317de7bfcf9d7366  sections/08_replicates/results/pdac_demo_08_realised.tsv
   1dab58b6e47b89f9cfdb9eb1aafcd1c9  sections/08_replicates/results/pdac_demo_08_set_composition.tsv
-  fb1965ec65d8b8b08c0a46962a646864  sections/08_replicates/results/pdac_demo_08_set_composition.txt
+  b33fd5035fa04d93b7aab8a1a8b7405e  sections/08_replicates/results/pdac_demo_08_set_composition.txt
+  92b62a4fd9a1016b312d601f59dad6a9  sections/08_replicates/results/pdac_demo_08_set_composition_by_project.tsv
   c7a30019da15548e1281ecc0c1bf67d4  sections/08_replicates/results/pdac_demo_08_simulated_detectable_or.tsv
   1bab7672565c1fdb7556fe6418c8b433  sections/08_replicates/results/pdac_demo_08_simulated_detectable_or.txt
   77d467de18922477a1a37f28cf8d1b8b  sections/08_replicates/results/pdac_demo_08_simulated_power_grid.tsv
