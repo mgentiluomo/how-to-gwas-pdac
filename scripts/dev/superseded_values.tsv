@@ -81,3 +81,12 @@ getting_started.qmd	F	  ✓ METAL	METAL in the setup example output; no section 
 sections/04A_association_binary/*.qmd	F	odds ratios between 1.1 and 1.5	unsourced effect-size range; replaced by Klein et al. 2018
 sections/04A_association_binary/*.qmd	E	it is simply not powered,	now "not powered for effects of realistic size"
 sections/01B_genotyping_qc/*.qmd	F	canonical QC tutorial for the website	removed sentence
+sections/04B_association_survival/*.qmd	F	1.113	Cox scan lambda, run of 22 Nov 2026 (final run 1.1143)
+sections/04B_association_survival/*.qmd	F	1.121	Cox scan lambda with Section 4A components, before the within-set components
+sections/04B_association_survival/*.qmd	F	238,868	Cox scan variants, before the final run
+sections/04B_association_survival/*.qmd	F	166 events	Cox scan events, before the final run (167)
+sections/08_replicates/*.qmd	F	83.0%	ABO realised power, European scan with all 20 components (01e7f98)
+sections/08_replicates/*.qmd	F	12.5%	13q22.1 realised power, European scan with all 20 components (01e7f98)
+sections/08_replicates/*.qmd	F	1.042	mean lambda of the European scan with all 20 components (01e7f98)
+sections/08_replicates/*.qmd	F	1.272	13q22.1 winner's curse given significance, 20 components (01e7f98)
+sections/08_replicates/*.qmd	F	1.040	ABO winner's curse given significance, 20 components (01e7f98)

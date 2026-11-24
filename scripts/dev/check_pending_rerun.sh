@@ -4,7 +4,7 @@
 # check_pending_rerun.sh
 #
 # Pre-publication check that the pages show the figures of the canonical run.
-# Three checks, each of which can fail the script:
+# Checks, each of which can fail the script:
 #
 #   1. Markers. No page (.qmd or .md) may contain "PENDING RERUN", a figure not yet
 #      filled in from the canonical run.
@@ -14,14 +14,18 @@
 #      the old number must be gone too.
 #   2b. Forbidden characters. No page (.qmd or .md) may contain an em dash
 #      (U+2014), which the house style excludes.
+#   2c. Reachable pages. Every sections/**/*.qmd page must be listed in the
+#      sidebar of _quarto.yml, or excluded from rendering there ("!path").
+#      A page that renders but is absent from the sidebar is published and
+#      unreachable.
 #   3. Inline figures. Pages that read their figures from the results files
 #      (`r ...` with R/facts.R) are knitted into a temporary directory. A
 #      missing results file, a renamed key or an expression left unevaluated
 #      fails the check. Needs R with knitr; skipped with a warning otherwise.
 #
 # USAGE
-#   bash scripts/dev/check_pending_rerun.sh            # all three checks
-#   bash scripts/dev/check_pending_rerun.sh --no-knit  # checks 1 and 2 only
+#   bash scripts/dev/check_pending_rerun.sh            # all checks
+#   bash scripts/dev/check_pending_rerun.sh --no-knit  # all but check 3
 #
 # EXIT STATUS
 #   0  all checks run passed; the pages are safe to render and publish
@@ -113,6 +117,23 @@ if [ -n "$HITS" ]; then
   FAIL=1
 else
   printf 'OK: no em dashes in .qmd or .md files.\n'
+fi
+
+# ---------------------------------------------------- 2c. reachable pages ----
+mapfile -t SECTION_PAGES < <(printf '%s\n' "${PAGES[@]}" | grep '^sections/.*\.qmd$' || true)
+N_MISSING=0
+for p in "${SECTION_PAGES[@]}"; do
+  if ! grep -qE "^[[:space:]]*-[[:space:]]*(href:[[:space:]]*)?\"?$p\"?[[:space:]]*$" _quarto.yml &&
+     ! grep -qF -- "\"!$p\"" _quarto.yml; then
+    printf '%s\n    not in the sidebar of _quarto.yml and not excluded from rendering\n' "$p"
+    N_MISSING=$((N_MISSING + 1))
+  fi
+done
+if [ "$N_MISSING" -gt 0 ]; then
+  printf 'FAILED: %s section page(s) would render without a sidebar entry.\n\n' "$N_MISSING" >&2
+  FAIL=1
+else
+  printf 'OK: all %s section pages are in the sidebar of _quarto.yml.\n' "${#SECTION_PAGES[@]}"
 fi
 
 # ------------------------------------------------------ 3. inline figures ----

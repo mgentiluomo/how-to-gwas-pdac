@@ -49,6 +49,8 @@ website:
       - section: "Association testing"
         contents:
           - sections/04A_association_binary/04A_association_binary.qmd
+          - sections/04B_association_survival/04B_association_survival.qmd
+          - sections/04C_association_other/04C_association_other.qmd
       - section: "Combining studies"
         contents:
           - sections/05_meta_analysis/05_meta_analysis.qmd
@@ -58,6 +60,9 @@ website:
       - section: "What sets the resolution"
         contents:
           - sections/07_linkage_disequilibrium/07_linkage_disequilibrium.qmd
+      - section: "How often, not only whether"
+        contents:
+          - sections/08_replicates/08_replicates.qmd
       # Manuscript sections will be added here as they are drafted:
       # - section: "Pre-GWAS"
       #   contents:

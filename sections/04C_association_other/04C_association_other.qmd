@@ -1,0 +1,157 @@
+---
+title: "Association testing: relatedness modelled, not removed"
+description: "Compare pruning related individuals with keeping them in a whole-genome regression, on the same variants"
+---
+
+```{r}
+#| include: false
+source(file.path(Sys.getenv("QUARTO_PROJECT_DIR", "../.."), "R/facts.R"))
+S  <- "04C_association_other"
+cmp <- tab(S, "pdac_demo_regenie_comparison.tsv")
+cmp$key <- substr(cmp$analysis, 1, 1); rownames(cmp) <- cmp$key
+if (!identical(sort(cmp$key), c("A", "B", "C", "D"))) stop("expected analyses A to D")
+g <- function(k, col) cmp[k, col]
+n_of <- function(k) g(k, "cases") + g(k, "controls")
+rm_cases <- g("B", "cases") - g("A", "cases"); rm_ctrl <- g("B", "controls") - g("A", "controls")
+n_var <- unique(cmp$variants); if (length(n_var) != 1) stop("analyses A to D differ in variant count")
+ABO <- "9:133273682:A:T"
+# Section 4A primary scan, for the contrast with analysis A
+S4 <- "04A_association_binary"
+lam4a <- val(S4, "pdac_demo_04A_lambda.tsv", "lambda_gc")
+var4a <- val(S4, "pdac_demo_04A_lambda.tsv", "variants_tested")
+k4a   <- as.integer(read.table(res(S4, "pdac_demo_04A_npc_chosen.txt"))[1, 2])
+sc4a  <- tab(S4, "pdac_demo_04A_npc_scans.tsv")
+th4a  <- tab(S4, "pdac_demo_04A_top_hits.tsv"); p4a <- th4a$P[th4a$ID == ABO]
+sr <- tab(S4, "pdac_demo_04A_sens_relatedness.tsv")
+srp <- sr[grepl("^phenotype-aware", sr$rule), ]; srk <- sr[grepl("king-cutoff", sr$rule), ]
+# Section 8: spread of lambda of the European scan over replicate phenotypes
+ls8 <- tab("08_replicates", "pdac_demo_08_lambda_summary.tsv"); rownames(ls8) <- ls8$lambda
+sd8 <- ls8["lambda_eur_4a", "sd"]
+ls8_n <- nrow(tab("08_replicates", "pdac_demo_08_lambda.tsv"))
+```
+
+Section 1B removed related individuals so that the case-control scan could assume independence.
+In a rare cancer every individual removed is information lost, and the rule used here removes
+controls preferentially to keep cases, which shifts the case-control balance as well. The
+alternative is to keep the related individuals and model the relatedness, which is what
+whole-genome regression in REGENIE does. This page asks what the pruning bought.
+
+Running REGENIE on the post-QC data would answer nothing, because the relatives are already gone.
+The comparison therefore goes back to the European set before relatedness pruning.
+
+```bash
+how-to-gwas-pdac/
+├── sections/04C_association_other/   # script and committed results
+└── results/regenie/                  # where the script writes
+```
+
+::: {.callout-tip title="Before you start"}
+Finish [Association testing: case-control](../04A_association_binary/04A_association_binary.qmd).
+REGENIE 4.1.2 is installed by the project's tool set-up. The script sits directly in
+`sections/04C_association_other/` and is run from the repository root, as
+`scripts/dev/run_all.sh` runs it.
+:::
+
+---
+
+## 01 - Four analyses on the same variants
+
+```bash
+bash sections/04C_association_other/01_regenie_wgr.sh
+```
+
+| | Individuals | Relatedness | Method |
+|---|---|---|---|
+| **A** | after pruning | none left | logistic regression, PLINK 2, Firth fallback |
+| **B** | before pruning | ignored | logistic regression, PLINK 2, Firth fallback |
+| **C** | before pruning | modelled | REGENIE, step 1 ridge predictor as a leave-one-chromosome-out offset, Firth correction |
+| **D** | before pruning | ignored | REGENIE without the offset (`--ignore-pred`), Firth correction |
+
+All four use the same `r num(n_var)` variants and the same covariates: SEX, AGE and ten
+components, the script's default (`N_PC`). Each comparison isolates one thing:
+
+- **A against B** is the whole pruning decision. It is a compound contrast: the sets differ in
+  size and in balance.
+- **B against C** tests the mixed model: the same individuals, relatedness ignored against
+  modelled.
+- **D** separates the software from the method. B against D is PLINK 2 against REGENIE with no
+  offset; D against C is the offset alone.
+
+---
+
+## 02 - The result
+
+| Analysis | Cases | Controls | Effective N | λ | *P* < 5 × 10⁻⁸ | *P* < 1 × 10⁻⁵ | *P*, causal *ABO* variant |
+|---|---|---|---|---|---|---|---|
+`r paste(sprintf("| %s | %s | %s | %s | %s | %d | %d | %s |", cmp$analysis, num(cmp$cases), num(cmp$controls), dec(cmp$neff, 1), dec(cmp$lambda, 4), cmp$sig_5e8, cmp$sugg_1e5, sapply(cmp$P_causal, sci)), collapse = "\n")`
+
+**What the pruning cost.** Keeping the relatives adds `r num(n_of("B") - n_of("A"))` individuals, `r num(rm_cases)` cases and
+`r num(rm_ctrl)` controls, and raises the effective sample size from `r dec(g("A", "neff"), 1)` to `r dec(g("B", "neff"), 1)`. The causal
+variant's *P* goes from `r sci(g("A", "P_causal"))` to `r sci(g("B", "P_causal"))`, and λ does not rise (`r dec(g("A", "lambda"), 4)` against
+`r dec(g("B", "lambda"), 4)`). On these data the retained relatedness cost nothing in calibration, and the pruning
+discarded information for no statistical gain.
+
+**What the mixed model did.** On the same individuals, modelling relatedness (C) moves λ from
+`r dec(g("B", "lambda"), 4)` to `r dec(g("C", "lambda"), 4)`. REGENIE without the offset (D) gives `r dec(g("D", "lambda"), 4)`, close to PLINK 2 on
+the same people, so the difference between B and C is the offset, not the software. A mixed model
+that raises λ has not removed structure. The causal *ABO* variant is tested against an offset built
+without chromosome 9; its *P* is `r sci(g("C", "P_causal"))` in C, against `r sci(g("D", "P_causal"))` in D, the same software without the
+offset. Whether the
+rise in λ elsewhere comes from offsets that contain the causal loci, or from the behaviour of the
+offset in a trait with no polygenic background, this comparison alone cannot say.
+
+::: {.callout-important title="Why the offset behaves this way here"}
+The demonstration phenotype was simulated from a few causal variants and no polygenic background.
+Step 1 of REGENIE fits a whole-genome ridge regression to capture polygenic signal; with none to
+capture, the predictor it builds can reflect only the causal loci and chance. The
+leave-one-chromosome-out scheme keeps a locus out of the offset used for its own chromosome, but
+every other chromosome is tested against an offset that contains it. Step 1 prints its
+cross-validated R² in `results/regenie/pdac_demo_regenie_C_step1.log`; read it before taking C as a
+test of the method. In a real polygenic trait the same comparison is the informative one, and the
+result can go the other way.
+:::
+
+---
+
+## 03 - How this sits next to Section 4A
+
+Analysis A is not the primary scan of Section 4A. It uses ten components and this script's variant
+filter, where Section 4A uses PC1-PC`r k4a`, chosen by its step 01b, on `r num(var4a)` variants:
+
+| | Components | Variants | λ | *P*, causal *ABO* variant |
+|---|---|---|---|---|
+| Section 4A, primary | PC1-PC`r k4a` | `r num(var4a)` | `r dec(lam4a, 4)` | `r sci(p4a)` |
+| Section 4A, step 01b scan with ten components | PC1-PC10 | `r num(sc4a$variants[sc4a$n_pcs == 10])` | `r dec(sc4a$lambda[sc4a$n_pcs == 10], 4)` | |
+| This page, analysis A | PC1-PC10 | `r num(n_var)` | `r dec(g("A", "lambda"), 4)` | `r sci(g("A", "P_causal"))` |
+
+Section 4A also compares two pruning rules for relatedness: the phenotype-aware rule of the
+pipeline, which removes, across all ancestries, `r num(srp$removed)` individuals (`r num(srp$removed_cases)` cases, `r num(srp$removed_controls)` controls), and the default
+`--king-cutoff` of PLINK 2, which removes `r num(srk$removed)` (`r num(srk$removed_cases)` cases, `r num(srk$removed_controls)` controls), with λ of
+`r dec(srp$lambda, 4)` and `r dec(srk$lambda, 4)` (`pdac_demo_04A_sens_relatedness.tsv`). The two pages agree: in these data relatedness is a
+question of information, not of calibration.
+
+---
+
+## Limits of this demonstration
+
+- One draw of the phenotype. For scale, over `r ls8_n` replicate phenotypes on the same genotypes the
+  standard deviation of λ of the European scan, on LD-pruned variants, is `r dec(sd8, 4)`
+  ([Replicates](../08_replicates/08_replicates.qmd)). The differences A against B and B against C
+  are `r dec(abs(g("A", "lambda") - g("B", "lambda")) / sd8, 1)` and `r dec(abs(g("C", "lambda") - g("B", "lambda")) / sd8, 1)` times that. The four analyses share
+  the draw, so their differences are paired and less noisy than that standard deviation suggests,
+  but one draw cannot show how stable the ordering is.
+- The demonstration data are not a real case series. In a real one relatives may be concentrated
+  among cases, and the amount of relatedness can be far larger.
+- No polygenic background (callout above), so C is a fair test of the software and of the
+  offset, but not of the method's benefit in a polygenic trait.
+- The step 1 log is not committed, because it records local paths; the R² it prints is
+  therefore not quoted on this page.
+- The script is not copied by the project set-up of [Getting started](../../getting_started.qmd),
+  which copies only `scripts/` folders; run it from a clone of the repository.
+
+## Key decisions on this page
+
+- Prune relatives, or keep them and model relatedness.
+- If pruning, which rule: one that protects cases changes the balance as well as the size.
+- If modelling, whether the step 1 predictor captures polygenic signal or absorbs the loci of
+  interest, judged from its cross-validated R² and from λ with and without the offset.
