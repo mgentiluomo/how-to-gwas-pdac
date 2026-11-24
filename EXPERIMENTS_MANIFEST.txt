@@ -1,0 +1,85 @@
+Experiments manifest (Section 8 and 4B step 06; not the canonical run)
+======================================================================
+
+mode           manifest only: no step was run by this invocation; the
+               checksums describe the result files found in the section folders
+written        2026-11-24T16:09:41Z
+host           bio-plink3
+commit         54c8ed45c18c55fedb7e6db041e54e08b5ae98fd
+working tree   clean
+branch         main
+
+canonical run read from results/
+  commit       d61125d0f3a9065019fb06be770b1b16d7f431bc
+  finished     2026-11-23T17:42:32Z
+  data release v0.3-data
+  4A components chosen  2
+
+steps
+  sections/08_replicates/scripts/01_simulate_replicates.R
+  sections/08_replicates/scripts/02_analyse_replicates.R
+  sections/08_replicates/scripts/03_summarise.R
+  sections/08_replicates/scripts/04_expected_information.R
+  sections/08_replicates/scripts/05_test_statistics.R
+  sections/08_replicates/scripts/06_components.R
+  sections/08_replicates/scripts/07_causal_variants_and_structure.R
+  sections/08_replicates/scripts/08_expected_gain.R
+  sections/08_replicates/scripts/09_set_composition.R
+  sections/08_replicates/scripts/10_simulated_detectable_or.R
+  sections/04B_association_survival/06_random_covariate_null.R
+
+seeds and sizes
+  08 step 01   replicate i: 20261124 + i; replicates 200 (default 200)
+  08 step 03   bootstrap seed 20261124, 10000 resamples
+  08 step 05   null variants: seed 20261124, 2000 variants
+  08 step 10   seed 20261124, 2000 simulations per OR and orientation
+  4B step 06   permutations: seed 20261122, n 100; random covariates: seed 20261125
+  08 step 09   private inputs not set: table as committed
+
+PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025)
+R version 4.5.1 (2025-06-13) -- "Great Square Root"
+logistf 1.26.1
+survival 3.5.7
+
+result checksums (MD5)
+  84a20abe864218b8d9081564ef0773c6  sections/08_replicates/results/pdac_demo_08_causal_partial_r.tsv
+  8b657c62093876673b2f831cf6556510  sections/08_replicates/results/pdac_demo_08_causal_structure.tsv
+  bcc5636a13e65dbe9dabe5965ef54841  sections/08_replicates/results/pdac_demo_08_causal_structure.txt
+  a8240562eadeabadc066c741cc911bea  sections/08_replicates/results/pdac_demo_08_causal_structure_by_pc.tsv
+  efb64d0ee49189ffe07e974657b6a0cc  sections/08_replicates/results/pdac_demo_08_expected_gain.tsv
+  a92baf4101be0123772d4dd476b6079b  sections/08_replicates/results/pdac_demo_08_expected_gain.txt
+  f436a53d795b45e01622f506bd83189a  sections/08_replicates/results/pdac_demo_08_expected_se.tsv
+  b9eded3fa87149962058905b2a41f442  sections/08_replicates/results/pdac_demo_08_expected_se.txt
+  980a9e055b0c5cce24f4caf5fc076ccd  sections/08_replicates/results/pdac_demo_08_finemap.tsv
+  2b59417e7e4d77d19d32b093fc59d309  sections/08_replicates/results/pdac_demo_08_genotype_r.tsv
+  b78861c39017ab320de771faeed750cd  sections/08_replicates/results/pdac_demo_08_i2.png
+  161ecc58351afd8da3f2b69755748495  sections/08_replicates/results/pdac_demo_08_i2.tsv
+  e6ebb1409c06e7217ae72c96547432c1  sections/08_replicates/results/pdac_demo_08_lambda.tsv
+  28901c0f13f2b485340ce88f1dd4b3e5  sections/08_replicates/results/pdac_demo_08_lambda_summary.tsv
+  d210bbf9e47911e7f64d844c0dc1273a  sections/08_replicates/results/pdac_demo_08_npc_per_replicate.tsv
+  3ca945ecf94f5265f423bc7b72a0f4e7  sections/08_replicates/results/pdac_demo_08_npc_rule.tsv
+  e426dec0cbb36fe2647d85103d77c907  sections/08_replicates/results/pdac_demo_08_npc_rule_counts.tsv
+  e38eae402dbcf736d6e96dbc2ebe5b23  sections/08_replicates/results/pdac_demo_08_npc_rule_summary.tsv
+  4000f0dbb15579a01a62f79dbe90a0fa  sections/08_replicates/results/pdac_demo_08_npc_summary.tsv
+  51b2c3ab88cf420457bac40e608f6253  sections/08_replicates/results/pdac_demo_08_npc_summary.txt
+  342f5363c846b54de30bcfc1997ca504  sections/08_replicates/results/pdac_demo_08_per_replicate.tsv
+  5594c875572c58507214ddac46d1e23d  sections/08_replicates/results/pdac_demo_08_power.tsv
+  1ef72033108cf5df317de7bfcf9d7366  sections/08_replicates/results/pdac_demo_08_realised.tsv
+  1dab58b6e47b89f9cfdb9eb1aafcd1c9  sections/08_replicates/results/pdac_demo_08_set_composition.tsv
+  fb1965ec65d8b8b08c0a46962a646864  sections/08_replicates/results/pdac_demo_08_set_composition.txt
+  c7a30019da15548e1281ecc0c1bf67d4  sections/08_replicates/results/pdac_demo_08_simulated_detectable_or.tsv
+  1bab7672565c1fdb7556fe6418c8b433  sections/08_replicates/results/pdac_demo_08_simulated_detectable_or.txt
+  77d467de18922477a1a37f28cf8d1b8b  sections/08_replicates/results/pdac_demo_08_simulated_power_grid.tsv
+  56e229607f29796322594681d504642b  sections/08_replicates/results/pdac_demo_08_summary.txt
+  e3b8e7c634c8bbde8b65ea41c1d491bd  sections/08_replicates/results/pdac_demo_08_tert_adjusted.tsv
+  603078dc0ed5fe277cffa32746854496  sections/08_replicates/results/pdac_demo_08_tests_null.tsv
+  2926796a3a1d9c41410c03b5df2722f1  sections/08_replicates/results/pdac_demo_08_tests_per_replicate.tsv
+  ac02c66553b161c536371d6adc2ad17c  sections/08_replicates/results/pdac_demo_08_tests_power.tsv
+  d186f0ac6c3ac50f9e4a06c549b21351  sections/08_replicates/results/pdac_demo_08_tests_summary.txt
+  2f3f12b00544797a30940e980ad466f1  sections/08_replicates/results/pdac_demo_08_winners_curse.png
+  3f7f1c4b7d74f8d8dff4dd0cb7890269  sections/08_replicates/results/pdac_demo_08_winners_curse.tsv
+  a9b6e8b74703d44226a3c5bb052b0272  sections/04B_association_survival/results/pdac_demo_04B_randcov_lambda.tsv
+  5d5b82444814a7fcf5df8f2bbac28616  sections/04B_association_survival/results/pdac_demo_04B_randcov_paired.tsv
+  d8bd62d8b54d590226dc784c062de40e  sections/04B_association_survival/results/pdac_demo_04B_randcov_summary.tsv
+  d3be7735dfdb71fcd6cc5c408931e10b  sections/04B_association_survival/results/pdac_demo_04B_randcov_summary.txt
+  8e3612839dbb9413114fff7a4601add1  sections/04B_association_survival/results/pdac_demo_04B_ties.tsv
