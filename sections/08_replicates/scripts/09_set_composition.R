@@ -11,8 +11,8 @@
 #   set every replicate is analysed in.
 #
 #   It also checks the rule by which demo_data/sample_ancestry.tsv was
-#   written when the dataset was built (the build script is not in this
-#   repository, see demo_dataset/scripts/README.md): the label is the gnomAD
+#   written when the dataset was built (the build script is recorded in
+#   scripts/data_release/build_gwas_tutorial_dataset.sh): the label is the gnomAD
 #   v3.1 inferred genetic-ancestry group of the sample, column
 #   population_inference.pop of the HGDP+1KG metadata, with nfe and fin
 #   merged into eur, afr kept as afr and eas as eas; samples with

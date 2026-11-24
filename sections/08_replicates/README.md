@@ -104,8 +104,8 @@ merged into `eur`. Step 09 checks this on every released individual. The
 label is inferred from the genotypes and is not the region a population was
 sampled in, so two individuals of the African stratum come from populations
 of other regions (table `pdac_demo_08_label_rule.tsv`). The script that
-wrote the file when the dataset was built is not in this repository (see
-`demo_dataset/scripts/README.md`).
+wrote the file when the dataset was built is recorded in
+`scripts/data_release/build_gwas_tutorial_dataset.sh`; it was not run again.
 
 PLINK 2 and exact agreement: step 02 scans an extracted subset of variants.
 The same model on all variants (step 06), or refitted in R (step 05), agrees

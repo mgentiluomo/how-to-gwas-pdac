@@ -212,11 +212,20 @@ significance, which is the bias the guide sets out to explain. Where the design
 needed to be more robust, the generative effect size was raised instead, and the
 reasoning is in the script's header.
 
-The genotype layer, that is the filtering of the HGDP and 1000 Genomes callset
-to GSA positions, the anonymisation, the injected missingness and the simulated
-chromosome X, was produced by earlier scripts that are **not currently in this
-repository**. Those steps have not been re-run and the genotypes they produced
-are unchanged from the first release.
+The genotype layer was produced by earlier scripts. The first of them, which
+selects the individuals, assigns the ancestry labels and filters the HGDP and
+1000 Genomes callset to GSA positions, is recorded in
+`scripts/data_release/build_gwas_tutorial_dataset.sh`, as it was run and with
+its public inputs named in the header. The anonymisation, the injected
+missingness and the simulated chromosome X are **not currently in this
+repository**. None of these steps has been re-run and the genotypes they
+produced are unchanged from the first release.
+
+The group in `sample_ancestry.tsv` is the genetic-ancestry group inferred by
+gnomAD v3.1 for each sample (`nfe` and `fin` as `eur`, `afr`, `eas`), not the
+population label of the source panel. All eligible European samples were
+taken; the African and East Asian individuals are random draws of 350, of
+which 349 and 350 are in the phased panel.
 
 ## Provenance of genotypes
 
@@ -227,6 +236,8 @@ gnomAD v3.1, phased reference panel:
 - HGDP (Bergström et al., *Science* 2020)
 - 1000 Genomes Project (*Nature* 2015)
 - Source phased panel: Zenodo record `10.5281/zenodo.18156285`
+- Sample metadata and inferred ancestry groups: gnomAD v3.1 HGDP+1KG,
+  `gnomad_meta_v1.tsv` (address in the header of the build script)
 
 Only autosomal biallelic SNPs at GSA positions were retained. Chromosome X was
 simulated separately, as noted above.

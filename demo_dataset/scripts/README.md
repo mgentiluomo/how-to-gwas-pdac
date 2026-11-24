@@ -21,13 +21,29 @@ Seed 2026, fixed in advance and never selected on the outcome. The script
 re-estimates every generative parameter after simulating and stops with an error
 rather than writing a dataset whose effects do not match their targets.
 
-## What is not here
+## What is elsewhere, and what is not here
 
-The genotype layer of the dataset, that is the filtering of the HGDP and
-1000 Genomes callset to GSA positions, the anonymisation of identifiers, the
-injected missingness and the simulated chromosome X, was produced by separate
-scripts that are not currently in this repository. Those steps have not been
-re-run since the first release and the genotypes are unchanged.
+The first step of the genotype layer is in
+[`scripts/data_release/build_gwas_tutorial_dataset.sh`](../../scripts/data_release/build_gwas_tutorial_dataset.sh):
+the selection of the individuals from the HGDP and 1000 Genomes panels, their
+ancestry labels and the filtering of the callset to GSA positions. It is the
+script as it was run when the dataset was built, with the server paths turned
+into environment variables; it has not been run again. Its header names the
+public input files, with versions and addresses, and states what was checked
+afterwards and what was not recorded.
+
+The ancestry label in `sample_ancestry.tsv` is the genetic-ancestry group
+that gnomAD v3.1 inferred for the sample (`population_inference.pop`, with
+`nfe` and `fin` written as `eur`), not the population the sample was
+collected under. The African and East Asian individuals are a random draw of
+350 from those eligible, made with an awk shuffle whose result is not
+guaranteed to be the same with another awk. One of the 350 African samples
+drawn is not in the phased panel, so 349 were released.
+
+The later steps, that is the anonymisation of identifiers, the injected
+missingness and the simulated chromosome X, were produced by separate scripts
+that are not in this repository. Those steps have not been re-run since the
+first release and the genotypes are unchanged.
 
 This is a gap in the provenance chain and it is recorded here rather than left
 for a reader to discover. It should be closed before the resource is frozen and
