@@ -1,0 +1,7 @@
+set	set_label	set_n	project	n	fraction
+eur	European analysis set	611	1000 Genomes	472	0.7725
+eur	European analysis set	611	HGDP	139	0.2275
+afr	African stratum	286	1000 Genomes	268	0.9371
+afr	African stratum	286	HGDP	18	0.06294
+eas	East Asian stratum	316	1000 Genomes	213	0.6741
+eas	East Asian stratum	316	HGDP	103	0.3259

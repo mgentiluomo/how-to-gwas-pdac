@@ -1,0 +1,4 @@
+fit	variants_in_command	a1	n	beta	se	p	firth	errcode	se_relative_to_r_pct	p_relative_to_r_pct	se_window_relative_to_alone_pct	p_window_relative_to_alone_pct	variant	stratum	replicate	window_half_width_bp	covariates
+alone	1	T	285	-1.64256	0.237915	5.05724e-12	N	.	-0.0001047872	3.304184e-05	-0.4484795	-19.71411	9:133273682:A:T	afr	96	100000	SEX,AGE,PC1,PC2,PC3,PC4,PC5
+window	87	T	285	-1.64256	0.236848	4.06025e-12	N	.	-0.4485838	-19.71409	-0.4484795	-19.71411	9:133273682:A:T	afr	96	100000	SEX,AGE,PC1,PC2,PC3,PC4,PC5
+r	1	T	285	-1.642557	0.2379152	5.057238e-12	N	.	0	0	-0.4484795	-19.71411	9:133273682:A:T	afr	96	100000	SEX,AGE,PC1,PC2,PC3,PC4,PC5

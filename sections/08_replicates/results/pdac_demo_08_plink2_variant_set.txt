@@ -1,0 +1,11 @@
+SECTION 8: PLINK 2 LOGISTIC REGRESSION AND THE VARIANTS LOADED BESIDE THE ONE TESTED
+PLINK v2.0.0-a.7LM AVX2 Intel (7 Jul 2025); R version 4.5.1 (2025-06-13); 9:133273682:A:T, afr stratum, replicate 96; covariates SEX,AGE,PC1,PC2,PC3,PC4,PC5; estimate per copy of T
+
+  alone   variants in the command    1  n 285  beta -1.642560  SE 0.237915  P 5.057e-12  Firth N  error code .
+  window  variants in the command   87  n 285  beta -1.642560  SE 0.236848  P 4.06e-12  Firth N  error code .
+  r       variants in the command    1  n 285  beta -1.642557  SE 0.237915  P 5.057e-12  Firth N  error code .
+
+  window against alone: SE -0.45%, P -19.7%; alone against R: SE -0.0001%; window against R: SE -0.45%
+
+  Identical commands give identical results. The standard error, and with it P, depends
+  on the other variants in the command; the cause was not established.

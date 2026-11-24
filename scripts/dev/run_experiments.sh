@@ -3,7 +3,7 @@
 # run_experiments.sh
 #
 # Runs the experiments that sit on top of the canonical run and are not part
-# of it: Section 8 (replicates of the simulated phenotype, steps 01 to 10, with 06b) and
+# of it: Section 8 (replicates of the simulated phenotype, steps 01 to 11, with 06b) and
 # the Section 4B permutation null with ten random covariates (step 06).
 #
 # They read the outputs of the canonical run in results/, so run
@@ -66,6 +66,7 @@ STEPS=(
   "$S8/08_expected_gain.R"
   "$S8/09_set_composition.R"
   "$S8/10_simulated_detectable_or.R"
+  "$S8/11_plink2_variant_set.R"
   "sections/04B_association_survival/06_random_covariate_null.R"
 )
 STARTED="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"

@@ -1,0 +1,7 @@
+label	gnomad_inferred_group	genetic_region	n_released	n_in_analysis_sets	region_matches_label
+afr	afr	AFR	347	284	TRUE
+afr	afr	AMR	1	1	FALSE
+eas	eas	EAS	350	316	TRUE
+eur	fin	EUR	92	87	TRUE
+eur	nfe	EUR	670	524	TRUE
+afr	afr	MID	1	1	FALSE

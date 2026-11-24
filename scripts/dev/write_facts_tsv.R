@@ -126,6 +126,9 @@ tables <- list(
   list("rep", S("08_replicates", "pdac_demo_08_expected_gain.tsv"), "rows", "comparison", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_set_composition.tsv"), "rows", c("set", "population"), optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_simulated_detectable_or.tsv"), "rows", c("risk_allele", "test"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_set_composition_by_project.tsv"), "rows", c("set", "project"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_label_rule.tsv"), "rows", c("label", "gnomad_inferred_group", "genetic_region"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_plink2_variant_set.tsv"), "rows", "fit", optional = TRUE),
   list("surv", S("04B_association_survival", "pdac_demo_04B_randcov_summary.tsv"), "rows", "model", optional = TRUE),
   list("surv", S("04B_association_survival", "pdac_demo_04B_randcov_paired.tsv"), "rows", "contrast", optional = TRUE),
   list("surv", S("04B_association_survival", "pdac_demo_04B_ties.tsv"), "kv", optional = TRUE)

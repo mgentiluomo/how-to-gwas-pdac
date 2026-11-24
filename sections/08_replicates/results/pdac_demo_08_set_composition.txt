@@ -12,3 +12,12 @@ East Asian stratum: 316 individuals, 22 populations; by project: 1000 Genomes 21
   CHS 48, JPT 45, KHV 45, CHB 42, CDX 33, Han 28, Japanese 16, Miao 6, Naxi 6, Yakut 6, Tu 5, Tujia 5, Dai 4,
   Daur 4, She 4, Yi 4, Cambodian 3, Hezhen 3, Mongola 3, Xibo 3, Oroqen 2, Lahu 1
 
+RULE OF THE RELEASED LABELS (demo_data/sample_ancestry.tsv)
+  label = gnomAD population_inference.pop with nfe and fin merged into eur: holds for 1461 of 1461 released individuals; high_quality true for 1461
+  label, gnomAD inferred group, genetic region of the population: released (in an analysis set)
+  afr  afr  AFR: 347 (284)
+  afr  afr  AMR: 1 (1)   region differs from the label
+  eas  eas  EAS: 350 (316)
+  eur  fin  EUR: 92 (87)
+  eur  nfe  EUR: 670 (524)
+  afr  afr  MID: 1 (1)   region differs from the label
