@@ -10,8 +10,14 @@ The running example for the manuscript
 ## This is a teaching dataset
 
 - **Genotypes are real** (public HGDP and 1000 Genomes reference data) but
-  **sample identifiers are anonymised** (`MG0001` to `MG1461`) and bear no
-  relation to any real individual's identity.
+  **sample identifiers are pseudonymised** (`MG0001` to `MG1461`). The
+  `MG####` identifiers are pseudonyms. Their correspondence with the source
+  identifiers can be reconstructed from public files (the order of the gnomAD
+  metadata file and the script in `scripts/data_release/`), and in any case
+  from the genotypes, which are public. It reveals nothing about a real
+  person beyond what the public panels already state, because case status,
+  age, survival and the X chromosome are simulated. The mapping is not
+  published, but withholding it is not a protective measure.
 - **The phenotype is entirely simulated.** No real pancreatic cancer cases are
   included. Case and control status, age, sex effects and survival outcomes
   were generated in silico.
@@ -216,7 +222,7 @@ The genotype layer was produced by earlier scripts. The first of them, which
 selects the individuals, assigns the ancestry labels and filters the HGDP and
 1000 Genomes callset to GSA positions, is recorded in
 `scripts/data_release/build_gwas_tutorial_dataset.sh`, as it was run and with
-its public inputs named in the header. The anonymisation, the injected
+its public inputs named in the header. The pseudonymisation, the injected
 missingness and the simulated chromosome X are **not currently in this
 repository**. None of these steps has been re-run and the genotypes they
 produced are unchanged from the first release.

@@ -47,7 +47,7 @@ welcome.
 
 ## The demonstration dataset
 
-`pdac_demo` uses real, anonymised genotypes from the public HGDP and 1000 Genomes reference panel, restricted to Illumina GSA-24v3 positions on GRCh38, with a fully simulated PDAC phenotype and deliberately injected quality control artefacts. No controlled-access application is required.
+`pdac_demo` uses real genotypes, under pseudonymised identifiers, from the public HGDP and 1000 Genomes reference panel, restricted to Illumina GSA-24v3 positions on GRCh38, with a fully simulated PDAC phenotype and deliberately injected quality control artefacts. No controlled-access application is required.
 
 | | |
 |---|---|

@@ -5,7 +5,7 @@
 #
 # PURPOSE
 #   The analysis sets are defined by genetic similarity (Section 2), and the
-#   released identifiers are anonymised. This step reports from which source
+#   released identifiers are pseudonyms. This step reports from which source
 #   populations of the HGDP and 1000 Genomes panels the individuals of each
 #   analysis set come, as counts per population. It is the description of the
 #   set every replicate is analysed in.
@@ -23,8 +23,8 @@
 #   individuals that pass quality control (02 step 04, 05 step 01).
 #
 # PRIVATE INPUT, NOT IN THE REPOSITORY AND NOT IN THE RELEASE
-#   The mapping between the anonymised identifiers and the source identifiers
-#   is withheld (demo_dataset/scripts/README.md). This step can therefore be
+#   The mapping between the pseudonymised identifiers and the source identifiers
+#   is not published (demo_dataset/scripts/README.md). This step can therefore be
 #   run only where that file exists. It reads two paths from the environment:
 #     GWAS_PRIVATE_ID_MAP   tab-separated, columns original_IID and new_ID
 #     GWAS_SOURCE_META      gnomAD v3.1 HGDP+1KG sample metadata (tab-separated;

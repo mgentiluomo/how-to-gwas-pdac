@@ -40,7 +40,7 @@ collected under. The African and East Asian individuals are a random draw of
 guaranteed to be the same with another awk. One of the 350 African samples
 drawn is not in the phased panel, so 349 were released.
 
-The later steps, that is the anonymisation of identifiers, the injected
+The later steps, that is the pseudonymisation of identifiers, the injected
 missingness and the simulated chromosome X, were produced by separate scripts
 that are not in this repository. Those steps have not been re-run since the
 first release and the genotypes are unchanged.
@@ -49,10 +49,17 @@ This is a gap in the provenance chain and it is recorded here rather than left
 for a reader to discover. It should be closed before the resource is frozen and
 deposited.
 
-## What is deliberately withheld
+## What is not published, and what that does and does not mean
 
-The identifier mapping between the anonymised `MG####` labels and the source
-sample identifiers is not distributed, here or in the release.
+The identifier mapping between the pseudonymised `MG####` labels and the
+source sample identifiers is not distributed, here or in the release. The
+`MG####` identifiers are pseudonyms. Their correspondence with the source
+identifiers can be reconstructed from public files (the order of the gnomAD
+metadata file and the script in `scripts/data_release/`), and in any case
+from the genotypes, which are public. It reveals nothing about a real person
+beyond what the public panels already state, because case status, age,
+survival and the X chromosome are simulated. The mapping is not published,
+but withholding it is not a protective measure.
 
 The causal-variant truth table **is** distributed, as `truth.tsv` in the release.
 It is not a secret: the generative effect sizes are stated in the manuscript, in

@@ -18,9 +18,12 @@
 # in the original.
 #
 # WHAT IS STILL NOT IN THE REPOSITORY
-#   The steps after this one: the anonymisation of the identifiers (MG####;
-#   the mapping is withheld on purpose), the injected missingness, the
-#   simulated chromosome X. The phenotype is simulated by
+#   The steps after this one: the pseudonymisation of the identifiers
+#   (MG####, numbered in the order of the sample list this script writes;
+#   the mapping is not published, but it can be reconstructed from this
+#   script and its public inputs, and from the genotypes, so withholding it
+#   is not a protective measure), the injected missingness, the simulated
+#   chromosome X. The phenotype is simulated by
 #   demo_dataset/scripts/04_simulate_phenotype.R.
 #
 # INPUT, all public

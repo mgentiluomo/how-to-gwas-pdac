@@ -14,7 +14,7 @@
 #    redistribute.
 #
 #    So both are generated here from `pdac_demo`, exactly as the rest of the
-#    demonstration data were built: real public reference genotypes, anonymised
+#    demonstration data were built: real public reference genotypes, pseudonymised
 #    identifiers, and deliberately injected artefacts so that each teaching step
 #    has something concrete to find.
 #

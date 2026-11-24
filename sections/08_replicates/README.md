@@ -59,7 +59,7 @@ Rscript sections/08_replicates/scripts/06_components.R          # about 1,000 ge
 Rscript sections/08_replicates/scripts/06b_random_covariates.R
 Rscript sections/08_replicates/scripts/07_causal_variants_and_structure.R
 Rscript sections/08_replicates/scripts/08_expected_gain.R
-Rscript sections/08_replicates/scripts/09_set_composition.R     # needs the withheld identifier mapping
+Rscript sections/08_replicates/scripts/09_set_composition.R     # needs the unpublished identifier mapping
 Rscript sections/08_replicates/scripts/10_simulated_detectable_or.R
 Rscript sections/08_replicates/scripts/11_plink2_variant_set.R
 ```
@@ -86,8 +86,8 @@ review of the manuscript:
   chi-square expected from the change in effective sample size, beside the
   observed one. Reads committed tables only.
 - **09, set composition.** Counts of the source populations in each analysis
-  set. It needs the identifier mapping that is withheld from the repository
-  and the release; without it the step writes nothing. The committed table
+  set. It needs the identifier mapping, which is published neither in the repository
+  nor in the release; without it the step writes nothing. The committed table
   holds counts per population only.
 
 - **10, simulated detectable OR.** The OR at 80% power by simulation at one
