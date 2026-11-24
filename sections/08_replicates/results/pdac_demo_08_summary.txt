@@ -18,6 +18,14 @@ WINNER'S CURSE: estimated / generative OR (mean)
   G2  meta    all 0.962   given P < 5e-8 1.125 (n 10)   not significant 0.954
   G3  meta    all 1.010   given P < 5e-8 1.019 (n 190)   not significant 0.829
 
+WINNER'S CURSE ON THE LOG OR SCALE: estimated / generative log OR (mean, bootstrap 95% interval)
+  G1  eur_4a  all 0.952 (0.931 to 0.973)   given P < 5e-8 0.990 (0.972 to 1.007) (n 173)   smallest significant 0.780
+  G2  eur_4a  all 0.664 (0.629 to 0.700)   given P < 5e-8 NA (n 0)   smallest significant NA
+  G3  eur_4a  all 0.946 (0.919 to 0.973)   given P < 5e-8 1.305 (1.272 to 1.337) (n 22)   smallest significant 1.165
+  G1  meta    all 1.000 (0.985 to 1.015)   given P < 5e-8 1.000 (0.985 to 1.015) (n 200)   smallest significant 0.699
+  G2  meta    all 0.898 (0.873 to 0.924)   given P < 5e-8 1.289 (1.255 to 1.327) (n 10)   smallest significant 1.218
+  G3  meta    all 1.008 (0.989 to 1.027)   given P < 5e-8 1.023 (1.005 to 1.041) (n 190)   smallest significant 0.761
+
 ABF 95% CREDIBLE SETS: coverage of the causal variant
   G1  eur_4a  all 0.970   region significant 0.966 (n 178)   median size 11   causal ranked first 0.47
   G2  eur_4a  all 0.980   region significant NA (n 0)   median size 187   causal ranked first 0.23

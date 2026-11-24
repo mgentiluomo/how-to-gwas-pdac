@@ -113,7 +113,21 @@ tables <- list(
   list("rep", S("08_replicates", "pdac_demo_08_lambda_summary.tsv"), "rows", "lambda", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_expected_se.tsv"), "rows", "locus", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_genotype_r.tsv"), "rows", c("stratum", "pair"), optional = TRUE),
-  list("rep", S("08_replicates", "pdac_demo_08_tert_adjusted.tsv"), "rows", c("data", "model"), optional = TRUE)
+  list("rep", S("08_replicates", "pdac_demo_08_tert_adjusted.tsv"), "rows", c("data", "model"), optional = TRUE),
+  # Section 8 steps 05 to 09 and 4B step 06: outside the canonical run, on its outputs
+  list("rep", S("08_replicates", "pdac_demo_08_tests_power.tsv"), "rows", c("locus", "analysis", "test"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_tests_null.tsv"), "rows", "test", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_npc_summary.tsv"), "rows", "n_pcs", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_npc_rule_summary.tsv"), "rows", "chosen_n_pcs", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_npc_rule_counts.tsv"), "kv", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_causal_structure.tsv"), "rows", c("locus", "n_pcs"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_causal_partial_r.tsv"), "rows", c("pair", "given_n_pcs"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_expected_gain.tsv"), "rows", "comparison", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_set_composition.tsv"), "rows", c("set", "population"), optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_simulated_detectable_or.tsv"), "rows", c("risk_allele", "test"), optional = TRUE),
+  list("surv", S("04B_association_survival", "pdac_demo_04B_randcov_summary.tsv"), "rows", "model", optional = TRUE),
+  list("surv", S("04B_association_survival", "pdac_demo_04B_randcov_paired.tsv"), "rows", "contrast", optional = TRUE),
+  list("surv", S("04B_association_survival", "pdac_demo_04B_ties.tsv"), "kv", optional = TRUE)
 )
 for (t in tables) {
   sec <- t[[1]]; f <- t[[2]]

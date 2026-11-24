@@ -1,0 +1,14 @@
+SECTION 8: SOURCE POPULATIONS OF THE ANALYSIS SETS (counts; labels of the gnomAD v3.1 HGDP+1KG metadata)
+
+European analysis set: 611 individuals, 13 populations; by project: 1000 Genomes 472, HGDP 139; by genetic region: EUR 611
+  CEU 103, TSI 102, FIN 90, IBS 89, GBR 88, Russian 25, French 24, Sardinian 22, Basque 21, Orcadian 15, Adygei
+  14, Italian 10, Tuscan 8
+
+African stratum: 286 individuals, 12 populations; by project: 1000 Genomes 268, HGDP 18; by genetic region: AFR 284, AMR 1, MID 1
+  GWD 53, YRI 52, ESN 43, ACB 42, MSL 31, LWK 25, ASW 21, Mandenka 10, BantuKenya 4, Yoruba 3, Mozabite 1, PUR
+  1
+
+East Asian stratum: 316 individuals, 22 populations; by project: 1000 Genomes 213, HGDP 103; by genetic region: EAS 316
+  CHS 48, JPT 45, KHV 45, CHB 42, CDX 33, Han 28, Japanese 16, Miao 6, Naxi 6, Yakut 6, Tu 5, Tujia 5, Dai 4,
+  Daur 4, She 4, Yi 4, Cambodian 3, Hezhen 3, Mongola 3, Xibo 3, Oroqen 2, Lahu 1
+

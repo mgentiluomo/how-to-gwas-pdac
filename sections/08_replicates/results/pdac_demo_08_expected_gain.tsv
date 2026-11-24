@@ -1,0 +1,3 @@
+comparison	source	reference	alternative	cases_ref	controls_ref	n_eff_ref	cases_alt	controls_alt	n_eff_alt	n_eff_ratio	p_ref	p_alt	chisq_ref	chisq_alt_observed	chisq_alt_expected	p_alt_expected	log10_p_gain_observed	log10_p_gain_expected	z_added_observed	z_added_expected
+relatives retained	sections/04C_association_other/results/pdac_demo_regenie_comparison.tsv	A pruned, plink2	B unpruned, plink2	219	392	562	233	501	636.1	1.132	6.75e-09	4.82e-12	33.61	47.76	38.04	6.937e-10	3.146	0.9881	4.283	2.105
+relatedness rule	sections/04A_association_binary/results/pdac_demo_04A_sens_relatedness.tsv	PLINK 2 --king-cutoff 0.0884 (default)	phenotype-aware (pipeline)	197	437	543.1	219	392	562	1.035	4.27e-09	5.09e-09	34.5	34.15	35.69	2.308e-09	-0.07629	0.2673	NA	NA

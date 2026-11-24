@@ -1,0 +1,28 @@
+SECTION 8: NUMBER OF PRINCIPAL COMPONENTS OVER THE REPLICATES, EUROPEAN SCAN
+200 replicates; SEX, AGE and PC1..PCk; P < 5e-08
+
+LAMBDA (mean, SD over replicates; SE of the mean)
+   0 PCs  pruned set 1.0070, 0.0111; 0.0008   all variants 1.0060, 0.0099   variants following PC1-PC2 0.9964, 0.0582; 0.0041   lambda > 1.05 in 0.000
+   2 PCs  pruned set 1.0110, 0.0090; 0.0006   all variants 1.0100, 0.0073   variants following PC1-PC2 1.0010, 0.0339; 0.0024   lambda > 1.05 in 0.000
+   5 PCs  pruned set 1.0160, 0.0089; 0.0006   all variants 1.0150, 0.0074   variants following PC1-PC2 1.0060, 0.0351; 0.0025   lambda > 1.05 in 0.005
+  10 PCs  pruned set 1.0240, 0.0084; 0.0006   all variants 1.0240, 0.0077   variants following PC1-PC2 1.0140, 0.0347; 0.0025   lambda > 1.05 in 0.005
+  20 PCs  pruned set 1.0420, 0.0086; 0.0006   all variants 1.0420, 0.0077   variants following PC1-PC2 1.0350, 0.0349; 0.0025   lambda > 1.05 in 0.155
+
+REALISED POWER (95% CI)
+   0 PCs  ABO 84.5% (78.8 to 88.9)   TERT/CLPTM1L 0.0% (0.0 to 1.9)   13q22.1 11.0% (7.4 to 16.1)
+   2 PCs  ABO 86.5% (81.1 to 90.5)   TERT/CLPTM1L 0.0% (0.0 to 1.9)   13q22.1 11.0% (7.4 to 16.1)
+   5 PCs  ABO 85.5% (80.0 to 89.7)   TERT/CLPTM1L 0.0% (0.0 to 1.9)   13q22.1 12.0% (8.2 to 17.2)
+  10 PCs  ABO 85.0% (79.4 to 89.3)   TERT/CLPTM1L 0.0% (0.0 to 1.9)   13q22.1 11.0% (7.4 to 16.1)
+  20 PCs  ABO 83.0% (77.2 to 87.6)   TERT/CLPTM1L 0.0% (0.0 to 1.9)   13q22.1 12.5% (8.6 to 17.8)
+
+RULE OF 04A STEP 01b (candidates 2, 5, 10, 20; scree floor e = 1 in every replicate)
+  chooses  2 in 144 replicates (0.720, 95% CI 0.654 to 0.778)
+  chooses  5 in  12 replicates (0.060, 95% CI 0.035 to 0.102)
+  chooses 10 in  13 replicates (0.065, 95% CI 0.038 to 0.108)
+  chooses 20 in  31 replicates (0.155, 95% CI 0.111 to 0.212)
+  a component associated with case status at P < 0.0025 in 8 replicates; at nominal P < 0.05 in 144 (mean 1.19 of 20 components)
+  two components not stable in 49 replicates: lambda 0, lead variant 45, ten smallest P 7 (a replicate can fail more than one)
+  the scan without components would pass the stability criterion in 135 replicates (zero is not a candidate of the rule)
+
+variants following PC1-PC2: 4241 of 84816 pruned variants, R2 on the two components at least 0.0310
+check against step 02 at 2 components: max |lambda difference| 0.0003, max |log10 P difference| 0

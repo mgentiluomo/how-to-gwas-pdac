@@ -1,0 +1,35 @@
+SECTION 8: FOUR TESTS AT THE CAUSAL VARIANTS OVER THE REPLICATES
+200 replicates; European scan with SEX, AGE, PC1-PC2; meta-analysis of the three strata; P < 5e-08
+Wald chi-square here (R, double precision) against step 02 (PLINK 2): relative difference, max 0.00016 (median 3.4e-07) European scan, max 0.0038 (median 3.9e-06) meta-analysis
+Firth function against logistf 1.26.1, replicate 1, European scan: max |estimate difference| 4e-11, max |log10 P difference| 9.2e-09
+
+REALISED POWER (95% CI) AGAINST THE SECTION 3B FORMULA; mean and SD of the signed statistic z
+  ABO           OR 2.60  eur_4a  wald  formula  98.5%  realised  86.5% (81.1 to 90.5)  z 6.29, 0.81
+  ABO           OR 2.60  eur_4a  score formula  98.5%  realised  89.5% (84.5 to 93.0)  z 6.48, 0.88  significant where Wald is not: 6; the reverse: 0
+  ABO           OR 2.60  eur_4a  lrt   formula  98.5%  realised  91.5% (86.8 to 94.6)  z 6.65, 0.94  significant where Wald is not: 10; the reverse: 0
+  ABO           OR 2.60  eur_4a  firth formula  98.5%  realised  90.0% (85.1 to 93.4)  z 6.60, 0.93  significant where Wald is not: 7; the reverse: 0
+  ABO           OR 2.60  meta    wald  formula 100.0%  realised 100.0% (98.1 to 100.0)  z 9.42, 0.81
+  ABO           OR 2.60  meta    score formula 100.0%  realised 100.0% (98.1 to 100.0)  z 9.81, 0.89  significant where Wald is not: 0; the reverse: 0
+  ABO           OR 2.60  meta    lrt   formula 100.0%  realised 100.0% (98.1 to 100.0)  z 10.05, 0.95  significant where Wald is not: 0; the reverse: 0
+  ABO           OR 2.60  meta    firth formula 100.0%  realised 100.0% (98.1 to 100.0)  z 9.95, 0.94  significant where Wald is not: 0; the reverse: 0
+  TERT/CLPTM1L  OR 1.50  eur_4a  wald  formula   1.7%  realised   0.0% (0.0 to 1.9)  z 2.23, 0.86
+  TERT/CLPTM1L  OR 1.50  eur_4a  score formula   1.7%  realised   0.0% (0.0 to 1.9)  z 2.24, 0.86  significant where Wald is not: 0; the reverse: 0
+  TERT/CLPTM1L  OR 1.50  eur_4a  lrt   formula   1.7%  realised   0.0% (0.0 to 1.9)  z 2.24, 0.87  significant where Wald is not: 0; the reverse: 0
+  TERT/CLPTM1L  OR 1.50  eur_4a  firth formula   1.7%  realised   0.0% (0.0 to 1.9)  z 2.23, 0.86  significant where Wald is not: 0; the reverse: 0
+  TERT/CLPTM1L  OR 1.50  meta    wald  formula  26.2%  realised   5.0% (2.7 to 9.0)  z 4.14, 0.83
+  TERT/CLPTM1L  OR 1.50  meta    score formula  26.2%  realised   5.5% (3.1 to 9.6)  z 4.21, 0.85  significant where Wald is not: 1; the reverse: 0
+  TERT/CLPTM1L  OR 1.50  meta    lrt   formula  26.2%  realised   5.5% (3.1 to 9.6)  z 4.22, 0.86  significant where Wald is not: 1; the reverse: 0
+  TERT/CLPTM1L  OR 1.50  meta    firth formula  26.2%  realised   5.5% (3.1 to 9.6)  z 4.18, 0.85  significant where Wald is not: 1; the reverse: 0
+  13q22.1       OR 1.97  eur_4a  wald  formula  46.7%  realised  11.0% (7.4 to 16.1)  z 4.51, 0.83
+  13q22.1       OR 1.97  eur_4a  score formula  46.7%  realised  15.0% (10.7 to 20.6)  z 4.58, 0.87  significant where Wald is not: 8; the reverse: 0
+  13q22.1       OR 1.97  eur_4a  lrt   formula  46.7%  realised  18.0% (13.3 to 23.9)  z 4.66, 0.90  significant where Wald is not: 14; the reverse: 0
+  13q22.1       OR 1.97  eur_4a  firth formula  46.7%  realised  16.5% (12.0 to 22.3)  z 4.63, 0.90  significant where Wald is not: 11; the reverse: 0
+  13q22.1       OR 1.97  meta    wald  formula  99.0%  realised  95.0% (91.0 to 97.3)  z 6.94, 0.84
+  13q22.1       OR 1.97  meta    score formula  99.0%  realised  95.5% (91.7 to 97.6)  z 7.11, 0.90  significant where Wald is not: 1; the reverse: 0
+  13q22.1       OR 1.97  meta    lrt   formula  99.0%  realised  96.5% (93.0 to 98.3)  z 7.22, 0.93  significant where Wald is not: 3; the reverse: 0
+  13q22.1       OR 1.97  meta    firth formula  99.0%  realised  95.5% (91.7 to 97.6)  z 7.14, 0.92  significant where Wald is not: 1; the reverse: 0
+
+NULL CALIBRATION, European scan: 2000 pruned variants (MAF >= 0.05, more than 2 Mb from the causal variants) x 200 replicates
+  wald  lambda 1.0045 pooled; mean over replicates 1.0051 (SD 0.0515, SE 0.0036); observed / expected at P < 0.05, 0.01, 0.001, 0.0001: 0.992, 0.946, 0.807, 0.700
+  score lambda 1.0056 pooled; mean over replicates 1.0062 (SD 0.0516, SE 0.0036); observed / expected at P < 0.05, 0.01, 0.001, 0.0001: 1.012, 1.001, 0.945, 1.000
+  lrt   lambda 1.0061 pooled; mean over replicates 1.0072 (SD 0.0513, SE 0.0036); observed / expected at P < 0.05, 0.01, 0.001, 0.0001: 1.027, 1.031, 0.980, 0.975

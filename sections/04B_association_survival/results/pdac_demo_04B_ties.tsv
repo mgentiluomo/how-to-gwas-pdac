@@ -1,0 +1,10 @@
+quantity	value
+individuals	219
+events	167
+distinct_times_all	158
+distinct_event_times	122
+events_at_a_tied_event_time	77
+event_times_with_ties	32
+largest_number_of_events_at_one_time	4
+censored_at_an_event_time	13
+time_resolution_months	0.1

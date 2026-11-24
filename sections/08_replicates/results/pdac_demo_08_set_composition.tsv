@@ -1,0 +1,48 @@
+set	set_label	set_n	project	genetic_region	population	n	fraction
+eur	European analysis set	611	1000 Genomes	EUR	CEU	103	0.1686
+eur	European analysis set	611	1000 Genomes	EUR	TSI	102	0.1669
+eur	European analysis set	611	1000 Genomes	EUR	FIN	90	0.1473
+eur	European analysis set	611	1000 Genomes	EUR	IBS	89	0.1457
+eur	European analysis set	611	1000 Genomes	EUR	GBR	88	0.144
+eur	European analysis set	611	HGDP	EUR	Russian	25	0.04092
+eur	European analysis set	611	HGDP	EUR	French	24	0.03928
+eur	European analysis set	611	HGDP	EUR	Sardinian	22	0.03601
+eur	European analysis set	611	HGDP	EUR	Basque	21	0.03437
+eur	European analysis set	611	HGDP	EUR	Orcadian	15	0.02455
+eur	European analysis set	611	HGDP	EUR	Adygei	14	0.02291
+eur	European analysis set	611	HGDP	EUR	Italian	10	0.01637
+eur	European analysis set	611	HGDP	EUR	Tuscan	8	0.01309
+afr	African stratum	286	1000 Genomes	AFR	GWD	53	0.1853
+afr	African stratum	286	1000 Genomes	AFR	YRI	52	0.1818
+afr	African stratum	286	1000 Genomes	AFR	ESN	43	0.1503
+afr	African stratum	286	1000 Genomes	AFR	ACB	42	0.1469
+afr	African stratum	286	1000 Genomes	AFR	MSL	31	0.1084
+afr	African stratum	286	1000 Genomes	AFR	LWK	25	0.08741
+afr	African stratum	286	1000 Genomes	AFR	ASW	21	0.07343
+afr	African stratum	286	HGDP	AFR	Mandenka	10	0.03497
+afr	African stratum	286	HGDP	AFR	BantuKenya	4	0.01399
+afr	African stratum	286	HGDP	AFR	Yoruba	3	0.01049
+afr	African stratum	286	HGDP	MID	Mozabite	1	0.003497
+afr	African stratum	286	1000 Genomes	AMR	PUR	1	0.003497
+eas	East Asian stratum	316	1000 Genomes	EAS	CHS	48	0.1519
+eas	East Asian stratum	316	1000 Genomes	EAS	JPT	45	0.1424
+eas	East Asian stratum	316	1000 Genomes	EAS	KHV	45	0.1424
+eas	East Asian stratum	316	1000 Genomes	EAS	CHB	42	0.1329
+eas	East Asian stratum	316	1000 Genomes	EAS	CDX	33	0.1044
+eas	East Asian stratum	316	HGDP	EAS	Han	28	0.08861
+eas	East Asian stratum	316	HGDP	EAS	Japanese	16	0.05063
+eas	East Asian stratum	316	HGDP	EAS	Miao	6	0.01899
+eas	East Asian stratum	316	HGDP	EAS	Naxi	6	0.01899
+eas	East Asian stratum	316	HGDP	EAS	Yakut	6	0.01899
+eas	East Asian stratum	316	HGDP	EAS	Tu	5	0.01582
+eas	East Asian stratum	316	HGDP	EAS	Tujia	5	0.01582
+eas	East Asian stratum	316	HGDP	EAS	Dai	4	0.01266
+eas	East Asian stratum	316	HGDP	EAS	Daur	4	0.01266
+eas	East Asian stratum	316	HGDP	EAS	She	4	0.01266
+eas	East Asian stratum	316	HGDP	EAS	Yi	4	0.01266
+eas	East Asian stratum	316	HGDP	EAS	Cambodian	3	0.009494
+eas	East Asian stratum	316	HGDP	EAS	Hezhen	3	0.009494
+eas	East Asian stratum	316	HGDP	EAS	Mongola	3	0.009494
+eas	East Asian stratum	316	HGDP	EAS	Xibo	3	0.009494
+eas	East Asian stratum	316	HGDP	EAS	Oroqen	2	0.006329
+eas	East Asian stratum	316	HGDP	EAS	Lahu	1	0.003165

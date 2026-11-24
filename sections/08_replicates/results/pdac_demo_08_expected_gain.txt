@@ -1,0 +1,19 @@
+SECTION 8: OBSERVED AGAINST EXPECTED GAIN AT THE CAUSAL ABO VARIANT
+
+RELATIVES RETAINED (sections/04C_association_other/results/pdac_demo_regenie_comparison.tsv)
+  A pruned, plink2                           219 cases, 392 controls, N_eff 562.0, P 6.75e-09, chi-square 33.61
+  B unpruned, plink2                         233 cases, 501 controls, N_eff 636.1, P 4.82e-12, chi-square 47.76
+  N_eff ratio 1.132: expected chi-square 38.04, expected P 6.94e-10; gain in -log10 P expected 0.99, observed 3.15
+  z contributed by the added individuals: 4.28 observed, 2.11 expected at the same effect
+
+RELATEDNESS RULE (sections/04A_association_binary/results/pdac_demo_04A_sens_relatedness.tsv)
+  PLINK 2 --king-cutoff 0.0884 (default)     197 cases, 437 controls, N_eff 543.1, P 4.27e-09, chi-square 34.50
+  phenotype-aware (pipeline)                 219 cases, 392 controls, N_eff 562.0, P 5.09e-09, chi-square 34.15
+  N_eff ratio 1.035: expected chi-square 35.69, expected P 2.31e-09; gain in -log10 P expected 0.27, observed -0.08
+  the two sets are not nested: no z of the added individuals
+
+HOW TO READ THIS
+  The expected values hold the effect estimate and the allele frequency of
+  the reference analysis fixed and scale the chi-square by N_eff. What the
+  observed gain shows beyond the expected one is the draw of the individuals
+  that differ between the two analyses, in one phenotype.

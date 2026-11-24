@@ -1,0 +1,4 @@
+test	variants	replicates	tests	lambda_pooled	lambda_mean_over_replicates	lambda_sd_over_replicates	lambda_se_of_mean	mean_chisq	ratio_observed_expected_p_lt_0.05	ratio_observed_expected_p_lt_0.01	ratio_observed_expected_p_lt_0.001	ratio_observed_expected_p_lt_0.0001
+wald	2000	200	4e+05	1.0045	1.0051	0.051515	0.0036426	0.99849	0.9919	0.9455	0.8075	0.7
+score	2000	200	4e+05	1.0056	1.0062	0.051592	0.0036481	1.0059	1.0121	1.0008	0.945	1
+lrt	2000	200	4e+05	1.0061	1.0072	0.051299	0.0036274	1.0095	1.0268	1.0308	0.98	0.975

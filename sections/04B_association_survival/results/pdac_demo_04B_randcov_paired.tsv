@@ -1,0 +1,4 @@
+contrast	mean_diff	sd_diff	se_diff	n_perm_positive	share_of_primary_minus_no_pc
+random10 minus no_pc	0.0813	0.0241	0.0024	100	1.053
+primary minus random10	-0.0041	0.036	0.0036	49	-0.053
+primary minus no_pc	0.0772	0.023	0.0023	100	1

@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 ## Figure 3. Calibration of the scans.
-##  a  lambda_GC of the European logistic scan with 2, 5, 10 and 20 principal
+##  a  lambda of the European logistic scan with 2, 5, 10 and 20 principal
 ##     components; the number chosen by 04A step 01b is filled.
 ##     Sources: sections/04A_association_binary/results/pdac_demo_04A_npc_scans.tsv,
 ##              pdac_demo_04A_npc_chosen.txt
@@ -26,7 +26,7 @@ draw <- function() {
   par_base(mar = c(3.6, 3.8, 2.2, 0.8))
   yl <- c(1, max(sc$lambda) + 0.006)
   plot(sc$n_pcs, sc$lambda, type = "n", xlim = c(0, 22.5), ylim = yl, xaxs = "i",
-       xlab = "Principal components in the model", ylab = expression(lambda[GC]), xaxt = "n")
+       xlab = "Principal components in the model", ylab = expression(lambda), xaxt = "n")
   axis(1, at = sc$n_pcs)
   abline(h = pretty(yl), col = "grey92", lwd = 0.6)
   lines(sc$n_pcs, sc$lambda, col = MID, lwd = 1)

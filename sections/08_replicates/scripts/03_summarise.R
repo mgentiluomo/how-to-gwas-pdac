@@ -13,7 +13,13 @@
 #   pdac_demo_08_i2.png, pdac_demo_08_winners_curse.png
 #
 # Intervals: Wilson 95% intervals for proportions; 2.5th and 97.5th
-# percentiles across replicates for distributions.
+# percentiles across replicates for distributions; for the winner's curse on
+# the log OR scale, percentile bootstrap over replicates (10,000 resamples,
+# seed 20261124). Each resample draws replicates with replacement and
+# recomputes the mean over all of them and the mean among the significant
+# ones, so the conditional interval carries the uncertainty in how many are
+# significant; resamples without a significant replicate are counted and
+# left out of the conditional interval.
 ################################################################################
 
 args_all <- commandArgs(trailingOnly = FALSE)
@@ -46,6 +52,20 @@ wc <- do.call(rbind, lapply(grp, function(x) { g <- OR_GEN[[x$locus[1]]]; s <- x
              median_ratio_significant = if (nrow(s)) median(s$or_hat / g) else NA,
              mean_logratio_significant = if (nrow(s)) mean(s$log_or_hat / log(g)) else NA,
              mean_ratio_not_significant = if (nrow(s) < nrow(x)) mean(x$or_hat[!x$significant] / g) else NA) }))
+## winner's curse on the log OR scale: estimated / generative log OR, with bootstrap intervals
+set.seed(20261124L); B_BOOT <- 10000L
+wcl <- do.call(rbind, lapply(grp, function(x) { g <- log(OR_GEN[[x$locus[1]]]); lr <- x$log_or_hat / g; sg <- x$significant; n <- nrow(x)
+  idx <- matrix(sample.int(n, n * B_BOOT, replace = TRUE), n, B_BOOT)
+  L <- matrix(lr[idx], n, B_BOOT); S <- matrix(sg[idx], n, B_BOOT); ns <- colSums(S)
+  ball <- colMeans(L); bsig <- (colSums(L * S) / ns)[ns > 0]; bor <- (colSums(exp(L * g) / exp(g) * S) / ns)[ns > 0]
+  qq <- function(v, p) if (length(v)) unname(quantile(v, p)) else NA
+  data.frame(mean_logratio_all = mean(lr), mean_logratio_all_l95 = qq(ball, 0.025), mean_logratio_all_u95 = qq(ball, 0.975),
+             mean_logratio_significant_l95 = if (any(sg)) qq(bsig, 0.025) else NA, mean_logratio_significant_u95 = if (any(sg)) qq(bsig, 0.975) else NA,
+             mean_ratio_significant_l95 = if (any(sg)) qq(bor, 0.025) else NA, mean_ratio_significant_u95 = if (any(sg)) qq(bor, 0.975) else NA,
+             min_logratio_significant = if (any(sg)) min(lr[sg]) else NA, min_ratio_significant = if (any(sg)) min(x$or_hat[sg]) / exp(g) else NA,
+             mean_logratio_not_significant = if (any(!sg)) mean(lr[!sg]) else NA,
+             bootstrap_resamples = B_BOOT, resamples_without_significant = sum(ns == 0)) }))
+stopifnot(identical(rownames(wcl), rownames(wc))); wc <- cbind(wc, wcl)
 fm <- do.call(rbind, lapply(grp, function(x) { s <- x[x$region_significant, ]
   ci <- wilson(sum(x$causal_in_cs), nrow(x)); cis <- wilson(sum(s$causal_in_cs), nrow(s))
   data.frame(locus = x$locus[1], analysis = x$analysis[1],
@@ -98,6 +118,11 @@ R <- c(R, "", "WINNER'S CURSE: estimated / generative OR (mean)")
 for (i in seq_len(nrow(wc))) with(wc[i, ], R <<- c(R, sprintf("  %-3s %-7s all %.3f   given P < 5e-8 %s (n %d)   not significant %s",
   locus, analysis, mean_ratio_all, if (is.na(mean_ratio_significant)) "NA" else sprintf("%.3f", mean_ratio_significant),
   n_significant, if (is.na(mean_ratio_not_significant)) "NA" else sprintf("%.3f", mean_ratio_not_significant))))
+R <- c(R, "", "WINNER'S CURSE ON THE LOG OR SCALE: estimated / generative log OR (mean, bootstrap 95% interval)")
+for (i in seq_len(nrow(wc))) with(wc[i, ], R <<- c(R, sprintf("  %-3s %-7s all %.3f (%.3f to %.3f)   given P < 5e-8 %s (n %d)   smallest significant %s",
+  locus, analysis, mean_logratio_all, mean_logratio_all_l95, mean_logratio_all_u95,
+  if (is.na(mean_logratio_significant)) "NA" else sprintf("%.3f (%.3f to %.3f)", mean_logratio_significant, mean_logratio_significant_l95, mean_logratio_significant_u95),
+  n_significant, if (is.na(min_logratio_significant)) "NA" else sprintf("%.3f", min_logratio_significant))))
 R <- c(R, "", "ABF 95% CREDIBLE SETS: coverage of the causal variant")
 for (i in seq_len(nrow(fm))) with(fm[i, ], R <<- c(R, sprintf("  %-3s %-7s all %.3f   region significant %s (n %d)   median size %s   causal ranked first %.2f",
   locus, analysis, coverage_all, if (is.na(coverage_region_significant)) "NA" else sprintf("%.3f", coverage_region_significant),

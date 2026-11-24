@@ -17,6 +17,12 @@
 #        model-based one PLINK reports, from W* = diag(pi*_i (1 - pi*_i)).
 #        beta* differs from the generative log OR through non-collapsibility
 #        and through chance correlation with the omitted loci.
+#    (d) As (c), with the generative effects of sex and age set to one (the
+#        fitted model still contains both): what is left is the penalty of
+#        the genetic effects alone. (e) As (c), with only the locus tested
+#        having an effect: no other locus, no sex, no age. The differences
+#        (a) to (e), (e) to (d) and (d) to (c) separate the cost of the
+#        variant's own effect, of the other loci and of the covariates.
 #    Power at P < 5e-8 from each, and the realised power of step 02.
 # 2. GENOTYPE CORRELATION between the risk-allele counts of the three causal
 #    variants within each analysis stratum (non-missing genotypes).
@@ -69,14 +75,22 @@ res <- lapply(reps, function(i) {
                interval = c(-25, 25), tol = 1e-10)$root
   p <- plogis(a + eta[idx]); age_e <- s$age_z[idx]
   joint <- se_of(cbind(1, Ge, male_e, age_e), p)[2:4]
-  fit <- t(sapply(loci, function(l) {
+  fit_one <- function(l, pr) {
     X <- cbind(1, g = Ge[, l], male_e, age_e, PC)
-    m <- suppressWarnings(glm.fit(X, p, family = quasibinomial()))
+    m <- suppressWarnings(glm.fit(X, pr, family = quasibinomial()))
     c(beta = unname(m$coefficients[2]), se = unname(se_of(X, m$fitted.values)[2]))
-  }))
+  }
+  fit <- t(sapply(loci, fit_one, pr = p))
+  # generative probabilities with some effects removed; intercept solved again for the same case fraction
+  p_of <- function(eta) { a <- uniroot(function(a) mean(plogis(a + eta[e])) - TARGET_CASE_FRACTION[["eur"]],
+                                         interval = c(-25, 25), tol = 1e-10)$root; plogis(a + eta[idx]) }
+  eta_g <- numeric(length(eta)); for (l in loci) eta_g <- eta_g + log(OR[[l]]) * G[, l]
+  fit_d <- t(sapply(loci, fit_one, pr = p_of(eta_g)))
+  fit_e <- t(sapply(loci, function(l) fit_one(l, p_of(log(OR[[l]]) * G[, l]))))
   y <- s$status[idx]; neff <- 4 / (1 / sum(y == 1) + 1 / sum(y == 0))
   q <- colMeans(Ge) / 2
-  list(joint = joint, fit_beta = fit[, "beta"], fit_se = fit[, "se"], formula = 1 / sqrt(neff / 4 * 2 * q * (1 - q)),
+  list(joint = joint, fit_beta = fit[, "beta"], fit_se = fit[, "se"], d_beta = fit_d[, "beta"], d_se = fit_d[, "se"],
+       e_beta = fit_e[, "beta"], e_se = fit_e[, "se"], formula = 1 / sqrt(neff / 4 * 2 * q * (1 - q)),
        y = y, age = s$age[idx])
 })
 pick <- function(nm, l) mean(sapply(res, function(r) r[[nm]][[l]]))
@@ -93,6 +107,10 @@ tab <- do.call(rbind, lapply(loci, function(l) {
              power_formula = pow(b0, se_f), power_expected_joint = pow(b0, se_j), power_expected_fitted = pow(b_c, se_c),
              power_realised = mean(x$significant), z_realised_mean = mean(z), z_realised_sd = sd(z),
              cor_est_se = cor(x$log_or_hat, x$se),
+             se_expected_fitted_no_sex_age_effect = pick("d_se", l), or_expected_fitted_no_sex_age_effect = exp(pick("d_beta", l)),
+             power_expected_fitted_no_sex_age_effect = pow(pick("d_beta", l), pick("d_se", l)),
+             se_expected_fitted_own_effect_only = pick("e_se", l), or_expected_fitted_own_effect_only = exp(pick("e_beta", l)),
+             power_expected_fitted_own_effect_only = pow(pick("e_beta", l), pick("e_se", l)),
              row.names = NULL)
 }))
 write.table(tab, file.path(OUT, "pdac_demo_08_expected_se.tsv"), sep = "\t", quote = FALSE, row.names = FALSE)
@@ -140,6 +158,14 @@ for (j in seq_len(nrow(tab))) with(tab[j, ], R <<- c(R,
   sprintf("  %-13s power (a) %5.1f%%  (b) %5.1f%%  (c) %5.1f%%  realised %5.1f%%;  OR of the fitted model (c) %.3f, realised mean log OR %.3f (generative %.3f); realised z mean %.2f, SD %.2f",
           "", 100 * power_formula, 100 * power_expected_joint, 100 * power_expected_fitted, 100 * power_realised,
           or_expected_fitted, mean_log_or_realised, log(or_generative), z_realised_mean, z_realised_sd)))
+R <- c(R, "", "   SE of the fitted model when effects are removed from the generator (the model fitted is unchanged):",
+       "   (e) only the locus tested has an effect  (d) the three loci, no effect of sex and age  (c) all effects")
+for (j in seq_len(nrow(tab))) with(tab[j, ], R <<- c(R,
+  sprintf("  %-13s SE (a) %.4f  (e) %.4f  (d) %.4f  (c) %.4f;  relative to (a): %+.1f%%, %+.1f%%, %+.1f%%;  power (e) %.1f%%  (d) %.1f%%  (c) %.1f%%",
+          label, se_formula, se_expected_fitted_own_effect_only, se_expected_fitted_no_sex_age_effect, se_expected_fitted,
+          100 * (se_expected_fitted_own_effect_only / se_formula - 1), 100 * (se_expected_fitted_no_sex_age_effect / se_formula - 1),
+          100 * (se_expected_fitted / se_formula - 1),
+          100 * power_expected_fitted_own_effect_only, 100 * power_expected_fitted_no_sex_age_effect, 100 * power_expected_fitted)))
 R <- c(R, "", "2. CORRELATION OF RISK-ALLELE COUNTS WITHIN STRATA (non-missing genotypes)")
 for (j in seq_len(nrow(rtab))) with(rtab[j, ], R <<- c(R, sprintf("  %-4s %-28s n %4d  r %+.3f", stratum, pair, n_complete, r)))
 R <- c(R, "", "3. TERT/CLPTM1L, EUROPEAN SET: estimated / generative OR (1.50)")

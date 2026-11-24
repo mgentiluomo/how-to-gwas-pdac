@@ -12,6 +12,12 @@ SECTION 8: STANDARD ERROR, POWER AND BIAS OF THE CAUSAL ESTIMATES, EUROPEAN SCAN
   13q22.1       OR 1.97  SE (a) 0.1263  (b) 0.1451  (c) 0.1411  realised 0.1416 (SD of log OR 0.1331)
                 power (a)  46.7%  (b)  21.8%  (c)  20.5%  realised  11.0%;  OR of the fitted model (c) 1.921, realised mean log OR 0.641 (generative 0.678); realised z mean 4.51, SD 0.83
 
+   SE of the fitted model when effects are removed from the generator (the model fitted is unchanged):
+   (e) only the locus tested has an effect  (d) the three loci, no effect of sex and age  (c) all effects
+  ABO           SE (a) 0.1252  (e) 0.1427  (d) 0.1409  (c) 0.1429;  relative to (a): +14.0%, +12.5%, +14.1%;  power (e) 89.3%  (d) 81.3%  (c) 78.7%
+  TERT/CLPTM1L  SE (a) 0.1216  (e) 0.1195  (d) 0.1184  (c) 0.1201;  relative to (a): -1.7%, -2.6%, -1.2%;  power (e) 2.0%  (d) 0.1%  (c) 0.1%
+  13q22.1       SE (a) 0.1263  (e) 0.1399  (d) 0.1392  (c) 0.1411;  relative to (a): +10.7%, +10.2%, +11.7%;  power (e) 27.3%  (d) 22.4%  (c) 20.5%
+
 2. CORRELATION OF RISK-ALLELE COUNTS WITHIN STRATA (non-missing genotypes)
   eur  ABO x TERT/CLPTM1L           n  606  r -0.089
   eur  ABO x 13q22.1                n  607  r +0.028

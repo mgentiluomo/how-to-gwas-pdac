@@ -1,0 +1,14 @@
+quantity	value
+replicates	200
+scree_floor_e	1
+replicates_with_association_floor_above_0	8
+replicates_with_a_component_at_nominal_p_lt_0.05	144
+mean_components_at_nominal_p_lt_0.05	1.19
+scan_without_components_passes_stability	135
+k2_not_stable	49
+k2_fails_lambda	0
+k2_fails_lead	45
+k2_fails_top10	7
+pc12_variants	4241
+pc12_min_r2	0.03095
+pruned_variants	84816

@@ -1,0 +1,24 @@
+SECTION 8: CAUSAL GENOTYPES AND THE WITHIN-EUROPEAN COMPONENTS
+European analysis set, 611 individuals; risk-allele counts, non-missing genotypes
+
+1. GENOTYPE REGRESSED ON PC1..PCk: R2 (P of the F test)
+  ABO           n 609  k 2: 0.0255 (0.0004)   k 5: 0.0422 (8.6e-05)   k 10: 0.0563 (0.00013)   k 20: 0.0735 (0.00092)
+                single components with the smallest P: PC4 r -0.122 (0.0026), PC2 r +0.113 (0.0052), PC1 r -0.113 (0.0053); at P < 0.05: 4 of 20
+  TERT/CLPTM1L  n 608  k 2: 0.0028 (0.43)   k 5: 0.0113 (0.23)   k 10: 0.0164 (0.45)   k 20: 0.0448 (0.13)
+                single components with the smallest P: PC20 r +0.096 (0.018), PC4 r +0.086 (0.033), PC17 r -0.065 (0.11); at P < 0.05: 2 of 20
+  13q22.1       n 609  k 2: 0.0116 (0.03)   k 5: 0.0128 (0.17)   k 10: 0.0199 (0.28)   k 20: 0.0277 (0.67)
+                single components with the smallest P: PC1 r +0.107 (0.0079), PC7 r +0.059 (0.15), PC16 r -0.057 (0.16); at P < 0.05: 1 of 20
+
+2. CORRELATION BETWEEN CAUSAL GENOTYPES, PLAIN AND GIVEN PC1..PCk: r (P)
+  ABO x TERT/CLPTM1L         k 0: -0.0894 (0.028)   k 2: -0.0869 (0.033)   k 10: -0.0820 (0.045)   k 20: -0.0904 (0.029)
+  ABO x 13q22.1              k 0: +0.0277 (0.5)   k 2: +0.0407 (0.32)   k 10: +0.0402 (0.33)   k 20: +0.0451 (0.27)
+  TERT/CLPTM1L x 13q22.1     k 0: -0.0213 (0.6)   k 2: -0.0268 (0.51)   k 10: -0.0340 (0.41)   k 20: -0.0351 (0.4)
+
+HOW TO READ THIS
+  A causal genotype that follows the components makes case status follow
+  them, although the generator gives structure no effect of its own. The
+  number of components that is correct for the single-variant scan is then
+  not zero for variants on the same axes; how much it matters is measured
+  by step 06 (lambda with 0 against 2 components, variants following
+  PC1 and PC2). A correlation between two causal genotypes that the
+  components do not remove is not structure captured by them.
