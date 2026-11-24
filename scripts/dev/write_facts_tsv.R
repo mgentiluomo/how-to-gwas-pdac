@@ -118,6 +118,7 @@ tables <- list(
   list("rep", S("08_replicates", "pdac_demo_08_tests_power.tsv"), "rows", c("locus", "analysis", "test"), optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_tests_null.tsv"), "rows", "test", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_npc_summary.tsv"), "rows", "n_pcs", optional = TRUE),
+  list("rep", S("08_replicates", "pdac_demo_08_randcov_summary.tsv"), "rows", "k", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_npc_rule_summary.tsv"), "rows", "chosen_n_pcs", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_npc_rule_counts.tsv"), "kv", optional = TRUE),
   list("rep", S("08_replicates", "pdac_demo_08_causal_structure.tsv"), "rows", c("locus", "n_pcs"), optional = TRUE),

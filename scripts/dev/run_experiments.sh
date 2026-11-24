@@ -3,7 +3,7 @@
 # run_experiments.sh
 #
 # Runs the experiments that sit on top of the canonical run and are not part
-# of it: Section 8 (replicates of the simulated phenotype, steps 01 to 10) and
+# of it: Section 8 (replicates of the simulated phenotype, steps 01 to 10, with 06b) and
 # the Section 4B permutation null with ten random covariates (step 06).
 #
 # They read the outputs of the canonical run in results/, so run
@@ -25,6 +25,7 @@
 #   08 step 01  replicate i: 20261124 + i, 200 replicates (GWAS_08_N_REP)
 #   08 step 03  bootstrap of the winner's curse: 20261124, 10,000 resamples
 #   08 step 05  draw of the 2,000 null variants: 20261124
+#   08 step 06b random covariates of replicate i: 20261200 + i
 #   08 step 10  simulation: 20261124 + 10,000,000 x orientation + 100,000 x OR index + i
 #   4B step 06  permutations 20261122 (those of the canonical 4B step 04),
 #               random covariates 20261125
@@ -60,6 +61,7 @@ STEPS=(
   "$S8/04_expected_information.R"
   "$S8/05_test_statistics.R"
   "$S8/06_components.R"
+  "$S8/06b_random_covariates.R"
   "$S8/07_causal_variants_and_structure.R"
   "$S8/08_expected_gain.R"
   "$S8/09_set_composition.R"
@@ -116,6 +118,7 @@ can() { awk -v k="$1" '$1 == k { $1 = ""; sub(/^ +/, ""); print; exit }' RUN_MAN
   echo "  08 step 01   replicate i: 20261124 + i; replicates ${GWAS_08_N_REP:-200} (default 200)"
   echo "  08 step 03   bootstrap seed 20261124, 10000 resamples"
   echo "  08 step 05   null variants: seed 20261124, 2000 variants"
+  echo "  08 step 06b  random covariates of replicate i: seed 20261200 + i; 20 per replicate"
   echo "  08 step 10   seed 20261124, 2000 simulations per OR and orientation"
   echo "  4B step 06   permutations: seed ${GWAS_4B_PERM_SEED:-20261122}, n ${GWAS_4B_N_PERM:-100}; random covariates: seed ${GWAS_4B_RANDCOV_SEED:-20261125}"
   echo "  08 step 09   private inputs $( [ -n "${GWAS_PRIVATE_ID_MAP:-}" ] && [ -n "${GWAS_SOURCE_META:-}" ] && echo "set" || echo "not set: table as committed" )"

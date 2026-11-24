@@ -1,0 +1,11 @@
+SECTION 8: RANDOM COVARIATES IN PLACE OF THE COMPONENTS, EUROPEAN SCAN
+200 replicates; LD-pruned European set; SEX, AGE and k components, or k independent N(0,1) covariates (seed of replicate i: 20261200 + i)
+component models here (pruned variants extracted) against step 06 (all variants scanned): max |lambda difference| 0.00071
+
+LAMBDA (mean, SD over replicates; SE of the mean)
+  k  5  components 1.0163, 0.0089; 0.0006   random covariates 1.0153, 0.0113; 0.0008   no components (step 06) 1.0071
+        paired, components minus random: +0.0011 (SE 0.0006, z 1.7); components above random in 120 of 200 replicates
+        rise over no components: +0.0092 (SE 0.0006) with components, +0.0082 (SE 0.0003) with random covariates: 88% reproduced
+  k 20  components 1.0423, 0.0086; 0.0006   random covariates 1.0430, 0.0122; 0.0009   no components (step 06) 1.0071
+        paired, components minus random: -0.0007 (SE 0.0008, z -0.9); components above random in 103 of 200 replicates
+        rise over no components: +0.0352 (SE 0.0007) with components, +0.0359 (SE 0.0004) with random covariates: 102% reproduced
