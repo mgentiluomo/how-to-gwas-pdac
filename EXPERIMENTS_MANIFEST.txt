@@ -3,9 +3,9 @@ Experiments manifest (Section 8 and 4B step 06; not the canonical run)
 
 mode           manifest only: no step was run by this invocation; the
                checksums describe the result files found in the section folders
-written        2026-11-24T16:09:41Z
+written        2026-11-24T16:29:45Z
 host           bio-plink3
-commit         54c8ed45c18c55fedb7e6db041e54e08b5ae98fd
+commit         c3162f50afb8d8b0a3a6785bcc16a0ab8c0889b1
 working tree   clean
 branch         main
 
@@ -22,6 +22,7 @@ steps
   sections/08_replicates/scripts/04_expected_information.R
   sections/08_replicates/scripts/05_test_statistics.R
   sections/08_replicates/scripts/06_components.R
+  sections/08_replicates/scripts/06b_random_covariates.R
   sections/08_replicates/scripts/07_causal_variants_and_structure.R
   sections/08_replicates/scripts/08_expected_gain.R
   sections/08_replicates/scripts/09_set_composition.R
@@ -32,6 +33,7 @@ seeds and sizes
   08 step 01   replicate i: 20261124 + i; replicates 200 (default 200)
   08 step 03   bootstrap seed 20261124, 10000 resamples
   08 step 05   null variants: seed 20261124, 2000 variants
+  08 step 06b  random covariates of replicate i: seed 20261200 + i; 20 per replicate
   08 step 10   seed 20261124, 2000 simulations per OR and orientation
   4B step 06   permutations: seed 20261122, n 100; random covariates: seed 20261125
   08 step 09   private inputs not set: table as committed
@@ -64,6 +66,9 @@ result checksums (MD5)
   51b2c3ab88cf420457bac40e608f6253  sections/08_replicates/results/pdac_demo_08_npc_summary.txt
   342f5363c846b54de30bcfc1997ca504  sections/08_replicates/results/pdac_demo_08_per_replicate.tsv
   5594c875572c58507214ddac46d1e23d  sections/08_replicates/results/pdac_demo_08_power.tsv
+  b57cc7dc9cb843646bd2cf63e0d8ee12  sections/08_replicates/results/pdac_demo_08_randcov_per_replicate.tsv
+  37dc7b05fed15c4b2a77adf783aee9d2  sections/08_replicates/results/pdac_demo_08_randcov_summary.tsv
+  1c7c8cd16d396469c3e776653a99d304  sections/08_replicates/results/pdac_demo_08_randcov_summary.txt
   1ef72033108cf5df317de7bfcf9d7366  sections/08_replicates/results/pdac_demo_08_realised.tsv
   1dab58b6e47b89f9cfdb9eb1aafcd1c9  sections/08_replicates/results/pdac_demo_08_set_composition.tsv
   fb1965ec65d8b8b08c0a46962a646864  sections/08_replicates/results/pdac_demo_08_set_composition.txt
